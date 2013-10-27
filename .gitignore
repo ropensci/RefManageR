@@ -3,3 +3,7 @@ nogit/
 .Rproj.user/
 .Rproj
 .Rhistory
+cache/
+.Rtex
+.css
+includeCSS.R
