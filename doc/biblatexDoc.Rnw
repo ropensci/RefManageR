@@ -1,0 +1,117 @@
+\documentclass[12pt]{article}
+
+%\usepackage[top=2.5cm,bottom=2.5cm,left=2cm,right=2cm]{geometry}  % for page layout % the strange top margin is needed to use lineno for line numbering
+%\usepackage{parskip}   % nicer parskip and parindent
+\setlength{\parindent}{1.5em}
+%\addtolength{\textheight}{1.3in}
+\usepackage{graphicx}   % enhanced graphics support
+%\usepackage{epstopdf}  % converts eps to pdf
+%\epstopdfsetup{outdir=images/}
+%\usepackage{verbatim} % reimplements verbatim, adds comment environment
+%\usepackage{rotating} % for rotation of floats
+\usepackage{xcolor}      % colour extensions
+%\usepackage{etoolbox}   % used by other packages including html. loading before html to avoid warning
+%\usepackage{transparant} % for adding transperency to text. potential problems with packages that use \pdfpageresources
+%%#%%%%%%%%%%%!!!!!!!!!!!!!!!!!!!!!!!!%%%%%%%%%%%%%%%%\usepackage{pdfsync}  % never use this. really profanity's up spacing when used with some other packages such as lineno and multicol
+
+%\usepackage[noae]{Sweave} % needed so that font change to iwona not ignored
+
+%Encoding
+\usepackage[english]{babel} % for multilingual support
+\usepackage[T1]{fontenc}    % font encoding
+\usepackage[ansinew]{inputenc} % input encoding. some others complain of frequent conflicts. i have not had many issues
+\usepackage{lmodern} % latin modern fonts
+\usepackage{microtype} % conserves space, and makes text prettier by making micro adjustments to text
+\usepackage[condensed]{iwona}
+%\usepackage{html} % for urls with line breaks. OLD
+%\usepackage[hyphens]{url} % for verbatim urls with line breaks. just use html package. automatically loaded with biblatex
+%\usepackage[anythingbreaks]{breakurl}
+% http://tex.stackexchange.com/questions/39285/whats-the-advantage-of-using-csquotes-over-using-an-editors-auto-replacement-f
+
+%\usepackage{array}
+\usepackage{amsmath} % needed for math
+\usepackage{amssymb} % for bold math. see here: http://tex.stackexchange.com/a/99286
+%\usepackage{amsbsy} % alternative for bold math
+% \usepackage{bbm}   % another alternative for bold math
+%\usepackage{ulem}   % for various types of underlining. Beware: for strikethrough text \sout{} changes definition of \emph to underline!!!
+%\usepackage{amscd}  % for commutative diagrams
+%%%%%\usepackage{theorem} % enhances theorem environment. i hope to one day need this
+%\usepackage{amsthm} % alternative to theorem, recommended by author of theorem package. see also ntheoremq
+%\usepackage{latexsym}
+%%#%%%%%%%%%%%%%%\usepackage[noend]{algorithmic}
+%%#%%%%%%%%%%%%%%%%\usepackage{algcompatible} % for pseudocode/algorithms.  Lots of options, see here: http://www.tex.ac.uk/cgi-bin/texfaq2html?label=algorithms
+%%#%%%%%%%%%%%%%%%%%\usepackage{algorithm}     % jimmy prefers algorithm2e. algorithm conflicts with hyperref!!!
+%\usepackage{algorithmicx}  % loaded by algpseudocode
+\usepackage{algorithm}  % needed for algpseudocode
+\usepackage{algpseudocode}
+
+\usepackage[switch,running,right,mathlines]{lineno}  % add line numbers to drafts
+% \usepackage{xparse} % for defining more complex macros (more than one optional argument, etc.)
+%\usepackage[round]{natbib} % biblatex is far superior, though sadly not supported by many journals
+\usepackage{csquotes} % allows for multiple, language-dependent definitions for quotes. csquotes recommended for use with biblatex
+\usepackage[style=authoryear,backend=biber,firstinits=false,maxcitenames=2,maxbibnames=99,urldate=iso8601,uniquename=false,uniquelist,url=true]{biblatex}
+
+%\bibliography{<database>} % or
+%\addbibresource{vbFGAMbib.bib}
+%\usepackage{epsf} % converts eps figs to pdf so can pdftexify with eps figs
+%\usepackage{multirow} % for table entries spanning multiple rows
+%\usepackage{setspace} % for double-spacing documents
+
+\usepackage[matstyle=bbold]{MattsMacros}
+\usepackage{hyperref}  % Useful, but so many conflicts!!!
+%\usepackage{Biomet-lineno}
+
+%\usepackage{coffee4}
+%\renewcommand{\thesection}{A}%\arabic{section}
+%\addtolength{\parskip}{-.25in}
+%\setlength{\parindent}{1.5em}
+%\includeonlyframes{current}
+
+% A command for adding comments to a working document.  Using renewcommand removes comments
+%\newcommand{\comments}[1]{ \emph{{\color{red}#1}} }
+%\newcommand{\comments}[1]{#1}
+%\renewcommand{\comments}[1]{#1}
+% or use: \usepackage{comment}
+
+\graphicspath{{./images/}}
+
+%\usepackage{dtklogos}
+%\newcommand{\Bibtex}{B\kern-.05em%\hbox{$\m@th$\csnameS@\f@size\endcsname\fontsize\sf@size\z@\math@fontsfalse\selectfontI\kern-.025emB}\kern-.08em\-\TeX}
+\makeatletter
+  \DeclareRobustCommand{\Bibtex}{B\kern-.05em%
+    \hbox{$\m@th$% %% force math size calculations
+          \csname S@\f@size\endcsname
+          \fontsize\sf@size\z@
+          \math@fontsfalse\selectfont
+          I\kern-.025emB}%
+    \kern-.08em%
+    \-\TeX}
+    
+      \DeclareRobustCommand{\Biblatex}{B\kern-.05em%
+    \hbox{$\m@th$% %% force math size calculations
+          \csname S@\f@size\endcsname
+          \fontsize\sf@size\z@
+          \math@fontsfalse\selectfont
+          I\kern-.025emB}%
+    \kern-.08em%
+    \-\LaTeX}
+\makeatother
+
+\newcommand{\biber}{\texttt{biber}}
+\newcommand{\natbib}{\texttt{natbib}}
+%http://tex.stackexchange.com/questions/37095/compatibility-of-bibtex-and-biblatex-bibliography-files
+%http://tex.stackexchange.com/questions/25701/bibtex-vs-biber-and-biblatex-vs-natbib
+\begin{document}
+%\SweaveOpts{concordance=TRUE}
+The amount of extra features offered by \Biblatex and \biber{} compared to \natbib{} and \Bibtex is staggering; the user manual for \Biblatex is 253 pages while the one for \natbib is 26.  Anyone who has ever tried to create a custom \Bibtex\ style and looked at a \texttt{.bst} file already knows one reason to consider switching to \Biblatex: creating a custom style requires programming in a postfix language that few are familiar with.  Multilanguage support.  Better support for crossreferences.  No memory issues for large databases like with \Bibtex.  Sorting and encoding issues (discussed in biblatex doc section 2.4.3\citet{})
+
+<<mylabel, cache=TRUE>>=
+set.seed(123)
+ x = runif(10)
+sd(x)  # standard deviation
+@
+
+<<mylabel2, cache=TRUE,dependson='mylabel'>>=
+2*sd(x)  # standard deviation
+@
+\end{document}
