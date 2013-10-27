@@ -1,9 +1,9 @@
 papers/
 nogit/
 .Rproj.user/
-.Rproj
+*.Rproj
 .Rhistory
 cache/
-.Rtex
-.css
+*.Rtex
+*.css
 includeCSS.R
