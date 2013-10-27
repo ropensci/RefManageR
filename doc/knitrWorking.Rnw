@@ -1,0 +1,10 @@
+% Mathew McLean
+% October 23, 2013
+% toying around with knitr
+
+% minimal examples: http://yihui.name/knitr/demo/minimal/
+% http://yihui.name/knitr/hooks  % hooks are functions used to customize code chunks
+% sweave to knitr: http://yihui.name/knitr/demo/sweave/
+% caching: http://yihui.name/knitr/demo/cache/
+% intro: http://biostat.mc.vanderbilt.edu/wiki/Main/KnitrHowto
+% rstudio: http://www.rstudio.com/ide/docs/authoring/overview
