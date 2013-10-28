@@ -1,4 +1,53 @@
-\documentclass[article]{jss}
+\documentclass[article]{jss}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 
 %\usepackage[top=2.5cm,bottom=2.5cm,left=2cm,right=2cm]{geometry}  % for page layout % the strange top margin is needed to use lineno for line numbering
 %\usepackage{parskip}   % nicer parskip and parindent
@@ -105,6 +154,7 @@ URL: \url{http://stat.tamu.edu/~mmclean}
 }
 
 \Keywords{\R{}, Biblatex, Bibtex, reference management, document generation, Unicode, \pkg{cURL}}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 
 \begin{document}
 \maketitle
@@ -112,32 +162,53 @@ URL: \url{http://stat.tamu.edu/~mmclean}
 %\SweaveOpts{concordance=TRUE}
 The amount of extra features offered by \Biblatex{} and \biber{} compared to \natbib{} and \Bibtex{} is staggering; the user manual for \Biblatex{} is 253 pages while the one for \natbib{} is 26.  \Biblatex{} expands the number of automatically recognized entry types and fields offered by \Bibtex{} considerably while maintaining compatibility with \Bibtex{}.  For one example, there is greatly expanded support for electronic publications with fields for eprint, eprinttype, eprintclass, urldate, and pubstate.  For example, the below entry is used to shamelessly cite a submitted manuscript of the first author's available on \texttt{arXiv}. 
 
- <<bibexample, cache=FALSE, eval=FALSE, results='markup', tidy=FALSE>>=
- @misc{mclean2013bayesian,
-   author = {McLean, M. W. and Scheipl, F. and Hooker, G.
-                 and Greven, S. and Ruppert, D.},
-   title = {Bayesian Functional Generalized Additive Models 
-                 with Sparsely Observed Covariates},
-   urldate = {2013-10-06},
-   date = {2013},
-   eprinttype = {arxiv},
-   eprintclass = {stat.ME},
-   eprint = {1305.3585}
- }
- @
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+@misc\{mclean2013bayesian,
+  author = \{McLean, M. W. and Scheipl, F. and Hooker, G.
+                and Greven, S. and Ruppert, D.\},
+  title = \{Bayesian Functional Generalized Additive Models 
+                with Sparsely Observed Covariates\},
+  urldate = \{2013-10-06\},
+  date = \{2013\},
+  eprinttype = \{arxiv\},
+  eprintclass = \{stat.ME\},
+  eprint = \{1305.3585\}
+\}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
 Notice that in the reference section the full url is not given, but the hyper-reference still works.  You may also notice that the 'year' field is missing, and that there is instead a field 'date'.  The 'year' field is still supported and could have been specified instead of date, but date allows for specifying a month and day in addition to year.
 
 One of the biggest advantages of \Biblatex{} over \Bibtex{}, is that it does use \bst{} files for styling the bibliography. A \bst{} file must be written in a special-purpose language that few are familiar with; an example may be viewed in \texttt{R} by entering \texttt{as.list(tools:::makeJSS())} at the console.  On the other hand \Biblatex{} bibliographies, are styled entirely using \TeX{} macros.  Multilanguage support.  Better support for crossreferences.  No memory issues for large databases like with \Bibtex{}.  Sorting and encoding issues (discussed in biblatex doc section 2.4.3). Mention eTeX and url handling
 
 Another advantage of \Biblatex{} is its support for UTF-8 encoding. ``bibtex is an 8bit engine so it processes every file in 8-bit pieces. In utf8 non-ascii chars are longer than 8 bit so they are splitted by bibtex. This means that bibtex has problems to sort references with non-ascii chars correctly. It can also happen that bibtex inserts a line break in the middle of an utf8-char and then you will get errors.''  A list of the supported encodings on your system can be viewed in \R using \texttt{iconvlist()}.  By default, ReadBib will read in a .bib file using UTF-8.  UTF-8 is  
 
-<<mylabel, cache=TRUE>>=
-set.seed(123)
- x = runif(10)
-sd(x)  # standard deviation
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hlstd{(}\hlnum{123}\hlstd{)}
+\hlstd{x} \hlkwb{=} \hlkwd{runif}\hlstd{(}\hlnum{10}\hlstd{)}
+\hlkwd{sd}\hlstd{(x)}  \hlcom{# standard deviation}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.2947
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
-<<mylabel2, cache=TRUE,dependson='mylabel'>>=
-2*sd(x)  # standard deviation
-@
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlnum{2} \hlopt{*} \hlkwd{sd}\hlstd{(x)}  \hlcom{# standard deviation}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.5895
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
 \end{document}

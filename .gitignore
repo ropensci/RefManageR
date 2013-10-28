@@ -7,3 +7,9 @@ cache/
 *.Rtex
 *.css
 includeCSS.R
+*.pdf
+*.bcf
+framed.sty
+*.synctex.gz
+*.run.xml
+*\-concordance.tex

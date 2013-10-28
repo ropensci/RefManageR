@@ -1,0 +1,295 @@
+\newcommand{\vecstyle}{\mathbf}
+\newcommand{\matstyle}{\mathbb}
+
+\ProvidesPackage{MattsMacros}[10/10/13 v2.0 My own macros]
+% Mathew McLean
+% Common Macros used in my research documents
+% October 10, 2013
+% http://en.wikibooks.org/wiki/LaTeX/Creating_Packages
+
+\RequirePackage{etoolbox}
+\RequirePackage{amsmath}
+\RequirePackage{bm}
+
+\DeclareOption{vecstyle=bold}{%
+\renewcommand{\vecstyle}{\mathbf}
+}
+\DeclareOption{vecstyle=italic}{%
+\renewcommand{\vecstyle}{\mathit}
+}
+\DeclareOption{vecstyle=text}{%
+\renewcommand{\vecstyle}{\text}
+}
+\DeclareOption{vecstyle=bbold}{%
+\renewcommand{\vecstyle}{\mathbb}
+}
+
+\DeclareOption{matstyle=bold}{%
+\renewcommand{\matstyle}{\mathbf}
+}
+\DeclareOption{matstyle=italic}{%
+\renewcommand{\matstyle}{\mathit}
+}
+\DeclareOption{matstyle=text}{%
+\renewcommand{\matstyle}{\text}
+}
+\DeclareOption{matstyle=bbold}{%
+\renewcommand{\matstyle}{\mathbb}
+}
+
+%\ExecuteOptions{vecstyle=bold}
+%\ExecuteOptions{matstyle=bbold}
+
+\ProcessOptions\relax
+
+% http://tex.stackexchange.com/a/5776
+\newcommand{\define}[4]{\expandafter#1\csname#3#4\endcsname{{#2{#4}}}}
+\newcommand{\defineS}[4]{\expandafter#1\csname#3#4\endcsname{{#2{\csname #4\endcsname}}}}
+\newcommand{\defineExtra}[5]{\expandafter#1\csname#4#5\endcsname{{#2{#3{#5}}}}}
+\newcommand{\defineSExtra}[5]{\expandafter#1\csname#4#5\endcsname{{#2{#3{\csname #5\endcsname}}}}}
+
+\forcsvlist{\define{\DeclareMathOperator}{}{}}{diag, dCov, DCor, var, cov, abs, mean, corr, rank, E}
+% \mcA for \mathcal{A}
+\forcsvlist{\define{\newcommand}{\mathcal}{mc}}{A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z}
+%\forcsvlist{\define{\newcommand}{\mathcal}{mc}}{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z}  % \mca for \mathcal{a}
+% \matA,...,\matA for user-specified style for matrices. Default: \matA=\mathbb{A}
+\forcsvlist{\define{\newcommand}{\matstyle}{mat}}{A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z}
+% \veca,...,\vecz for user-specified style for vectors.  Default: \veca=\mathbf{a}
+\forcsvlist{\define{\newcommand}{\vecstyle}{vec}}{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z}
+% hatted vectors Default vecstyle: \hveca=\widehat{\mathbf{a}}
+\forcsvlist{\defineExtra{\newcommand}{\widehat}{\vecstyle}{hvec}}{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z}
+% "tilded" vectors Default vecstyle: \hveca=\widetilde{\mathbf{a}}
+\forcsvlist{\defineExtra{\newcommand}{\widetilde}{\vecstyle}{tvec}}{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z}
+% "barred" vectors Default vecstyle: \hveca=\widetilde{\mathbf{a}}
+\forcsvlist{\defineExtra{\newcommand}{\bar}{\vecstyle}{bvec}}{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z}
+% \vecA,...,\vecA for user-specified style for matrices. Default: \matA=\mathbb{A}
+\forcsvlist{\define{\newcommand}{\vecstyle}{vec}}{A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z}
+% bold greek e.g. \bbeta
+\forcsvlist{\defineS{\newcommand}{\bm}{b}}{alpha,beta,gamma,delta,epsilon,varepsilon,theta,vartheta,kappa,lambda,mu,nu,xi,pi,rho,sigma,tau,phi,psi,omega}
+% bold, hat greek e.g. \hbbeta=\widehat{\bm{\beta}}
+\forcsvlist{\defineSExtra{\newcommand}{\widehat}{\bm}{hb}}{alpha,beta,gamma,delta,epsilon,varepsilon,theta,vartheta,kappa,lambda,mu,nu,xi,pi,rho,sigma,tau,phi,psi,omega}
+% bold, tilde greek e.g. \tbbeta=\widetilde{\bm{\beta}}
+\forcsvlist{\defineSExtra{\newcommand}{\widetilde}{\bm}{tb}}{alpha,beta,gamma,delta,epsilon,varepsilon,theta,vartheta,kappa,lambda,mu,nu,xi,pi,rho,sigma,tau,phi,psi,omega}
+% both capital greek
+\forcsvlist{\defineS{\newcommand}{\bm}{b}}{Gamma,Delta,Theta,Lambda,Xi,Pi,Sigma,Upsilon,Phi,Psi,Omega}
+
+\newcommand{\veczero}{\vecstyle{0}}
+\newcommand{\vecone}{\vecstyle{1}}
+\newcommand{\boldeta}{\bm{\eta}}
+
+\newcommand{\hilight}[1]{\colorbox{yellow}{#1}}
+
+% fit \left and \right from adding extra space
+\let\originalleft\left
+\let\originalright\right
+\renewcommand{\left}{\mathopen{}\mathclose\bgroup\originalleft}
+\renewcommand{\right}{\aftergroup\egroup\originalright}
+
+% redefine \hat to be \widehat and \tilde to be \widetitle
+\newcommand{\oldhat}{\hat}
+\renewcommand{\hat}{\widehat}
+\newcommand{\oldtilde}{\tilde}
+\renewcommand{\tilde}{\widetilde}
+
+% change some biblatex defaults
+\@ifpackageloaded{biblatex}{
+% the following snippet suppresses biber default to write "In:" with journal title for article as In: journaltitle volume.issue.
+\renewbibmacro{in:}{%
+  \ifentrytype{article}{}{%
+  \printtext{\bibstring{in}\intitlepunct}}}
+
+  % the following snippet changes biblatex  default volume-number handling from volume.number to volume (number)
+% http://tex.stackexchange.com/questions/81569/biblatex-parentheses-around-the-volume-number-of-an-article
+\renewbibmacro*{volume+number+eid}{%
+  \printfield{volume}%
+%  \setunit*{\adddot}% DELETED
+  \setunit*{\addnbspace}% NEW (optional); there's also \addnbthinspace
+  \printfield{number}%
+  \setunit{\addcomma\space}%
+  \printfield{eid}}
+\DeclareFieldFormat[article]{number}{\mkbibparens{#1}}
+}{}
+
+% numbers one line of align* environment
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+% from old papers
+
+% add svg's to latex using \includesvg
+
+%similar to \graphicspath for \input
+\makeatletter
+\def\input@path{{./images/}}
+\makeatother
+
+\newcommand{\executeiffilenewer}[3]{%
+\ifnum\pdfstrcmp{\pdffilemoddate{#1}}%
+{\pdffilemoddate{#2}}>0%
+{\immediate\write18{#3}}\fi%
+}
+\newcommand{\includesvg}[2]{%
+\executeiffilenewer{#2.svg}{#2.pdf}%
+{inkscape -z -D --file=#2.svg %
+--export-pdf=#2.pdf --export-latex}%
+\resizebox{!}{#1\textheight}{\input{#2.pdf_tex}}%\resizebox{1.0\textwidth}{!}
+}
+
+% change the symbols used to distinguish multiple authors in footnotes
+\makeatletter
+\renewcommand*{\@fnsymbol}[1]{\ensuremath{\ifcase#1\or *\or \natural\or \ddagger\or
+   \mathsection\or \mathparagraph\or \|\or **\or \natural\dagger
+   \or \ddagger\ddagger \else\@ctrerr\fi}}
+\makeatother
+
+\def\txi{{\widetilde{\xi}}}
+\def\bxii{{\boldsymbol{\xi_i}}}
+\def\bxz{{\boldsymbol{\xi_{i,0}}}}
+\def\tbhtheta{{\widetilde{{\widehat{{\boldsymbol{\theta}}}}}}}
+\def\hvecF{{\widehat{\mathbf{F}}}}
+\def\sigmae{{\sigma_{\epsilon}}}
+\def\hf{{\hat{f}}}
+\def\hr{{\hat{r}}}
+\def\tbeps{{\widetilde{\boldsymbol{\epsilon}}}}
+\def\hbfF{{\widehat{\mathbf{F}}}}
+\def\eps{\epsilon}
+\def\epshat{\widehat{\eps}}
+
+\def\dsum#1#2{ \mathop{\sum \sum}_{#1}^{#2}}
+\def\bmatU{\bar{\mathbb{U}}}
+\def\bmatD{\bar{\mathbb{D}}}
+
+%\newcommand{\bm}{\mathbf}
+\newcommand{\tr}{^T}
+
+% Special math
+\def\expec#1{\mathbf E\left[{#1}\right]}
+\def\simiid{\stackrel{{\mbox{\scriptsize i.i.d.}}}{\sim}}
+\def\simind{\stackrel{{\mbox{\scriptsize ind.}}}{\sim}}
+\newcommand{\indicator}[1]{\mathbbm{1}_{\left\{ {#1} \right\} }}
+\newcommand{\iid} {\operatorname{i.i.d.}}
+\newcommand{\bvec}{\left[\begin{array}{c}}
+\newcommand{\evec}{\end{array}\right]}
+\newcommand{\bmat}[1]{\left[\begin{array}{*{#1}{c}}}
+\newcommand{\emat}{\end{array}\right]}
+\newcommand{\EW}{\operatorname{E}}
+\newcommand{\blockdiag}{\operatorname{blockdiag}}
+\newcommand{\trace}{\operatorname{tr}}
+\def\Vec{\mbox{vec}}
+\def\Eq{\text{E}_{\bTheta}}
+
+% environment shortcuts
+\def\bitem{\begin{itemize}}
+\def\eitem{\end{itemize}}
+%\def\bfr{\begin{frame}}
+%\def\efr{\end{frame}}
+\def\ft#1{\frametitle{#1}}
+%\newcommand{\bfr}[2][\empty]{\begin{frame}\frametitle{#1} #2 }
+%\newcommand{\bfr}[3][\empty]{\begin{frame}[#1]\frametitle{#2}{#3}\end{frame}}
+%\MakeRobustCommand\bfr
+%\def\efr{\end{frame}}
+\def\bnum{\begin{enumerate}}
+\def\enum{\end{enumerate}}
+\newcommand{\oneitem}[1]{\bitem #1 \eitem}
+%\newcommand{\oneitem}[2][\empty]{\bitem \item<#1> #2 \eitem}
+%\MakeRobustCommand\oneitem
+\def\beq{\begin{equation}}
+\def\eeq{\end{equation}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Special macros for JSS paper
+
+% BibLaTeX and BibTeX symbols
+\makeatletter
+  \DeclareRobustCommand{\Bibtex}{B\kern-.05em%
+    \hbox{$\m@th$% %% force math size calculations
+          \csname S@\f@size\endcsname
+          \fontsize\sf@size\z@
+          \math@fontsfalse\selectfont
+          I\kern-.025emB}%
+    \kern-.08em%
+    \-\TeX}
+    
+      \DeclareRobustCommand{\Biblatex}{B\kern-.05em%
+    \hbox{$\m@th$% %% force math size calculations
+          \csname S@\f@size\endcsname
+          \fontsize\sf@size\z@
+          \math@fontsfalse\selectfont
+          I\kern-.025emB}%
+    \kern-.08em%
+    \-\LaTeX}
+\makeatother
+
+\providecommand{\pkg}[1]{\texttt{#1}}
+\newcommand{\biber}{\pkg{biber}}
+\newcommand{\natbib}{\pkg{natbib}}
+\newcommand{\bst}{\pkg{.bst}}
+\newcommand{\R}{\pkg{R}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% define var. Bayes terms
+\def\Sqetaz{{\bSigma_{q(\boldeta_0)}}}
+\def\Sqdelta{{\bSigma_{q(\bdelta)}}}
+\def\Sqtheta{{\bSigma_{q(\btheta)}}}
+\def\Sqbeta{{\bSigma_{q(\bbeta)}}}
+\def\Sqxi{{\bSigma_{q(\bxi_i)}}}
+\def\SqBL{{\bSigma_{q(B_{\bxi_i}^T\bfL)}}}
+
+\def\Mqetaz{{\mu_{q(\boldeta_0)}}}
+\def\Mqetao{{\mu_{q(\boldeta_1)}}}
+\def\Mqdelta{{\mu_{q(\bdelta)}}}
+\def\Mqbeta{{\mu_{q(\bbeta)}}}
+\def\Mqtheta{{\mu_{q(\btheta)}}}
+\def\Mqxi#1{{\mu_{q(\bxi_{#1})}}}
+\def\Mqxixi#1{{\mu_{q(\bxi_{#1}'\bxi_{#1})}}}
+%\def\MqBxi#1{{\mu_{q(\vecb_{\bxi_{#1}})}}}
+\def\MqBxi{{\mu_{q(\vecb_{\bxi})}}}
+\def\MqBxit{{\mu^T_{q(\vecb_{\bxi})}}}
+\def\Mqbxi{{\mu_{q(\vecb_{\bxi_i})}}}
+\def\Mqbxit{{\mu^T_{q(\vecb_{\bxi_i})}}}
+\def\Mqisigma{{\mu_{q(1/\sigma^2)}}}
+\def\Mqisigmax{{\mu_{q(1/\sigma_x^2)}}}
+\def\Mqlx{{\mu_{q(\lambda_x)}}}
+\def\Mqlt{{\mu_{q(\lambda_t)}}}
+\def\MqBL{{\mu_{q(B_{\bxi_i}^T\bfL)}}}
+\def\MqZz{{\mu_{q(\bfZ_0)}}}
+\def\MqZp{{\mu_{q(\bfZ_p)}}}
+
+\def\Bqnu#1{{B_{q(\nu_{#1})}}}
+\def\Bqsigma{{B_{q(\sigma^2)}}}
+\def\Bqsigmax{{B_{q(\sigma_x^2)}}}
+\def\Bxi{{\matB_{\bxi_i}}}
+\def\Bxid{{\matB'_{\bxi_i}}}
+\def\Bxidd{{\matB''_{\bxi_i}}}
+\def\vecbxi{{\vecb_{\bxi_i}}}
+\def\tbxi{{\tilde{\bxi}_i}}
+\def\bxit{{\vecb_{\bxi_i}^T}}
+\def\bxitz{{\vecb_{\bxi_i}^T(\bxi_{i,0})}}
+\def\bxiz{{\vecb_{\bxi_i}(\bxi_{i,0})}}
+\def\Bxiz{{\matB_{\bxi_i}(\bxi_{i,0})}}
+
+\def\tql#1{{\tilde{q}_{\lambda_{#1}}(\lambda_{#1})}}
+\newcommand\tq[2]{{\tilde{q}_{\lambda_{#2}}({#1})}}
+
+\newcommand\sobs{{W_2^2[0,1]}}
+
+% patch for using displayed math and lineno
+\newcommand*\patchAmsMathEnvironmentForLineno[1]{%
+\expandafter\let\csname old#1\expandafter\endcsname\csname #1\endcsname
+\expandafter\let\csname oldend#1\expandafter\endcsname\csname end#1\endcsname
+\renewenvironment{#1}%
+{\linenomath\csname old#1\endcsname}%
+{\csname oldend#1\endcsname\endlinenomath}}%
+\newcommand*\patchBothAmsMathEnvironmentsForLineno[1]{%
+\patchAmsMathEnvironmentForLineno{#1}%
+\patchAmsMathEnvironmentForLineno{#1*}}%
+\AtBeginDocument{%
+\patchBothAmsMathEnvironmentsForLineno{equation}%
+\patchBothAmsMathEnvironmentsForLineno{align}%
+\patchBothAmsMathEnvironmentsForLineno{flalign}%
+\patchBothAmsMathEnvironmentsForLineno{alignat}%
+\patchBothAmsMathEnvironmentsForLineno{gather}%
+\patchBothAmsMathEnvironmentsForLineno{multline}%
+\patchBothAmsMathEnvironmentsForLineno{eqnarray}%
+}
+
+\endinput

@@ -29,12 +29,15 @@ useful source code to borrow from
 * utils:::toBibtex.bibentry * some code for formatting author and editor ***OKAY
 * utils:::citation  ---- for getting package citation info
 * utils:::.bibentry_get_key ***OKAY
+* utils:::sort.bibentry
 
 R help
 ----------------------------------
 * [setGeneric](http://stat.ethz.ch/R-manual/R-devel/library/methods/html/setGeneric.html)
 * importFrom in R-extensions manual
 * namespaces in 
+* ?InternalMethods
+* ?groupGeneric
 
 Rough R work
 -------------------------------------------

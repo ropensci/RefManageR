@@ -2,11 +2,20 @@
 # October 25, 2013
 # Make bibentry class compatible with BibLaTeX
 
-source('~/biblatex/biblatex/code/BibLaTeX_entry_field_db.R')
+################################
+# to be imported in package: 
+# utils:::.bibentry_match_format_style(style)
+# utils:::bibentry_attribute_names # <- c("bibtype", "textVersion", "header", "footer", "key")
+# utils:::bibentry_list_attribute_names
+# utils:::citation.bibtex.max
+# utils:::.bibentry_get_key
+
+source('~/biblatex/code/BibLaTeX_entry_field_db.R')
+library(bibtex)
 #oldbibentry <- bibentry
 # old.bibentry_Check_bibentry1 <- utils:::.bibentry_check_bibentry1
 
-test <- ReadBib('~/biblatex/biblatex/code/biblatexTestBib.bib')
+test3 <- ReadBib('~/biblatex/code/biblatexTestBib.bib', encoding='UTF-8')
 # test <- ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br', tag='Statistics - Machine Learning'))
 
 BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL, 
@@ -49,7 +58,7 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
     fields <- tolower(names(rval))
     names(rval) <- fields
     attr(rval, "bibtype") <- bibtype
-    .BibentryCheckBibEntry1(rval)
+    .BibEntryCheckBibEntry1(rval)
     pos <- fields %in% c("author", "editor")
     if (any(pos)) {
       for (i in which(pos)) rval[[i]] <- as.person(rval[[i]])
@@ -68,6 +77,7 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
       attr(rval, "footer") <- paste(footer, collapse = "\n")
     return(rval)
   }
+  #browser()
   rval <- lapply(seq_along(args$bibtype), function(i) do.call("bibentry1", 
                                                               c(lapply(args, "[[", i), list(other = lapply(other, "[[", 
                                                                                                            i)))))
@@ -79,7 +89,7 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
   rval
 }
 
-.BibentryCheckBibEntry1 <- function (x, force = FALSE) {
+.BibEntryCheckBibEntry1 <- function (x, force = FALSE) {
   fields <- names(x)
   if (!force && !.is_not_nonempty_text(x$crossref)) 
     return(NULL)
@@ -96,7 +106,7 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
   }
 }
 
-.Bibentry_expand_crossrefs <- function (x, more = list()) {
+.BibEntry_expand_crossrefs <- function (x, more = list()) {
   y <- if (length(more)) 
     do.call(c, c(list(x), more))
   else x
@@ -115,7 +125,7 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
         u$booktitle <- v$title
       u
     }, x[pc[ok]], y[pk[ok]])
-    status <- lapply(x[pc], function(e) tryCatch(.BibentryCheckBibEntry1(e, 
+    status <- lapply(x[pc], function(e) tryCatch(.BibEntryCheckBibEntry1(e, 
                                                                            TRUE), error = identity))
     bad <- which(sapply(status, inherits, "error"))
     if (length(bad)) {
@@ -304,7 +314,7 @@ format.Bibentry <- function (x, style = "text", .bibstyle = NULL, citation.bibte
         u$booktitle <- v$title
       u
     }, x[pc[ok]], y[pk[ok]])
-    status <- lapply(x[pc], function(e) tryCatch(.BibentryCheckBibEntry1(e, 
+    status <- lapply(x[pc], function(e) tryCatch(.BibEntryCheckBibEntry1(e, 
                                                                            TRUE), error = identity))
     bad <- which(sapply(status, inherits, "error"))
     if (length(bad)) {
@@ -361,4 +371,75 @@ MakeCitationList <- function( x, header, footer)
 
 .listify <- function (x) {
   if (inherits(x, "list")) x else list(x)
+}
+
+sort.BibEntry <- function (x, decreasing = FALSE, .bibstyle = NULL, drop = FALSE, 
+          ...) 
+{
+  x[order(tools::bibstyle(.bibstyle)$sortKeys(x), decreasing = decreasing), 
+    drop = drop]
+}
+
+`$<-.BibEntry` <- function (x, name, value) {
+  is_attribute <- name %in% bibentry_attribute_names
+  x <- unclass(x)
+  name <- tolower(name)
+  value <- rep(.listify(value), length.out = length(x))
+  if (name == "bibtype") {
+    stopifnot(all(sapply(value, length) == 1L))
+    BibTeX_names <- names(BibLaTeX_entry_field_db)
+    value <- unlist(value)
+    pos <- match(tolower(value), tolower(BibTeX_names))
+    if (any(is.na(pos))) 
+      stop(gettextf("%s has to be one of %s", sQuote("bibtype"), 
+                    paste(BibTeX_names, collapse = ", ")), domain = NA)
+    value <- as.list(BibTeX_names[pos])
+  }
+  for (i in seq_along(x)) {
+    if (is_attribute) {
+      attr(x[[i]], name) <- if (is.null(value[[i]])) 
+        NULL
+      else paste(value[[i]])
+    }
+    else {
+      x[[i]][[name]] <- if (is.null(value[[i]])) 
+        NULL
+      else {
+        if (name %in% c("author", "editor")) 
+          as.person(value[[i]])
+        else paste(value[[i]])
+      }
+    }
+  }
+  for (i in seq_along(x)) .BibEntryCheckBibEntry1(x[[i]])
+  class(x) <- "bibentry"
+  x
+}
+
+bibentry_attribute_names <- c("bibtype", "textVersion", "header", "footer", "key")
+
+# from utils:::toBibtex, good for matching by given name initials only
+format_author <- function(author) paste(sapply(author, function(p) {
+  fnms <- p$family
+  only_given_or_family <- is.null(fnms) || is.null(p$given)
+  fbrc <- if (length(fnms) > 1L || any(grepl("[[:space:]]", 
+                                             fnms)) || only_given_or_family) 
+    c("{", "}")
+  else ""
+  gbrc <- if (only_given_or_family) 
+    c("{", "}")
+  else ""
+  format(p, include = c("given", "family"), braces = list(given = gbrc, 
+                                                          family = fbrc))
+}), collapse = " and ")
+
+bibentry_list_attribute_names <- c("mheader", "mfooter")
+
+.bibentry_get_key <- function (x) 
+{
+  if (!length(x)) 
+    return(character())
+  keys <- lapply(unclass(x), attr, "key")
+  keys[!vapply(keys, length, 0L)] <- ""
+  unlist(keys)
 }
