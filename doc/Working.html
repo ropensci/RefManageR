@@ -1,9 +1,138 @@
 <!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 <title>biblatex temp work</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
 
 <!-- Styles for R syntax highlighter -->
 <style type="text/css">
@@ -43,127 +172,6 @@ var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/<
 hljs.initHighlightingOnLoad();
 </script>
 
-<!-- MathJax scripts -->
-<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-
-
-<style type="text/css">
-body {
-	font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
-    font-size: 18.4px;
-	line-height: 1.4;
-    margin: 0 auto;
-    width: 800px;	
-    background-color: #EED2EE;
-	color: #000000; 
-}
-a {
-	 text-decoration: none; 
-	 border-bottom: #FFFFFF solid;		
-}
-
-a:link {
-	color: #990099;
-}
-a:visited {
-	color: #BDA0CB;//#754C78;	
-}
-a:hover {
-	color: #500000;
-	border-bottom: #500000 solid;	
-}
-
-.navDiv a{
-	color: #754C78;
-}
-
-header {
-	margin: 0px 0px 0px 0px;
-	padding: 0;
-}
-header h1 {
-	max-width: 480px;
-	font-size: 60px;
-	line-height: 38px;
-	letter-spacing: -1px;
-	font-weight: bold;
-	display: inline;
-	color: #FFFFFF;
-}
-
-.navDiv {
-    float: left; 
-    width: 92px;
-    background-color: #FFFFFF;
-	display: inline-block;
-    color: #5B447A;
-	font-weight: normal;
-	letter-spacing: -1px;
-    font-size: 25px;
-    margin: 0px 8px 0px 0px;
-	line-height: 35px;
-/*	 border-bottom: #FFFFFF solid;	 */
-/*    padding: 5px 0;	 */
-}
-.navDiv:hover {
-     color: #500000;
-     background-color: #FFFFFF;
-}
-
-section {
-	width= 800px;
-	background-color: #FFFFFF;
-	margin: -10px 0px 20px 0px;
-	padding: 0em 10px 0em 10px;
-}
-section h1 {
-	font-size: 218%;
-    color: #6a6a6a;
-}
-section h2 {
-	font-size: 164%;
-    color: #5a5a5a;
-}
-section h3 {
-	font-size: 145%;
-    color: #4a4a4a;
-}
-section h4 ,summary{
-	font-size: 118%;
-    color: #4a4a4a;
-}
-
-pre {
-	margin-left: 2em;
-}
-.rightimg {
-	float: right;
-	margin-left: 20px;
-	margin-bottom: 10px;
-	border: 0px;
-
-}
-.leftimg {
-	float: left;
-	margin-right: 20px;
-	margin-bottom: 10px;
-}
-.clear {
-	clear: both;
-}
-#thanksTwo {
-  display: hidden;
-}
-
-#showShiny, #showJeff{
-       border-bottom: #500000 solid;
-}
-
-a#showShiny:hover, a#showJeff:hover{
-	 border-bottom: #FFFFFF solid;	
-}
-</style>
 
 
 
@@ -207,6 +215,7 @@ a#showShiny:hover, a#showJeff:hover{
 <li>utils:::toBibtex.bibentry * some code for formatting author and editor ***OKAY</li>
 <li>utils:::citation  &mdash;- for getting package citation info</li>
 <li>utils:::.bibentry_get_key ***OKAY</li>
+<li>utils:::sort.bibentry</li>
 </ul>
 
 <h2>R help</h2>
@@ -215,6 +224,8 @@ a#showShiny:hover, a#showJeff:hover{
 <li><a href="http://stat.ethz.ch/R-manual/R-devel/library/methods/html/setGeneric.html">setGeneric</a></li>
 <li>importFrom in R-extensions manual</li>
 <li>namespaces in </li>
+<li>?InternalMethods</li>
+<li>?groupGeneric</li>
 </ul>
 
 <h2>Rough R work</h2>
@@ -241,3 +252,4 @@ strsplit(&quot;hello \&quot;blah blah\&quot; asdf &quot;,&quot;?\&quot;.*\&quot;
 </body>
 
 </html>
+

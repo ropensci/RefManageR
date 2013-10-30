@@ -1,144 +1,141 @@
 <!DOCTYPE html>
-<!-- saved from url=(0014)about:internet -->
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 <title>biblatex</title>
 
-<style type="text/css">
-body, td {
-   font-family: sans-serif;
-   background-color: white;
-   font-size: 12px;
-   margin: 8px;
-}
-
-tt, code, pre {
-   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
-}
-
-h1 { 
-   font-size:2.2em; 
-}
-
-h2 { 
-   font-size:1.8em; 
-}
-
-h3 { 
-   font-size:1.4em; 
-}
-
-h4 { 
-   font-size:1.0em; 
-}
-
-h5 { 
-   font-size:0.9em; 
-}
-
-h6 { 
-   font-size:0.8em; 
-}
-
-a:visited {
-   color: rgb(50%, 0%, 50%);
-}
-
-pre {	
-   margin-top: 0;
-   max-width: 95%;
-   border: 1px solid #ccc;
-   white-space: pre-wrap;
-}
-
-pre code {
-   display: block; padding: 0.5em;
-}
-
-code.r, code.cpp {
-   background-color: #F8F8F8;
-}
-
-table, td, th {
-  border: none;
-}
-
-blockquote {
-   color:#666666;
-   margin:0;
-   padding-left: 1em;
-   border-left: 0.5em #EEE solid;
-}
-
-hr {
-   height: 0px;
-   border-bottom: none;
-   border-top-width: thin;
-   border-top-style: dotted;
-   border-top-color: #999999;
-}
-
-@media print {
-   * { 
-      background: transparent !important; 
-      color: black !important; 
-      filter:none !important; 
-      -ms-filter: none !important; 
-   }
-
-   body { 
-      font-size:12pt; 
-      max-width:100%; 
-   }
-       
-   a, a:visited { 
-      text-decoration: underline; 
-   }
-
-   hr { 
-      visibility: hidden;
-      page-break-before: always;
-   }
-
-   pre, blockquote { 
-      padding-right: 1em; 
-      page-break-inside: avoid; 
-   }
-
-   tr, img { 
-      page-break-inside: avoid; 
-   }
-
-   img { 
-      max-width: 100% !important; 
-   }
-
-   @page :left { 
-      margin: 15mm 20mm 15mm 10mm; 
-   }
-     
-   @page :right { 
-      margin: 15mm 10mm 15mm 20mm; 
-   }
-
-   p, h2, h3 { 
-      orphans: 3; widows: 3; 
-   }
-
-   h2, h3 { 
-      page-break-after: avoid; 
-   }
-}
-
-</style>
-
 
 
 <!-- MathJax scripts -->
 <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+
+
+<style type="text/css">
+body {
+	font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
+    font-size: 18.4px;
+	line-height: 1.4;
+    margin: 0 auto;
+    width: 1200px;	
+    background-color: #EED2EE;
+	color: #000000; 
+}
+a {
+	 text-decoration: none; 
+	 border-bottom: #FFFFFF solid;		
+}
+
+code, .markdown-body tt {
+margin: 0 2px;
+padding: 0px 5px;
+border: 1px solid #ddd;
+background-color: #f8f8f8;
+border-radius: 3px;
+}
+
+a:link {
+	color: #990099;
+}
+a:visited {
+	color: #BDA0CB;//#754C78;	
+}
+a:hover {
+	color: #500000;
+	border-bottom: #500000 solid;	
+}
+
+.navDiv a{
+	color: #754C78;
+}
+
+header {
+	margin: 0px 0px 0px 0px;
+	padding: 0;
+}
+header h1 {
+	max-width: 480px;
+	font-size: 60px;
+	line-height: 38px;
+	letter-spacing: -1px;
+	font-weight: bold;
+	display: inline;
+	color: #FFFFFF;
+}
+
+.navDiv {
+    float: left; 
+    width: 92px;
+    background-color: #FFFFFF;
+	display: inline-block;
+    color: #5B447A;
+	font-weight: normal;
+	letter-spacing: -1px;
+    font-size: 25px;
+    margin: 0px 8px 0px 0px;
+	line-height: 35px;
+/*	 border-bottom: #FFFFFF solid;	 */
+/*    padding: 5px 0;	 */
+}
+.navDiv:hover {
+     color: #500000;
+     background-color: #FFFFFF;
+}
+
+section {
+	width= 800px;
+	background-color: #FFFFFF;
+	margin: -10px 0px 20px 0px;
+	padding: 0em 10px 0em 10px;
+}
+section h1 {
+	font-size: 218%;
+    color: #6a6a6a;
+}
+section h2 {
+	font-size: 164%;
+    color: #5a5a5a;
+}
+section h3 {
+	font-size: 145%;
+    color: #4a4a4a;
+}
+section h4 ,summary{
+	font-size: 118%;
+    color: #4a4a4a;
+}
+
+pre {
+	margin-left: 2em;
+}
+.rightimg {
+	float: right;
+	margin-left: 20px;
+	margin-bottom: 10px;
+	border: 0px;
+
+}
+.leftimg {
+	float: left;
+	margin-right: 20px;
+	margin-bottom: 10px;
+}
+.clear {
+	clear: both;
+}
+#thanksTwo {
+  display: hidden;
+}
+
+#showShiny, #showJeff{
+       border-bottom: #500000 solid;
+}
+
+a#showShiny:hover, a#showJeff:hover{
+	 border-bottom: #FFFFFF solid;	
+}
+</style>
 
 
 
@@ -154,35 +151,43 @@ hr {
 <h2>Important</h2>
 
 <ol>
-<li>get DOIs from crossref</li>
-<li>convert all your RefManager.R functions to work with bibentry class</li>
+<li>get DOIs from crossref see: <a href="https://github.com/gavinsimpson/orcid/blob/master/R/crossrefDOI.R">See work on GitHub</a></li>
+<li>new open function; convert all other RefManager.R functions to work with bibentry class</li>
 <li>read pdf&#39;s using pdftotext.exe; use list.files to add folder to database</li>
 <li>read bibliographies from pdftotext</li>
-<li>&ldquo;+.BibEntry&rdquo; function for merging two bibentry classes: <a href="http://stackoverflow.com/questions/8022979/operator-overloading-and-class-definition-in-r-use-a-different-base-field-corpu">S/O thread for overloading <code>+</code></a>. Also see ?Ops</li>
-<li>write to zotero: <a href="http://www.zotero.org/support/dev/server_api/v2/write_requests">http://www.zotero.org/support/dev/server_api/v2/write_requests</a>
+<li>&ldquo;+.BibEntry&rdquo; function for merging two bibentry classes: <a href="http://stackoverflow.com/questions/8022979/operator-overloading-and-class-definition-in-r-use-a-different-base-field-corpu">S/O thread for overloading <code>+</code></a>. Also see ?Ops
 
 <ul>
 <li>handling duplicate entries</li>
 </ul></li>
+<li>write to zotero: <a href="http://www.zotero.org/support/dev/server_api/v2/write_requests">http://www.zotero.org/support/dev/server_api/v2/write_requests</a></li>
 <li>boolean for how invalid entries are handled: either change to misc or drop (see what force=TRUE does in bibentry fnctn)</li>
-<li>new open function</li>
-<li>new <code>[</code> function e.g. db[&#39;author&#39;, &#39;mclean&#39;, 1:3] = first three entries in bib with mclean as author \( \neq \) db[1:3, &#39;author&#39;, &#39;mclean&#39;]</li>
+<li>new <code>[</code> function e.g. db[&#39;author&#39;, &#39;mclean&#39;, 1:3] = first three entries in bib with mclean as author \(\neq\) db[1:3, &#39;author&#39;, &#39;mclean&#39;]</li>
 <li>add option for sorting results of subsetting based on diff fields and printing. See: utils:::sort.bibentry</li>
-<li>search function that repeats <code>[</code></li>
-<li>directed graph for plot function. See igraph pkg or perhaps adapt <a href="http://bl.ocks.org/mbostock/3037015">http://bl.ocks.org/mbostock/3037015</a> (add counts on edges)</li>
+<li>plot function. sig.: plot(db, field, plottype, &hellip;)  both &#39;author&#39; and &#39;author-full&#39; possible<br/>
+
+<ul>
+<li>See igraph pkg or perhaps adapt <a href="http://bl.ocks.org/mbostock/3037015">http://bl.ocks.org/mbostock/3037015</a> (add counts on edges)</li>
 <li>See the <a href="http://blog.fellstat.com/?cat=11">wordcloud package</a></li>
-<li>make table fnctn generic  table(db, field)  both &#39;author&#39; and &#39;author-full&#39;<br/></li>
-<li>plot(db, field, plottype, &hellip;)  both &#39;author&#39; and &#39;author-full&#39; possible<br/></li>
+</ul></li>
+<li>make table function.  table(db, field)  both &#39;author&#39; and &#39;author-full&#39;<br/></li>
 <li>change the print.bibentry function for when style=&#39;bibtex&#39; and add style=&#39;biblatex&#39;<br/>
-(i.e. convert biblatex to bibtex for submitting to journal.<br/>
-i.e. change toBibtex function and add toBibLaTeX function)
+
+<ul>
+<li>(i.e. convert biblatex to bibtex for submitting to journal.<br/></li>
+<li>i.e. change toBibtex function and add toBibLaTeX function)
 <a href="http://tex.stackexchange.com/questions/114787/converting-from-biblatex-to-bibtex-format-using-biber">S/O thread explaining how to do this</a><br/>
 have check=FALSE argument in print.BibEntry if user does not want to check proper format when printing biblatex or bibtex<br/>
 have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if user does not want converted BibEntry object returned</li>
+</ul></li>
 <li>how to change entry type?</li>
 <li>fix print to handle date field and </li>
 <li>implement a useful summary function</li>
 <li>let users set &ldquo;[.BibEntry&rdquo; and &ldquo;+.BibEntry&rdquo; defaults using getOptions() or BibEntryOptions() accessors and mutators</li>
+<li>Use everything here: <a href="http://ropensci.org/packages/">http://ropensci.org/packages/</a></li>
+<li>add ORCHID to person class</li>
+<li>add function to </li>
+<li>update print function to include index in database</li>
 </ol>
 
 <h3>Less Important/Smaller</h3>
@@ -190,7 +195,6 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
 <ul>
 <li>Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg<br/>
 Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>iconv</code></li>
-<li>where do </li>
 <li><a href="http://opencitations.net/">http://opencitations.net/</a></li>
 <li>handle crossrefs for new BibLaTeX &ldquo;in&rdquo; fields</li>
 <li>write &ldquo;-.BibEntry&rdquo; function</li>
@@ -211,6 +215,7 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 <li>open browser to Google Scholar for bibtex entry</li>
 <li>Biblatex entry types and fields supported</li>
 <li>Unicode can be supported with little effort. encoding option in WriteBib; Unicode pkg; Encoding function</li>
+<li>use unclass(bibentryObj) to get entry type and key</li>
 </ul>
 
 <h1></h1>
@@ -218,4 +223,3 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 </body>
 
 </html>
-

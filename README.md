@@ -7,7 +7,7 @@ To Do:
 ==================================================================================================================
 Important
 -------------------
-1. get DOIs from crossref
+1. get DOIs from crossref see: [See work on GitHub](https://github.com/gavinsimpson/orcid/blob/master/R/crossrefDOI.R)
 2. new open function; convert all other RefManager.R functions to work with bibentry class
 3. read pdf's using pdftotext.exe; use list.files to add folder to database
 * read bibliographies from pdftotext
@@ -28,14 +28,18 @@ Important
 have check=FALSE argument in print.BibEntry if user does not want to check proper format when printing biblatex or bibtex  
 have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if user does not want converted BibEntry object returned
 12. how to change entry type?
-* fix print to handle date field and 
-* implement a useful summary function
-* let users set "[.BibEntry" and "+.BibEntry" defaults using getOptions() or BibEntryOptions() accessors and mutators
+13. fix print to handle date field and 
+14. implement a useful summary function
+15. let users set "[.BibEntry" and "+.BibEntry" defaults using getOptions() or BibEntryOptions() accessors and mutators
+16. Use everything here: http://ropensci.org/packages/
+17. add ORCHID to person class
+18. add function to 
+19. update print function to include index in database
+20. make date field date object
 
 ### Less Important/Smaller
 * Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg  
 Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
-* where do 
 * http://opencitations.net/
 * handle crossrefs for new BibLaTeX "in" fields
 * write "-.BibEntry" function
@@ -47,6 +51,8 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 * add search function as wrapper for "[.BibEntry"
 * is [`stringi`](http://docs.rexamine.com/R-man/stringi/stringi-encoding.html) worth using over `Unicode` package?
 * Distinguish what can be imported and needs to be re-implemented from `bibtex` and `utils`
+* efficient ways to update database with only recently added papers, mention in JSS manuscript
+* read all of R Journal paper on person and bibentry classes
 
 DONE     
 ==================================================================================================================
@@ -55,5 +61,6 @@ DONE
 * open browser to Google Scholar for bibtex entry
 * Biblatex entry types and fields supported
 * Unicode can be supported with little effort. encoding option in WriteBib; Unicode pkg; Encoding function
+* use unclass(bibentryObj) to get entry type and key
 
 ==================================================================================================================

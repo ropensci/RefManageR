@@ -15,7 +15,61 @@ library(bibtex)
 #oldbibentry <- bibentry
 # old.bibentry_Check_bibentry1 <- utils:::.bibentry_check_bibentry1
 
-test3 <- ReadBib('~/biblatex/code/biblatexTestBib.bib', encoding='UTF-8')
+setClass('bibentry')
+setClass('BibEntry', contains='bibentry')
+setGeneric('table')
+setGeneric('search')
+
+MatchDate <- function(x, field, pattern, match.author='exact'){
+  
+}
+
+setMethod("[",
+          "BibEntry",
+          function(x, ..., drop=TRUE){
+            if(!length(x))
+              return(x)
+            
+            dots <- list(...)
+            current.fields <- unique(names(unlist(test)))
+            ind <- 0
+            while (ind < length(dots)){
+              temp <- tolower(dots[[ind]])
+              if (is.numeric(temp)){
+                x <- x[temp]
+              }else if (pmatch(temp, current.fields)){
+                if(ind==length(dots)){ 
+                  x <- eval(parse(text=paste0('x$', temp)))
+                  ind <- ind + 1
+                }else{
+                  pattern <- tolower(dots[[ind+1]])
+                  
+                  if (temp=='author' || temp=='editor'){  # need special handling for a/e and y/d
+                    x <- MatchAuthor(x, field, pattern, author.match)
+                  }else if (temp=='author' || temp=='date'){
+                    x <- MatchDate(x, temp, pattern, date.match)
+                  }else{
+                    x <- search(x, temp, pattern, exact = FALSE)
+                  }
+                                                       
+                  ind <- ind + 2
+                }    
+              }else{
+                stop('Invalid index specified')
+              }
+            }
+            x
+          })
+
+setMethod("table",
+          signature(x="BibEntry"),
+          function (x, field)){
+            table(unlist(temp['field']))
+          }
+}
+
+
+test <- ReadBib('~/biblatex/code/biblatexTestBib.bib', encoding='UTF-8')
 # test <- ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br', tag='Statistics - Machine Learning'))
 
 BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL, 
@@ -205,7 +259,7 @@ WriteBib <- function (entry, file = "Rpackages.bib", append = FALSE, verbose = T
   invisible(bibs)
 }
 
-ReadBib <- function (file = findBibFile(package), package = "bibtex", encoding = "unknown", 
+ReadBib <- function (file = findBibFile(package), package = "bibtex", encoding = "UTF-8", 
           header = if (length(preamble)) paste(preamble, sep = "\n") else "", 
           footer = "") 
 {

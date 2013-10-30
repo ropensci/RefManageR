@@ -13,3 +13,4 @@ framed.sty
 *.synctex.gz
 *.run.xml
 *\-concordance.tex
+*.blg

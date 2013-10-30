@@ -101,15 +101,18 @@ URL: \url{http://stat.tamu.edu/~mmclean}
 
 \date{\today}
 
-\Abstract{We introduce the \R{} package \ourpkg{}, which extends the \texttt{bibentry} class in \R{} in a number of useful ways and implements a reference manager for \R{}.  \ourpkg{} provides \R{} with previously unavailable support for \Biblatex{}.  \Biblatex{} provides a superset of the functionality of \Bibtex, including full Unicode support, no memory limitations, additional fields and entry types, more sophisticated sorting of references.  Existing .bib files can be read into \R{} and converted from \Bibtex{} to \Biblatex{} and vice versa.  References can also be imported from and exported to \pkg{Zotero} libraries using HTTPS requests from \R{}.  Additionally, bibliographic information can be read from PDFs stored on the user's machine.  A function for opening references in a pdf viewer or browser window are provided as well as functions for looking up Document Object Indentifiers and \Bibtex entries using HTTP requests.  Searching through references and merging multiple databases is implemented with a simple syntax.  Additionally databases can be summarized, tabled, printed, and plotted in multiple ways.
+\Abstract{We introduce the \proglang{R} package \ourpkg{}, which extends the \texttt{bibentry} class in \R{} in a number of useful ways and implements a reference manager for \R{}.  \ourpkg{} provides \R{} with previously unavailable support for \Biblatex{}.  \Biblatex{} provides a superset of the functionality of \Bibtex, including full Unicode support, no memory limitations, additional fields and entry types, more sophisticated sorting of references.  Existing .bib files can be read into \R{} and converted from \Bibtex{} to \Biblatex{} and vice versa.  References can also be imported from and exported to \proglang{Zotero} libraries using HTTPS requests from \R{}.  Additionally, bibliographic information can be read from PDFs stored on the user's machine.  A function for opening references in a pdf viewer or browser window are provided as well as functions for looking up Document Object Indentifiers and \Bibtex{} entries using HTTP requests.  Searching through references and merging multiple databases is implemented with a simple syntax.  Additionally databases can be summarized, tabled, printed, and plotted in multiple ways.
 }
 
 \Keywords{\R{}, Biblatex, Bibtex, reference management, document generation, Unicode, \pkg{cURL}}
+\Plainkeywords{R, Biblatex, Bibtex, reference management, document generation, Unicode, cURL}
 
 \begin{document}
 \maketitle
 
 %\SweaveOpts{concordance=TRUE}
+The \code{person} and \code{bibentry} classes available in the base-priority \pkg{utils} package in \R{} provide very useful functionality for citing not only \R{} packages, but also any entry type supported in \Bibtex.  \Bibtex{} \citep{bibtex} is the most popular tool for producing bibliographies with the typesetting software \proglang{\TeX}.  An introduction to these classes is available in \citet{hornik2012who}.
+
 The amount of extra features offered by \Biblatex{} and \biber{} compared to \natbib{} and \Bibtex{} is staggering; the user manual for \Biblatex{} is 253 pages while the one for \natbib{} is 26.  \Biblatex{} expands the number of automatically recognized entry types and fields offered by \Bibtex{} considerably while maintaining compatibility with \Bibtex{}.  For one example, there is greatly expanded support for electronic publications with fields for eprint, eprinttype, eprintclass, urldate, and pubstate.  For example, the below entry is used to shamelessly cite a submitted manuscript of the first author's available on \texttt{arXiv}. 
 
  <<bibexample, cache=FALSE, eval=FALSE, results='markup', tidy=FALSE>>=
@@ -140,4 +143,6 @@ sd(x)  # standard deviation
 <<mylabel2, cache=TRUE,dependson='mylabel'>>=
 2*sd(x)  # standard deviation
 @
+
+\bibliography{biblatex}
 \end{document}
