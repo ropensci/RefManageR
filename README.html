@@ -186,8 +186,8 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
 <li>let users set &ldquo;[.BibEntry&rdquo; and &ldquo;+.BibEntry&rdquo; defaults using getOptions() or BibEntryOptions() accessors and mutators</li>
 <li>Use everything here: <a href="http://ropensci.org/packages/">http://ropensci.org/packages/</a></li>
 <li>add ORCHID to person class</li>
-<li>add function to </li>
 <li>update print function to include index in database</li>
+<li>vectorize fields in search function <code>all(pmatch(searchterm, fields))</code> perhaps?</li>
 </ol>
 
 <h3>Less Important/Smaller</h3>
@@ -195,6 +195,8 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
 <ul>
 <li>Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg<br/>
 Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>iconv</code></li>
+<li>allow Extract function to take list argument</li>
+<li>allow Extract function to take vector of keys</li>
 <li><a href="http://opencitations.net/">http://opencitations.net/</a></li>
 <li>handle crossrefs for new BibLaTeX &ldquo;in&rdquo; fields</li>
 <li>write &ldquo;-.BibEntry&rdquo; function</li>
@@ -206,6 +208,9 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 <li>add search function as wrapper for &ldquo;[.BibEntry&rdquo;</li>
 <li>is <a href="http://docs.rexamine.com/R-man/stringi/stringi-encoding.html"><code>stringi</code></a> worth using over <code>Unicode</code> package?</li>
 <li>Distinguish what can be imported and needs to be re-implemented from <code>bibtex</code> and <code>utils</code></li>
+<li>efficient ways to update database with only recently added papers, mention in JSS manuscript</li>
+<li>read all of R Journal paper on person and bibentry classes</li>
+<li>OR in search function - split</li>
 </ul>
 
 <h1>DONE     </h1>
@@ -216,6 +221,9 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 <li>Biblatex entry types and fields supported</li>
 <li>Unicode can be supported with little effort. encoding option in WriteBib; Unicode pkg; Encoding function</li>
 <li>use unclass(bibentryObj) to get entry type and key</li>
+<li>make date field date object</li>
+<li>Extract operator works with date</li>
+<li>created names function to return keys of multiple entries or fields of one entry</li>
 </ul>
 
 <h1></h1>

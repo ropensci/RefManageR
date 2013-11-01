@@ -38,6 +38,7 @@ R help
 * namespaces in 
 * ?InternalMethods
 * ?groupGeneric
+* ?RMethodUtils
 
 Rough R work
 -------------------------------------------

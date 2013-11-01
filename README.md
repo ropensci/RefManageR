@@ -27,15 +27,13 @@ Important
 [S/O thread explaining how to do this](http://tex.stackexchange.com/questions/114787/converting-from-biblatex-to-bibtex-format-using-biber)  
 have check=FALSE argument in print.BibEntry if user does not want to check proper format when printing biblatex or bibtex  
 have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if user does not want converted BibEntry object returned
-12. how to change entry type?
-13. fix print to handle date field and 
-14. implement a useful summary function
-15. let users set "[.BibEntry" and "+.BibEntry" defaults using getOptions() or BibEntryOptions() accessors and mutators
-16. Use everything here: http://ropensci.org/packages/
-17. add ORCHID to person class
-18. add function to 
-19. update print function to include index in database
-20. make date field date object
+12. fix print to handle date field and 
+13. implement a useful summary function
+14. let users set "[.BibEntry" and "+.BibEntry" defaults using getOptions() or BibEntryOptions() accessors and mutators
+15. Use everything here: http://ropensci.org/packages/
+16. add ORCHID to person class
+17. update print function to include index in database
+18. vectorize fields in search function `all(pmatch(searchterm, fields))` perhaps?
 
 ### Less Important/Smaller
 * Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg  
@@ -53,6 +51,7 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 * Distinguish what can be imported and needs to be re-implemented from `bibtex` and `utils`
 * efficient ways to update database with only recently added papers, mention in JSS manuscript
 * read all of R Journal paper on person and bibentry classes
+* OR in search function - split
 
 DONE     
 ==================================================================================================================
@@ -62,5 +61,11 @@ DONE
 * Biblatex entry types and fields supported
 * Unicode can be supported with little effort. encoding option in WriteBib; Unicode pkg; Encoding function
 * use unclass(bibentryObj) to get entry type and key
+* make date field date object
+* Extract operator works with date
+* created names function to return keys of multiple entries or fields of one entry
+* allow Extract function to take list argument
+* allow Extract function to take vector of keys
+* Exract works with entry types
 
 ==================================================================================================================
