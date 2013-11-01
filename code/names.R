@@ -1,7 +1,62 @@
 names.BibEntry <- function(x){
-  if(length(x)==1){
-    return(names(unclass(x)[[1]]))
-  }else{
-    return(sapply(unclass(x), function(x) return(attr(x, 'key'))))
-  }
+  return(sapply(unclass(x), function(x) return(attr(x, 'key'))))
+}
+
+#`names<-.BibEntry` <- function(x, value){
+#    res <- `names<-`(unclass(x), value) 
+#    class(res) <- c('BibEntry', 'bibentry')
+#}
+
+fields <- levels.BibEntry <- function(x){
+  return(lapply(unclass(x), names))
+}
+
+UpdateFieldName <- function(x, old.field, new.field){
+  y <- as.relistable(x)
+  x <- unlist(x)
+  names(x)[names(x)==old.field] <- new.field
+  x <- relist(x, skeleton=y)
+  class(x) <- c('BibEntry', 'bibentry')
+  x
+}
+
+unlist.BibEntry <- function(x, recursive = FALSE, use.names = TRUE){
+  x <- lapply(unclass(x), function(x){
+    x$bibtype <- attr(x, 'bibtype')
+    x$key <- attr(x, 'key')
+    x
+  })
+  x <- unlist(x, FALSE)
+  class(x) <- c('BibEntry')
+  x
+}
+
+unlist.BibEntry <- function(x, recursive = FALSE, use.names = TRUE){
+  x <- lapply(unclass(x), function(x){
+    x$bibtype <- attr(x, 'bibtype')
+    x$key <- attr(x, 'key')
+    x
+  })
+  x <- unlist(x, FALSE)
+  # x <- as.relistable(x)
+  #attr(x, 'skeleton') <- skeleton
+  #class(x) <- c('character')
+  x
+}
+
+relist.BibEntry <- function(flesh, skeleton=NULL){
+  #  browser()
+    key.ind <- which(names(flesh)=='key')
+    N <- length(key.ind)
+    res <- vector('list', N)
+    res[[1]] <- structure(flesh[1:(key.ind[1]-2)], bibtype=as.character(flesh[key.ind[1]-1]), 
+                          key=as.character(flesh[key.ind[1]]))
+    if(N>1){
+      for(i in 2:N){
+        res[[i]] <- structure(flesh[(key.ind[i-1]+1):(key.ind[i]-2)], bibtype= as.character(flesh[key.ind[i]-1]),
+                              key = as.character(flesh[key.ind[i]]))
+      }
+    }
+    class(res) <- c('BibEntry', 'bibentry')
+    res
 }

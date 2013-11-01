@@ -55,13 +55,7 @@ MatchDate <- function(x, pattern, match.date = 'yearonly'){
     return()
   }
   
-  if(return.ind){
-    x <- x[match.pos]
-    class(x) <- c('BibEntry', 'bibentry')
-    return(x)
-  }else{
-    return(which(match.pos))
-  }
+  return(which(match.pos))
 }
 
 # UTF-8 compatible
@@ -84,23 +78,19 @@ CompareEntries <- function(entry, searchterms, exact = FALSE, unicode=TRUE){
 
 # make UTF-8 compatible
 # does not work: setGeneric('search', signature=)
-SearchField <- function(x, field, pattern, return.ind = FALSE){
+SearchField <- function(x, field, pattern){
   # this code loses correct position of matches
   # match(unlist(eval(parse(text=paste0('x$', field)))), pattern, nomatch=FALSE)
   
   match.pos <- sapply(eval(parse(text=paste0('x$', field))), CompareEntries, searchterms=pattern, 
-                      return.ind=TRUE, exact = FALSE, unicode=TRUE)
+                      exact = FALSE, unicode=TRUE)
   
-  if (return.ind){
-    return(which(match.pos))
-  }else{
-    return(x[match.pos])
-  }
+  return(which(match.pos))
 }
 
 SearchBib <- function(x, ..., match.date = 'yearonly', match.author='lastonly'){
   fcall <- match.call()
-  fcall$return.ind=TRUE
+  fcall$return.ind <- TRUE
   fcall[[1L]] <- as.name('[.BibEntry')
   return(eval(fcall))
 }
@@ -123,8 +113,15 @@ SearchBib <- function(x, ..., match.date = 'yearonly', match.author='lastonly'){
       args <- as.list(sapply(1:length(dot.arg), function(i) c(names(dot.arg)[i], dot.arg[[i]])))
       args$x <- x
       return(do.call('[.BibEntry', args))
-    }else if (is.character(dot.arg)){  # assumed to be keys
-      return(x[[names(x) %in% dot.arg]])
+    }else if (is.character(dot.arg)){  
+      dot.arg <- tolower(dot.arg)
+      if (dot.arg %in% current.fields){
+        res <- eval(parse(text=paste0('x$', dot.arg)))
+        names(res) <- 1:length(x)
+        return(unlist(res))
+      }else{  # assumed to be keys
+        return(x[[names(x) %in% dot.arg]])
+      }
     }else{
       stop('Invalid argument')
     }
@@ -133,27 +130,30 @@ SearchBib <- function(x, ..., match.date = 'yearonly', match.author='lastonly'){
   # browser()
   temp <- dots[[1]]
   if (is.numeric(temp)){ # simple subset use bibentry's "["
+    print('WOW YOU FOUND ME!!!')
     class(x) <- 'bibentry'
     dots <- dots[-1]
     dots$x <- x[temp]
     class(dots$x) <- c('BibEntry', 'bibentry')
   }else if (pmatch(temp <- tolower(temp), current.fields, nomatch=0)){
     if(length(dots)==1){ 
+      print('WOW YOU FOUND THE OTHER ME!!!')
       dots$x <- eval(parse(text=paste0('x$', temp)))
     }else{
       pattern <- dots[[2]]
       
       if (temp=='author' || temp=='editor'){  # need special handling for a/e and y/d
-        dots$x <- MatchAuthor(x, field = temp, pattern = pattern, author.match = 'exact', return.ind=return.ind)
+        match.pos <- MatchAuthor(x, field = temp, pattern = pattern, author.match = 'exact')
       }else if (temp == 'year' || temp == 'date'){
-        dots$x <- MatchDate(x, pattern = pattern, match.date = 'year', return.ind=return.ind)
+        match.pos <- MatchDate(x, pattern = pattern, match.date = 'year')
       #  }else if (temp == 'bibtype'){
       #  if(length(pattern) > 1)
       #    stop('Search term for bibtype must be length one since each entry can have only one type')
       #  dots$x <- x[as.logical(mapply(function(x, table) match(tolower(attr(unclass(x)[[1]], 'bibtype')), 
       #                                            pattern, nomatch=FALSE ), x=x, table=pattern))]
       }else{
-        dots$x <- SearchField(x, field=temp, pattern=pattern, return.ind = return.ind)
+        browser()
+        match.pos <- SearchField(x, field=temp, pattern=pattern)
       }
       dots <- dots[-c(1, 2)]
     }    
@@ -161,9 +161,20 @@ SearchBib <- function(x, ..., match.date = 'yearonly', match.author='lastonly'){
     stop('Invalid argument')
   }
   
-  if (length(dots) > 2){ # perform recursion
-    dots$x <- do.call("[.BibEntry", dots) 
+  if(sum(match.pos)==0){
+    message('No matches')
+    return()
   }
   
-  return(dots$x)
+  if (length(dots) > 1){ # perform recursion
+    dots$x <- x[match.pos]
+    dots$x <- do.call("[.BibEntry", dots) 
+  }
+  if(return.ind){
+    return(match.pos)
+  }else{
+    class(dots$x) <- c('BibEntry', 'bibentry')
+    return(dots$x[match.pos])  
+  }
+  
 }

@@ -34,6 +34,7 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
 16. add ORCHID to person class
 17. update print function to include index in database
 18. vectorize fields in search function `all(pmatch(searchterm, fields))` perhaps?
+19. Convert to and from data.frame for use with plyr
 
 ### Less Important/Smaller
 * Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg  
@@ -52,6 +53,7 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 * efficient ways to update database with only recently added papers, mention in JSS manuscript
 * read all of R Journal paper on person and bibentry classes
 * OR in search function - split
+* discuss methods(class='bibentry') in JSS manuscript
 
 DONE     
 ==================================================================================================================
@@ -67,5 +69,8 @@ DONE
 * allow Extract function to take list argument
 * allow Extract function to take vector of keys
 * Exract works with entry types
+* `$<-` works to assign fields from _bibentry_ class
+* levels.BibEntry to access fields
+* added unlist and relist functions. relist use somewhat odd.
 
 ==================================================================================================================
