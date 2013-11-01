@@ -55,9 +55,13 @@ MatchDate <- function(x, pattern, match.date = 'yearonly'){
     return()
   }
   
-  x <- x[match.pos]
-  class(x) <- c('BibEntry', 'bibentry')
-  return(x)
+  if(return.ind){
+    x <- x[match.pos]
+    class(x) <- c('BibEntry', 'bibentry')
+    return(x)
+  }else{
+    return(which(match.pos))
+  }
 }
 
 # UTF-8 compatible
@@ -78,26 +82,32 @@ CompareEntries <- function(entry, searchterms, exact = FALSE, unicode=TRUE){
   return(all(match(x=searchterms, table=entry, nomatch=FALSE)))
 }
 
-SearchField <- function(x, field, pattern, ind = FALSE){
+# make UTF-8 compatible
+# does not work: setGeneric('search', signature=)
+SearchField <- function(x, field, pattern, return.ind = FALSE){
   # this code loses correct position of matches
   # match(unlist(eval(parse(text=paste0('x$', field)))), pattern, nomatch=FALSE)
   
-  match.pos <- sapply(eval(parse(text=paste0('x$', field))), CompareEntries, 
-                                                        searchterms=pattern, exact = FALSE, unicode=TRUE)
+  match.pos <- sapply(eval(parse(text=paste0('x$', field))), CompareEntries, searchterms=pattern, 
+                      return.ind=TRUE, exact = FALSE, unicode=TRUE)
   
-  if(ind){
+  if (return.ind){
     return(which(match.pos))
   }else{
     return(x[match.pos])
   }
 }
 
-# UTF-8 compatible
-#setGeneric('search')
-SearchBib
+SearchBib <- function(x, ..., match.date = 'yearonly', match.author='lastonly'){
+  fcall <- match.call()
+  fcall$return.ind=TRUE
+  fcall[[1L]] <- as.name('[.BibEntry')
+  return(eval(fcall))
+}
 
 # TO Do: x['keyval']
-`[.BibEntry` <- function(x, ..., match.date = 'yearonly', match.author='lastonly', drop=TRUE){
+`[.BibEntry` <- function(x, ..., match.date = 'yearonly', match.author='lastonly', return.ind=FALSE, drop=TRUE){
+ # browser()
   if(!length(x))
     return(x)
   # browser()
@@ -131,19 +141,19 @@ SearchBib
     if(length(dots)==1){ 
       dots$x <- eval(parse(text=paste0('x$', temp)))
     }else{
-      pattern <- tolower(dots[[2]])
+      pattern <- dots[[2]]
       
       if (temp=='author' || temp=='editor'){  # need special handling for a/e and y/d
-        dots$x <- MatchAuthor(x, field = temp, pattern = pattern, author.match = 'exact')
+        dots$x <- MatchAuthor(x, field = temp, pattern = pattern, author.match = 'exact', return.ind=return.ind)
       }else if (temp == 'year' || temp == 'date'){
-        dots$x <- MatchDate(x, pattern = pattern, match.date = 'year')
-      }else if (temp == 'bibtype'){
-        if(length(pattern) > 1)
-          stop('Search term for bibtype must be length one since each entry can have only one type')
-        dots$x <- x[as.logical(mapply(function(x, table) match(tolower(attr(unclass(x)[[1]], 'bibtype')), pattern, nomatch=FALSE ), 
-                         x=x, table=pattern))]
+        dots$x <- MatchDate(x, pattern = pattern, match.date = 'year', return.ind=return.ind)
+      #  }else if (temp == 'bibtype'){
+      #  if(length(pattern) > 1)
+      #    stop('Search term for bibtype must be length one since each entry can have only one type')
+      #  dots$x <- x[as.logical(mapply(function(x, table) match(tolower(attr(unclass(x)[[1]], 'bibtype')), 
+      #                                            pattern, nomatch=FALSE ), x=x, table=pattern))]
       }else{
-        dots$x <- SearchBib(x, temp, pattern)
+        dots$x <- SearchField(x, field=temp, pattern=pattern, return.ind = return.ind)
       }
       dots <- dots[-c(1, 2)]
     }    
