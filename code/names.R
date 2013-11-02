@@ -12,11 +12,10 @@ fields <- levels.BibEntry <- function(x){
 }
 
 UpdateFieldName <- function(x, old.field, new.field){
-  y <- as.relistable(x)
+  browser()
   x <- unlist(x)
   names(x)[names(x)==old.field] <- new.field
-  x <- relist(x, skeleton=y)
-  class(x) <- c('BibEntry', 'bibentry')
+  x <- relist.BibEntry(x)
   x
 }
 
@@ -27,20 +26,7 @@ unlist.BibEntry <- function(x, recursive = FALSE, use.names = TRUE){
     x
   })
   x <- unlist(x, FALSE)
-  class(x) <- c('BibEntry')
-  x
-}
-
-unlist.BibEntry <- function(x, recursive = FALSE, use.names = TRUE){
-  x <- lapply(unclass(x), function(x){
-    x$bibtype <- attr(x, 'bibtype')
-    x$key <- attr(x, 'key')
-    x
-  })
-  x <- unlist(x, FALSE)
-  # x <- as.relistable(x)
-  #attr(x, 'skeleton') <- skeleton
-  #class(x) <- c('character')
+  # class(x) <- c('character') specifying character breaks author
   x
 }
 

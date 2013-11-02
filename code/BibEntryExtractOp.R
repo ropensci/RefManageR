@@ -1,3 +1,5 @@
+library(lubridate)
+
 CompareDates <- function(bib.entry, date2, compare.op='==', match.date = 'yearonly'){
   date1 <- bib.entry$date
   if(is.null(date1))
@@ -11,7 +13,9 @@ CompareDates <- function(bib.entry, date2, compare.op='==', match.date = 'yearon
   return(do.call(compare.op, list(date1, date2)))
 }
 
-MatchDate <- function(x, pattern, match.date = 'yearonly'){
+MatchDate <- function(x, pattern){
+ # browser()
+  match.date <- 'yearonly'  # .BibOptions()$
   x <- unclass(x)
   if(length(grep('--', pattern))){  # range of dates specified, perform search twice
     pos <- regexpr('--', pattern)[1]
@@ -23,7 +27,7 @@ MatchDate <- function(x, pattern, match.date = 'yearonly'){
     if(match.date != 'exact')
       d2 <- year(d2)       
     
-    match.pos <- sapply(x, CompareDates, date2=d2, compare.op ='>=', match.date=match.date)
+    match.pos <- sapply(x, CompareDates, date2=d2, compare.op ='>=')
     if(sum(match.pos)==0){ # MatchDate returned false for all bib entries
       print('No matches')
       return()
@@ -49,13 +53,13 @@ MatchDate <- function(x, pattern, match.date = 'yearonly'){
   if(match.date != 'exact')
     d2 <- year(d2)  
   
-  match.pos <- sapply(x, CompareDates, date2=d2, compare.op =comp.op, match.date=match.date)
+  match.pos <- sapply(x, CompareDates, date2=d2, compare.op =comp.op)
   if(sum(match.pos)==0){
     print('No Matches')
     return()
   }
   
-  return(which(match.pos))
+  return(match.pos)
 }
 
 # UTF-8 compatible
@@ -85,18 +89,23 @@ SearchField <- function(x, field, pattern){
   match.pos <- sapply(eval(parse(text=paste0('x$', field))), CompareEntries, searchterms=pattern, 
                       exact = FALSE, unicode=TRUE)
   
-  return(which(match.pos))
+  return(match.pos)
 }
 
 SearchBib <- function(x, ..., match.date = 'yearonly', match.author='lastonly'){
+  
+  # opt.def <- BibOptions()
+  # BibOptions()$match.date <- match.date
+  # BibOptions()$match.author <- match.author
   fcall <- match.call()
   fcall$return.ind <- TRUE
   fcall[[1L]] <- as.name('[.BibEntry')
+  # BibOptions() <- opt.def
   return(eval(fcall))
 }
 
 # TO Do: x['keyval']
-`[.BibEntry` <- function(x, ..., match.date = 'yearonly', match.author='lastonly', return.ind=FALSE, drop=TRUE){
+`[.BibEntry` <- function(x, ..., return.ind=FALSE, drop=TRUE){
  # browser()
   if(!length(x))
     return(x)
@@ -115,9 +124,10 @@ SearchBib <- function(x, ..., match.date = 'yearonly', match.author='lastonly'){
       return(do.call('[.BibEntry', args))
     }else if (is.character(dot.arg)){  
       dot.arg <- tolower(dot.arg)
+     # browser()
       if (dot.arg %in% current.fields){
         res <- eval(parse(text=paste0('x$', dot.arg)))
-        names(res) <- 1:length(x)
+        names(res) <- names(x)
         return(unlist(res))
       }else{  # assumed to be keys
         return(x[[names(x) %in% dot.arg]])
@@ -129,34 +139,34 @@ SearchBib <- function(x, ..., match.date = 'yearonly', match.author='lastonly'){
   # dots$x <- NULL
   # browser()
   temp <- dots[[1]]
-  if (is.numeric(temp)){ # simple subset use bibentry's "["
-    print('WOW YOU FOUND ME!!!')
-    class(x) <- 'bibentry'
-    dots <- dots[-1]
-    dots$x <- x[temp]
-    class(dots$x) <- c('BibEntry', 'bibentry')
-  }else if (pmatch(temp <- tolower(temp), current.fields, nomatch=0)){
-    if(length(dots)==1){ 
-      print('WOW YOU FOUND THE OTHER ME!!!')
-      dots$x <- eval(parse(text=paste0('x$', temp)))
-    }else{
+#   if (is.numeric(temp)){ # simple subset use bibentry's "["
+#     print('WOW YOU FOUND ME!!!')
+#     class(x) <- 'bibentry'
+#     dots <- dots[-1]
+#     dots$x <- x[temp]
+#     class(dots$x) <- c('BibEntry', 'bibentry')
+#   }else 
+  if (pmatch(temp <- tolower(temp), current.fields, nomatch=0)){
+#     if(length(dots)==1){ 
+#       print('WOW YOU FOUND THE OTHER ME!!!')
+#       dots$x <- eval(parse(text=paste0('x$', temp)))
+#     }else{
       pattern <- dots[[2]]
       
       if (temp=='author' || temp=='editor'){  # need special handling for a/e and y/d
-        match.pos <- MatchAuthor(x, field = temp, pattern = pattern, author.match = 'exact')
+        match.pos <- MatchAuthor(x, field = temp, pattern = pattern)
       }else if (temp == 'year' || temp == 'date'){
-        match.pos <- MatchDate(x, pattern = pattern, match.date = 'year')
+        match.pos <- MatchDate(x, pattern = pattern)
       #  }else if (temp == 'bibtype'){
       #  if(length(pattern) > 1)
       #    stop('Search term for bibtype must be length one since each entry can have only one type')
       #  dots$x <- x[as.logical(mapply(function(x, table) match(tolower(attr(unclass(x)[[1]], 'bibtype')), 
       #                                            pattern, nomatch=FALSE ), x=x, table=pattern))]
       }else{
-        browser()
         match.pos <- SearchField(x, field=temp, pattern=pattern)
       }
       dots <- dots[-c(1, 2)]
-    }    
+#    }    
   }else{
     stop('Invalid argument')
   }
@@ -171,10 +181,11 @@ SearchBib <- function(x, ..., match.date = 'yearonly', match.author='lastonly'){
     dots$x <- do.call("[.BibEntry", dots) 
   }
   if(return.ind){
-    return(match.pos)
+    return(which(match.pos))
   }else{
-    class(dots$x) <- c('BibEntry', 'bibentry')
-    return(dots$x[match.pos])  
+    x <- x[match.pos]
+    class(x) <- c('BibEntry', 'bibentry')
+    return(x)  
   }
   
 }
