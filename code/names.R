@@ -1,5 +1,9 @@
 names.BibEntry <- function(x){
-  return(sapply(unclass(x), function(x) return(attr(x, 'key'))))
+  return(unlist(x$key))  # return(sapply(unclass(x), function(x) return(attr(x, 'key'))))
+}
+
+`names<-.BibEntry` <- function(x){
+  return(unlist(x$key))
 }
 
 #`names<-.BibEntry` <- function(x, value){
@@ -12,7 +16,7 @@ fields <- levels.BibEntry <- function(x){
 }
 
 UpdateFieldName <- function(x, old.field, new.field){
-  browser()
+ # browser()
   x <- unlist(x)
   names(x)[names(x)==old.field] <- new.field
   x <- relist.BibEntry(x)

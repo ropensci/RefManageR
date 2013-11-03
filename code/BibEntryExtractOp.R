@@ -1,6 +1,6 @@
 library(lubridate)
 
-CompareDates <- function(bib.entry, date2, compare.op='==', match.date = 'yearonly'){
+CompareDates <- function(bib.entry, date2, compare.op='==', match.date = 'year.only'){
   date1 <- bib.entry$date
   if(is.null(date1))
     return(FALSE)
@@ -60,6 +60,19 @@ MatchDate <- function(x, pattern){
   }
   
   return(match.pos)
+}
+
+CompareAuthors <- function(entry, searchterms, match.author='family.name', unicode=TRUE){
+  if(is.null(entry))
+    return(FALSE)
+  
+  if(match.author=='family.name'){
+    entry <- tolower(entry)
+    searchterms <- tolower(searchterms)
+  }
+  #fun <- ifelse(exact, 'match', 'pmatch')
+  
+  return(all(match(x=searchterms, table=entry, nomatch=FALSE)))
 }
 
 # UTF-8 compatible
