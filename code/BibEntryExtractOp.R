@@ -118,7 +118,7 @@ SearchBib <- function(x, ..., match.date = 'yearonly', match.author='lastonly'){
 }
 
 # TO Do: x['keyval']
-`[.BibEntry` <- function(x, ..., return.ind=FALSE, drop=TRUE){
+`[.BibEntry` <- function(x, ..., return.ind=.BibOptions$return.ind, drop=TRUE){
  # browser()
   if(!length(x))
     return(x)

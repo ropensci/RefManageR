@@ -2,8 +2,10 @@ names.BibEntry <- function(x){
   return(unlist(x$key))  # return(sapply(unclass(x), function(x) return(attr(x, 'key'))))
 }
 
-`names<-.BibEntry` <- function(x){
-  return(unlist(x$key))
+`names<-.BibEntry` <- function(x, value){
+  x <- unlist(x)
+  x[names(x)=='key'] <- value
+  return(relist.BibEntry(x))
 }
 
 #`names<-.BibEntry` <- function(x, value){

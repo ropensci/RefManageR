@@ -18,8 +18,7 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
                                      'match.date',   # criteria for matching dates. p.v.: exact, year only
                                      'match.field',  # criteria for matching all other fields: 
                                      'return.ind',  # T/F should search return index of matches or bibentry objects
-                                     'duplicate.check',  # how should duplicate entries be determined in `+` 
-                                                         # pv.: 'key', 'key.title', 'key.title.author', 'key.bibtype'
+                                     'duplicate.fields',  # vector of fields for determining duplicate entries  `+` 
                                      'bib.violation'   # how to handle violations when creating bibentries? 
                                                        # p.v.: 'drop', 'warn', 'to.misc'
                                      ), methods = list(
@@ -37,4 +36,4 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
             
 
 .BibOptions <- new('BibOptions', match.author='family.name', match.date='year.only', return.ind=FALSE, match.field='partial', 
-                   duplicate.check = 'key.only', biblatex=TRUE, bib.violation = 'error')
+                   duplicate.fields = 'key', bib.violation = 'error')
