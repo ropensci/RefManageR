@@ -9,7 +9,7 @@
 %\epstopdfsetup{outdir=images/}
 %\usepackage{verbatim} % reimplements verbatim, adds comment environment
 %\usepackage{rotating} % for rotation of floats
-%\usepackage{xcolor}      % colour extensions
+\usepackage{xcolor}      % colour extensions
 %\usepackage{etoolbox}   % used by other packages including html. loading before html to avoid warning
 %\usepackage{transparant} % for adding transperency to text. potential problems with packages that use \pdfpageresources
 %%#%%%%%%%%%%%!!!!!!!!!!!!!!!!!!!!!!!!%%%%%%%%%%%%%%%%\usepackage{pdfsync}  % never use this. really profanity's up spacing when used with some other packages such as lineno and multicol
@@ -19,7 +19,7 @@
 %Encoding
 \usepackage[english]{babel} % for multilingual support
 \usepackage[T1]{fontenc}    % font encoding
-\usepackage[utf8]{inputenc} % input encoding. some others complain of frequent conflicts. i have not had many issues
+\usepackage[ansinew]{inputenc} % input encoding. some others complain of frequent conflicts. i have not had many issues
 \usepackage{lmodern} % latin modern fonts
 \usepackage{microtype} % conserves space, and makes text prettier by making micro adjustments to text
 %\usepackage[condensed]{iwona}
@@ -115,53 +115,11 @@ The \code{person} and \code{bibentry} classes available in the base-priority \pk
 
 The amount of extra features offered by \Biblatex{} and \biber{} compared to \natbib{} and \Bibtex{} is staggering; the user manual for \Biblatex{} is 253 pages while the one for \natbib{} is 26.  \Biblatex{} expands the number of automatically recognized entry types and fields offered by \Bibtex{} considerably while maintaining compatibility with \Bibtex{}.  For one example, there is greatly expanded support for electronic publications with fields for eprint, eprinttype, eprintclass, urldate, and pubstate.  For example, the below entry is used to shamelessly cite a submitted manuscript of the first author's available on \texttt{arXiv}. 
 
-<<setup, cache=TRUE, include=FALSE>>=
-## opts_knit$set(self.contained = TRUE,
-##              root.dir = '~/biblatex/code')
-opts_chunk$set(concordance = TRUE)
-setwd('~/biblatex/code/RefManageR/R')
-library(ggplot2)
-lapply(list.files(pattern='*.R'), source)
-setwd('~/biblatex/code/')
-opts_knit$set(out.format = "latex")
-knit_theme$set('fine_blue')
-@
 
- %<<bibexample, cache=FALSE, eval=FALSE, results='markup', tidy=FALSE>>=
- \begin{verbatim}
- @misc{mclean2013bayesian,
-   author = {McLean, M. W. and Scheipl, F. and Hooker, G.
-                 and Greven, S. and Ruppert, D.},
-   title = {Bayesian Functional Generalized Additive Models 
-                 with Sparsely Observed Covariates},
-   urldate = {2013-10-06},
-   date = {2013},
-   eprinttype = {arxiv},
-   eprintclass = {stat.ME},
-   eprint = {1305.3585}
- }
- \end{verbatim}
 
-Notice that in the reference section the full url is not given, but the hyper-reference still works.  You may also notice that the 'year' field is missing, and that there is instead a field 'date'.  The 'year' field is still supported and could have been specified instead of date, but date allows for specifying a month and day in addition to year.
 
-One of the biggest advantages of \Biblatex{} over \Bibtex{}, is that it does use \bst{} files for styling the bibliography. A \bst{} file must be written in a special-purpose language that few are familiar with; an example may be viewed in \proglang{R} by entering \code{as.list(tools:::makeJSS())} at the console.  On the other hand \Biblatex{} bibliographies, are styled entirely using \TeX{} macros.  Multilanguage support.  Better support for crossreferences.  No memory issues for large databases like with \Bibtex{}.  Sorting and encoding issues (discussed in biblatex doc section 2.4.3). Mention eTeX and url handling
 
-Another advantage of \Biblatex{} is its support for UTF-8 encoding. ``bibtex is an 8bit engine so it processes every file in 8-bit pieces. In utf8 non-ascii chars are longer than 8 bit so they are splitted by bibtex. This means that bibtex has problems to sort references with non-ascii chars correctly. It can also happen that bibtex inserts a line break in the middle of an utf8-char and then you will get errors.''  A list of the supported encodings on your system can be viewed in \proglang{R} using \code{iconvlist()}.  By default, ReadBib will read in a .bib file using UTF-8.  UTF-8 is  
 
-<<mylabel, cache=TRUE, fig.width='300px'>>=
-set.seed(123)
- x = runif(10)
-sd(x)  # standard deviation
-qplot(mpg, wt, data=mtcars)
-@
 
-\section{Zotero}
-\code{Zotero} is free, open source software for collecting and sharing bibliographic information.  \code{Zotero} can automatically retrieve bibliographic metadata that has been embedded in webpages using \code{ContextObjects in Spans} (\code{COinS}), and is thus a very convenient way to collect bibliographic information when browsing, for example, journal websites.  The \ourpkg{} package contains functions for querying existing \code{Zotero} libraries and converting the results to a BibEntry object and also for uploaded an existing BibEntry object to a Zotero library.  To use the Zotero API, a Zotero account, their userID and an API key for the library one wishes to access.  The userID and API key for personal libraries may be found by logging in and visiting the page \url{https://www.zotero.org/settings/keys}.  The following example, the following call to ReadZotero returns the first two entries in the library specified by the \code{``key''} that contain the word ``Bayesian'' in the title.
-<<ReadZotero, cache=TRUE, dependson='setup', tidy=FALSE, highlight=TRUE, echo=-1>>=
-knit_theme$set('fine_blue')
-ReadZotero(user = '1648676', .params = list(q='bayesian', 
-                               key = '7lhgvcwVq60CDi7E68FyE3br', limit=2))
-@
 
-\bibliography{biblatex}
-\end{document}
+

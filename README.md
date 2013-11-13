@@ -7,6 +7,8 @@ To Do:
 ==================================================================================================================
 Important
 -------------------
+23. create bibstyle for biblatex
+25. dig around in `utils:::citeNatbib`
 1. new open function; convert all other RefManager.R functions to work with bibentry class
 2. read pdf's using pdftotext.exe; use list.files to add folder to database
 * read bibliographies from pdftotext
@@ -26,14 +28,21 @@ Important
 [S/O thread explaining how to do this](http://tex.stackexchange.com/questions/114787/converting-from-biblatex-to-bibtex-format-using-biber)  
 have check=FALSE argument in print.BibEntry if user does not want to check proper format when printing biblatex or bibtex  
 have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if user does not want converted BibEntry object returned
-11. fix print to handle date field and 
+11. fix print to handle date field and _requires adding a bibstyle_
 12. implement a useful summary function
 13. let users set "[.BibEntry" and "+.BibEntry" defaults using getOptions() or BibEntryOptions() accessors and mutators
 14. Use everything here: http://ropensci.org/packages/
-15. add ORCHID to person class
+1. add ORCHID to person class
 16. update print function to include index in database
 17. vectorize fields in search function `all(pmatch(searchterm, fields))` perhaps?
-18. Convert to and from data.frame for use with plyr
+67. Convert to and from data.frame for use with plyr
+10000221. add 'html' and 'html5' option to print function
+  * Check out [R2HTML](http://cran.r-project.org/web/packages/R2HTML/R2HTML.pdf)
+  * consider  option for html or html5 (if html5 use outline+summary to separate years)
+  * option for numbering ( < ul > or < ol > )
+  * option for download pdf or display url
+  * option link.text='Download'
+  * handle eprints
 
 ### Less Important/Smaller
 * Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg  
@@ -54,6 +63,8 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 * OR in search function - split
 * discuss methods(class='bibentry') in JSS manuscript
 * Review CrossRef [work on GitHub](https://github.com/gavinsimpson/orcid/blob/master/R/crossrefDOI.R)
+* add saved search parameter to ReadZotero function
+* summary function
 
 DONE     
 ==================================================================================================================
