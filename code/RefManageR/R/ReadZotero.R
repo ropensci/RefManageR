@@ -13,7 +13,7 @@
 # .opts explained: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
 
 ReadZotero <- function(user, .params, file = 'tempbib.bib', curl = getCurlHandler()){
-  bad.ind <- which(!names(.params) %in% c('q', 'itemType', 'tag', 'collection', 'key', 'limit', 'start'))
+  bad.ind <- which(!names(.params) %in% c('q', 'itemType', 'tag', 'collection', 'key', 'limit', 'start', 'qmode'))
   .parms <- .params
   if(length(bad.ind)){
     warning('Invalid .params specified and will be ignored')

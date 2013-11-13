@@ -14,3 +14,4 @@ framed.sty
 *.run.xml
 *\-concordance.tex
 *.blg
+pkg/

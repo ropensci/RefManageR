@@ -7,9 +7,9 @@
 # e.g.
 # setRefClass('myRef', fields='myBool', methods=list(changeTemp = function(x, val, env=parent.frame()){
 #  if(myBool){assign(deparse(substitute(x)), val, env)}}))
-# poop <- new('myRef', myBool=TRUE)
+# test <- new('myRef', myBool=TRUE)
 # temp <- 2
-# poop$changeTemp(temp, 3)
+# test$changeTemp(temp, 3)
 ###############################
 
 library(methods)
