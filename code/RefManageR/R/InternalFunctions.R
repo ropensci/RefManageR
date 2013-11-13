@@ -233,3 +233,90 @@ bibentry_list_attribute_names <- c("mheader", "mfooter")
   keys[!vapply(keys, length, 0L)] <- ""
   unlist(keys)
 }
+
+ParseGSCites <- function(l, encoding, bib.violation=.BibOptions$bib.violation) {
+  td <- l[[1]]
+  title <- xmlValue(td[[1]], encoding)
+  author <- xmlValue(td[[3]], encoding)
+  cited_by <- as.numeric(xmlValue(l[[2]][[1]], encoding))
+  year <- as.numeric(xmlValue(l[[4]], encoding))
+  src <- xmlValue(td[[5]])
+  first_digit <- as.numeric(regexpr("[\\[\\(]?\\d", 
+                                    src)) - 1
+  ids <- which(first_digit < 0)
+  first_digit <- replace(first_digit, ids, str_length(src)[ids])
+  journal <- str_trim(str_sub(src, 1, first_digit))
+  trailing_commas <- as.numeric(regexpr(",$", journals)) - 
+    1
+  ids <- which(trailing_commas < 0)
+  trailing_commas <- replace(trailing_commas, ids, 
+                             str_length(journals)[ids])
+  journal <- str_sub(journal, 1, trailing_commas)
+  numbers <- str_trim(str_sub(src, first_digit + 1, 
+                              str_length(src)))
+  
+  # handle '...' in title, journal, or authors
+  if (any(is.null(title <- CheckGSDots(title, title)), 
+          is.null(author <- CheckGSDots(author, title)),
+          is.null(journal <- CheckGSDots(journal, title))))
+    return()
+  
+  res <- list(title = title, author = author, 
+              journal = journal, number = numbers, cites = cited_by, 
+              year = year)
+  if(res$number==''){  # assume book entry if no number
+    attr(res, 'entry') <- 'book'
+    res$number <- NULL
+    res$publisher <- res$journal
+    res$journal <- NULL
+  }else{
+    attr(res, 'entry') <- 'article'
+    numbers <- ProcessGSNumbers(res$number)
+    
+  }
+  
+  aut <- tolower(strsplit(res$author, ' ')[[1]][2])  # get last name of first author
+  aut <- gsub(',', '', aut)  # remove trailing commas
+  first.word <- tolower(strsplit(temp[1], ' ')[[1]][[1]])  # get first word of title
+  attr(res, 'key') <- paste0(aut, res$year, first.word)
+  
+  res$author <- ProcessGSAuthors(res$author)  # format authors for MakeBibEntry
+  
+  # process numbers
+  
+  
+  return(res)
+}
+
+ProcessGSAuthors <- function(authors){
+  authors <- gsub(',', ', and', authors)  # add "and" to separate authors
+  authors <- gsub('([A-Z])([A-Z])', '\\1 \\2', authors)  # add space between given name initials
+  
+  return(authors)
+}
+
+ProcessGSNumbers <- function(numbers){
+  m <- regexpr('([0-9]+)', numbers)
+  if(m != -1)
+    volume <- regmatches(numbers, m)
+
+  m <- regexpr('[(]([0-9]+)[)]', numbers)
+  number <- regmatches()
+  
+  return(list(pages = pages, number = number, volume = volume))
+}
+
+CheckGSDots <- function(x, title){
+  tx <- gsub(' [.]{3,}$', '', x)
+  if(tx != x){
+    entry <- deparse(substitute(x))
+    if(.BibOptions$bib.violation == 'error'){
+      message(paste0('Incomplete ', entry, ' information for entry \"', title, '\" adding anyway'))
+    }else{
+      message(paste0('Incomplete ', entry, ' information for entry \"', title, '\" it will NOT be added'))
+      return()
+    }
+  }else{
+    return(tx)
+  }
+}

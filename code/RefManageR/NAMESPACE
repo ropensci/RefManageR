@@ -4,4 +4,4 @@ exportClasses(
 )
 
 importFrom(lubridate, year)
-importFrom(
+importFrom(stringr, fixed, str_replace_all)
