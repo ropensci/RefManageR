@@ -246,20 +246,19 @@ ParseGSCites <- function(l, encoding, bib.violation=.BibOptions$bib.violation) {
   ids <- which(first_digit < 0)
   first_digit <- replace(first_digit, ids, str_length(src)[ids])
   journal <- str_trim(str_sub(src, 1, first_digit))
-  trailing_commas <- as.numeric(regexpr(",$", journals)) - 
-    1
+  trailing_commas <- as.numeric(regexpr(",$", journal)) - 1
   ids <- which(trailing_commas < 0)
   trailing_commas <- replace(trailing_commas, ids, 
-                             str_length(journals)[ids])
+                             str_length(journal)[ids])
   journal <- str_sub(journal, 1, trailing_commas)
   numbers <- str_trim(str_sub(src, first_digit + 1, 
                               str_length(src)))
   
   # handle '...' in title, journal, or authors
-  if (any(is.null(title <- CheckGSDots(title, title)), 
-          is.null(author <- CheckGSDots(author, title)),
-          is.null(journal <- CheckGSDots(journal, title))))
-    return()
+  if (is.null(title <- CheckGSDots(title, title)) || 
+          is.null(author <- CheckGSDots(author, title)) ||
+          is.null(journal <- CheckGSDots(journal, title)))
+    return(NA)
   
   res <- list(title = title, author = author, 
               journal = journal, number = numbers, cites = cited_by, 
@@ -272,18 +271,18 @@ ParseGSCites <- function(l, encoding, bib.violation=.BibOptions$bib.violation) {
   }else{
     attr(res, 'entry') <- 'article'
     numbers <- ProcessGSNumbers(res$number)
-    
+    res$number <- numbers$number
+    res$pages <- numbers$pages
+    res$volume <- numbers$volume
   }
   
+  # create key
   aut <- tolower(strsplit(res$author, ' ')[[1]][2])  # get last name of first author
   aut <- gsub(',', '', aut)  # remove trailing commas
-  first.word <- tolower(strsplit(temp[1], ' ')[[1]][[1]])  # get first word of title
+  first.word <- tolower(strsplit(res$title, ' ')[[1]][[1]])  # get first word of title
   attr(res, 'key') <- paste0(aut, res$year, first.word)
   
   res$author <- ProcessGSAuthors(res$author)  # format authors for MakeBibEntry
-  
-  # process numbers
-  
   
   return(res)
 }
@@ -292,16 +291,27 @@ ProcessGSAuthors <- function(authors){
   authors <- gsub(',', ', and', authors)  # add "and" to separate authors
   authors <- gsub('([A-Z])([A-Z])', '\\1 \\2', authors)  # add space between given name initials
   
-  return(authors)
+  return(as.personList(authors))
 }
 
 ProcessGSNumbers <- function(numbers){
+  pages <- volume <- number <- NULL
+  
   m <- regexpr('([0-9]+)', numbers)
   if(m != -1)
     volume <- regmatches(numbers, m)
 
   m <- regexpr('[(]([0-9]+)[)]', numbers)
-  number <- regmatches()
+  if(m != -1){
+    number <- regmatches(numbers, m)
+    number <- substr(number, 2, nchar(number)-1)  # remove ( )
+  }
+  
+  m <- regexpr('[0-9]+[\\-][0-9]+', numbers)
+  if(m != -1){
+    pages <- regmatches(numbers, m)
+    pages <- gsub('-', '--', pages)  # '-' --> '--'
+  }
   
   return(list(pages = pages, number = number, volume = volume))
 }
@@ -310,8 +320,9 @@ CheckGSDots <- function(x, title){
   tx <- gsub(' [.]{3,}$', '', x)
   if(tx != x){
     entry <- deparse(substitute(x))
-    if(.BibOptions$bib.violation == 'error'){
+    if(.BibOptions$bib.violation != 'error'){
       message(paste0('Incomplete ', entry, ' information for entry \"', title, '\" adding anyway'))
+      return(tx)
     }else{
       message(paste0('Incomplete ', entry, ' information for entry \"', title, '\" it will NOT be added'))
       return()
@@ -319,4 +330,33 @@ CheckGSDots <- function(x, title){
   }else{
     return(tx)
   }
+}
+
+MakeBibEntry <- function (x, GS = FALSE) {
+  type <- attr(x, "entry")
+  key <- attr(x, "key")
+  y <- as.list(x)
+  names(y) <- tolower(names(y))
+  if ("author" %in% names(y) && !GS) {
+    y[["author"]] <- ArrangeAuthors(y[["author"]])
+  }
+  if ("editor" %in% names(y)  && !GS) {
+    y[["editor"]] <- ArrangeAuthors(y[["editor"]])
+  }
+  
+  if("date" %in% names(y)){
+    y[['date']] <- as.Date(switch(as.character(nchar(y[['date']])),
+                                  '4' = paste0(y[['date']], '-01-01'),    # needed to get around R assigning current day and month when unspecified
+                                  '7' = paste0(y[['date']], '-01'),  # %Y-%d which doesn't work with strptime
+                                  y[['date']]))
+  }else if ("year" %in% names(y)){
+    y[["date"]] <- as.Date(paste0(y[["year"]], '-01-01'))
+  }
+  
+  tryCatch(BibEntry(bibtype = type, key = key, other = y), 
+           error = function(e) {
+             message(sprintf("ignoring entry '%s' (line %d) because :\n\t%s\n", 
+                             key, attr(x, "srcref")[1], conditionMessage(e)))
+             NULL
+           })
 }

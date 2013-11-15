@@ -25,4 +25,4 @@
 data(bibentry_list_attribute_names)
 ## maybe str(bibentry_list_attribute_names) ; plot(bibentry_list_attribute_names) ...
 }
-\keyword{datasets}
+\keyword{internal}

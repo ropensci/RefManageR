@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Do more with dates and times in R with lubridate 1.3.0</title>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Lubridate}
+-->
+
+<h1>Do more with dates and times in R with lubridate 1.3.0</h1>
+
+<p><em>note: This vignette is an updated version of the blog post first published at <a href="http://www.r-statistics.com/2012/03/do-more-with-dates-and-times-in-r-with-lubridate-1-1-0/">r-statistics</a></em></p>
+
+<p>Lubridate is an R package that makes it easier to work with dates and times. Below is a concise tour of some of the things lubridate can do for you. </p>
+
+<p>Lubridate was created by Garrett Grolemund and Hadley Wickham.</p>
+
+<h2>Parsing dates and times</h2>
+
+<p>Getting R to agree that your data contains the dates and times you think it does can be tricky. Lubridate simplifies that. Identify the order in which the year, month, and day appears in your dates. Now arrange &ldquo;y&rdquo;, &ldquo;m&rdquo;, and &ldquo;d&rdquo; in the same order. This is the name of the function in lubridate that will parse your dates. For example,</p>
+
+<pre><code class="r">library(lubridate)
+ymd(&quot;20110604&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;2011-06-04 UTC&quot;
+</code></pre>
+
+<pre><code class="r">mdy(&quot;06-04-2011&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;2011-06-04 UTC&quot;
+</code></pre>
+
+<pre><code class="r">dmy(&quot;04/06/2011&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;2011-06-04 UTC&quot;
+</code></pre>
+
+<p>Lubridate&#39;s parse functions handle a wide variety of formats and separators, which simplifies the parsing process.</p>
+
+<p>If your date includes time information, add h, m, and/or s to the name of the function. <code>ymd_hms</code> is probably the most common date time format. To read the dates in with a certain time zone, supply the official name of that time zone in the <code>tz</code> argument.</p>
+
+<pre><code class="r">arrive &lt;- ymd_hms(&quot;2011-06-04 12:00:00&quot;, tz = &quot;Pacific/Auckland&quot;)
+arrive
+</code></pre>
+
+<pre><code>## [1] &quot;2011-06-04 12:00:00 NZST&quot;
+</code></pre>
+
+<pre><code class="r">leave &lt;- ymd_hms(&quot;2011-08-10 14:00:00&quot;, tz = &quot;Pacific/Auckland&quot;)
+leave
+</code></pre>
+
+<pre><code>## [1] &quot;2011-08-10 14:00:00 NZST&quot;
+</code></pre>
+
+<h2>Setting and Extracting information</h2>
+
+<p>Extract information from date times with the functions <code>second</code>, <code>minute</code>, <code>hour</code>, <code>day</code>, <code>wday</code>, <code>yday</code>, <code>week</code>, <code>month</code>, <code>year</code>, and <code>tz</code>. You can also use each of these to set (i.e, change) the given information. Notice that this will alter the date time. <code>wday</code> and <code>month</code> have an optional <code>label</code> argument, which replaces their numeric output with the name of the weekday or month.</p>
+
+<pre><code class="r">second(arrive)
+</code></pre>
+
+<pre><code>## [1] 0
+</code></pre>
+
+<pre><code class="r">second(arrive) &lt;- 25
+arrive
+</code></pre>
+
+<pre><code>## [1] &quot;2011-06-04 12:00:25 NZST&quot;
+</code></pre>
+
+<pre><code class="r">second(arrive) &lt;- 0
+
+wday(arrive)
+</code></pre>
+
+<pre><code>## [1] 7
+</code></pre>
+
+<pre><code class="r">wday(arrive, label = TRUE)
+</code></pre>
+
+<pre><code>## [1] Sat
+## Levels: Sun &lt; Mon &lt; Tues &lt; Wed &lt; Thurs &lt; Fri &lt; Sat
+</code></pre>
+
+<h2>Time Zones</h2>
+
+<p>There are two very useful things to do with dates and time zones. First, display the same moment in a different time zone. Second, create a new moment by combining an existing clock time with a new time zone. These are accomplished by <code>with_tz</code> and <code>force_tz</code>.</p>
+
+<p>For example, a while ago I was in Auckland, New Zealand. I arranged to meet the co-author of lubridate, Hadley, over skype at 9:00 in the morning Auckland time. What time was that for Hadley who was back in Houston, TX?</p>
+
+<pre><code class="r">meeting &lt;- ymd_hms(&quot;2011-07-01 09:00:00&quot;, tz = &quot;Pacific/Auckland&quot;)
+with_tz(meeting, &quot;America/Chicago&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;2011-06-30 16:00:00 CDT&quot;
+</code></pre>
+
+<p>So the meetings occurred at 4:00 Hadley&#39;s time (and the day before no less). Of course, this was the same actual moment of time as 9:00 in New Zealand. It just appears to be a different day due to the curvature of the Earth.</p>
+
+<p>What if Hadley made a mistake and signed on at 9:00 his time? What time would it then be my time?</p>
+
+<pre><code class="r">mistake &lt;- force_tz(meeting, &quot;America/Chicago&quot;)
+with_tz(mistake, &quot;Pacific/Auckland&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;2011-07-02 02:00:00 NZST&quot;
+</code></pre>
+
+<p>His call would arrive at 2:00 am my time! Luckily he never did that.</p>
+
+<h2>Time Intervals</h2>
+
+<p>You can save an interval of time as an Interval class object with lubridate. This is quite useful! For example, my stay in Auckland lasted from June 4, 2011 to August 10, 2011 (which we&#39;ve already saved as arrive and leave). We can create this interval in one of two ways:</p>
+
+<pre><code class="r">auckland &lt;- interval(arrive, leave)
+auckland
+</code></pre>
+
+<pre><code>## [1] 2011-06-04 12:00:00 NZST--2011-08-10 14:00:00 NZST
+</code></pre>
+
+<pre><code class="r">auckland &lt;- arrive %--% leave
+auckland
+</code></pre>
+
+<pre><code>## [1] 2011-06-04 12:00:00 NZST--2011-08-10 14:00:00 NZST
+</code></pre>
+
+<p>My mentor at the University of Auckland, Chris, traveled to various conferences that year including the Joint Statistical Meetings (JSM). This took him out of the country from July 20 until the end of August.</p>
+
+<pre><code class="r">jsm &lt;- interval(ymd(20110720, tz = &quot;Pacific/Auckland&quot;), ymd(20110831, tz = &quot;Pacific/Auckland&quot;))
+jsm
+</code></pre>
+
+<pre><code>## [1] 2011-07-20 NZST--2011-08-31 NZST
+</code></pre>
+
+<p>Will my visit overlap with and his travels? Yes.</p>
+
+<p>&ldquo;{r]
+int_overlaps(jsm, auckland)</p>
+
+<pre><code>
+Then I better make hay while the sun shines! For what part of my visit will Chris be there?
+
+
+```r
+setdiff(auckland, jsm)
+</code></pre>
+
+<pre><code>## [1] 2011-06-04 12:00:00 NZST--2011-07-20 NZST
+</code></pre>
+
+<p>Other functions that work with intervals include <code>int_start</code>, <code>int_end</code>, <code>int_flip</code>, <code>int_shift</code>, <code>int_aligns</code>, <code>union</code>, <code>intersect</code>, <code>setdiff</code>, and <code>%within%</code>.</p>
+
+<h2>Arithmetic with date times</h2>
+
+<p>Intervals are specific time spans (because they are tied to specific dates), but lubridate also supplies two general time span classes: Durations and Periods. Helper functions for creating periods are named after the units of time (plural). Helper functions for creating durations follow the same format but begin with a &quot;d&rdquo; (for duration) or, if you prefer, and &ldquo;e&rdquo; (for exact).</p>
+
+<pre><code class="r">minutes(2)  ## period
+</code></pre>
+
+<pre><code>## [1] &quot;2M 0S&quot;
+</code></pre>
+
+<pre><code class="r">dminutes(2)  ## duration
+</code></pre>
+
+<pre><code>## [1] &quot;120s (~2 minutes)&quot;
+</code></pre>
+
+<p>Why two classes? Because the timeline is not as reliable as the number line. The Duration class will always supply mathematically precise results. A duration year will always equal 365 days. Periods, on the other hand, fluctuate the same way the timeline does to give intuitive results. This makes them useful for modeling clock times. For example, durations will be honest in the face of a leap year, but periods may return what you want:</p>
+
+<pre><code class="r">leap_year(2011)  ## regular year
+</code></pre>
+
+<pre><code>## [1] FALSE
+</code></pre>
+
+<pre><code class="r">ymd(20110101) + dyears(1)
+</code></pre>
+
+<pre><code>## [1] &quot;2012-01-01 UTC&quot;
+</code></pre>
+
+<pre><code class="r">ymd(20110101) + years(1)
+</code></pre>
+
+<pre><code>## [1] &quot;2012-01-01 UTC&quot;
+</code></pre>
+
+<pre><code class="r">
+leap_year(2012)  ## leap year
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r">ymd(20120101) + dyears(1)
+</code></pre>
+
+<pre><code>## [1] &quot;2012-12-31 UTC&quot;
+</code></pre>
+
+<pre><code class="r">ymd(20120101) + years(1)
+</code></pre>
+
+<pre><code>## [1] &quot;2013-01-01 UTC&quot;
+</code></pre>
+
+<p>You can use periods and durations to do basic arithmetic with date times. For example, if I wanted to set up a reoccuring weekly skype meeting with Hadley, it would occur on:</p>
+
+<pre><code class="r">meetings &lt;- meeting + weeks(0:5)
+</code></pre>
+
+<p>Hadley travelled to conferences at the same time as Chris. Which of these meetings would be affected? The last two.</p>
+
+<pre><code class="r">meetings %within% jsm
+</code></pre>
+
+<pre><code>## [1] FALSE FALSE FALSE  TRUE  TRUE  TRUE
+</code></pre>
+
+<p>How long was my stay in Auckland?</p>
+
+<pre><code class="r">auckland/edays(1)
+</code></pre>
+
+<pre><code>## [1] 67.08
+</code></pre>
+
+<pre><code class="r">auckland/edays(2)
+</code></pre>
+
+<pre><code>## [1] 33.54
+</code></pre>
+
+<pre><code class="r">auckland/eminutes(1)
+</code></pre>
+
+<pre><code>## [1] 96600
+</code></pre>
+
+<p>And so on. Alternatively, we can do modulo and integer division. Sometimes this is more sensible than division - it is not obvious how to express a remainder as a fraction of a month because the length of a month constantly changes.</p>
+
+<pre><code class="r">auckland%/%months(1)
+</code></pre>
+
+<pre><code>## [1] 2
+</code></pre>
+
+<pre><code class="r">auckland%%months(1)
+</code></pre>
+
+<pre><code>## [1] 2011-08-04 12:00:00 NZST--2011-08-10 14:00:00 NZST
+</code></pre>
+
+<p>Modulo with an timespan returns the remainder as a new (smaller) interval. You can turn this or any interval into a generalized time span with <code>as.period</code>.</p>
+
+<pre><code class="r">as.period(auckland%%months(1))
+</code></pre>
+
+<pre><code>## [1] &quot;6d 2H 0M 0S&quot;
+</code></pre>
+
+<pre><code class="r">as.period(auckland)
+</code></pre>
+
+<pre><code>## [1] &quot;2m 6d 2H 0M 0S&quot;
+</code></pre>
+
+<h3>If anyone drove a time machine, they would crash</h3>
+
+<p>The length of months and years change so often that doing arithmetic with them can be unintuitive. Consider a simple operation, <code>January 31st + one month</code>. Should the answer be </p>
+
+<ol>
+<li><code>February 31st</code> (which doesn&#39;t exist)</li>
+<li><code>March 4th</code> (31 days after January 31), or</li>
+<li><code>February 28th</code> (assuming its not a leap year)</li>
+</ol>
+
+<p>A basic property of arithmetic is that <code>a + b - b = a</code>. Only solution 1 obeys this property, but it is an invalid date. I&#39;ve tried to make lubridate as consistent as possible by invoking the following rule <em>if adding or subtracting a month or a year creates an invalid date, lubridate will return an NA</em>. This is new with version 1.3.0, so if you&#39;re an old hand with lubridate be sure to remember this!</p>
+
+<p>If you thought solution 2 or 3 was more useful, no problem. You can still get those results with clever arithmetic, or by using the special <code>%m+%</code> and <code>%m-%</code> operators. <code>%m+%</code> and <code>%m-%</code> automatically roll dates back to the last day of the month, should that be necessary.</p>
+
+<pre><code class="r">jan31 &lt;- ymd(&quot;2013-01-31&quot;)
+jan31 + months(0:11)
+</code></pre>
+
+<pre><code>##  [1] &quot;2013-01-31 UTC&quot; NA               &quot;2013-03-31 UTC&quot; NA              
+##  [5] &quot;2013-05-31 UTC&quot; NA               &quot;2013-07-31 UTC&quot; &quot;2013-08-31 UTC&quot;
+##  [9] NA               &quot;2013-10-31 UTC&quot; NA               &quot;2013-12-31 UTC&quot;
+</code></pre>
+
+<pre><code class="r">floor_date(jan31, &quot;month&quot;) + months(0:11) + days(31)
+</code></pre>
+
+<pre><code>##  [1] &quot;2013-02-01 UTC&quot; &quot;2013-03-04 UTC&quot; &quot;2013-04-01 UTC&quot; &quot;2013-05-02 UTC&quot;
+##  [5] &quot;2013-06-01 UTC&quot; &quot;2013-07-02 UTC&quot; &quot;2013-08-01 UTC&quot; &quot;2013-09-01 UTC&quot;
+##  [9] &quot;2013-10-02 UTC&quot; &quot;2013-11-01 UTC&quot; &quot;2013-12-02 UTC&quot; &quot;2014-01-01 UTC&quot;
+</code></pre>
+
+<pre><code class="r">jan31 %m+% months(0:11)
+</code></pre>
+
+<pre><code>##  [1] &quot;2013-01-31 UTC&quot; &quot;2013-02-28 UTC&quot; &quot;2013-03-31 UTC&quot; &quot;2013-04-30 UTC&quot;
+##  [5] &quot;2013-05-31 UTC&quot; &quot;2013-06-30 UTC&quot; &quot;2013-07-31 UTC&quot; &quot;2013-08-31 UTC&quot;
+##  [9] &quot;2013-09-30 UTC&quot; &quot;2013-10-31 UTC&quot; &quot;2013-11-30 UTC&quot; &quot;2013-12-31 UTC&quot;
+</code></pre>
+
+<p>Notice that this will only affect arithmetic with months (and arithmetic with years if your start date it Feb 29).</p>
+
+<h2>Vectorization</h2>
+
+<p>The code in lubridate is vectorized and ready to be used in both interactive settings and within functions. As an example, I offer a function for advancing a date to the last day of the month</p>
+
+<pre><code class="r">last_day &lt;- function(date) {
+    ceiling_date(date, &quot;month&quot;) - days(1)
+}
+</code></pre>
+
+<h2>Further Resources</h2>
+
+<p>To learn more about lubridate, including the specifics of periods and durations, please read the <a href="http://www.jstatsoft.org/v40/i03/">original lubridate paper</a>. Questions about lubridate can be addressed to the lubridate google group. Bugs and feature requests should be submitted to the <a href="http://github.com/hadley/lubridate">lubridate development page</a> on github.</p>
+
+</body>
+
+</html>

@@ -115,15 +115,15 @@ The \code{person} and \code{bibentry} classes available in the base-priority \pk
 
 The amount of extra features offered by \Biblatex{} and \biber{} compared to \natbib{} and \Bibtex{} is staggering; the user manual for \Biblatex{} is 253 pages while the one for \natbib{} is 26.  \Biblatex{} expands the number of automatically recognized entry types and fields offered by \Bibtex{} considerably while maintaining compatibility with \Bibtex{}.  For one example, there is greatly expanded support for electronic publications with fields for eprint, eprinttype, eprintclass, urldate, and pubstate.  For example, the below entry is used to shamelessly cite a submitted manuscript of the first author's available on \texttt{arXiv}. 
 
-<<setup, cache=TRUE, include=FALSE>>=
+<<setup, cache=FALSE, include=FALSE>>=
 ## opts_knit$set(self.contained = TRUE,
 ##              root.dir = '~/biblatex/code')
-opts_chunk$set(concordance = TRUE)
+## opts_chunk$set(concordance = TRUE)
 setwd('~/biblatex/code/RefManageR/R')
-library(ggplot2)
-lapply(list.files(pattern='*.R'), source)
+lapply(list.files(pattern='*.R', full=TRUE), source, echo = FALSE, verbose = FALSE)
 setwd('~/biblatex/code/')
 opts_knit$set(out.format = "latex")
+ opts_chunk$set(cache=TRUE, autodep=TRUE)
 knit_theme$set('fine_blue')
 @
 
@@ -148,20 +148,63 @@ One of the biggest advantages of \Biblatex{} over \Bibtex{}, is that it does use
 
 Another advantage of \Biblatex{} is its support for UTF-8 encoding. ``bibtex is an 8bit engine so it processes every file in 8-bit pieces. In utf8 non-ascii chars are longer than 8 bit so they are splitted by bibtex. This means that bibtex has problems to sort references with non-ascii chars correctly. It can also happen that bibtex inserts a line break in the middle of an utf8-char and then you will get errors.''  A list of the supported encodings on your system can be viewed in \proglang{R} using \code{iconvlist()}.  By default, ReadBib will read in a .bib file using UTF-8.  UTF-8 is  
 
-<<mylabel, cache=TRUE, fig.width='300px'>>=
-set.seed(123)
- x = runif(10)
-sd(x)  # standard deviation
-qplot(mpg, wt, data=mtcars)
-@
-
-\section{Zotero}
+\section{Importing Citations From the Web}
+\subsection{Zotero}
 \code{Zotero} is free, open source software for collecting and sharing bibliographic information.  \code{Zotero} can automatically retrieve bibliographic metadata that has been embedded in webpages using \code{ContextObjects in Spans} (\code{COinS}), and is thus a very convenient way to collect bibliographic information when browsing, for example, journal websites.  The \ourpkg{} package contains functions for querying existing \code{Zotero} libraries and converting the results to a BibEntry object and also for uploaded an existing BibEntry object to a Zotero library.  To use the Zotero API, a Zotero account, their userID and an API key for the library one wishes to access.  The userID and API key for personal libraries may be found by logging in and visiting the page \url{https://www.zotero.org/settings/keys}.  The following example, the following call to ReadZotero returns the first two entries in the library specified by the \code{``key''} that contain the word ``Bayesian'' in the title.
-<<ReadZotero, cache=TRUE, dependson='setup', tidy=FALSE, highlight=TRUE, echo=-1>>=
+<<ReadZotero, tidy=FALSE, highlight=TRUE, echo=-1>>=
 knit_theme$set('fine_blue')
-ReadZotero(user = '1648676', .params = list(q='bayesian', 
-                               key = '7lhgvcwVq60CDi7E68FyE3br', limit=2))
+ReadZotero(user = '1648676', .params = list(q = 'bayesian', 
+                               key = '7lhgvcwVq60CDi7E68FyE3br', limit = 2))
+@
+\subsection{Google Scholar}
+We provide a function for downloading citations from a public Google Scholar profile.  This function is partially based on the function \code{get_publications} in the \pkg{scholar} package \citep{scholar}, but provides additional functionality and processes the results into a \code{BibEntry} object.  The function requires the Google Scholar ID of the researcher of interest.  A user can obtain this ID by navigating to the researcher's Google Scholar profile and copying the value of the \code{user} parameter in the URL.  The profile must be public for the function to work.  The function assumes that each entry is either of type \code{'Article'} or type \code{'Book'}.  If any numbers are available with the entry relating to journal volume, number, or pages; then the entry will be classified as type \code{'Article'}.  Otherwise, the type will be \code{'Book'}.  The code that follows will return the second author's three most recent papers indexed by Google Scholar.
+<<ReadGS1, tidy=FALSE, highlight=TRUE>>=
+## RJC's Google Scholar profile is at: 
+## http://scholar.google.com/citations?user=CJOHNoQAAAAJ
+rjc.bib <- ReadGS(scholar.id = 'CJOHNoQAAAAJ', sort.by.date = TRUE, 
+                  limit = 3)
+rjc.bib
 @
 
+The function also stores the number of citations of each result.  If the work has been cited, then the corresponding \code{BibEntry} will store the number of citations in a field \code{'cites'}, which would be ignored by \Biblatex{} or \Bibtex{} without additional effort to handle a custom entry field.  The following code will obtain the second author's three most cited works according to Google Scholar and prints the citation count and entry type for each entry.
+<<ReadGS2, tidy=FALSE, highlight=TRUE>>=
+## RJC's Google Scholar profile is at: 
+## http://scholar.google.com/citations?user=CJOHNoQAAAAJ
+rjc.bib <- ReadGS(scholar.id = 'CJOHNoQAAAAJ', sort.by.date = FALSE, 
+                  limit = 3)
+rjc.bib
+rbind(rjc.bib['cites'], rjc.bib['bibtype'])
+@
+
+A shortcoming of this approach, is that long author lists, long titles, or long journal/publisher info can all lead to incomplete information being returned for those fields for the offending entries.  In this case, the \code{ReadGS} function will either not include entry or provide a add the entry with a warning depending on the value of the \code{bib.violation} argument.
+<<ReadGS3, tidy=TRUE, highlight=TRUE, echo=-1>>=
+options(width = 60)
+## RJC's Google Scholar profile is at: 
+## http://scholar.google.com/citations?user=CJOHNoQAAAAJ
+rjc.bib <- ReadGS(scholar.id = 'CJOHNoQAAAAJ', sort.by.date = FALSE, 
+                  limit = 10, bib.violation = 'error')
+rjc.bib2 <- ReadGS(scholar.id = 'CJOHNoQAAAAJ', sort.by.date = FALSE, 
+                  limit = 10, bib.violation = 'warn')
+length(rjc.bib) == length(rjc.bib2)
+## the offending entry.  RJC missing because author list too long!!!
+rjc.bib2[[7]]
+@
+\subsection{CrossRef}
+The function \code{ReadCrossRef} uses the CrossRef Metadata Search API to import references based on a search of CrossRef's nearly 60 million records.  Given a search and possibly a search year, the function receives \Bibtex{} entries as JSON objects using the \pkg{RJSONIO} package \citep{RJSONIO}, which are saved to a temporary file and then read back into \R{} using the \code{ReadBib} function to be returned as a \code{BibEntry} object.
+<<ReadCR1, tidy=TRUE, highlight=TRUE>>=
+ReadCrossRef(query = 'rj carroll measurement error', limit = 3, sort = "relevance", 
+             min.relevance = 80, verbose = FALSE)
+@
+
+Although false negatives are rare, the CrossRef Metadata Search can be prone to false positives.  For this reason, it is important to specify the \code{min.relevance} argument.  Each reference returned by CrossRef comes with a relevancy score which is CrossRef's determination of how likely the reference is to be a match for the supplied query.  The maximum possible value is 100, so for the most strict possible matching, we can specify \code{min.relevance = 100}.  If the argument \code{verbose} is \code{TRUE}, then a message is printed with the relevency score and full citation for each reference with a relevancy score greater than \code{min.reference} in addition to returning the references in a \code{BibEntry} object.
+% # <<ReadCR2, tidy=TRUE, highlight=TRUE>>=
+% # bib <- ReadCrossRef(query = 'rj carroll data', limit = 3, sort = "relevance", 
+% #              min.relevance = 50, verbose = TRUE)
+% # @
+\section{Manipulating BibEntry Objects}
+\subsection{Searching}
+The extraction operator \code{'['}, has been redefined for BibEntry objects to allow for easily searching a database of references saved in a BibEntry object.  Search options can be changed by set variables in the .BibOptions object or alternatively specified directly as arguments to the function \code{search}.
+\subsection{Merging}
+The addition operator \code{'+'}, has also been redefined for BibEntry objects to allow for easily merging of two databases of references.  Note that the combine function, \code{c}, which is available for bibentry objects, does not perform any checking for duplicate entries.
 \bibliography{biblatex}
 \end{document}

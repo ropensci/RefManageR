@@ -1,0 +1,26 @@
+Package: bibtex
+Version: 0.3-6
+Title: bibtex parser
+Authors@R: c(person("Romain", "Francois", role = "aut",
+                    email = "romain@r-enthusiasts.com"),
+             person("Kurt", "Hornik", role = c("ctb", "cre"),
+                    email = "Kurt.Hornik@R-project.org"))
+Description: Utility to parse a bibtex file
+Depends: R (>= 2.13.0)
+License: GPL (>= 2)
+LazyLoad: yes
+BugReports:
+        http://r-forge.r-project.org/tracker/?atid=1587&group_id=384&func=browse
+URL: http://r-forge.r-project.org/projects/highlight/,
+        http://romainfrancois.blog.free.fr/index.php?category/R-package/bibtex
+Packaged: 2013-07-29 15:29:34 UTC; hornik
+Author: Romain Francois [aut],
+  Kurt Hornik [ctb, cre]
+Maintainer: Kurt Hornik <Kurt.Hornik@R-project.org>
+NeedsCompilation: yes
+Repository: CRAN
+Date/Publication: 2013-07-29 17:53:36
+Built: R 3.0.1; x86_64-w64-mingw32; 2013-07-29 16:56:02 UTC; windows
+Archs: i386, x64
+InstallAgent: packrat 0.1.0
+InstallSource: CRAN

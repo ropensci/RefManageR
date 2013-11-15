@@ -38,7 +38,7 @@ BibLaTeX_entry_field_db$incollection <- c('author|editor', 'title', 'year|date')
 BibLaTeX_entry_field_db$misc <- character(0)
 
 # online
-BibLaTeX_entry_field_db$online <- c('author|editor', 'title', 'year|date', 'url') 
+BibLaTeX_entry_field_db$online <- c('author|editor', 'title', 'year|date', 'url|eprinttype') 
 
 # patent
 BibLaTeX_entry_field_db$patent <- c('author', 'title', 'number', 'year|date') 

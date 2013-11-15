@@ -1,0 +1,9 @@
+## package has a dynamic library
+useDynLib(digest)
+
+## and exported functions
+export(AES,
+       digest,
+       hmac)
+
+S3method(print, AES)

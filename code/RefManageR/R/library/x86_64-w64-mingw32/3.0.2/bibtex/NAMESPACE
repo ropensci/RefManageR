@@ -1,0 +1,8 @@
+useDynLib( bibtex )
+
+importFrom( utils, bibentry )
+importFrom( utils, as.personList )
+importFrom( utils, as.person )
+
+export( read.bib, write.bib )
+
