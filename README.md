@@ -65,6 +65,8 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 * Review CrossRef [work on GitHub](https://github.com/gavinsimpson/orcid/blob/master/R/crossrefDOI.R)
 * add saved search parameter to ReadZotero function
 * summary function
+* ReadZotero delete temporary file
+* merge doesn't work when `length(bib1) > length(bib2)` in `bib1+bib2`
 
 DONE     
 ==================================================================================================================

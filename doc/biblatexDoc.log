@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2013.8.13)  12 NOV 2013 10:29
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2013.8.13)  15 NOV 2013 06:51
 entering extended mode
 **biblatexDoc.tex
 ("\\sf1\users\postdoc\mmclean\My Documents\biblatex\doc\biblatexDoc.tex"
@@ -995,7 +995,7 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                \kern -0.876pt
 (hyperref)                removed on input line 160.
 
-<jsslogo.jpg, id=7, 540.0175pt x 393.47pt>
+<jsslogo.jpg, id=31, 540.0175pt x 393.47pt>
 File: jsslogo.jpg Graphic file (type jpg)
  <use jsslogo.jpg>
 Package pdftex.def Info: jsslogo.jpg used on input line 160.
@@ -1106,38 +1106,18 @@ Package microtype Info: Loading generic settings for font family
 
 {C:/Users/mmclean.ADSTAT/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <//
 sf1/users/postdoc/mmclean/My Documents/biblatex/doc/jsslogo.jpg>]
-Package color Info: Redefining color shadecolor on input line 193.
-LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 195.
-
-<figure/mylabel.pdf, id=31, 505.89pt x 505.89pt>
-File: figure/mylabel.pdf Graphic file (type pdf)
- <use figure/mylabel.pdf>
-Package pdftex.def Info: figure/mylabel.pdf used on input line 206.
-(pdftex.def)             Requested size: 442.65375pt x 442.66037pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
+Package color Info: Redefining color shadecolor on input line 196.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 2 []
  []
 
 [2]
-Package color Info: Redefining color shadecolor on input line 214.
-
-Underfull \vbox (badness 4120) has occurred while \output is active []
-
-
-Overfull \hbox (5.47499pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 3
- []
-
-[3 <//sf1/users/postdoc/mmclean/My Documents/biblatex/doc/figure/mylabel.pdf>]
-LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 216
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 198.
+LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 198
 .
-
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\ts1lmtt.fd"
+ ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\ts1lmtt.fd"
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 Package microtype Info: Loading generic settings for font family
@@ -1147,37 +1127,106 @@ Package microtype Info: Loading generic settings for font family
 Package microtype Info: Character `texttrademark ' is missing
 (microtype)             in font `TS1/lmtt/m/n/10.95'.
 (microtype)             Ignoring protrusion settings for this character.
+Package color Info: Redefining color shadecolor on input line 220.
+Package microtype Info: Character `texttrademark ' is missing
+(microtype)             in font `TS1/lmtt/m/it/10.95'.
+(microtype)             Ignoring protrusion settings for this character.
 
-("\\sf1\users\postdoc\mmclean\My Documents\biblatex\doc\biblatexDoc.bbl"
-pdfTeX warning (font expansion): font should be expanded before its first use
-)
-LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 237.
-Package microtype Info: Loading generic settings for font family
-(microtype)             `pzc' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 237.
+Overfull \hbox (5.47499pt too wide) has occurred while \output is active
+[] \T1/lmr/m/n/10.95 3
+ []
+
+[3]
+Package color Info: Redefining color shadecolor on input line 249.
+Package color Info: Redefining color shadecolor on input line 283.
+
+Overfull \hbox (14.37056pt too wide) in paragraph at lines 287--287
+[][]\T1/lmtt/m/n/10.95 rjc.bib[] []\T1/lmtt/b/n/10.95 <-[] []ReadGS[][]\T1/lmtt
+/m/n/10.95 ([][]\T1/lmtt/b/n/10.95 scholar.id[] []\T1/lmtt/m/n/10.95 =[] []"CJO
+HNoQAAAAJ"[][],[] []\T1/lmtt/b/n/10.95 sort.by.date[] []\T1/lmtt/m/n/10.95 =[] 
+[]FALSE[][],[] []\T1/lmtt/b/n/10.95 limit[] []\T1/lmtt/m/n/10.95 =[] []10[][],[
+][] 
+ []
+
+
+Overfull \hbox (32.76651pt too wide) in paragraph at lines 292--292
+[]\T1/lmtt/m/it/10.95 ## Incomplete author information for entry "Structure of 
+dietary measurement error:
+ []
+
+
+Overfull \hbox (20.1193pt too wide) in paragraph at lines 293--293
+[][]\T1/lmtt/m/n/10.95 rjc.bib2[] []\T1/lmtt/b/n/10.95 <-[] []ReadGS[][]\T1/lmt
+t/m/n/10.95 ([][]\T1/lmtt/b/n/10.95 scholar.id[] []\T1/lmtt/m/n/10.95 =[] []"CJ
+OHNoQAAAAJ"[][],[] []\T1/lmtt/b/n/10.95 sort.by.date[] []\T1/lmtt/m/n/10.95 =[]
+ []FALSE[][],[] []\T1/lmtt/b/n/10.95 limit[] []\T1/lmtt/m/n/10.95 =[] []10[][],
+[][] 
+ []
+
+
+Overfull \hbox (32.76651pt too wide) in paragraph at lines 298--298
+[]\T1/lmtt/m/it/10.95 ## Incomplete author information for entry "Structure of 
+dietary measurement error:
+ []
+
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 4 []
  []
 
 [4]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 237.
+Package color Info: Redefining color shadecolor on input line 321.
+
+Overfull \hbox (31.61676pt too wide) in paragraph at lines 323--323
+[][]\T1/lmtt/b/n/10.95 ReadCrossRef[][]\T1/lmtt/m/n/10.95 ([][]\T1/lmtt/b/n/10.
+95 query[] []\T1/lmtt/m/n/10.95 =[] []"rj carroll measurement error"[][],[] []\
+T1/lmtt/b/n/10.95 limit[] []\T1/lmtt/m/n/10.95 =[] []3[][],[] []\T1/lmtt/b/n/10
+.95 sort[] []\T1/lmtt/m/n/10.95 =[] []"relevance"[][],[][] 
+ []
+
+
+Overfull \hbox (5.47499pt too wide) has occurred while \output is active
+[] \T1/lmr/m/n/10.95 5
+ []
+
+[5] ("\\sf1\users\postdoc\mmclean\My Documents\biblatex\doc\biblatexDoc.bbl"
+pdfTeX warning (font expansion): font should be expanded before its first use
+)
+LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
+(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 357.
+Package microtype Info: Loading generic settings for font family
+(microtype)             `pzc' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 357.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (5.47499pt too wide) has occurred while \output is active
+\T1/lmr/m/n/10.95 6 []
+ []
+
+[6]
+Overfull \hbox (5.47499pt too wide) has occurred while \output is active
+[] \T1/lmr/m/n/10.95 7
+ []
+
+[7]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 357.
  ("\\sf1\users\postdoc\mmclean\My Documents\biblatex\doc\biblatexDoc.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 237.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 237.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 357.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 357.
 Package rerunfilecheck Info: File `biblatexDoc.out' has not changed.
-(rerunfilecheck)             Checksum: 93072DDF74DC2F154D681AB3C87E0751;51.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 237.
+(rerunfilecheck)             Checksum: 624DC9E5B3C0A0571E0751631DF4F916;722.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 357.
  ) 
 Here is how much of TeX's memory you used:
- 11235 strings out of 494045
- 162464 string characters out of 3145963
- 286493 words of memory out of 3000000
- 14216 multiletter control sequences out of 15000+200000
- 143608 words of font info for 132 fonts, out of 3000000 for 9000
+ 11286 strings out of 494045
+ 163307 string characters out of 3145963
+ 291552 words of memory out of 3000000
+ 14228 multiletter control sequences out of 15000+200000
+ 144958 words of font info for 145 fonts, out of 3000000 for 9000
  715 hyphenation exceptions out of 8191
  36i,9n,35p,1163b,458s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program F
@@ -1197,9 +1246,9 @@ m Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmss10.pfb><C:/Program Files (x8
 .9/fonts/type1/public/lm/lmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
 pe1/public/lm/lmtti10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/za
 pfchan/uzcmi8a.pfb>
-Output written on biblatexDoc.pdf (4 pages, 403776 bytes).
+Output written on biblatexDoc.pdf (7 pages, 424745 bytes).
 PDF statistics:
- 122 PDF objects out of 1000 (max. 8388607)
- 9 named destinations out of 1000 (max. 500000)
- 19475 words of extra memory for PDF output out of 20736 (max. 10000000)
+ 173 PDF objects out of 1000 (max. 8388607)
+ 26 named destinations out of 1000 (max. 500000)
+ 20030 words of extra memory for PDF output out of 20736 (max. 10000000)
 

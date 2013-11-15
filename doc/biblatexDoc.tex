@@ -189,32 +189,14 @@ One of the biggest advantages of \Biblatex{} over \Bibtex{}, is that it does use
 
 Another advantage of \Biblatex{} is its support for UTF-8 encoding. ``bibtex is an 8bit engine so it processes every file in 8-bit pieces. In utf8 non-ascii chars are longer than 8 bit so they are splitted by bibtex. This means that bibtex has problems to sort references with non-ascii chars correctly. It can also happen that bibtex inserts a line break in the middle of an utf8-char and then you will get errors.''  A list of the supported encodings on your system can be viewed in \proglang{R} using \code{iconvlist()}.  By default, ReadBib will read in a .bib file using UTF-8.  UTF-8 is  
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{set.seed}\hlstd{(}\hlnum{123}\hlstd{)}
-\hlstd{x} \hlkwb{=} \hlkwd{runif}\hlstd{(}\hlnum{10}\hlstd{)}
-\hlkwd{sd}\hlstd{(x)}  \hlcom{# standard deviation}
-\end{alltt}
-\begin{verbatim}
-## [1] 0.2947
-\end{verbatim}
-\begin{alltt}
-\hlkwd{qplot}\hlstd{(mpg, wt,} \hlkwc{data} \hlstd{= mtcars)}
-\end{alltt}
-\end{kframe}
-\includegraphics[width=\maxwidth]{figure/mylabel} 
-
-\end{knitrout}
-
-
-\section{Zotero}
+\section{Importing Citations From the Web}
+\subsection{Zotero}
 \code{Zotero} is free, open source software for collecting and sharing bibliographic information.  \code{Zotero} can automatically retrieve bibliographic metadata that has been embedded in webpages using \code{ContextObjects in Spans} (\code{COinS}), and is thus a very convenient way to collect bibliographic information when browsing, for example, journal websites.  The \ourpkg{} package contains functions for querying existing \code{Zotero} libraries and converting the results to a BibEntry object and also for uploaded an existing BibEntry object to a Zotero library.  To use the Zotero API, a Zotero account, their userID and an API key for the library one wishes to access.  The userID and API key for personal libraries may be found by logging in and visiting the page \url{https://www.zotero.org/settings/keys}.  The following example, the following call to ReadZotero returns the first two entries in the library specified by the \code{``key''} that contain the word ``Bayesian'' in the title.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{ReadZotero}\hlstd{(}\hlkwc{user} \hlstd{=} \hlstr{'1648676'}\hlstd{,} \hlkwc{.params} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{q}\hlstd{=}\hlstr{'bayesian'}\hlstd{,}
-                               \hlkwc{key} \hlstd{=} \hlstr{'7lhgvcwVq60CDi7E68FyE3br'}\hlstd{,} \hlkwc{limit}\hlstd{=}\hlnum{2}\hlstd{))}
+\hlkwd{ReadZotero}\hlstd{(}\hlkwc{user} \hlstd{=} \hlstr{'1648676'}\hlstd{,} \hlkwc{.params} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{q} \hlstd{=} \hlstr{'bayesian'}\hlstd{,}
+                               \hlkwc{key} \hlstd{=} \hlstr{'7lhgvcwVq60CDi7E68FyE3br'}\hlstd{,} \hlkwc{limit} \hlstd{=} \hlnum{2}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
 ## Müller P and Mitra R (2013). "Bayesian Nonparametric Inference –
@@ -232,6 +214,144 @@ Another advantage of \Biblatex{} is its support for UTF-8 encoding. ``bibtex is 
 \end{kframe}
 \end{knitrout}
 
+\subsection{Google Scholar}
+We provide a function for downloading citations from a public Google Scholar profile.  This function is partially based on the function \code{get_publications} in the \pkg{scholar} package \citep{scholar}, but provides additional functionality and processes the results into a \code{BibEntry} object.  The function requires the Google Scholar ID of the researcher of interest.  A user can obtain this ID by navigating to the researcher's Google Scholar profile and copying the value of the \code{user} parameter in the URL.  The profile must be public for the function to work.  The function assumes that each entry is either of type \code{'Article'} or type \code{'Book'}.  If any numbers are available with the entry relating to journal volume, number, or pages; then the entry will be classified as type \code{'Article'}.  Otherwise, the type will be \code{'Book'}.  The code that follows will return the second author's three most recent papers indexed by Google Scholar.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## RJC's Google Scholar profile is at: }
+\hlcom{## http://scholar.google.com/citations?user=CJOHNoQAAAAJ}
+\hlstd{rjc.bib} \hlkwb{<-} \hlkwd{ReadGS}\hlstd{(}\hlkwc{scholar.id} \hlstd{=} \hlstr{'CJOHNoQAAAAJ'}\hlstd{,} \hlkwc{sort.by.date} \hlstd{=} \hlnum{TRUE}\hlstd{,}
+                  \hlkwc{limit} \hlstd{=} \hlnum{3}\hlstd{)}
+\hlstd{rjc.bib}
+\end{alltt}
+\begin{verbatim}
+## Jennings EM, Morris JS, Carroll RJ, Manyam GC and
+## Baladandayuthapani V (2013). "Bayesian methods for
+## expression-based integration of various types of genomics data."
+## _EURASIP Journal on Bioinformatics and Systems Biology_,
+## *2013*(1), pp. 1-11.
+## 
+## Garcia TP, Müller S, Carroll RJ and Walzem RL (2013).
+## "Identification of Important Regressor Groups, Subgroups, and
+## Individuals via Regularization Methods: Application to Gut
+## Microbiome Data." _Bioinformatics, btt_, *608*.
+## 
+## Serban N, Staicu AM and Carroll RJ (2013). _Multilevel
+## cross-dependent binary longitudinal data_. Biometrics.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
+
+The function also stores the number of citations of each result.  If the work has been cited, then the corresponding \code{BibEntry} will store the number of citations in a field \code{'cites'}, which would be ignored by \Biblatex{} or \Bibtex{} without additional effort to handle a custom entry field.  The following code will obtain the second author's three most cited works according to Google Scholar and prints the citation count and entry type for each entry.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## RJC's Google Scholar profile is at: }
+\hlcom{## http://scholar.google.com/citations?user=CJOHNoQAAAAJ}
+\hlstd{rjc.bib} \hlkwb{<-} \hlkwd{ReadGS}\hlstd{(}\hlkwc{scholar.id} \hlstd{=} \hlstr{'CJOHNoQAAAAJ'}\hlstd{,} \hlkwc{sort.by.date} \hlstd{=} \hlnum{FALSE}\hlstd{,}
+                  \hlkwc{limit} \hlstd{=} \hlnum{3}\hlstd{)}
+\hlstd{rjc.bib}
+\end{alltt}
+\begin{verbatim}
+## Caroll RJ, Ruppert D, Stefanski LA and Crainiceanu CM (2006).
+## _Measurement error in nonlinear models: a modern perspective_.
+## Chapman & Hall/CRC.
+## 
+## Ruppert D, Wand MP and Carroll RJ (2003). _Semiparametric
+## regression_. Cambridge University Press.
+## 
+## Davidian M and Carroll RJ (1987). "Variance function estimation."
+## _Journal of the American Statistical Association_, *82*(400), pp.
+## 1079-1091.
+\end{verbatim}
+\begin{alltt}
+\hlkwd{rbind}\hlstd{(rjc.bib[}\hlstr{'cites'}\hlstd{], rjc.bib[}\hlstr{'bibtype'}\hlstd{])}
+\end{alltt}
+\begin{verbatim}
+##      caroll2006measurement ruppert2003semiparametric davidian1987variance
+## [1,] "2387"                "1789"                    "536"               
+## [2,] "Book"                "Book"                    "Article"
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+A shortcoming of this approach, is that long author lists, long titles, or long journal/publisher info can all lead to incomplete information being returned for those fields for the offending entries.  In this case, the \code{ReadGS} function will either not include entry or provide a add the entry with a warning depending on the value of the \code{bib.violation} argument.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## RJC's Google Scholar profile is at:}
+\hlcom{## http://scholar.google.com/citations?user=CJOHNoQAAAAJ}
+\hlstd{rjc.bib} \hlkwb{<-} \hlkwd{ReadGS}\hlstd{(}\hlkwc{scholar.id} \hlstd{=} \hlstr{"CJOHNoQAAAAJ"}\hlstd{,} \hlkwc{sort.by.date} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{limit} \hlstd{=} \hlnum{10}\hlstd{,}
+    \hlkwc{bib.violation} \hlstd{=} \hlstr{"error"}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Incomplete author information for entry "{}Structure of dietary measurement error: results of the OPEN biomarker study"{} it will NOT be added}}\begin{alltt}
+\hlstd{rjc.bib2} \hlkwb{<-} \hlkwd{ReadGS}\hlstd{(}\hlkwc{scholar.id} \hlstd{=} \hlstr{"CJOHNoQAAAAJ"}\hlstd{,} \hlkwc{sort.by.date} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{limit} \hlstd{=} \hlnum{10}\hlstd{,}
+    \hlkwc{bib.violation} \hlstd{=} \hlstr{"warn"}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Incomplete author information for entry "{}Structure of dietary measurement error: results of the OPEN biomarker study"{} adding anyway}}\begin{alltt}
+\hlkwd{length}\hlstd{(rjc.bib)} \hlopt{==} \hlkwd{length}\hlstd{(rjc.bib2)}
+\end{alltt}
+\begin{verbatim}
+## [1] FALSE
+\end{verbatim}
+\begin{alltt}
+\hlcom{## the offending entry.  RJC missing because author list too long!!!}
+\hlstd{rjc.bib2[[}\hlnum{7}\hlstd{]]}
+\end{alltt}
+\begin{verbatim}
+## Kipnis V, Subar AF, Midthune D, Freedman LS,
+## Ballard-Barbash R and Troiano RP (2003). "Structure
+## of dietary measurement error: results of the OPEN
+## biomarker study." _American Journal of Epidemiology_,
+## *158*(1), pp. 14-21.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{CrossRef}
+The function \code{ReadCrossRef} uses the CrossRef Metadata Search API to import references based on a search of CrossRef's nearly 60 million records.  Given a search and possibly a search year, the function receives \Bibtex{} entries as JSON objects using the \pkg{RJSONIO} package \citep{RJSONIO}, which are saved to a temporary file and then read back into \R{} using the \code{ReadBib} function to be returned as a \code{BibEntry} object.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{ReadCrossRef}\hlstd{(}\hlkwc{query} \hlstd{=} \hlstr{"rj carroll measurement error"}\hlstd{,} \hlkwc{limit} \hlstd{=} \hlnum{3}\hlstd{,} \hlkwc{sort} \hlstd{=} \hlstr{"relevance"}\hlstd{,}
+    \hlkwc{min.relevance} \hlstd{=} \hlnum{80}\hlstd{,} \hlkwc{verbose} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## Ruppert D, Wand MP and Carroll RJ (2003). _Measurement Error_.
+## Cambridge University Press. ISBN 9780511755453, <URL:
+## http://dx.doi.org/10.1017/CBO9780511755453.017>, <URL:
+## http://dx.doi.org/10.1017/CBO9780511755453.017>.
+## 
+## Carroll RJ (2005). _Measurement Error in Epidemiologic Studies_.
+## Wiley Blackwell (John Wiley &amp; Sons). ISBN 047084907X, <URL:
+## http://dx.doi.org/10.1002/0470011815.b2a03082>, <URL:
+## http://dx.doi.org/10.1002/0470011815.b2a03082>.
+## 
+## Stefanski LA and Carroll RJ (1990). _Structural logistic
+## regression measurement error models_. American Mathematical
+## Society. <URL: http://dx.doi.org/10.1090/conm/112/1087102>, <URL:
+## http://dx.doi.org/10.1090/conm/112/1087102>.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Although false negatives are rare, the CrossRef Metadata Search can be prone to false positives.  For this reason, it is important to specify the \code{min.relevance} argument.  Each reference returned by CrossRef comes with a relevancy score which is CrossRef's determination of how likely the reference is to be a match for the supplied query.  The maximum possible value is 100, so for the most strict possible matching, we can specify \code{min.relevance = 100}.  If the argument \code{verbose} is \code{TRUE}, then a message is printed with the relevency score and full citation for each reference with a relevancy score greater than \code{min.reference} in addition to returning the references in a \code{BibEntry} object.
+% # <<ReadCR2, tidy=TRUE, highlight=TRUE>>=
+% # bib <- ReadCrossRef(query = 'rj carroll data', limit = 3, sort = "relevance", 
+% #              min.relevance = 50, verbose = TRUE)
+% # @
+\section{Manipulating BibEntry Objects}
+\subsection{Searching}
+The extraction operator \code{'['}, has been redefined for BibEntry objects to allow for easily searching a database of references saved in a BibEntry object.  Search options can be changed by set variables in the .BibOptions object or alternatively specified directly as arguments to the function \code{search}.
+\subsection{Merging}
+The addition operator \code{'+'}, has also been redefined for BibEntry objects to allow for easily merging of two databases of references.  Note that the combine function, \code{c}, which is available for bibentry objects, does not perform any checking for duplicate entries.
 \bibliography{biblatex}
 \end{document}

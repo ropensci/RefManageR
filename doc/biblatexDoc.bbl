@@ -1,4 +1,4 @@
-\begin{thebibliography}{2}
+\begin{thebibliography}{4}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -15,6 +15,19 @@ Hornik K, Murdoch D, Zeileis A (2012).
 \newblock \enquote{Who Did What? The Roles of R Package Authors and How to
   Refer to Them.}
 \newblock \emph{The {R} Journal}, \textbf{4}(1).
+
+\bibitem[{Keirstead(2013)}]{scholar}
+Keirstead J (2013).
+\newblock \emph{scholar: Analyse citation data from Google Scholar}.
+\newblock R package version 0.1.1,
+  \urlprefix\url{http://CRAN.R-project.org/package=scholar}.
+
+\bibitem[{Lang(2013)}]{RJSONIO}
+Lang DT (2013).
+\newblock \emph{RJSONIO: Serialize R objects to JSON, JavaScript Object
+  Notation}.
+\newblock R package version 1.0-3,
+  \urlprefix\url{http://CRAN.R-project.org/package=RJSONIO}.
 
 \bibitem[{Patashnik(1988)}]{bibtex}
 Patashnik O (1988).

@@ -1,0 +1,4 @@
+# -- BEGIN PACKRAT --
+R_LIBS_SITE="::: no r_libs_site ;;;"
+R_PACKRAT="1"
+# -- END PACKRAT --

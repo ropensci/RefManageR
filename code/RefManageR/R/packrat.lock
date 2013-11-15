@@ -1,0 +1,83 @@
+PackratFormat: 1.1
+PackratVersion: 0.1.0
+RVersion: 3.0.2
+Repos: http://lib.stat.cmu.edu/R/CRAN, http://cran.rstudio.com
+
+Package: bibtex
+Source: CRAN
+Version: 0.3-6
+
+Package: bitops
+Source: CRAN
+Version: 1.0-6
+
+Package: digest
+Source: CRAN
+Version: 0.6.3
+
+Package: lubridate
+Source: github
+Version: 1.3.0
+Requires: plyr, stringr, memoise
+GithubRepo: lubridate
+GithubUsername: hadley
+GithubRef: master
+GithubSha1: fa123255b9d49ca57d9c699ef638b7290d2b1f7d
+
+Package: memoise
+Source: CRAN
+Version: 0.1
+Requires: digest
+
+Package: packrat
+Source: github
+Version: 0.1.0
+GithubRepo: packrat
+GithubUsername: rstudio
+GithubRef: master
+GithubSha1: 0e360b5c15d319b796a1d4fdc83a2c5ae7a67333
+
+Package: plyr
+Source: CRAN
+Version: 1.8
+
+Package: R.cache
+Source: CRAN
+Version: 0.9.0
+Requires: R.methodsS3, R.oo, R.utils
+
+Package: R.methodsS3
+Source: CRAN
+Version: 1.5.2
+
+Package: R.oo
+Source: CRAN
+Version: 1.15.8
+Requires: R.methodsS3
+
+Package: R.utils
+Source: CRAN
+Version: 1.27.1
+Requires: R.oo, R.methodsS3
+
+Package: RCurl
+Source: CRAN
+Version: 1.95-4.1
+Requires: bitops
+
+Package: RJSONIO
+Source: CRAN
+Version: 1.0-3
+
+Package: scholar
+Source: CRAN
+Version: 0.1.1
+Requires: stringr, plyr, R.cache, XML
+
+Package: stringr
+Source: CRAN
+Version: 0.6.2
+
+Package: XML
+Source: CRAN
+Version: 3.98-1.1
