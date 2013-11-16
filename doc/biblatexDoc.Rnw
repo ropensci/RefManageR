@@ -74,6 +74,18 @@
 %\renewcommand{\comments}[1]{#1}
 % or use: \usepackage{comment}
 
+% wrap messages
+\usepackage{listings}
+\lstset{%
+basicstyle=\small\ttfamily\color{cyan},
+columns=fullflexible,
+breaklines=true,
+inputencoding=utf8, 
+extendedchars=\true,
+inputencoding=utf8,
+literate={ß}{{\ss}}1
+}
+
 \graphicspath{{./images/}}
 
 \newcommand{\ourpkg}{\pkg{RefManageR}}
@@ -123,8 +135,13 @@ setwd('~/biblatex/code/RefManageR/R')
 lapply(list.files(pattern='*.R', full=TRUE), source, echo = FALSE, verbose = FALSE)
 setwd('~/biblatex/code/')
 opts_knit$set(out.format = "latex")
- opts_chunk$set(cache=TRUE, autodep=TRUE)
+# opts_chunk$set(cache=TRUE, autodep=TRUE)
 knit_theme$set('fine_blue')
+knit_hooks$set(message = function(x, options) {
+    return(paste0('\\begin{lstlisting}\n',
+      x,
+    '\\end{lstlisting}'))
+})
 @
 
  %<<bibexample, cache=FALSE, eval=FALSE, results='markup', tidy=FALSE>>=
@@ -177,8 +194,7 @@ rbind(rjc.bib['cites'], rjc.bib['bibtype'])
 @
 
 A shortcoming of this approach, is that long author lists, long titles, or long journal/publisher info can all lead to incomplete information being returned for those fields for the offending entries.  In this case, the \code{ReadGS} function will either not include entry or provide a add the entry with a warning depending on the value of the \code{bib.violation} argument.
-<<ReadGS3, tidy=TRUE, highlight=TRUE, echo=-1>>=
-options(width = 60)
+<<ReadGS3, tidy=FALSE, highlight=TRUE>>=
 ## RJC's Google Scholar profile is at: 
 ## http://scholar.google.com/citations?user=CJOHNoQAAAAJ
 rjc.bib <- ReadGS(scholar.id = 'CJOHNoQAAAAJ', sort.by.date = FALSE, 
