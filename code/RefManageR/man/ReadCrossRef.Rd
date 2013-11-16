@@ -8,7 +8,8 @@ Import Bibliographic Information Using CrossRef Metadata Search
 Uses the CrossRef API to search for BibTeX entries.  Results are written to a temporary \code{.bib} file that is processed by \code{\link{ReadBib}} to return a BibEntry object.
 }
 \usage{
-ReadCrossRef(query, limit = 5, sort = "relevance", year = NULL, min.relevance = 80, temp.file = "tfile.bib", delete.file = TRUE, verbose = FALSE)
+ReadCrossRef(query, limit = 5, sort = "relevance", year = NULL, min.relevance = 80, 
+             temp.file = tempfile(fileext = '.bib'), delete.file = TRUE, verbose = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -28,7 +29,7 @@ numeric; if specified, search is only conducted for references from this year.
 numeric. CrossRef assigns a relevance score for each entry (with a maximum value of 100) based on how likely it is that result is a match for the specified \code{query}.  Entries with relevance score less than \code{min.relevance} with not be added to the output.
 }
   \item{temp.file}{
-character; name of a temporary file to store results.
+character; name of a temporary file for storing results.
 }
   \item{delete.file}{
 boolean; should the temporary \code{.bib} file be deleted?

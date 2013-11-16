@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2013.8.13)  16 NOV 2013 01:07
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2013.8.13)  16 NOV 2013 02:03
 entering extended mode
 **biblatexDoc.tex
 ("\\sf1\users\postdoc\mmclean\My Documents\biblatex\doc\biblatexDoc.tex"
@@ -875,29 +875,29 @@ File: listings.cfg 2013/08/26 1.5b listings configuration
 Package: listings 2013/08/26 1.5b (Carsten Heinz)
 
 ("\\sf1\users\postdoc\mmclean\My Documents\biblatex\doc\biblatexDoc.aux")
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 172.
-LaTeX Font Info:    ... okay on input line 172.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 172.
-LaTeX Font Info:    ... okay on input line 172.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 172.
-LaTeX Font Info:    ... okay on input line 172.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 172.
-LaTeX Font Info:    ... okay on input line 172.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 172.
-LaTeX Font Info:    ... okay on input line 172.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 172.
-LaTeX Font Info:    ... okay on input line 172.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 172.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 172.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 186.
+LaTeX Font Info:    ... okay on input line 186.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 186.
+LaTeX Font Info:    ... okay on input line 186.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 186.
+LaTeX Font Info:    ... okay on input line 186.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 186.
+LaTeX Font Info:    ... okay on input line 186.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 186.
+LaTeX Font Info:    ... okay on input line 186.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 186.
+LaTeX Font Info:    ... okay on input line 186.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 186.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 186.
 
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 172.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 172.
-LaTeX Font Info:    ... okay on input line 172.
-LaTeX Font Info:    Try loading font information for T1+lmr on input line 172.
+LaTeX Font Info:    ... okay on input line 186.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 186.
+LaTeX Font Info:    ... okay on input line 186.
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 186.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmr.fd"
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -918,7 +918,7 @@ kii
 \everyMPtoPDFconversion=\toks28
 )
 \AtBeginShipoutBox=\box34
-Package hyperref Info: Link coloring ON on input line 172.
+Package hyperref Info: Link coloring ON on input line 186.
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2010/04/30 v2.40 Cross-referencing by name of section
 
@@ -927,9 +927,9 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count142
 )
-LaTeX Info: Redefining \ref on input line 172.
-LaTeX Info: Redefining \pageref on input line 172.
-LaTeX Info: Redefining \nameref on input line 172.
+LaTeX Info: Redefining \ref on input line 186.
+LaTeX Info: Redefining \pageref on input line 186.
+LaTeX Info: Redefining \nameref on input line 186.
 
 ("\\sf1\users\postdoc\mmclean\My Documents\biblatex\doc\biblatexDoc.out")
 ("\\sf1\users\postdoc\mmclean\My Documents\biblatex\doc\biblatexDoc.out")
@@ -937,164 +937,164 @@ LaTeX Info: Redefining \nameref on input line 172.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\\' on input line 172.
+(hyperref)                removing `\\' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                \kern 3.04074pt
-(hyperref)                removed on input line 172.
+(hyperref)                removed on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\mathchar' on input line 172.
+(hyperref)                removing `\mathchar' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                \kern 3.04074pt
-(hyperref)                removed on input line 172.
+(hyperref)                removed on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\\' on input line 172.
+(hyperref)                removing `\\' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                \kern -0.54753pt
-(hyperref)                removed on input line 172.
+(hyperref)                removed on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\hbox' on input line 172.
+(hyperref)                removing `\hbox' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 172.
+(hyperref)                removing `math shift' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\mathsurround' on input line 172.
+(hyperref)                removing `\mathsurround' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\z@' on input line 172.
+(hyperref)                removing `\z@' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 172.
+(hyperref)                removing `math shift' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 172.
+(hyperref)                removing `\<def>-command' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\tf@size' on input line 172.
+(hyperref)                removing `\tf@size' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 172.
+(hyperref)                removing `\<def>-command' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\sf@size' on input line 172.
+(hyperref)                removing `\sf@size' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 172.
+(hyperref)                removing `\<def>-command' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\ssf@size' on input line 172.
+(hyperref)                removing `\ssf@size' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\let' on input line 172.
+(hyperref)                removing `\let' on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                \kern -0.27368pt
-(hyperref)                removed on input line 172.
+(hyperref)                removed on input line 186.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                \kern -0.876pt
-(hyperref)                removed on input line 172.
+(hyperref)                removed on input line 186.
 
 <jsslogo.jpg, id=31, 540.0175pt x 393.47pt>
 File: jsslogo.jpg Graphic file (type jpg)
  <use jsslogo.jpg>
-Package pdftex.def Info: jsslogo.jpg used on input line 172.
+Package pdftex.def Info: jsslogo.jpg used on input line 186.
 (pdftex.def)             Requested size: 89.80768pt x 65.43607pt.
-LaTeX Font Info:    Try loading font information for T1+pzc on input line 172.
+LaTeX Font Info:    Try loading font information for T1+pzc on input line 186.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\t1pzc.fd"
 File: t1pzc.fd 2001/06/04 font definitions for T1/pzc.
 )
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <28> not available
-(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 172.
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 172.
+(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 186.
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 186.
 
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\ot1lmr.fd"
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 172.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 186.
 
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\omllmm.fd"
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 172
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 186
 .
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\omslmsy.fd"
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 172
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 186
 .
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\omxlmex.fd"
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <17.28> on input line 172.
+(Font)              <17.28> on input line 186.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 172.
+(Font)              <12> on input line 186.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 172.
-LaTeX Font Info:    Try loading font information for U+msa on input line 172.
+(Font)              <10> on input line 186.
+LaTeX Font Info:    Try loading font information for U+msa on input line 186.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 172.
+LaTeX Font Info:    Try loading font information for U+msb on input line 186.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 172.
+(Font)              <10.95> on input line 186.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 172.
+(Font)              <8> on input line 186.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 172.
-LaTeX Font Info:    Try loading font information for T1+lmss on input line 172.
+(Font)              <6> on input line 186.
+LaTeX Font Info:    Try loading font information for T1+lmss on input line 186.
 
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmss.fd"
 File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 172.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 186.
 
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 172.
+(Font)              <7> on input line 186.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 172.
-LaTeX Info: Redefining \microtypecontext on input line 172.
+(Font)              <5> on input line 186.
+LaTeX Info: Redefining \microtypecontext on input line 186.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -1132,7 +1132,7 @@ Package microtype Info: Loading generic settings for font family
 
 {C:/Users/mmclean.ADSTAT/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <//
 sf1/users/postdoc/mmclean/My Documents/biblatex/doc/jsslogo.jpg>]
-Package color Info: Redefining color shadecolor on input line 208.
+Package color Info: Redefining color shadecolor on input line 222.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 2 []
@@ -1140,8 +1140,8 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [2]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 210.
-LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 210
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 224.
+LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 224
 .
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\ts1lmtt.fd"
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1153,7 +1153,7 @@ Package microtype Info: Loading generic settings for font family
 Package microtype Info: Character `texttrademark ' is missing
 (microtype)             in font `TS1/lmtt/m/n/10.95'.
 (microtype)             Ignoring protrusion settings for this character.
-Package color Info: Redefining color shadecolor on input line 232.
+Package color Info: Redefining color shadecolor on input line 246.
 Package microtype Info: Character `texttrademark ' is missing
 (microtype)             in font `TS1/lmtt/m/it/10.95'.
 (microtype)             Ignoring protrusion settings for this character.
@@ -1163,8 +1163,8 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [3]
-Package color Info: Redefining color shadecolor on input line 261.
-Package color Info: Redefining color shadecolor on input line 295.
+Package color Info: Redefining color shadecolor on input line 275.
+Package color Info: Redefining color shadecolor on input line 309.
 
 pdfTeX warning (font expansion): font should be expanded before its first use
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\utf8.def"
@@ -1178,9 +1178,9 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [4]
-Package color Info: Redefining color shadecolor on input line 332.
+Package color Info: Redefining color shadecolor on input line 346.
 
-Overfull \hbox (31.61676pt too wide) in paragraph at lines 334--334
+Overfull \hbox (31.61676pt too wide) in paragraph at lines 348--348
 [][]\T1/lmtt/b/n/10.95 ReadCrossRef[][]\T1/lmtt/m/n/10.95 ([][]\T1/lmtt/b/n/10.
 95 query[] []\T1/lmtt/m/n/10.95 =[] []"rj carroll measurement error"[][],[] []\
 T1/lmtt/b/n/10.95 limit[] []\T1/lmtt/m/n/10.95 =[] []3[][],[] []\T1/lmtt/b/n/10
@@ -1196,12 +1196,12 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 pdfTeX warning (font expansion): font should be expanded before its first use
 )
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 368.
+(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 382.
 Package microtype Info: Loading generic settings for font family
 (microtype)             `pzc' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 368.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 382.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
@@ -1216,22 +1216,22 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [7]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 368.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 382.
  ("\\sf1\users\postdoc\mmclean\My Documents\biblatex\doc\biblatexDoc.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 368.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 368.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 382.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 382.
 Package rerunfilecheck Info: File `biblatexDoc.out' has not changed.
 (rerunfilecheck)             Checksum: 624DC9E5B3C0A0571E0751631DF4F916;722.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 368.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 382.
  ) 
 Here is how much of TeX's memory you used:
- 12616 strings out of 494045
- 182341 string characters out of 3145963
- 339514 words of memory out of 3000000
- 15534 multiletter control sequences out of 15000+200000
- 145124 words of font info for 147 fonts, out of 3000000 for 9000
+ 12670 strings out of 494045
+ 182778 string characters out of 3145963
+ 341295 words of memory out of 3000000
+ 15588 multiletter control sequences out of 15000+200000
+ 145443 words of font info for 148 fonts, out of 3000000 for 9000
  715 hyphenation exceptions out of 8191
- 36i,9n,35p,1163b,927s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,9n,35p,1163b,989s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program F
 iles (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ts1.enc}{C:/Program Files (x86)/MiK
 TeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files (x86)/MiKTeX 2.9/font
@@ -1249,9 +1249,9 @@ m Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmss10.pfb><C:/Program Files (x8
 .9/fonts/type1/public/lm/lmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
 pe1/public/lm/lmtti10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/za
 pfchan/uzcmi8a.pfb>
-Output written on biblatexDoc.pdf (7 pages, 423897 bytes).
+Output written on biblatexDoc.pdf (7 pages, 425237 bytes).
 PDF statistics:
  177 PDF objects out of 1000 (max. 8388607)
  30 named destinations out of 1000 (max. 500000)
- 22590 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 23102 words of extra memory for PDF output out of 24883 (max. 10000000)
 
