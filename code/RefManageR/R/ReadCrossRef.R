@@ -25,9 +25,12 @@ require(RJSONIO)
 # SearchCrossRef('Carberry, J 2008, “Toward a Unified Theory of High-Energy Metaphysics: Silly String Theory.” Journal of Psychoceramics, vol. 5, no. 11, pp. 1-3.')
 
 ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.relevance = 80,
-                           temp.file = 'tfile.bib', delete.file = TRUE, verbose = FALSE){
+                           temp.file = tempfile(fileext = '.bib'), delete.file = TRUE, verbose = FALSE){
   results <- getForm("http://search.labs.crossref.org/dois", q=query, year=year, sort=sort,  
                      rows=limit)
+  
+  if(delete.file)
+    on.exit(unlink(temp.file, force = TRUE))
   
   fromj <- RJSONIO::fromJSON(results)
   num.res <- min(limit, length(fromj))
@@ -52,9 +55,8 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.
   }
  # write(temp, file = temp.file, append=TRUE)
   bib.res <- ReadBib(file=temp.file, encoding='UTF-8')
-  if(delete.file)
-    suppressWarnings(file.remove(temp.file))
-  bib.res
+
+  return(bib.res)
 }
 
 # LookupDOI

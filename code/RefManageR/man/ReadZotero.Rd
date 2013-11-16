@@ -3,14 +3,15 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 %%  ~~function to do ... ~~
-Get Bibliography Information From a Zotero Library
+Get Bibliography Information From a Zotero Library.
 }
 \description{
 Queries an existing Zotero library to import bibliographic information.
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-ReadZotero(user, .params, file = "tempbib.bib", curl = getCurlHandler())
+ReadZotero(user, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE, 
+           curl = getCurlHandler())
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -32,13 +33,17 @@ A \emph{named} list of parameters to use in requests to the Zotero API with poss
     \item start - index of first entry to return
   }
 }
-  \item{file}{
+  \item{temp.file}{
 %%     ~~Describe \code{file} here~~
-File name where the BibTeX data returned by Zotero will be temporarily written.
+character; file name where the BibTeX data returned by Zotero will be temporarily written.
+}
+  \item{delete.file}{
+%%     ~~Describe \code{file} here~~
+boolean; should \code{temp.file} be removed on exit?
 }
   \item{curl}{
 %%     ~~Describe \code{curl} here~~
-the \code{CURLHandle} object created earlier if one is reusing these objects. Otherwise, a new one is generated and discarded.
+\code{CURLHandle} object created earlier if one is reusing these objects. Otherwise, a new one is generated and discarded.
 }
 }
 \details{

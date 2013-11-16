@@ -12,7 +12,11 @@
 # http://www.omegahat.org/RCurl/philosophy.html
 # .opts explained: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
 
-ReadZotero <- function(user, .params, file = 'tempbib.bib', curl = getCurlHandler()){
+ReadZotero <- function(user, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE, 
+                       curl = getCurlHandler()){
+  if(delete.file)
+    on.exit(unlink(temp.file, force = TRUE))
+  
   bad.ind <- which(!names(.params) %in% c('q', 'itemType', 'tag', 'collection', 'key', 'limit', 'start', 'qmode'))
   .parms <- .params
   if(length(bad.ind)){
@@ -45,9 +49,9 @@ ReadZotero <- function(user, .params, file = 'tempbib.bib', curl = getCurlHandle
     print('No results.')
     return()
   }
-  write(res, file=file)
+  write(res, file=temp.file)
                   
-  read.bib(file)
+  read.bib(temp.file)
 }
 
 # # GOOD
