@@ -123,6 +123,18 @@
 %\renewcommand{\comments}[1]{#1}
 % or use: \usepackage{comment}
 
+% wrap messages
+\usepackage{listings}
+\lstset{%
+basicstyle=\small\ttfamily\color{cyan},
+columns=fullflexible,
+breaklines=true,
+inputencoding=utf8, 
+extendedchars=\true,
+inputencoding=utf8,
+literate={ß}{{\ss}}1
+}
+
 \graphicspath{{./images/}}
 
 \newcommand{\ourpkg}{\pkg{RefManageR}}
@@ -282,20 +294,20 @@ A shortcoming of this approach, is that long author lists, long titles, or long 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{## RJC's Google Scholar profile is at:}
+\hlcom{## RJC's Google Scholar profile is at: }
 \hlcom{## http://scholar.google.com/citations?user=CJOHNoQAAAAJ}
-\hlstd{rjc.bib} \hlkwb{<-} \hlkwd{ReadGS}\hlstd{(}\hlkwc{scholar.id} \hlstd{=} \hlstr{"CJOHNoQAAAAJ"}\hlstd{,} \hlkwc{sort.by.date} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{limit} \hlstd{=} \hlnum{10}\hlstd{,}
-    \hlkwc{bib.violation} \hlstd{=} \hlstr{"error"}\hlstd{)}
+\hlstd{rjc.bib} \hlkwb{<-} \hlkwd{ReadGS}\hlstd{(}\hlkwc{scholar.id} \hlstd{=} \hlstr{'CJOHNoQAAAAJ'}\hlstd{,} \hlkwc{sort.by.date} \hlstd{=} \hlnum{FALSE}\hlstd{,}
+                  \hlkwc{limit} \hlstd{=} \hlnum{10}\hlstd{,} \hlkwc{bib.violation} \hlstd{=} \hlstr{'error'}\hlstd{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Incomplete author information for entry "{}Structure of dietary measurement error: results of the OPEN biomarker study"{} it will NOT be added}}\begin{alltt}
-\hlstd{rjc.bib2} \hlkwb{<-} \hlkwd{ReadGS}\hlstd{(}\hlkwc{scholar.id} \hlstd{=} \hlstr{"CJOHNoQAAAAJ"}\hlstd{,} \hlkwc{sort.by.date} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{limit} \hlstd{=} \hlnum{10}\hlstd{,}
-    \hlkwc{bib.violation} \hlstd{=} \hlstr{"warn"}\hlstd{)}
+\begin{lstlisting}
+## Incomplete author information for entry "Structure of dietary measurement error: results of the OPEN biomarker study" it will NOT be added
+\end{lstlisting}\begin{alltt}
+\hlstd{rjc.bib2} \hlkwb{<-} \hlkwd{ReadGS}\hlstd{(}\hlkwc{scholar.id} \hlstd{=} \hlstr{'CJOHNoQAAAAJ'}\hlstd{,} \hlkwc{sort.by.date} \hlstd{=} \hlnum{FALSE}\hlstd{,}
+                  \hlkwc{limit} \hlstd{=} \hlnum{10}\hlstd{,} \hlkwc{bib.violation} \hlstd{=} \hlstr{'warn'}\hlstd{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Incomplete author information for entry "{}Structure of dietary measurement error: results of the OPEN biomarker study"{} adding anyway}}\begin{alltt}
+\begin{lstlisting}
+## Incomplete author information for entry "Structure of dietary measurement error: results of the OPEN biomarker study" adding anyway
+\end{lstlisting}\begin{alltt}
 \hlkwd{length}\hlstd{(rjc.bib)} \hlopt{==} \hlkwd{length}\hlstd{(rjc.bib2)}
 \end{alltt}
 \begin{verbatim}
@@ -306,11 +318,10 @@ A shortcoming of this approach, is that long author lists, long titles, or long 
 \hlstd{rjc.bib2[[}\hlnum{7}\hlstd{]]}
 \end{alltt}
 \begin{verbatim}
-## Kipnis V, Subar AF, Midthune D, Freedman LS,
-## Ballard-Barbash R and Troiano RP (2003). "Structure
-## of dietary measurement error: results of the OPEN
-## biomarker study." _American Journal of Epidemiology_,
-## *158*(1), pp. 14-21.
+## Kipnis V, Subar AF, Midthune D, Freedman LS, Ballard-Barbash R and
+## Troiano RP (2003). "Structure of dietary measurement error:
+## results of the OPEN biomarker study." _American Journal of
+## Epidemiology_, *158*(1), pp. 14-21.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
