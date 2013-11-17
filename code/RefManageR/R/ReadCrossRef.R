@@ -29,7 +29,7 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.
   results <- getForm("http://search.labs.crossref.org/dois", q=query, year=year, sort=sort,  
                      rows=limit)
   
-  if(delete.file)
+  if (delete.file)
     on.exit(unlink(temp.file, force = TRUE))
   
   fromj <- RJSONIO::fromJSON(results)

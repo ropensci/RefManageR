@@ -43,6 +43,7 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
   * option for download pdf or display url
   * option link.text='Download'
   * handle eprints
+592. read from WorldCat   
 
 ### Less Important/Smaller
 * Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg  
@@ -65,7 +66,6 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 * Review CrossRef [work on GitHub](https://github.com/gavinsimpson/orcid/blob/master/R/crossrefDOI.R)
 * add saved search parameter to ReadZotero function
 * summary function
-* ReadZotero delete temporary file
 * merge doesn't work when `length(bib1) > length(bib2)` in `bib1+bib2`
 
 DONE     
@@ -86,5 +86,30 @@ DONE
 * levels.BibEntry to access fields
 * added unlist and relist functions. relist use somewhat odd.
 * Can get DOIs or BibTeX entries from CrossRef
+* Read from Google Scholar by scholar ID
 
-==================================================================================================================
+=============================================================================================================
+
+JSS Doc Outline
+================================
+1. Intro
+2. Importing References
+  1. ReadBib
+  2. ReadZotero
+  3. ReadGS
+  4. ReadCrossRef
+  5. ReadPDFMeta
+  6. ReadPDFBib
+  7. ReadWorldCat
+3. Manipulating BibEntry Objects
+  1. Searching
+  2. Merging
+  3. Other Generics - sort, names, $, etc.
+4. Printing
+  1. Already available in bibentry
+  3. toBiblatex - toBibtex
+5. Summarizing
+  1. Plot
+    1. those word diagrams
+    2. d3.js directed graph without and without centre
+  2. `table`

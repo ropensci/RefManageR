@@ -202,6 +202,7 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
 <li>option link.text=&#39;Download&#39;</li>
 <li>handle eprints</li>
 </ul></li>
+<li>read from WorldCat<br/></li>
 </ol>
 
 <h3>Less Important/Smaller</h3>
@@ -227,7 +228,6 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 <li>Review CrossRef <a href="https://github.com/gavinsimpson/orcid/blob/master/R/crossrefDOI.R">work on GitHub</a></li>
 <li>add saved search parameter to ReadZotero function</li>
 <li>summary function</li>
-<li>ReadZotero delete temporary file</li>
 <li>merge doesn&#39;t work when <code>length(bib1) &gt; length(bib2)</code> in <code>bib1+bib2</code></li>
 </ul>
 
@@ -249,9 +249,48 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 <li>levels.BibEntry to access fields</li>
 <li>added unlist and relist functions. relist use somewhat odd.</li>
 <li>Can get DOIs or BibTeX entries from CrossRef</li>
+<li>Read from Google Scholar by scholar ID</li>
 </ul>
 
 <h1></h1>
+
+<h1>JSS Doc Outline</h1>
+
+<ol>
+<li>Intro</li>
+<li>Importing References
+
+<ol>
+<li>ReadBib</li>
+<li>ReadZotero</li>
+<li>ReadGS</li>
+<li>ReadCrossRef</li>
+<li>ReadPDFMeta</li>
+<li>ReadPDFBib</li>
+<li>ReadWorldCat</li>
+</ol></li>
+<li>Manipulating BibEntry Objects
+
+<ol>
+<li>Searching</li>
+<li>Merging</li>
+<li>Other Generics - sort, names, $, etc.</li>
+</ol></li>
+<li>Printing
+
+<ol>
+<li>Already available in bibentry</li>
+<li>toBiblatex - toBibtex</li>
+</ol></li>
+<li>Summarizing
+
+<ol>
+<li>Plot</li>
+<li>those word diagrams</li>
+<li>d3.js directed graph without and without centre</li>
+<li><code>table</code></li>
+</ol></li>
+</ol>
 
 </body>
 
