@@ -14,7 +14,7 @@
 
 ReadZotero <- function(user, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE, 
                        curl = getCurlHandler()){
-  if(delete.file)
+  if (delete.file)
     on.exit(unlink(temp.file, force = TRUE))
   
   bad.ind <- which(!names(.params) %in% c('q', 'itemType', 'tag', 'collection', 'key', 'limit', 'start', 'qmode'))
