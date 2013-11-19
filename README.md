@@ -44,6 +44,7 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
   * option link.text='Download'
   * handle eprints
 592. read from WorldCat   
+33. Read bibentries from clipboard
 
 ### Less Important/Smaller
 * Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg  
@@ -67,6 +68,7 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 * add saved search parameter to ReadZotero function
 * summary function
 * merge doesn't work when `length(bib1) > length(bib2)` in `bib1+bib2`
+* fix tryCatch in MakeBibEntry
 
 DONE     
 ==================================================================================================================
@@ -92,23 +94,27 @@ DONE
 
 JSS Doc Outline
 ================================
-1. Intro
-2. Importing References
+1. **Intro**
+2. **Importing References**
   1. ReadBib
+  2. ReadText
   2. ReadZotero
   3. ReadGS
   4. ReadCrossRef
   5. ReadPDFMeta
   6. ReadPDFBib
   7. ReadWorldCat
-3. Manipulating BibEntry Objects
+3. **Manipulating BibEntry Objects**
   1. Searching
   2. Merging
   3. Other Generics - sort, names, $, etc.
-4. Printing
+4. **Printing/Viewing/Saving**
   1. Already available in bibentry
   3. toBiblatex - toBibtex
-5. Summarizing
+  98. Opening
+  43. WriteBib? or just write.bib from `biblatex`
+  23. WriteZotero
+5. **Summarizing**
   1. Plot
     1. those word diagrams
     2. d3.js directed graph without and without centre
