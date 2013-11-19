@@ -344,19 +344,26 @@ MakeBibEntry <- function (x, GS = FALSE) {
     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
   }
   
-  if("date" %in% names(y)){
-    y[['date']] <- as.Date(switch(as.character(nchar(y[['date']])),
+  if ("date" %in% names(y)){
+    if (!inherits(y[['date']], "POSIXlt"))
+      y[['date']] <- as.Date(switch(as.character(nchar(y[['date']])),
                                   '4' = paste0(y[['date']], '-01-01'),    # needed to get around R assigning current day and month when unspecified
                                   '7' = paste0(y[['date']], '-01'),  # %Y-%d which doesn't work with strptime
                                   y[['date']]))
   }else if ("year" %in% names(y)){
     y[["date"]] <- as.Date(paste0(y[["year"]], '-01-01'))
   }
-  
-  tryCatch(BibEntry(bibtype = type, key = key, other = y), 
-           error = function(e) {
-             message(sprintf("ignoring entry '%s' (line %d) because :\n\t%s\n", 
-                             key, attr(x, "srcref")[1], conditionMessage(e)))
-             NULL
-           })
+#  browser()
+  res <- try(BibEntry(bibtype = type, key = key, other = y), TRUE)
+  if (inherits(res, 'try-error')){
+    if(!is.null(y[['title']])){
+      message(paste0('Ignoring entry ', y[['title']], ' because'))
+      message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines      
+    }else{
+      message(paste0('Ignoring entry ', key, ' because'))
+      message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines      
+    }
+    return(NULL)
+  }
+  return(res)
 }
