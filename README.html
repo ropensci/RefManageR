@@ -229,7 +229,19 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 <li>Review CrossRef <a href="https://github.com/gavinsimpson/orcid/blob/master/R/crossrefDOI.R">work on GitHub</a></li>
 <li>add saved search parameter to ReadZotero function</li>
 <li>summary function</li>
+</ul>
+
+<h1>BUGS</h1>
+
+<ul>
 <li>merge doesn&#39;t work when <code>length(bib1) &gt; length(bib2)</code> in <code>bib1+bib2</code></li>
+<li>fix tryCatch in MakeBibEntry (<strong>FIXED</strong>)</li>
+<li><code>$</code> doesn&#39;t work for creating field that does not exist in any entries
+
+<ul>
+<li>happened in ReadPDFs when adding file info after calling MakeCitationList</li>
+<li>possible problem when list elements sent to make citation list are already BibEntry class?</li>
+</ul></li>
 </ul>
 
 <h1>DONE     </h1>
@@ -263,6 +275,7 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 
 <ol>
 <li>ReadBib</li>
+<li>ReadText</li>
 <li>ReadZotero</li>
 <li>ReadGS</li>
 <li>ReadCrossRef</li>
