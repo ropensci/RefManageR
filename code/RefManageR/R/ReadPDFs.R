@@ -1,6 +1,6 @@
 # lapply(list.files('M:/biblatex/code/RefManageR/R/', full=TRUE), source)
 
-ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref = TRUE) {
+ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref = TRUE, use.metadate = TRUE) {
   #outfile <- tempfile("pdfinfo")
   # browser()
 #   if (delete.file)
@@ -12,32 +12,38 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
   
 #  out <- lapply(files, function(x) system(paste(shQuote("pdfinfo"), shQuote('-enc'), shQuote(encoding), 
 #                                                              shQuote(normalizePath(x))), intern = TRUE)) 
-  message(paste0('Running Poppler pdfinfo on ',length(files), ' pdfs...'))
-  flush.console()
-  n.files <- shQuote(normalizePath(files))
-  out <- lapply(n.files, function(x) system2("pdfinfo", paste(shQuote('-enc'), shQuote(encoding), 
-                                                 x), stdout = TRUE, stderr = TRUE))
-#  message(paste0('Constructing bibliography entries')) 
-#  flush.console()
-  not.done <- seq_along(out)
-  if (use.crossref){
+  
+  not.done <- seq_along(files)
+  dois <- NULL
+  if (use.metadata){
+    message(paste0('Running Poppler pdfinfo on ',length(files), ' pdfs...'))
+    flush.console()
+    out <- lapply(files, function(x) system2("pdfinfo", paste(shQuote('-enc'), shQuote(encoding), 
+                                              shQuote(normalizePath(x))), stdout = TRUE, stderr = TRUE))
+    
     dois <- sapply(out, SearchDOIMeta)
     not.done <- which(is.na(dois))
-    
-    more.dois <- sapply(files[not.done], SearchDOIFirstPage, enc = encoding)
-    dois <- c(dois[-not.done], na.omit(more.dois))
-    not.done <- not.done[is.na(more.dois)]
+  }
+
+  more.dois <- sapply(files[not.done], SearchDOIFirstPage, enc = encoding)
+  dois <- c(dois[-not.done], na.omit(more.dois))
+  not.done <- not.done[is.na(more.dois)]
+  
+  if (use.crossref){
     message(paste0('Getting ', length(dois), ' BibTeX entries from CrossRef...'))
     flush.console()
-    res <- lapply(dois, ReadCrossRef)
+    # res <- lapply(dois, ReadCrossRef)
+    res <- llply(as.list(dois), ReadCrossRef, .progress = progress_text(char = "."))
     if (length(not.done) < length(out)){
-      res <- MakeCitationList(res)
       inds <- seq_along(out)[-not.done]
       for (i in 1:length(inds))
-           res[[i]]$file <- files[inds[i]]
+        res[[i]]$file <- files[inds[i]]
+      res <- MakeCitationList(res)
     }
   }
-  browser()
+ # browser()
+  res2 <- NULL
+  if (use.metadata){
    message(paste0('Attempting to create BibTeX entries from PDF metadata for ', length(not.done), ' entries...'))
    res2 <- mapply(ProcessPDFMeta, out[not.done], files[not.done], MoreArgs = list(enc=encoding, check.doi = !use.crossref), 
                  SIMPLIFY = FALSE)  # lapply(out, ProcessPDFMeta, encoding=encoding)
@@ -45,6 +51,7 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
    res2 <- res2[!is.na(res2)]
    res2 <- lapply(res2, MakeBibEntry, GS = TRUE)
    res2 <- MakeCitationList(res2)
+  }
    c(res, res2)
 }
 
@@ -60,9 +67,9 @@ SearchDOIMeta <- function(meta){
 
 SearchDOIFirstPage <- function(path, enc = encoding){
   #browser()
-  system2("pdftotext", paste(shQuote('-l'), shQuote('1'), shQuote('-enc'), shQuote(enc), shQuote(normalizePath(path))))
+  system2("pdftotext", paste(shQuote('-l'), shQuote('2'), shQuote('-enc'), shQuote(enc), shQuote(normalizePath(path))))
   tmp.file <- sub('.pdf', '.txt', path)
-  txt <- suppressWarnings(readLines(tmp.file))
+  txt <- suppressWarnings(readLines(tmp.file, encoding = enc))
   res <- SearchDOIMeta(txt)
   file.remove(tmp.file)
   return(res)

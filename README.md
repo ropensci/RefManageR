@@ -67,8 +67,15 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 * Review CrossRef [work on GitHub](https://github.com/gavinsimpson/orcid/blob/master/R/crossrefDOI.R)
 * add saved search parameter to ReadZotero function
 * summary function
+
+
+BUGS
+=================================================================================
 * merge doesn't work when `length(bib1) > length(bib2)` in `bib1+bib2`
-* fix tryCatch in MakeBibEntry
+* fix tryCatch in MakeBibEntry (**FIXED**)
+* `$` doesn't work for creating field that does not exist in any entries
+  * happened in ReadPDFs when adding file info after calling MakeCitationList
+  * possible problem when list elements sent to make citation list are already BibEntry class?
 
 DONE     
 ==================================================================================================================
