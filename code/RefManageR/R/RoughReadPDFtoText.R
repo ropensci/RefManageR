@@ -24,6 +24,7 @@ system2('pdftotext', '-l 2 Scott-VarParmNear0slow.pdf')
 system2('pdftotext', '-l 2 Ohara-BayesVarSelectionReview.pdf')
 system2('pdftotext', '-l 2 ProprietyOfPosteriorsForGLMMs.pdf')
 system2('pdftotext', '-l 2 arxivtest.pdf')
+system2('pdftotext', '-l 2 jasatest.pdf')
 system2('pdftotext', '-l 2 mearxiv.pdf')
 system2('pdftotext', '-l 2 pubmed1.pdf')
 system2('pdftotext', '-l 2 pubmed2.pdf')
@@ -33,6 +34,7 @@ doc <- readLines('Scott-VarParmNear0slow.txt')
 doc2 <- readLines('Ohara-BayesVarSelectionReview.txt')
 doc3 <- readLines('ProprietyOfPosteriorsForGLMMs.txt')
 doc4 <- readLines('arxivtest.txt')
+jasa <- readLines('jasatest.txt')
 docme <- readLines('mearxiv.txt', encoding = 'UTF-8')
 docpm1 <- readLines('pubmed1.txt', encoding = 'UTF-8')
 docpm2 <- readLines('pubmed2.txt', encoding = 'UTF-8')
@@ -40,7 +42,7 @@ jstordoc <- readLines('Gelfand-ImproperPriorsForGLMs(JASA1999).txt', encoding = 
 jstordoc2 <- readLines('jstorLT.txt', encoding = 'UTF-8')
 
 # keywords
-ind <- grep('Keywords:[[:space:]]*', doc)
+ind <- grep('K[Ee][Yy][[:space:]]?[Ww][Oo][Rr][Dd][Ss]:[[:space:]]*', doc)
 m <- regexpr('Keywords:[[:space:]]*[A-Za-z]+\\s', doc, perl=TRUE)
 regmatches(doc, m)
 keywords <- sub('Keywords:[[:space:]]*', '', doc[ind]) 
@@ -62,8 +64,17 @@ regmatches(tnames, m)
 # match multiple authors
 mnames <- c('M. W. McLean, Ana-Maria Staicu, David Ruppert', 'Giles Hooker', 'Manny Pacquiao and T. L. Lewis')
 ind <- grep("([A-Z][a-z]*[\\.]?[[:space:]-]([A-Z]?[a-z]*[\\.]?[[:space:]-])*[[:upper:]][[:alpha:]'-]+([[:print:]]*)?)+", mnames)
+ind2 <- grep("([A-Z][a-z]*[\\.]?[[:space:]-]([A-Z]?[a-z]*[\\.]?[[:space:]-])*[[:upper:]][[:alpha:]'-]+[[:space:]]?(and)?[,;&]?[[:space:]])+", mnames)
+
+m <- regexpr(paste0("([A-Z][a-z]*[\\.]?[ -]",  # first name, maybe hypenated or abbrev.
+  "([A-Z][a-z]*[\\.]?[ -])*",  # optional middle name or initial, maybe hypenated
+"[[:upper:]][[:alpha:]'-]+[[:space:]]?",  # last name potential extra char to 
+"(and)?[,;&$]?[[:space:]]?)+$"),  # and, ",", ";", or "&" to seperate names. Repeat
+                    mnames)
 m <- regexpr("([A-Z][a-z]*[\\.]?[[:space:]-]([A-Z]?[a-z]*[\\.]?[[:space:]-])*[[:upper:]][[:alpha:]'-]+([[:print:]]*)?)+", mnames)
 regmatches(mnames, m)
+
+gsub("[^[:alpha:] '-]", '', tempnames)  # remove special characters end of names (e.g. McLean*, Carroll^#)
 
 # e.g.: Ana-Maria Staicu, A.-M. Staicu, R. de Vries, Oscar de la Hoya, Mathew McLean, Manuel Febrero-Bande
 # Shaq O'Neal, T. T. T. Smith
@@ -71,6 +82,44 @@ regmatches(mnames, m)
 # ind <- regexpr('[[:upper:]](\\.|[a-z]+)[.]?[[:space:]][A-Z]?[a-z]*[.]?[[:space:]]?[[:upper:]][[:alpha:]]+', docme)
 # regmatches(docme, ind)
 
+GetAuthorTitle <- function(doc){
+  ind <- grep('^A[Bb][Ss][Tt][Rr][Aa][Cc][Tt][:.]?\\>', doc)[1]
+  if (!is.na(ind) && ind > 2)  # assume title/author comes before Abstract. need 2nd cond. for ind==1
+    doc <- doc[1:(ind-1)]
+#  browser()
+#   aut.ind <- regexpr(paste0("^([A-Z][a-z]*[\\.]?[ -]",  # first name, maybe hypenated or abbrev.
+#                       "([A-Z][a-z]*[\\.]?[ -])*",  # optional middle name or initial, maybe hypenated
+#                       "[[:upper:]][[:alpha:]'-]+.?[[:space:]]?",  # last name + potential extra char to 
+#                       "(, )?(Jr)?(II)?(III)?(IV)?(, )?(MD)?(, )?(Ph|HD)?.?",  # optional qualifications      
+#                       "(and)?[,;&$]?[[:space:]]?)+$"),  # and, ",", ";", or "&" to seperate names. Repeat
+#                doc)
+  
+  aut.ind <- regexpr(paste0(# invalid words negate match
+    "(?!Online|Supplement|Data|University|College|Institute|School)",
+    "^([A-Z][a-z]*[\\.]?[ -]",  # first name, maybe hypenated or abbrev.
+    "([A-Z][a-z]*[\\.]?[ -])*",  # optional middle name or initial, maybe hypenated
+    "[[:upper:]][[:alpha:]'-]+.?[[:space:]]?",  # last name + potential extra char to 
+    "(, )?(Jr)?(II)?(III)?(IV)?(, )?(MD)?(, )?(Ph|HD)?.?",  # optional qualifications      
+    "(?<!Online|Supplement|Data|University|College|Institute|School)", 
+    "(and)?[,;&$]?[[:space:]]?)+$"),  # and, ",", ";", or "&" to seperate names. Repeat
+                     doc, perl=TRUE)
+  aut.match <- regmatches(doc, aut.ind)
+  aut.match <- gsub(",?( MD)?,?( P(H|h)D)?", '', aut.match)  # remove MD and PhD
+  aut.match <- gsub("[^[:alpha:] ,'-](, MD)?(, P(H|h)D)?", '', aut.match)  # remove punct at end of last name
+  return(list(ind=which(aut.ind != -1), match=aut.match, ab.ind=ind))
+}
+
+
+aut.ind <- regexpr(paste0(# invalid words negate match
+  "(?!Online|Supplement|Data|University|College|Institute|School)",
+  "^([A-Z][a-z]*[\\.]?[ -]",  # first name, maybe hypenated or abbrev.
+                          "([A-Z][a-z]*[\\.]?[ -])*",  # optional middle name or initial, maybe hypenated
+                          "[[:upper:]][[:alpha:]'-]+.?[[:space:]]?",  # last name + potential extra char to 
+                          "(, )?(Jr)?(II)?(III)?(IV)?(, )?(MD)?(, )?(Ph|HD)?.?",  # optional qualifications      
+  "(?<!Online|Supplement|Data|University|College|Institute|School)", 
+                          "(and)?[,;&$]?[[:space:]]?)+$"),  # and, ",", ";", or "&" to seperate names. Repeat
+                   doc, perl=TRUE)
+regmatches(doc, aut.ind)
 
 # volume
 #volume <- grep('(?:Vol|Volume)[[:punct:]]?[[:space:]]?[0-9]+', doc2, value=TRUE)[1]
