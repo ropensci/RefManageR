@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>biblatex</title>
+<title>RefManageR</title>
 
 <style type="text/css">
 body, td {
@@ -141,9 +141,15 @@ hr {
 </head>
 
 <body>
-<h1>biblatex</h1>
+<h1>RefManageR</h1>
 
-<p>R package biblatex</p>
+<p>R package RefManageR</p>
+
+<h1>Overview</h1>
+
+<p>The purpose of this work is to develop an R package which will make it very easy for users to manipulate bibliographic information within R.  R already has a useful <code>bibentry</code> class and <code>person</code> class for managing <code>BibTeX</code> entries and author information.  There is also a very useful function in the package <code>bibtex</code> for reading a <code>.bib</code> file into and creating an object of class <code>bibentry</code> from the references in the file.  </p>
+
+<p>We will add additional functionality to these existing tools in a number of ways: 1) By including many additional tools for importing bibliographic references, 2) By providing convenient tools for manipulating objects of class <code>bibentry</code> including searching and merging, 3) By providing tools for summarizing <code>bibentry</code> objects including plotting, printing, tabling, writing to files or to the web, etc., and 4) By providing support for <code>BibLaTeX</code> which is to this point not available in R, but offers much, much greater functionality for using <code>.bib</code> files in <code>LaTeX</code> than <code>BibTeX</code>.</p>
 
 <h1>To Do:</h1>
 
@@ -174,7 +180,6 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
 <li>fix print to handle date field and <em>requires adding a bibstyle</em></li>
 <li>implement a useful summary function</li>
 <li>update print function to include index (i.e. entry numbers) in database</li>
-<li>vectorize fields in search function <code>all(pmatch(searchterm, fields))</code> perhaps?</li>
 <li>Convert to and from data.frame for use with plyr</li>
 <li>read from WorldCat<br/></li>
 <li>Read bibentries from clipboard</li>
@@ -252,6 +257,7 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 <li>added unlist and relist functions. relist use somewhat odd.</li>
 <li>let users set &ldquo;[.BibEntry&rdquo; and &ldquo;+.BibEntry&rdquo; defaults using getOptions() or BibEntryOptions() accessors and mutators</li>
 <li>add function for merging which handles duplicates (needs debugging)</li>
+<li>allow vector fields in search function <code>all(pmatch(searchterm, fields))</code> perhaps?</li>
 </ul>
 
 <h1></h1>
