@@ -26,14 +26,20 @@ require(RJSONIO)
 
 ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.relevance = 80,
                            temp.file = tempfile(fileext = '.bib'), delete.file = TRUE, verbose = FALSE){
+  if (is.na(query))
+    return(NA)
   results <- getForm("http://search.labs.crossref.org/dois", q=query, year=year, sort=sort,  
                      rows=limit)
-  
+ # browser()
   if (delete.file)
     on.exit(unlink(temp.file, force = TRUE))
   
   fromj <- RJSONIO::fromJSON(results)
   num.res <- min(limit, length(fromj))
+  if(num.res == 0){
+    message(paste0('Query \"', query, '\" returned no matches'))
+    return(NA)
+  }
 
   if (num.res > 0){
     file.create(temp.file)
@@ -52,9 +58,10 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.
         write(temp, file = temp.file, append=TRUE)
       }
     }
+    bib.res <- ReadBib(file=temp.file, encoding='UTF-8')  
   }
  # write(temp, file = temp.file, append=TRUE)
-  bib.res <- ReadBib(file=temp.file, encoding='UTF-8')
+  
 
   return(bib.res)
 }

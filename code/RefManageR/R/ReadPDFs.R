@@ -1,10 +1,11 @@
 # lapply(list.files('M:/biblatex/code/RefManageR/R/', full=TRUE), source)
 
-ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref = TRUE, use.metadate = TRUE) {
+ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref = TRUE, use.metadata = TRUE) {
   #outfile <- tempfile("pdfinfo")
   # browser()
 #   if (delete.file)
 #     on.exit(unlink(temp.file))
+#  files1 <- files2 <- files3 <- NULL
   
   files <- list.files(path, pattern = '.pdf$', full.name = TRUE, recursive = recursive)
   if (!length(files))  # check if directory or file specified
@@ -12,209 +13,102 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
   
 #  out <- lapply(files, function(x) system(paste(shQuote("pdfinfo"), shQuote('-enc'), shQuote(encoding), 
 #                                                              shQuote(normalizePath(x))), intern = TRUE)) 
-  
-  not.done <- seq_along(files)
+  n.files <- length(files)
+  not.done <- seq.int(n.files)
   dois <- NULL
+  
+  #########################################################################
+  # read metadata and search for DOI
+  ########################################################################
   if (use.metadata){
-    message(paste0('Running Poppler pdfinfo on ',length(files), ' pdfs...'))
+    message(paste0('Getting Metadata for ',length(files), ' pdfs...'))
     flush.console()
     out <- lapply(files, function(x) system2("pdfinfo", paste(shQuote('-enc'), shQuote(encoding), 
                                               shQuote(normalizePath(x))), stdout = TRUE, stderr = TRUE))
     
-    dois <- sapply(out, SearchDOIMeta)
+    dois <- sapply(out, SearchDOIText)
     not.done <- which(is.na(dois))
   }
 
-  more.dois <- sapply(files[not.done], SearchDOIFirstPage, enc = encoding)
-  dois <- c(dois[-not.done], na.omit(more.dois))
-  not.done <- not.done[is.na(more.dois)]
-  
+  ########################################
+  # search first two pages of pdf for DOI
+  ########################################
+#   tdir <- tempdir()
+#   on.exit(unlink(tdir))
+ # browser()
+  #SearchDOIFirstPage <- function(path, enc = encoding){
+  txt.files <- vector('list', length(not.done))
+  more.dois <- vector('character', length(not.done))
+  for (i in seq.int(n.files)){
+    tpath <- files[i]
+    system2("pdftotext", paste(shQuote('-l'), shQuote('2'), shQuote('-enc'), shQuote(encoding), 
+                               shQuote(normalizePath(tpath))))
+    tmp.file <- sub('.pdf', '.txt', tpath)
+    txt.files[[i]] <- suppressWarnings(readLines(tmp.file, encoding = encoding))
+    if (!use.metadata || i %in% not.done)  # if didn't find doi in meta search first two pages
+      more.dois[i] <- SearchDOIText(txt.files[[i]])
+    file.remove(tmp.file)
+  }
+  #more.dois <- sapply(files[not.done], SearchDOIFirstPage, enc = encoding)
+  dois[not.done] <- more.dois[not.done]
+
+  res <- NULL
   if (use.crossref){
-    message(paste0('Getting ', length(dois), ' BibTeX entries from CrossRef...'))
+    #not.done <- not.done[is.na(more.dois)]
+    not.na1 <- !is.na(dois)
+   # dois <- c(dois[-not.done], na.omit(more.dois))
+    message(paste0('Getting ', sum(not.na1), ' BibTeX entries from CrossRef...'))
     flush.console()
     # res <- lapply(dois, ReadCrossRef)
-    res <- llply(as.list(dois), ReadCrossRef, .progress = progress_text(char = "."))
-    if (length(not.done) < length(out)){
-      inds <- seq_along(out)[-not.done]
-      for (i in 1:length(inds))
-        res[[i]]$file <- files[inds[i]]
-      res <- MakeCitationList(res)
-    }
+    res <- llply(as.list(dois[not.na1]), ReadCrossRef, .progress = progress_text(char = "."))
+    message('Done')
+    not.done <- seq.int(n.files)[-which(not.na1)[!is.na(res)]]
+  }
+
+  if (length(not.done)){
+    message(paste0('Attempting to create BibTeX entries from first PDF pages for ', length(not.done), ' entries...'))
+    res2 <- mapply(ReadFirstPages, txt.files[not.done], files[not.done], SIMPLIFY = FALSE)  # lapply(out, ProcessPDFMeta, encoding=encoding)
+    message('Done.')
+  #  files2 <- files[!na2]
+    flush.console()
+  #  not.done <- not.done[na2]
   }
  # browser()
-  res2 <- NULL
-  if (use.metadata){
+  res3 <- NULL
+  if (use.metadata && length(not.done)){
    message(paste0('Attempting to create BibTeX entries from PDF metadata for ', length(not.done), ' entries...'))
-   res2 <- mapply(ProcessPDFMeta, out[not.done], files[not.done], MoreArgs = list(enc=encoding, check.doi = !use.crossref), 
+   res3 <- mapply(ProcessPDFMeta, out[not.done], files[not.done], MoreArgs = list(enc=encoding, check.doi = !use.crossref), 
                  SIMPLIFY = FALSE)  # lapply(out, ProcessPDFMeta, encoding=encoding)
+   message('Done.')
    flush.console()
-   res2 <- res2[!is.na(res2)]
-   res2 <- lapply(res2, MakeBibEntry, GS = TRUE)
-   res2 <- MakeCitationList(res2)
-  }
-   c(res, res2)
-}
+  # na3 <- is.na(res3)
+   #res3 <- res3[!na3]
+   res2 <- AddListToList(res2, res3)
+  # files3 <- files[!na3]
+   not.done <- not.done[is.na(res2)]
+   
+   #res2 <- lapply(res2, MakeBibEntry, GS = TRUE)
+   #res2 <- MakeCitationList(res2)
+   #res2 <- c(res2, res3)
+  }#else{
+  #  not.done <- not.done[na2]
+  #  not.done <- not.done[na2]
+  #}
+  res2 <- res2[!is.na(res2)]
+  res2 <- lapply(res2, MakeBibEntry, GS = TRUE)
+  res <- c(res, res2)
 
-SearchDOIMeta <- function(meta){
-  pattern  <- "\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'])\\S)+)\\b"
-  m <- regexpr(pattern, meta, perl=TRUE)
-  if(all(m == -1)){
-    return(NA)
-  }else{
-    return(regmatches(meta, m)[1])
-  }
-}
-
-SearchDOIFirstPage <- function(path, enc = encoding){
-  #browser()
-  system2("pdftotext", paste(shQuote('-l'), shQuote('2'), shQuote('-enc'), shQuote(enc), shQuote(normalizePath(path))))
-  tmp.file <- sub('.pdf', '.txt', path)
-  txt <- suppressWarnings(readLines(tmp.file, encoding = enc))
-  res <- SearchDOIMeta(txt)
-  file.remove(tmp.file)
-  return(res)
-}
-
-ProcessPDFMeta <- function(x, enc = 'UTF-8', path, check.doi = FALSE){
-  #status <- system2("pdfinfo", args = c('-enc', encoding, shQuote(normalizePath(file))), 
-  #                  stdout = outfile)
- # browser()
-  Encoding(x) <- enc
-  tags <- c("Title", "Author")
-#             , "Creator", "Subject"
-#             "Producer", "CreationDate", "ModDate", "Tagged", "Form", 
-#             "Pages", "Encrypted", "Page size", "File size", "Optimized", 
-#             "PDF version")
-  re <- sprintf("^(%s)", paste(sprintf("%-16s", sprintf("%s:", 
-                                                        tags)), collapse = "|"))
-  #lines <- readLines(temp.file, warn = FALSE)
-  # ind <- which(grepl(re, x))
-  found.tags <- substring(x, 1L, 16L)
-  ind <- pmatch(tags, found.tags)
-  if (any(is.na(ind)) || any((info <- sub(re, "", x[ind]))=='')){
-    message('Ignoring the following entry due to missing Title and/or Author metadata:')
-    message(path)
-    return(NA)
-  }
-  
-  #tags <- sub(": *", "", substring(x, 1L, 16L))
-  #info <- split(sub(re, "", x), cumsum(ind))
-  #info <- sub(re, "", x)[ind]
-  res <- list(title = info[1],
-              author = as.person(info[2]))
-  
-  # add keywords if available
-  ind <- pmatch('Keywords', found.tags)
-  if(!is.na(ind))
-    res$keywords <- sub('Keywords:[[:space:]]+', '', x[ind])
-  
-  ind <- pmatch('Subject', found.tags)
-  if (!is.na(ind)){
-    subj <- sub('Subject:[[:space:]]+', '', x[ind])
-    
-    if (subj != ''){
-      res <- c(res, ProcessPDFSubject(subj, check.doi))
+  # add file names and dois as fields (if doi not done already)
+  if (length(not.done) < length(out)){
+    inds <- seq.int(n.files)[-not.done]
+    for (i in 1L:length(inds)){
+      res[[i]]$file <- files[inds[i]]
+      if (!use.crossref && !is.na(dois[inds[i]])) 
+        res[[i]]$doi <- dois[inds[i]]
     }
   }
   
-
-  
-  # if year not in Subject, use ModDate or CreationDate
-  if (is.null(res$year)){
-    ind <- pmatch('ModDate', found.tags)
-    if(!is.na(ind)){
-      res$date <- sub('ModDate:[[:space:]]+', '', x[ind])
-      res$date <- strptime(res$date, format = "%m/%d/%y %H:%M:%S")
-      if (!inherits(res$date, 'try-error')){
-        res$year <- year(res$date)
-        res$date <- trunc(res$date, 'days')
-      }
-    }else if (!is.na(ind <-pmatch('CreationDate', found.tags))){
-      res$date <- sub('CreationDate:[[:space:]]+', '', x[ind])
-      res$date <- try(strptime(res$date, format = "%m/%d/%y %H:%M:%S"), TRUE)
-      if (!inherits(res$date, 'try-error')){
-        res$year <- year(res$date)
-        res$date <- trunc(res$date, 'days')
-      }
-    }
-    # if year still NULL due to no ModDate or CreationDate, or wrong format of either: give up
-    if (is.null(res$year)){
-      message('Cannot determine year/date, the following entry will be ignored:')
-      message(path)
-      return(NA)      
-    }
-  }
-  
-  res$file <- path
-  
-  # create key
-  aut <- tolower(res$author[1]$family[1])  # get last name of first author
-  aut <- gsub(',', '', aut)  # remove trailing commas
-  first.word <- tolower(strsplit(res$title, ' ')[[1]][[1]])  # get first word of title
-  attr(res, 'key') <- paste0(aut, res$year, first.word)
-  
-  if (!is.null(res$journal)){
-    attr(res, 'entry') <- 'article'
-  }else{
-    attr(res, 'entry') <- 'misc'
-  }
-  
-  return(res)
-}
-
-
-ProcessPDFSubject <- function(subj, check.doi = FALSE){
-  res <- list()
-  
-  # first check for doi
-  if (check.doi){
-    pattern  <- "\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'])\\S)+)\\b"
-    m <- regexpr(pattern, temp, perl=TRUE)
-    if (m != -1){
-      res$doi <- regmatches(temp, m)
-      subj <- regmatches(temp, m, invert = TRUE)
-      subj <- gsub('doi:', '', subj)
-    }
-  }
-  
-  strs <- strsplit(subj, ',[[:space:]]?')[[1]]
-  # m <- regexpr('/^[^,]*/', subj, perl = TRUE)
-  # m <- regexpr('[[:print:^,]]+,', subj)
-  res$journal <- strs[1]
-  strs <- strs[-1]
-  
-  m <- regexpr('^[Vv]ol.[[:space:]]?', strs)
-  ind <- which(m!=-1)
-  if (length(ind)){
-    res$volume <- gsub('^[Vv]ol.[[:space:]]?', '', strs[ind])
-    strs <- strs[-ind]
-  }
-
-  m <- regexpr('^[Nn]o.[[:space:]]?', strs)
-  ind <- which(m!=-1)
-  if (length(ind)){
-    res$number <- gsub('^[No]o.[[:space:]]?', '', strs[ind])
-    strs <- strs[-ind]
-  }
-  
-  m <- regexpr('^[[:digit:]]{4}$', strs)
-  ind <- which(m!=-1)
-  if (length(ind)){
-    res$year <- regmatches(strs, m)
-    strs <- strs[-ind]
-  }
-  
-  # be extra careful matching hypen. usuallly it's \u2013, an en dash
-  m <- regexpr('[0-9]+[-\u2212\ufe58\ufe63\uff0d\u2012-\u2015][0-9]+', strs)
-  ind <- which(m!=-1)
-  if (length(ind)){
-    res$pages <- grep('[0-9]+[-\u2212\ufe58\ufe63\uff0d\u2012-\u2015][0-9]+', strs[ind], value=TRUE)
-    strs <- strs[-ind]
-  }
-  
-  # if anything is left in the subject, add it to note field
-  if(length(strs))
-    res$note <- paste(strs, collapse = '')
+  res <- MakeCitationList(res)
   
   return(res)
 }
