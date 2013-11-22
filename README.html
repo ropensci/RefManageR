@@ -136,10 +136,6 @@ hr {
 
 
 
-<!-- MathJax scripts -->
-<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-
 
 
 </head>
@@ -157,17 +153,8 @@ hr {
 <li>create bibstyle for biblatex</li>
 <li>dig around in <code>utils:::citeNatbib</code></li>
 <li>new open function; convert all other RefManager.R functions to work with bibentry class</li>
-<li>read pdf&#39;s using pdftotext.exe; use list.files to add folder to database</li>
-<li>read bibliographies from pdftotext</li>
-<li>&ldquo;+.BibEntry&rdquo; function for merging two bibentry classes: <a href="http://stackoverflow.com/questions/8022979/operator-overloading-and-class-definition-in-r-use-a-different-base-field-corpu">S/O thread for overloading <code>+</code></a>. Also see ?Ops
-
-<ul>
-<li>handling duplicate entries</li>
-</ul></li>
 <li>write to zotero: <a href="http://www.zotero.org/support/dev/server_api/v2/write_requests">http://www.zotero.org/support/dev/server_api/v2/write_requests</a></li>
 <li>boolean for how invalid entries are handled: either change to misc or drop (see what force=TRUE does in bibentry fnctn)</li>
-<li>new <code>[</code> function e.g. db[&#39;author&#39;, &#39;mclean&#39;, 1:3] = first three entries in bib with mclean as author \( \neq \) db[1:3, &#39;author&#39;, &#39;mclean&#39;]</li>
-<li>add option for sorting results of subsetting based on diff fields and printing. See: utils:::sort.bibentry</li>
 <li>plot function. sig.: plot(db, field, plottype, &hellip;)  both &#39;author&#39; and &#39;author-full&#39; possible<br/>
 
 <ul>
@@ -186,27 +173,14 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
 </ul></li>
 <li>fix print to handle date field and <em>requires adding a bibstyle</em></li>
 <li>implement a useful summary function</li>
-<li>let users set &ldquo;[.BibEntry&rdquo; and &ldquo;+.BibEntry&rdquo; defaults using getOptions() or BibEntryOptions() accessors and mutators</li>
-<li>Use everything here: <a href="http://ropensci.org/packages/">http://ropensci.org/packages/</a></li>
-<li>add ORCHID to person class</li>
-<li>update print function to include index in database</li>
+<li>update print function to include index (i.e. entry numbers) in database</li>
 <li>vectorize fields in search function <code>all(pmatch(searchterm, fields))</code> perhaps?</li>
 <li>Convert to and from data.frame for use with plyr</li>
-<li>add &#39;html&#39; and &#39;html5&#39; option to print function
-
-<ul>
-<li>Check out <a href="http://cran.r-project.org/web/packages/R2HTML/R2HTML.pdf">R2HTML</a></li>
-<li>consider  option for html or html5 (if html5 use outline+summary to separate years)</li>
-<li>option for numbering ( &lt; ul &gt; or &lt; ol &gt; )</li>
-<li>option for download pdf or display url</li>
-<li>option link.text=&#39;Download&#39;</li>
-<li>handle eprints</li>
-</ul></li>
 <li>read from WorldCat<br/></li>
 <li>Read bibentries from clipboard</li>
 </ol>
 
-<h3>Less Important/Smaller</h3>
+<h3>Optional Additional Ideas</h3>
 
 <ul>
 <li>Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg<br/>
@@ -229,6 +203,19 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 <li>Review CrossRef <a href="https://github.com/gavinsimpson/orcid/blob/master/R/crossrefDOI.R">work on GitHub</a></li>
 <li>add saved search parameter to ReadZotero function</li>
 <li>summary function</li>
+<li>add option for sorting results of subsetting based on diff fields and printing. See: utils:::sort.bibentry</li>
+<li>add ORCHID to person class</li>
+<li>Integrate with: <a href="http://ropensci.org/packages/">http://ropensci.org/packages/</a></li>
+<li>add &#39;html&#39; and &#39;html5&#39; option to print function
+
+<ul>
+<li>Check out <a href="http://cran.r-project.org/web/packages/R2HTML/R2HTML.pdf">R2HTML</a></li>
+<li>consider  option for html or html5 (if html5 use outline+summary to separate years)</li>
+<li>option for numbering ( &lt; ul &gt; or &lt; ol &gt; )</li>
+<li>option for download pdf or display url</li>
+<li>option link.text=&#39;Download&#39;</li>
+<li>handle eprints</li>
+</ul></li>
 </ul>
 
 <h1>BUGS</h1>
@@ -248,21 +235,23 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 
 <ul>
 <li>read from Zotero: <a href="http://www.zotero.org/support/dev/server_api/v2/read_requests">http://www.zotero.org/support/dev/server_api/v2/read_requests</a></li>
-<li>open browser to Google Scholar for bibtex entry</li>
-<li>Biblatex entry types and fields supported</li>
+<li>get bib entries from Google Scholar by scholar ID</li>
+<li>Can get DOIs or BibTeX entries from CrossRef</li>
+<li>Read PDFs to get bib information</li>
+<li><code>BibLaTeX</code> entry types and fields supported - still needing printing and conversion</li>
 <li>Unicode can be supported with little effort. encoding option in WriteBib; Unicode pkg; Encoding function</li>
 <li>use unclass(bibentryObj) to get entry type and key</li>
-<li>make date field date object</li>
+<li>made date field date object</li>
 <li>Extract operator works with date</li>
 <li>created names function to return keys of multiple entries or fields of one entry</li>
-<li>allow Extract function to take list argument</li>
-<li>allow Extract function to take vector of keys</li>
+<li>Extract function to takes list argument</li>
+<li>Extract function to takes vector of keys</li>
 <li>Exract works with entry types</li>
 <li><code>$&lt;-</code> works to assign fields from <em>bibentry</em> class</li>
 <li>levels.BibEntry to access fields</li>
 <li>added unlist and relist functions. relist use somewhat odd.</li>
-<li>Can get DOIs or BibTeX entries from CrossRef</li>
-<li>Read from Google Scholar by scholar ID</li>
+<li>let users set &ldquo;[.BibEntry&rdquo; and &ldquo;+.BibEntry&rdquo; defaults using getOptions() or BibEntryOptions() accessors and mutators</li>
+<li>add function for merging which handles duplicates (needs debugging)</li>
 </ul>
 
 <h1></h1>
@@ -280,7 +269,6 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 <li>ReadGS</li>
 <li>ReadCrossRef</li>
 <li>ReadPDFMeta</li>
-<li>ReadPDFBib</li>
 <li>ReadWorldCat</li>
 </ol></li>
 <li><strong>Manipulating BibEntry Objects</strong>
@@ -303,7 +291,7 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 
 <ol>
 <li>Plot</li>
-<li>those word diagrams</li>
+<li>word diagrams</li>
 <li>d3.js directed graph without and without centre</li>
 <li><code>table</code></li>
 </ol></li>
