@@ -3,6 +3,12 @@ RefManageR
 
 R package RefManageR
 
+Overview
+=====================================
+The purpose of this work is to develop an R package which will make it very easy for users to manipulate bibliographic information within R.  R already has a useful `bibentry` class and `person` class for managing `BibTeX` entries and author information.  There is also a very useful function in the package `bibtex` for reading a `.bib` file into and creating an object of class `bibentry` from the references in the file.  
+
+We will add additional functionality to these existing tools in a number of ways: 1) By including many additional tools for importing bibliographic references, 2) By providing convenient tools for manipulating objects of class `bibentry` including searching and merging, 3) By providing tools for summarizing `bibentry` objects including plotting, printing, tabling, writing to files or to the web, etc., and 4) By providing support for `BibLaTeX` which is to this point not available in R, but offers much, much greater functionality for using `.bib` files in `LaTeX` than `BibTeX`.
+
 To Do:
 ==================================================================================================================
 Important
