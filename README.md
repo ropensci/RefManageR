@@ -25,7 +25,6 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
 11. fix print to handle date field and _requires adding a bibstyle_
 12. implement a useful summary function
 16. update print function to include index (i.e. entry numbers) in database
-17. vectorize fields in search function `all(pmatch(searchterm, fields))` perhaps?
 67. Convert to and from data.frame for use with plyr
 592. read from WorldCat   
 33. Read bibentries from clipboard
@@ -91,6 +90,7 @@ DONE
 * added unlist and relist functions. relist use somewhat odd.
 * let users set "[.BibEntry" and "+.BibEntry" defaults using getOptions() or BibEntryOptions() accessors and mutators
 * add function for merging which handles duplicates (needs debugging)
+* allow vector fields in search function `all(pmatch(searchterm, fields))` perhaps?
 
 
 =============================================================================================================
