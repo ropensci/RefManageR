@@ -41,6 +41,9 @@ docpm2 <- readLines('pubmed2.txt', encoding = 'UTF-8')
 jstordoc <- readLines('Gelfand-ImproperPriorsForGLMs(JASA1999).txt', encoding = 'UTF-8')
 jstordoc2 <- readLines('jstorLT.txt', encoding = 'UTF-8')
 
+setwd('~/BayesFGAM/papers')
+system2('pdftotext', '-l 2 Marriott-DiagnosticsForVB(arXiv2013).pdf')
+docarx <- readLines('Marriott-DiagnosticsForVB(arXiv2013).txt')
 tnames <- c('Ana-Maria Staicu', 'A.-M. Staicu', 'R. de Vries', 'Oscar de la Hoya', 'Mathew McLean', 
             'Manuel Febrero-Bande', 'Shaq O\'Neal', 'T. T. T. Smith')
 # author     first name                 opt. middle name          last name

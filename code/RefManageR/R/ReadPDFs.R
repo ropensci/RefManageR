@@ -51,11 +51,12 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
   }
   #more.dois <- sapply(files[not.done], SearchDOIFirstPage, enc = encoding)
   dois[not.done] <- more.dois[not.done]
-
+  not.na1 <- !is.na(dois)
+  
   res <- NULL
-  if (use.crossref){
+  if (use.crossref && length(dois[not.na1])){
     #not.done <- not.done[is.na(more.dois)]
-    not.na1 <- !is.na(dois)
+    
    # dois <- c(dois[-not.done], na.omit(more.dois))
     message(paste0('Getting ', sum(not.na1), ' BibTeX entries from CrossRef...'))
     flush.console()
@@ -65,6 +66,8 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
     not.done <- seq.int(n.files)[-which(not.na1)[!is.na(res)]]
   }
 
+  #browser()
+  res2 <- NULL
   if (length(not.done)){
     message(paste0('Attempting to create BibTeX entries from first PDF pages for ', length(not.done), ' entries...'))
     res2 <- mapply(ReadFirstPages, txt.files[not.done], files[not.done], SIMPLIFY = FALSE)  # lapply(out, ProcessPDFMeta, encoding=encoding)
