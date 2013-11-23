@@ -74,6 +74,13 @@ BUGS
 * `$` doesn't work for creating field that does not exist in any entries
   * happened in ReadPDFs when adding file info after calling MakeCitationList
   * possible problem when list elements sent to make citation list are already BibEntry class?
+* if doi + url both available, `print` function formats and includes both as url
+* ReadPDF  
+  * key needs to be made after scanning text and meta data in ReadPDFs, not by both separately  
+  * msgs for entries with no author+title should not occur in both reading of text and metadata in `ReadPDFs`
+  * bug in adding `file` to `bibentry` object in ReadPDFs
+  * handle ligatures in ReadPDFs: ff: <U+FB00> 
+  * volume and number not working (FIXED)
 
 DONE     
 ==================================================================================================================
