@@ -1,6 +1,6 @@
 # lapply(list.files('M:/biblatex/code/RefManageR/R/', full=TRUE), source)
-
-ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref = TRUE, use.metadata = TRUE) {
+library(plyr)
+ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRUE, use.metadata = TRUE) {
   #outfile <- tempfile("pdfinfo")
   # browser()
 #   if (delete.file)
@@ -30,7 +30,7 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
   if (use.metadata){
     message(paste0('Getting Metadata for ',length(files), ' pdfs...'))
     flush.console()
-    out <- lapply(files, function(x) system2("pdfinfo", paste(shQuote('-enc'), shQuote(encoding), 
+    out <- lapply(files, function(x) system2("pdfinfo", paste(shQuote('-enc'), shQuote(.enc), 
                                               shQuote(normalizePath(x))), stdout = TRUE, stderr = TRUE))
     
     dois <- sapply(out, SearchDOIText)
@@ -43,7 +43,7 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
   ########################################
   GetPDFTxt <- function(tpath, page, tfile){
     system2("pdftotext", paste(shQuote('-f'), shQuote(page), shQuote('-l'), shQuote(page), 
-                               shQuote('-enc'), shQuote(encoding), 
+                               shQuote('-enc'), shQuote(.enc), 
                                shQuote(normalizePath(tpath)), shQuote(tfile)))
     suppressWarnings(readLines(tfile, encoding = encoding))
   }
@@ -56,11 +56,13 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
   # check first page for JSTOR, if yes grab info from both pages, else NA
   resJSTOR <- mapply(CheckJSTOR, txt.files1, txt.files2)
   JSTOR.ind <- !is.na(resJSTOR)
+  done.inds <- which(JSTOR.ind)
   if(any(JSTOR.ind)){
-    for (i in which(JSTOR.ind))
-      resJSTOR[[i]]$file <- files[i]
+  #  for (i in which(JSTOR.ind))
+  #    resJSTOR[[i]]$file <- files[i]
     not.done <- not.done[!JSTOR.ind]
   }
+  resJSTOR <- resJSTOR[JSTOR.ind]
   
   tind <- !JSTOR.ind & !doi.meta.ind
   # get DOIs and read from CrossRef
@@ -73,7 +75,8 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
   }
   
   # don't call CrossRef if JSTOR already got info (need to check if DOI from metadata and JSTOR)
-  doi.ind <- c(which(doi.meta.ind[!JSTOR.ind]), doi.text.ind)
+  metadoi.pos <- which(doi.meta.ind)
+  doi.ind <- c(metadoi.pos[!metadoi.pos %in% JSTOR.ind], doi.text.ind)
   comb.doi <- c(dois[!JSTOR.ind & doi.meta.ind], more.dois[!is.na(more.dois)])
   
   # get bib info from CrossRef
@@ -82,36 +85,46 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
     message(paste0('Getting ', length(comb.doi), ' BibTeX entries from CrossRef...'))
     flush.console()
     # res <- lapply(dois, ReadCrossRef)
-    resCR <- vector('list', length(doi.ind))
-    for (i in 1:length(doi.ind))
-      resCR[[i]] <- unclass(ReadCrossRef(comb.doi[i]))
-    resCR <- llply(as.list(comb.doi), ReadCrossRef, .progress = progress_text(char = "."))
+#     resCR <- vector('list', length(doi.ind))
+#      for (i in 1:length(doi.ind))
+#        resCR[[i]] <- unclass(ReadCrossRef(comb.doi[i], temp.file = tmpbib, delete.file = FALSE))
+#     resCR <- llply(as.list(comb.doi), ReadCrossRef, .progress = progress_text(char = "."))
+    tmpbib <- tempfile(fileext = ".bib", tmpdir=getwd())
+    resCR <- llply(as.list(comb.doi), .fun = function(x, tmpfile){
+      rcrres <- ReadCrossRef(x, temp.file=tmpfile, delete.file=FALSE)
+      return(unclass(rcrres))
+      }, tmpfile = tmpbib, .progress = progress_text(char = "."))
+    file.remove(tmpbib)  
     message('Done')
     CR.ind <- !is.na(resCR)      # on very rare instances CrossRef doesn't have record for particular DOI
     badCR.ind <- doi.ind[!CR.ind]
-    resCR <- unclass(resCR)
-    res['files'] <- files[doi.ind[CR.ind]]
+    if(any(CR.ind)){
+#       for (i in which(CR.ind))
+#         resCR[[i]]$file <- files[doi.ind[i]]
+      not.done <- not.done[!not.done %in% doi.ind[CR.ind]]
+      done.inds <- c(done.inds, doi.ind[CR.ind])
+    }
    # class(res) <- c('Bibentry', 'bibentry')
-    not.done <- not.done[-doi.ind[CR.ind]] # seq.int(n.files)[-which(not.na1)[!is.na(res)]]
+   #  not.done <- not.done[-doi.ind[CR.ind]] # seq.int(n.files)[-which(not.na1)[!is.na(res)]]
   }
   
   # get bib info from first page. if dont find abstract on first page, use second page too
-  res <- lapply(txt.files1[not.done], CheckFirstPages)
+  res <- lapply(txt.files1[not.done], ReadFirstPages)
   # not.done <- not.done[is.na(res) || !res$found.abstract]
-  res2 <- lapply(txt.files2[not.done], CheckFirstPages)
+  res2 <- lapply(txt.files2[not.done], ReadFirstPages)
   
 
  # browser()
   resMeta <- NULL
   if (use.metadata && length(not.done)){
    message(paste0('Attempting to create BibTeX entries from PDF metadata for ', length(not.done), ' entries...'))
-   resMeta <- mapply(ProcessPDFMeta, out[not.done], files[not.done], MoreArgs = list(enc=encoding, check.doi = !use.crossref), 
-                 SIMPLIFY = FALSE)  # lapply(out, ProcessPDFMeta, encoding=encoding)
+   resMeta <- lapply(out[not.done], ProcessPDFMeta, enc=.Encoding) 
+                 
    message('Done.')
    flush.console()
   # na3 <- is.na(res3)
    #res3 <- res3[!na3]
-   res <- AddListToList(res, resMeta)
+  # res <- AddListToList(res, resMeta)
   # files3 <- files[!na3]
    # not.done <- not.done[is.na(res2)]
    
@@ -122,12 +135,14 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
   }else{
    res <- mapply(CleanAuthorTitle, res, res2, files[not.done], MoreArgs = list(resMeta=NULL)) 
   }
+  done.inds <- c(done.inds, not.done[!is.na(res)])
   res <- res[!is.na(res)]  # remove entries with no author or title info
 
-  res <- lapply(c(res, resJSTOR), MakeBibEntry, GS = TRUE)
   if (use.crossref)
-    res <- c(res, resCR)
+    resJSTOR <- c(resJSTOR, resCR)
 
+  res <- c(resJSTOR, res)
+  res <- lapply(res, MakeBibEntry, GS = TRUE)
   # add file names and dois as fields (if doi not done already)
   if (length(not.done) < length(out)){
     inds <- seq.int(n.files)[-not.done]

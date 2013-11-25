@@ -8,7 +8,7 @@ Import book and article references from a public Google Scholar profile by ID.
 This function will create a BibEntry object for up to 100 references from a provided Google Scholar ID, if the profile is public.  The number of citations for each entry will also be imported.
 }
 \usage{
-GSImport(scholar.id, start = 0, limit = 100, sort.by.date = FALSE, encoding = "UTF-8", bib.violation = .BibOptions$bib.violation)
+GSImport(scholar.id, start = 0, limit = 100, sort.by.date = FALSE, .Encoding = "UTF-8", bib.violation = .BibOptions$bib.violation)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,7 +24,7 @@ numeric; maximum number of results to return.  Cannot be more than 100.
   \item{sort.by.date}{
   boolean; if true, newest citations are imported first; otherwise, most cited works are imported first.
 }
-  \item{encoding}{
+  \item{.Encoding}{
 character; text encoding to use for importing the results and creating the bib entries.
 }
   \item{bib.violation}{
