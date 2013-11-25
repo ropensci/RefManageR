@@ -17,9 +17,16 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
   not.done <- seq.int(n.files)
   dois <- NULL
   
+#   FullInd <- function(in.ind, out){
+#     res <- logical(length(in.ind))
+#     res[in.ind] <- is.na(out)
+#     res
+#   }
+  browser()
+  
   #########################################################################
-  # read metadata and search for DOI
-  ########################################################################
+  # read metadata and search for DOI                                      #
+  #########################################################################
   if (use.metadata){
     message(paste0('Getting Metadata for ',length(files), ' pdfs...'))
     flush.console()
@@ -27,79 +34,99 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
                                               shQuote(normalizePath(x))), stdout = TRUE, stderr = TRUE))
     
     dois <- sapply(out, SearchDOIText)
-    not.done <- which(is.na(dois))
+    doi.meta.ind <- !is.na(dois)
+    # not.done <- which(is.na(dois))
   }
 
   ########################################
   # search first two pages of pdf for DOI
   ########################################
-#   tdir <- tempdir()
-#   on.exit(unlink(tdir))
- # browser()
-  #SearchDOIFirstPage <- function(path, enc = encoding){
-  txt.files <- vector('list', length(not.done))
-  more.dois <- vector('character', length(not.done))
-  for (i in seq.int(n.files)){
-    tpath <- files[i]
-    system2("pdftotext", paste(shQuote('-l'), shQuote('2'), shQuote('-enc'), shQuote(encoding), 
-                               shQuote(normalizePath(tpath))))
-    tmp.file <- sub('.pdf', '.txt', tpath)
-    txt.files[[i]] <- suppressWarnings(readLines(tmp.file, encoding = encoding))
-    if (!use.metadata || i %in% not.done)  # if didn't find doi in meta search first two pages
-      more.dois[i] <- SearchDOIText(txt.files[[i]])
-    file.remove(tmp.file)
+  GetPDFTxt <- function(tpath, page, tfile){
+    system2("pdftotext", paste(shQuote('-f'), shQuote(page), shQuote('-l'), shQuote(page), 
+                               shQuote('-enc'), shQuote(encoding), 
+                               shQuote(normalizePath(tpath)), shQuote(tfile)))
+    suppressWarnings(readLines(tfile, encoding = encoding))
   }
-  #more.dois <- sapply(files[not.done], SearchDOIFirstPage, enc = encoding)
-  dois[not.done] <- more.dois[not.done]
-  not.na1 <- !is.na(dois)
   
-  res <- NULL
-  if (use.crossref && length(dois[not.na1])){
-    #not.done <- not.done[is.na(more.dois)]
+  tfile1 <- tempfile(fileext = '.txt')
+  txt.files1 <- lapply(files, GetPDFTxt, page = 1, tfile = tfile1)
+  txt.files2 <- lapply(files, GetPDFTxt, page = 2, tfile = tfile1)
+  file.remove(tfile1)
+  
+  # check first page for JSTOR, if yes grab info from both pages, else NA
+  resJSTOR <- mapply(CheckJSTOR, txt.files1, txt.files2)
+  JSTOR.ind <- !is.na(resJSTOR)
+  if(any(JSTOR.ind)){
+    for (i in which(JSTOR.ind))
+      resJSTOR[[i]]$file <- files[i]
+    not.done <- not.done[!JSTOR.ind]
+  }
+  
+  tind <- !JSTOR.ind & !doi.meta.ind
+  # get DOIs and read from CrossRef
+  if (length(tind)){
+    more.dois <- mapply(function(p1, p2){
+      SearchDOIText(c(p1,p2))
+      }, txt.files1[tind], txt.files2[tind])
     
-   # dois <- c(dois[-not.done], na.omit(more.dois))
-    message(paste0('Getting ', sum(not.na1), ' BibTeX entries from CrossRef...'))
+    doi.text.ind <- which(tind)[!is.na(more.dois)]
+  }
+  
+  # don't call CrossRef if JSTOR already got info (need to check if DOI from metadata and JSTOR)
+  doi.ind <- c(which(doi.meta.ind[!JSTOR.ind]), doi.text.ind)
+  comb.doi <- c(dois[!JSTOR.ind & doi.meta.ind], more.dois[!is.na(more.dois)])
+  
+  # get bib info from CrossRef
+  resCR <- NULL
+  if (use.crossref && length(doi.ind)){
+    message(paste0('Getting ', length(comb.doi), ' BibTeX entries from CrossRef...'))
     flush.console()
     # res <- lapply(dois, ReadCrossRef)
-    res <- llply(as.list(dois[not.na1]), ReadCrossRef, .progress = progress_text(char = "."))
+    resCR <- vector('list', length(doi.ind))
+    for (i in 1:length(doi.ind))
+      resCR[[i]] <- unclass(ReadCrossRef(comb.doi[i]))
+    resCR <- llply(as.list(comb.doi), ReadCrossRef, .progress = progress_text(char = "."))
     message('Done')
-    not.done <- seq.int(n.files)[-which(not.na1)[!is.na(res)]]
+    CR.ind <- !is.na(resCR)      # on very rare instances CrossRef doesn't have record for particular DOI
+    badCR.ind <- doi.ind[!CR.ind]
+    resCR <- unclass(resCR)
+    res['files'] <- files[doi.ind[CR.ind]]
+   # class(res) <- c('Bibentry', 'bibentry')
+    not.done <- not.done[-doi.ind[CR.ind]] # seq.int(n.files)[-which(not.na1)[!is.na(res)]]
   }
+  
+  # get bib info from first page. if dont find abstract on first page, use second page too
+  res <- lapply(txt.files1[not.done], CheckFirstPages)
+  # not.done <- not.done[is.na(res) || !res$found.abstract]
+  res2 <- lapply(txt.files2[not.done], CheckFirstPages)
+  
 
-  #browser()
-  res2 <- NULL
-  if (length(not.done)){
-    message(paste0('Attempting to create BibTeX entries from first PDF pages for ', length(not.done), ' entries...'))
-    res2 <- mapply(ReadFirstPages, txt.files[not.done], files[not.done], SIMPLIFY = FALSE)  # lapply(out, ProcessPDFMeta, encoding=encoding)
-    message('Done.')
-  #  files2 <- files[!na2]
-    flush.console()
-  #  not.done <- not.done[na2]
-  }
  # browser()
-  res3 <- NULL
+  resMeta <- NULL
   if (use.metadata && length(not.done)){
    message(paste0('Attempting to create BibTeX entries from PDF metadata for ', length(not.done), ' entries...'))
-   res3 <- mapply(ProcessPDFMeta, out[not.done], files[not.done], MoreArgs = list(enc=encoding, check.doi = !use.crossref), 
+   resMeta <- mapply(ProcessPDFMeta, out[not.done], files[not.done], MoreArgs = list(enc=encoding, check.doi = !use.crossref), 
                  SIMPLIFY = FALSE)  # lapply(out, ProcessPDFMeta, encoding=encoding)
    message('Done.')
    flush.console()
   # na3 <- is.na(res3)
    #res3 <- res3[!na3]
-   res2 <- AddListToList(res2, res3)
+   res <- AddListToList(res, resMeta)
   # files3 <- files[!na3]
-   not.done <- not.done[is.na(res2)]
+   # not.done <- not.done[is.na(res2)]
    
    #res2 <- lapply(res2, MakeBibEntry, GS = TRUE)
    #res2 <- MakeCitationList(res2)
    #res2 <- c(res2, res3)
-  }#else{
-  #  not.done <- not.done[na2]
-  #  not.done <- not.done[na2]
-  #}
-  res2 <- res2[!is.na(res2)]
-  res2 <- lapply(res2, MakeBibEntry, GS = TRUE)
-  res <- c(res, res2)
+   res <- mapply(CleanAuthorTitle, res, res2, resMeta, files[not.done])
+  }else{
+   res <- mapply(CleanAuthorTitle, res, res2, files[not.done], MoreArgs = list(resMeta=NULL)) 
+  }
+  res <- res[!is.na(res)]  # remove entries with no author or title info
+
+  res <- lapply(c(res, resJSTOR), MakeBibEntry, GS = TRUE)
+  if (use.crossref)
+    res <- c(res, resCR)
 
   # add file names and dois as fields (if doi not done already)
   if (length(not.done) < length(out)){
@@ -111,7 +138,14 @@ ReadPDFs <- function (path, encoding = 'UTF-8', recursive = TRUE, use.crossref =
     }
   }
   
-  res <- MakeCitationList(res)
+  # add DOI's to results, if necessary
+  if (!crossref || length(bad.crossref.ind))
+  doi.ind <- c(which(doi.meta.ind  && not.done), doi.text.ind)
+  comb.doi <- c(dois[doi.meta.ind  && not.done], more.dois[doi.text.ind])
+  
+  #res <- MakeCitationList(res)
+  res <- c(res, resCR)
+  class(res) <- c('BibEntry', 'bibentry')
   
   return(res)
 }
