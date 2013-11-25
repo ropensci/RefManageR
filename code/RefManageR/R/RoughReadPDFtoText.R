@@ -1,3 +1,13 @@
+N <- 30
+
+not.done <- seq.int(N)
+res <- lapply(seq.int(N)[not.done], function(i){x <- sample(2, 1);if(x==2){NA}else{1}} )
+not.done <- not.done[is.na(res)]
+
+res <- lapply(seq.int(N)[not.done], function(i){x <- sample(2, 1);if(x==2){NA}else{1}} )
+not.done <- not.done[is.na(res)]
+
+length(not.done)
 
 setwd('~/BayesFactorsOld/papers/')
 path <- 'Chinese-PostPropInSSModel(Chinese2013).pdf'
@@ -20,9 +30,9 @@ toBibtex(test2)
 
 
 
-system2('pdftotext', '-l 2 Scott-VarParmNear0slow.pdf')
+system2('pdftotext', '-l 2 -layout Scott-VarParmNear0slow.pdf M:/test.txt')
 system2('pdftotext', '-l 2 Ohara-BayesVarSelectionReview.pdf')
-system2('pdftotext', '-l 2 ProprietyOfPosteriorsForGLMMs.pdf')
+system2('pdftotext', '-l 2 -layout ProprietyOfPosteriorsForGLMMs.pdf')
 system2('pdftotext', '-l 2 arxivtest.pdf')
 system2('pdftotext', '-l 2 jasatest.pdf')
 system2('pdftotext', '-l 2 mearxiv.pdf')
