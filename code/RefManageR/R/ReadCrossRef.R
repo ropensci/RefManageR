@@ -30,7 +30,7 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.
     return(NA)
   results <- getForm("http://search.labs.crossref.org/dois", q=query, year=year, sort=sort,  
                      rows=limit)
- # browser()
+  #browser()
   if (delete.file)
     on.exit(unlink(temp.file, force = TRUE))
   
@@ -55,13 +55,18 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.
                             .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"), followLocation=TRUE))
         if(is.raw(temp))
           temp <- rawToChar(temp)
+        temp <- gsub('&amp;', '&', temp)
+        if (temp[1] == "<h1>Internal Server Error</h1>"){
+          message('Server error')
+          return(NA)
+          #browser()
+        }
         write(temp, file = temp.file, append=TRUE)
       }
     }
-    bib.res <- ReadBib(file=temp.file, encoding='UTF-8')  
+    bib.res <- ReadBib(file=temp.file, .Encoding='UTF-8')  
   }
- # write(temp, file = temp.file, append=TRUE)
-  
+
 
   return(bib.res)
 }

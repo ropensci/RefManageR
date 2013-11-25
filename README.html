@@ -238,11 +238,17 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 <li>ReadPDF<br/>
 
 <ul>
-<li>key needs to be made after scanning text and meta data in ReadPDFs, not by both separately<br/></li>
-<li>msgs for entries with no author+title should not occur in both reading of text and metadata in <code>ReadPDFs</code></li>
+<li>key needs to be made after scanning text and meta data in ReadPDFs, not by both separately (FIXED)<br/></li>
+<li>msgs for entries with no author+title should not occur in both reading of text and metadata in <code>ReadPDFs</code> (FIXED)</li>
 <li>bug in adding <code>file</code> to <code>bibentry</code> object in ReadPDFs</li>
-<li>handle ligatures in ReadPDFs: ff: <U+FB00> </li>
-<li>volume and number not working</li>
+<li>handle ligatures in ReadPDFs: ff: &ldquo;&lt; U + F B 0 0 &gt;&rdquo; </li>
+<li>volume and number not working (FIXED)</li>
+<li>files[[13]] - BoveHeld-BFapproximation(ArXiv2013).pdf should work for both authors - only gets one</li>
+<li>year for WoodKohnShivelyJiang-BayesSSselection(JRSSB2002).pdf in GetJSTOR</li>
+<li>handle results from CrossRef being list of BibEntry obj, instead of BibEntry obj. itself</li>
+<li>add DOI&#39;s and filen names at end</li>
+<li>make sure all corner cases work: no crossref, no c.ref results, no metadata, no meta res, no JSTOR res,
+all jstor, all crossref+jstor</li>
 </ul></li>
 </ul>
 
