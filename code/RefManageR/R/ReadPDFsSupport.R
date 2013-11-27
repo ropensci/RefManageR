@@ -1,6 +1,7 @@
-ReadFirstPages <- function(doc){
+ReadFirstPages <- function(doc, page.one = TRUE){
   doc <- unlist(doc)
   res <- list()
+  found.abstract <- FALSE
   
   # arXiv
   arXiv <- FALSE
@@ -9,6 +10,7 @@ ReadFirstPages <- function(doc){
     if(!is.na(ind)){
     #  browser()
       arXiv <- TRUE
+      found.abstract <- TRUE  # assume no cover page for an arXiv paper
       arxinfo <- doc[ind]
       res$eprinttype <- 'arxiv'
       # need to check date since arXiv identifier format changed in Apr-07
@@ -77,22 +79,28 @@ ReadFirstPages <- function(doc){
     
     #browser()
     # keywords
-    ind <- grep('K[Ee][Yy][[:space:]]?[Ww][Oo][Rr][Dd][Ss]( and phrases)?:[[:space:]]*', doc)
-    # m <- regexpr('Keywords:[[:space:]]*[A-Za-z]+\\s', doc, perl=TRUE)
-    # regmatches(doc, m)
-    if(length(ind)){
-      doc.lines <- length(doc)
-      res$keywords <- sub('K[Ee][Yy][[:space:]]?[Ww][Oo][Rr][Dd][Ss]:[[:space:]]*', '', doc[ind]) 
-      if (ind+1 <= doc.lines && length(grep('^([[:alpha:]]+[ ,;]?)+\\.?$', doc[ind+1])))
+    ind <- grep('Key ?words( and phrases)?:[[:space:]]?', doc, ignore.case = TRUE)
+  # m <- regexpr('Keywords:[[:space:]]*[A-Za-z]+\\s', doc, perl=TRUE)
+  # regmatches(doc, m)
+    if (length(ind)){
+      res$keywords <- sub('Key ?words( and phrases)?:[[:space:]]?', '', doc[ind], ignore.case = TRUE) 
+      if (ind+1 <= length(doc) && length(grep('^([[:alpha:]]+[ ,;]?)+\\.?$', doc[ind+1])))
           res$keywords <- paste(res$keywords, doc[ind+1])
-      if (ind+2 <= doc.lines && length(grep('^([[:alpha:]]+[ ,;]?)+\\.?$', doc[ind+2])))
+      if (ind+2 <= length(doc) && length(grep('^([[:alpha:]]+[ ,;]?)+\\.?$', doc[ind+2])))
           res$keywords <- paste(res$keywords, doc[ind+2])
       res$keywords <- gsub(';', ',', res$keywords)  # keywords need to be comma separated for BibLaTeX
       doc <- doc[1L:(ind-1)]  # shorten doc used to search for author and title
+        found.abstract <- TRUE
+    }else if(length(abst.ind <- grep('(^1|^I)\\.?[[:blank:]]Introduction([[:space:]]|$)', doc))){
+      if (abst.ind > 2L){
+        doc <- doc[1L:(abst.ind - 1L)]
+        if (page.one)  # allows for first section at top of 2nd page
+          found.abstract <- TRUE
+      }
     }
     
     
-    temp <- try(GetAuthorTitle(doc))
+    temp <- try(GetAuthorTitle(doc, found.abstract))
     if(inherits(temp, 'try-error')){
       #message('Error reading file')
       #message(file)
@@ -111,73 +119,103 @@ ReadFirstPages <- function(doc){
 CheckJSTOR <- function(doc1, doc2){
   ind <- grep('http://www\\.jstor\\.org/stable/([0-9]+)', doc1)[1]
   if (!is.na(ind)){
-    res <- try(GetJSTOR(doc1))
+    res <- try(GetJSTOR(doc1), TRUE)
     if (inherits(res, 'try-catch'))
       return(NA)
     res$eprint <- gsub('[^0-9]+', '', doc1[ind])
     res$eprinttype = 'jstor'
     res$url <- paste0('http://www.jstor.org/stable/', res$eprint)
-    if (!is.null(res$journal)){
-      attr(res, 'entry') <- 'article'
-    }else{
-      attr(res, 'entry') <- 'misc'  
-    }
     
-    m <- regexpr('\\<([[:alpha:]]{4,})\\>', res$title)
-    if(any(m != -1)){
-      key.title <- tolower(regmatches(res$title, m))
-      attr(res, 'key') <- paste0(tolower(res$author[1]$family[1]), res$year, key.title)  
-    }else{
-      attr(res, 'key') <- paste0(tolower(res$author[1]$family[1]), res$year)
-    }
-  
-    ##########################################
-    # try for keywords and DOI on page 2
-    ind <- grep('K[Ee][Yy][[:space:]]?[Ww][Oo][Rr][Dd][Ss]:[[:space:]]*', doc2)
-    # m <- regexpr('Keywords:[[:space:]]*[A-Za-z]+\\s', doc, perl=TRUE)
-    # regmatches(doc, m)
-    if (length(ind)){
-      res$keywords <- sub('K[Ee][Yy][[:space:]]?[Ww][Oo][Rr][Dd][Ss]:[[:space:]]*', '', doc2[ind]) 
-      if (ind+1 <= length(doc2) && length(grep('^([[:alpha:]]+[ ,;]?)+\\.?$', doc2[ind+1])))
-          res$keywords <- paste(res$keywords, doc2[ind+1])
-      if (ind+2 <= length(doc2) && length(grep('^([[:alpha:]]+[ ,;]?)+\\.?$', doc2[ind+2])))
-          res$keywords <- paste(res$keywords, doc2[ind+2])
-      res$keywords <- gsub(';', ',', res$keywords)  # keywords need to be comma separated for BibLaTeX
-    }
-    
-    pattern  <- "\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'])\\S)+)\\b"
-    m <- regexpr(pattern, doc2, perl=TRUE)
-    if (any(m != -1))
-      res$doi <- unlist(regmatches(doc2, m))
-    
+  }else if (length(ind <- grep('http://links.jstor.org/sici', doc1))){  # old format for JSTOR papers
+    res <- try(GetJSTOR(doc1), TRUE)
+    if (inherits(res, 'try-catch'))
+      return(NA)
+    res$url <- sub('Stable URL:[[:space:]]', '', doc1[ind])
   }else{
-    res <- NA
+    return(NA)
   }
+  
+  if (!is.null(res$journal)){
+    attr(res, 'entry') <- 'article'
+  }else{
+    attr(res, 'entry') <- 'misc'  
+  }
+  
+  m <- regexpr('\\<([[:alpha:]]{4,})\\>', res$title)
+  if(any(m != -1)){
+    key.title <- tolower(regmatches(res$title, m))
+    attr(res, 'key') <- paste0(tolower(res$author[1]$family[1]), res$year, key.title)  
+  }else{
+    attr(res, 'key') <- paste0(tolower(res$author[1]$family[1]), res$year)
+  }
+
+  ##########################################
+  # try for keywords and DOI on page 2
+  ind <- grep('Key ?words( and phrases)?:[[:space:]]?', doc2, ignore.case = TRUE)
+  # m <- regexpr('Keywords:[[:space:]]*[A-Za-z]+\\s', doc, perl=TRUE)
+  # regmatches(doc, m)
+  if (length(ind)){
+    res$keywords <- sub('Key ?words( and phrases)?:[[:space:]]?', '', doc2[ind], ignore.case = TRUE) 
+    if (ind+1 <= length(doc2) && length(grep('^([[:alpha:]]+[ ,;]?)+\\.?$', doc2[ind+1])))
+        res$keywords <- paste(res$keywords, doc2[ind+1])
+    if (ind+2 <= length(doc2) && length(grep('^([[:alpha:]]+[ ,;]?)+\\.?$', doc2[ind+2])))
+        res$keywords <- paste(res$keywords, doc2[ind+2])
+    res$keywords <- gsub(';', ',', res$keywords)  # keywords need to be comma separated for BibLaTeX
+  }
+  
+  pattern  <- "\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'])\\S)+)\\b"
+  m <- regexpr(pattern, doc2, perl=TRUE)
+  if (any(m != -1))
+    res$doi <- unlist(regmatches(doc2, m))
+  
   return(res)
 }
 
 GetJSTOR <- function(doc){  # take extra caution for long title, author list, or journal info
   aut.ind <- grep('Author\\(s\\): ', doc)
+  if (!length(aut.ind)){  # old format for JSTOR papers. 
+    url.ind <- grep('Stable URL', doc)
+    source.ind <- grep('([[:print:]]+),[[:space:]]Vol\\. ', doc)
+    
+    # immediately above source.ind is author, if line above that has a semicolon, it is also author info
+    aut.ind <- grep(';', doc[1:(source.ind-1)])
+    if(!is.na(aut.ind)){
+      author <- paste0(doc[aut.ind:(source.ind-1)], collapse = ' ')
+    }else{
+      aut.ind <- source.ind-1
+      author <- doc[aut.ind]
+    }
+    author <- gsub(';', ',', author)
+    author <- as.person(author)
+    
+    publisher.ind <- grep('published by', doc)[1]
+    m <- regexec('published by ([[:alpha:], -]+).?$', doc[publisher.ind])
+    publisher <- regmatches(doc[publisher.ind], m)[[1]][2]
+    
+    jinfo <- paste0(doc[source.ind:(url.ind-1)], collapse = ' ')
+  }else{
+    reviewed.ind <- grep('Reviewed work\\(s\\):', doc)
+    if (length(reviewed.ind))
+      doc <- doc[-reviewed.ind]
+    
+    publisher.ind <- grep('Published by: ', doc)
+    url.ind <- grep('Stable URL: ', doc)
+    publisher <- sub('Published by: ', '', paste0(doc[publisher.ind:(url.ind-1)], collapse = ' '))
+    source.ind <- grep('Source: ', doc)
+    author <- paste0(doc[aut.ind:(source.ind-1)], collapse = ' ')
+    author <- sub('Author\\(s\\): ', '', author)
+    author <- as.person(author)
+    
+    jinfo <- paste0(doc[source.ind:(publisher.ind-1)], collapse = ' ')
+  }
   # on rare occasions there is text before title which is followed by a blank line
   blank.ind <- which(doc[1:aut.ind] == '')
   if (!length(blank.ind))
     blank.ind <- 0
   title <- paste0(doc[(blank.ind+1):(aut.ind-1)], collapse=' ')
-  reviewed.ind <- grep('Reviewed work\\(s\\):', doc)
-  if (length(reviewed.ind))
-    doc <- doc[-reviewed.ind]
   
-  publisher.ind <- grep('Published by: ', doc)
-  url.ind <- grep('Stable URL: ', doc)
-  publisher <- gsub('Published by: ', '', paste0(doc[publisher.ind:(url.ind-1)], collapse = ' '))
-  source.ind <- grep('Source: ', doc)
-  author <- paste0(doc[aut.ind:(source.ind-1)], collapse = ' ')
-  author <- gsub('Author\\(s\\): ', '', author)
-  author <- as.person(author)
-  
-  pattern <- paste0('^Source:[[:space:]]([[:print:]]+),[[:space:]]Vol\\. ([0-9]+)(, No\\. ([[:digit:]/]+))? ',
+  pattern <- paste0('^(Source:[[:space:]])?([[:print:]]+),[[:space:]]Vol\\. ([0-9]+)(, No\\. ([[:digit:]/]+))?\\.? ',
     '\\(([[:upper:]][[:lower:]]{2}\\.?, )?([0-9]{4})\\), pp. ([[:digit:] -]+)')
-  jinfo <- paste0(doc[source.ind:(publisher.ind-1)], collapse = ' ')
   m <- regexec(pattern, jinfo)
   journal.info <- unlist(regmatches(jinfo, m))
   if (!length(journal.info))  # Source: line has unexpected format
@@ -185,18 +223,18 @@ GetJSTOR <- function(doc){  # take extra caution for long title, author list, or
   
   #journal.info <- strsplit(paste0(doc[source.ind:(publisher.ind-1)], collapse = ' '),
   #                         '(?!\\.)?\\)?, ', perl = TRUE)[[1]]
-  journal <- journal.info[2]  # gsub('Source: ', '', journal.info[1])
-  volume <- journal.info[3]  # gsub('Vol. ', '', journal.info[2])
-  if ((number <- journal.info[5]) == '')
+  journal <- journal.info[3]  # gsub('Source: ', '', journal.info[1])
+  volume <- journal.info[4]  # gsub('Vol. ', '', journal.info[2])
+  if ((number <- journal.info[6]) == '')
     number <- NULL  # some journals have no number/issue
 #   # be more cautious with number
 #   if ((num.ind <- grep('No.', journal.info))){
 #     m <- regexpr('[0-9]+[[:punct:]]?[0-9]*[[:alpha:]]?', journal.info[num.ind])
 #     number <- regmatches(journal.info[num.ind], m)
 #   }
-  year <- journal.info[7]  # journal.info[length(journal.info)-1]
+  year <- journal.info[8]  # journal.info[length(journal.info)-1]
   #browser()
-  pages <- gsub(' ', '', journal.info[8])  # gsub for edge case # gsub('pp. ', '', journal.info[length(journal.info)])
+  pages <- gsub(' ', '', journal.info[9])  # gsub for edge case # gsub('pp. ', '', journal.info[length(journal.info)])
   ## poppler doesn't read the JSTOR en-dash always
   if(!length(grep('-', pages))){
     psplit <- floor(nchar(pages)/2)
@@ -207,22 +245,15 @@ GetJSTOR <- function(doc){  # take extra caution for long title, author list, or
               pages = pages, year = year, publisher = publisher))
 }
 
-GetAuthorTitle <- function(doc){
+GetAuthorTitle <- function(doc, found.abstract){
  # browser()
-  found.abstract <- FALSE
   abst.ind <- grep('^A[Bb][Ss][Tt][Rr][Aa][Cc][Tt]|^S[Uu][Mm][Mm][Aa][Rr][Yy]|^S[Yy][Nn][Oo][Pp][Ss][Ii][Ss][:.]?\\>', doc)
   if (length(abst.ind) && abst.ind > 2L){  # assume title/author comes before Abstract. need 2nd cond. for ind==1
     doc <- doc[1L:(abst.ind - 1L)]
     found.abstract <- TRUE
   }
-## This else checks for "1. Introduction", etc. Bad if unlabelled abstract on p.1 and 1. Intro on p.2
-#   else{
-#     abst.ind <- grep('(^1|^I)\\.?[[:blank:]]Introduction([[:space:]]|$)', doc)
-#     if (length(abst.ind) && abst.ind > 2L){  # assume title/author comes before Abstract. need 2nd cond. for ind==1
-#       doc <- doc[1L:(abst.ind - 1L)]
-#       found.abstract <- TRUE
-#     }
-#   }
+  browser()
+
   #  browser()
   #   aut.ind <- regexpr(paste0("^([A-Z][a-z]*[\\.]?[ -]",  # first name, maybe hypenated or abbrev.
   #                       "([A-Z][a-z]*[\\.]?[ -])*",  # optional middle name or initial, maybe hypenated
@@ -261,7 +292,7 @@ GetAuthorTitle <- function(doc){
     aut.match <- gsub("^Author( |: )|^By( |: )", '', aut.match)  # remove author or by at start
   }
   
-  match.ind <- which(aut.ind > -1L)
+  match.ind <- which(aut.ind > -1L) + 1  # +1 because had doc[-1] above
   # if didn't find abstract, make attempt at not including names from doc body
   if (!found.abstract && length(aut.match) > 1L){
     spaces <- diff(match.ind)
@@ -270,7 +301,7 @@ GetAuthorTitle <- function(doc){
       aut.match <- aut.match[1L:first.too.big]
   }
   BAD.WORDS <- paste0('\\bSupplement\\b|University|\\bCollege\\b|\\bCentre\\b|\\bCenter\\b|Working|Faculty',
-                      '|Paper|\\b[Uu][Rr][Ll]\\b|Labs|Institute|\\bSchool\\b')
+                      '|Paper|\\b[Uu][Rr][Ll]\\b|Labs|\\bJournal\\b|Institute|\\bSchool\\b')
   if (length(match.ind)){  # if found author, assume title comes before author
     ind <- match.ind[1]
     doc <- doc[(ind-1L):1L]  # reverse doc, assume title comes just before authors  
@@ -286,7 +317,7 @@ GetAuthorTitle <- function(doc){
     title.ind <- regexpr(paste0("(?!", BAD.WORDS, ")",
                                 "^[[:upper:]][[:alpha:]'-]*(,|-|:)?[ -]",
                                 #"([[:alpha:]:,' ]){2,}(\\.|!|\\?)?$"),
-                                "([[:alpha:]:,' ]){2,}[[:print:]]?$",
+                                "([[:alpha:]:,' -]+){2,}[[:print:]]?$",
                                 "(?<!", BAD.WORDS, ")"),
                          doc[i], perl = TRUE)
     if (title.ind != -1){
@@ -313,9 +344,16 @@ GetAuthorTitle <- function(doc){
   if (!first.match){
     title.match <- NULL
   }else{
-    if (length(match.ind))  # undo reversing of doc when author matched
+    if (length(match.ind)){  # undo reversing of doc when author matched
+      if (i - 3 > 0){
+        if (length(grep("[[:alpha:]', -]+", doc[i-3])))
+          title.match <- c(title.match, doc[i-3])
+      }
       title.match <- rev(title.match)
+    }
     title.match <- paste0(title.match, collapse = ' ')
+    # simple fix for case troubles
+    title.matche <- gsub("([[:alpha:]])([[:alpha:]'-]*)", "\\U\\1\\L\\2", title.match, perl=TRUE)
   }
 
 #   }else{

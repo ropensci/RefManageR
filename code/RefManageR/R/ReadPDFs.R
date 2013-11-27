@@ -111,9 +111,9 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
   }
   
   # get bib info from first page. if dont find abstract on first page, use second page too
-  res <- lapply(txt.files1[not.done], ReadFirstPages)
+  res <- lapply(txt.files1[not.done], ReadFirstPages, page.one = TRUE)
   # not.done <- not.done[is.na(res) || !res$found.abstract]
-  res2 <- lapply(txt.files2[not.done], ReadFirstPages)
+  res2 <- lapply(txt.files2[not.done], ReadFirstPages, page.one = FALSE)
   
 
  # browser()
