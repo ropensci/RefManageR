@@ -28,47 +28,69 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.
                            temp.file = tempfile(fileext = '.bib'), delete.file = TRUE, verbose = FALSE){
   if (is.na(query))
     return(NA)
-  results <- getForm("http://search.labs.crossref.org/dois", q=query, year=year, sort=sort,  
-                     rows=limit)
-  #browser()
-  if (delete.file)
-    on.exit(unlink(temp.file, force = TRUE))
+  good <- 0
   
-  fromj <- RJSONIO::fromJSON(results)
-  num.res <- min(limit, length(fromj))
-  if(num.res == 0){
-    message(paste0('Query \"', query, '\" returned no matches'))
-    return(NA)
-  }
-
-  if (num.res > 0){
-    file.create(temp.file)
-   # entries <- vector('character', num.res)
-    relevancies <- numeric(num.res)
-    for(i in 1:num.res){
-      if(verbose){
-        message(paste0('Including Entry: ', fromj[[i]]$fullCitation))
-        message(paste0('Relevancy score: ', fromj[[i]]$normalizedScore))
-      }
-      if(fromj[[i]]$normalizedScore >= min.relevance){
-        temp <- getURLContent(url=fromj[[i]]$doi,
-                            .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"), followLocation=TRUE))
-        if(is.raw(temp))
-          temp <- rawToChar(temp)
-        temp <- gsub('&amp;', '&', temp)
-        if (temp[1] == "<h1>Internal Server Error</h1>"){
-          message('Server error')
-          return(NA)
-          #browser()
+  file.create(temp.file)
+  if (delete.file)
+   on.exit(unlink(temp.file, force = TRUE))
+  # if query is valid doi, skip search and get BibTeX entry right away
+  if (!is.na(.doi <- SearchDOIText(query))){
+    
+    good <- GetCrossRefBibTeX(paste0('http://dx.doi.org/', .doi), temp.file)
+  }else{
+    results <- try(getForm("http://search.labs.crossref.org/dois", q=query, year=year, sort=sort,  
+                       rows=limit))
+    if (inherits(results, 'try-error'))
+      return(NA)
+    
+    fromj <- RJSONIO::fromJSON(results)
+    num.res <- min(limit, length(fromj))
+    if(num.res == 0){
+      message(paste0('Query \"', query, '\" returned no matches'))
+      return(NA)
+    }
+  
+    if (num.res > 0){
+      file.create(temp.file)
+     # entries <- vector('character', num.res)
+      relevancies <- numeric(num.res)
+      for(i in 1:num.res){
+        if(verbose){
+          message(paste0('Including Entry: ', fromj[[i]]$fullCitation))
+          message(paste0('Relevancy score: ', fromj[[i]]$normalizedScore))
         }
-        write(temp, file = temp.file, append=TRUE)
+        if(fromj[[i]]$normalizedScore >= min.relevance){
+          good <- good + GetCrossRefBibTeX(fromj[[i]]$doi, temp.file)
+        }
       }
     }
-    bib.res <- ReadBib(file=temp.file, .Encoding='UTF-8')  
+  }  # end else for not DOI query case
+  if (good > 0)
+    bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
+    
+  if (good == 0 || inherits(bib.res, 'try-error')){  #shouldn't happen now
+      #browser()
+      # message('Server error, you may want to try again.')      
+      return(NA)
   }
 
-
   return(bib.res)
+}
+
+GetCrossRefBibTeX <- function(doi, tmp.file){
+  temp <- try(getURLContent(url=doi,
+                      .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"), followLocation=TRUE)))
+  if(is.raw(temp))
+    temp <- rawToChar(temp)
+
+  if (inherits(temp, 'try-error') || temp[1] == "<h1>Internal Server Error</h1>"){
+    message(paste0('Server error for doi ', doi, ', you may want to try again.'))
+    return(0L)
+    #browser()
+  }
+  temp <- gsub('&amp;', '&', temp)
+  write(temp, file = tmp.file, append=TRUE)
+  return(1L)
 }
 
 # LookupDOI

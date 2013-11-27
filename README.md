@@ -27,7 +27,7 @@ Important
   * i.e. change toBibtex function and add toBibLaTeX function)
 [S/O thread explaining how to do this](http://tex.stackexchange.com/questions/114787/converting-from-biblatex-to-bibtex-format-using-biber)  
 have check=FALSE argument in print.BibEntry if user does not want to check proper format when printing biblatex or bibtex  
-have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if user does not want converted BibEntry object returned
+have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if user does not want converted BibEntry object returned - see `utils:::toBibtex.bibentry`
 11. fix print to handle date field and _requires adding a bibstyle_
 12. implement a useful summary function
 16. update print function to include index (i.e. entry numbers) in database
@@ -70,24 +70,26 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 BUGS
 =================================================================================
 * merge doesn't work when `length(bib1) > length(bib2)` in `bib1+bib2`
-* fix tryCatch in MakeBibEntry (**FIXED**)
-* `$` doesn't work for creating field that does not exist in any entries
+- fix tryCatch in MakeBibEntry (**FIXED**)
+- `$` doesn't work for creating field that does not exist in any entries (**FIXED**)
   * happened in ReadPDFs when adding file info after calling MakeCitationList
   * possible problem when list elements sent to make citation list are already BibEntry class?
 * if doi + url both available, `print` function formats and includes both as url
 * ReadPDF  
-  * key needs to be made after scanning text and meta data in ReadPDFs, not by both separately (FIXED)  
-  * msgs for entries with no author+title should not occur in both reading of text and metadata in `ReadPDFs` (FIXED)
+  - key needs to be made after scanning text and meta data in ReadPDFs, not by both separately (**FIXED**)  
+  - msgs for entries with no author+title should not occur in both reading of text and metadata in `ReadPDFs` (**FIXED**)
   * bug in adding `file` to `bibentry` object in ReadPDFs
   * handle ligatures in ReadPDFs: ff: "< U + F B 0 0 >" 
-  * volume and number not working (FIXED)
+  - volume and number not working (**FIXED**)
   * files[[13]] - BoveHeld-BFapproximation(ArXiv2013).pdf should work for both authors - only gets one
-  * year for WoodKohnShivelyJiang-BayesSSselection(JRSSB2002).pdf in GetJSTOR
-  * handle results from CrossRef being list of BibEntry obj, instead of BibEntry obj. itself
-  * add DOI's and filen names at end
+  - year for WoodKohnShivelyJiang-BayesSSselection(JRSSB2002).pdf in GetJSTOR (**FIXED**)
+  - handle results from CrossRef being list of BibEntry obj, instead of BibEntry obj. itself (**FIXED**)
+  * add DOI's and file names at end
   * make sure all corner cases work: no crossref, no c.ref results, no metadata, no meta res, no JSTOR res,
     all jstor, all crossref+jstor
-  * catch errors in MakeBibEntry  
+  * catch errors in MakeBibEntry
+  * handle headers better when reading pdf, including getting year, etc. from 2nd line of doc
+* `$<-`: `bib.entry.obj$field.name <- value.vec` adds vector of values to each bib. entry (**FIXED**)
 
 DONE     
 ==================================================================================================================

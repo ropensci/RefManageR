@@ -180,18 +180,17 @@ ArrangeSingleAuthor <- function(y)
     }
   } 
 
-MakeCitationList <- function( x, header, footer)
-  {
+MakeCitationList <- function( x, header, footer){
     rval <- list()
-    for( i in seq_along(x) ){
-      if( !is.null(x[[i]] ) )
-        rval <- c( rval, x[[i]] )
+    for (i in seq_along(x)){
+      if (!is.null(x[[i]]))
+        rval <- c(rval, unclass(x[[i]]))
     }
     class(rval) <- c("BibEntry", "bibentry" )
     rval
-  }
+}
 
-.is_not_nonempty_text <- function (x) {
+.is_not_nonempty_text <- function(x){
   is.null(x) || any(is.na(x)) || all(grepl("^[[:space:]]*$", x))
 }
 

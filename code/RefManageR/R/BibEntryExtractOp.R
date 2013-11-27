@@ -113,10 +113,10 @@ SearchField <- function(x, field, pattern){
   # browser()
   dots <- list(...)
   current.fields <- c(unique(names(unlist(x))), 'bibtype', 'key')
-  
+     # browser()
   if(length(dots)==1){
     dot.arg <- dots[[1]]
-   # browser()
+
     if(is.numeric(dot.arg) || is.logical(dot.arg)){  # simple subsetting
       return(x[[dot.arg]])
     }else if (is.list(dot.arg)){  # call "[" again with unlisted args

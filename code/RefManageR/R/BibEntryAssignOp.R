@@ -1,8 +1,11 @@
-`$<-.BibEntry` <- function (x, name, value) {
+`$<-.BibEntry` <- function(x, name, value){
+  #browser()
+  stopifnot(length(x) == length(value) || length(value) <= 1)
   is_attribute <- name %in% bibentry_attribute_names
   x <- unclass(x)
   name <- tolower(name)
-  value <- rep(.listify(value), length.out = length(x))
+  if (length(value) <= 1)
+    value <- rep(.listify(value), length.out = length(x))
   if (name == "bibtype") {
     stopifnot(all(sapply(value, length) == 1L))
     BibTeX_names <- names(BibLaTeX_entry_field_db)
@@ -30,6 +33,6 @@
     }
   }
   for (i in seq_along(x)) .BibEntryCheckBibEntry1(x[[i]])
-  class(x) <- "bibentry"
+  class(x) <- c("BibEntry", "bibentry")
   x
 }

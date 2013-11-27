@@ -22,7 +22,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
 #     res[in.ind] <- is.na(out)
 #     res
 #   }
-  browser()
+ # browser()
   
   #########################################################################
   # read metadata and search for DOI                                      #
@@ -41,16 +41,16 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
   ########################################
   # search first two pages of pdf for DOI
   ########################################
-  GetPDFTxt <- function(tpath, page, tfile){
+  GetPDFTxt <- function(tpath, page, tfile, enc){
     system2("pdftotext", paste(shQuote('-f'), shQuote(page), shQuote('-l'), shQuote(page), 
                                shQuote('-enc'), shQuote(.enc), 
                                shQuote(normalizePath(tpath)), shQuote(tfile)))
-    suppressWarnings(readLines(tfile, encoding = encoding))
+    suppressWarnings(readLines(tfile, encoding = enc))
   }
   
   tfile1 <- tempfile(fileext = '.txt')
-  txt.files1 <- lapply(files, GetPDFTxt, page = 1, tfile = tfile1)
-  txt.files2 <- lapply(files, GetPDFTxt, page = 2, tfile = tfile1)
+  txt.files1 <- lapply(files, GetPDFTxt, page = 1, tfile = tfile1, enc = .enc)
+  txt.files2 <- lapply(files, GetPDFTxt, page = 2, tfile = tfile1, enc = .enc)
   file.remove(tfile1)
   
   # check first page for JSTOR, if yes grab info from both pages, else NA
@@ -88,13 +88,14 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
 #     resCR <- vector('list', length(doi.ind))
 #      for (i in 1:length(doi.ind))
 #        resCR[[i]] <- unclass(ReadCrossRef(comb.doi[i], temp.file = tmpbib, delete.file = FALSE))
-#     resCR <- llply(as.list(comb.doi), ReadCrossRef, .progress = progress_text(char = "."))
-    tmpbib <- tempfile(fileext = ".bib", tmpdir=getwd())
-    resCR <- llply(as.list(comb.doi), .fun = function(x, tmpfile){
-      rcrres <- ReadCrossRef(x, temp.file=tmpfile, delete.file=FALSE)
-      return(unclass(rcrres))
-      }, tmpfile = tmpbib, .progress = progress_text(char = "."))
-    file.remove(tmpbib)  
+     tmpbib <- tempfile(fileext = ".bib", tmpdir=getwd())
+     resCR <- llply(as.list(comb.doi), ReadCrossRef, temp.file = tmpbib, delete.file = TRUE,
+                    .progress = progress_text(char = "."))
+#     resCR <- llply(as.list(comb.doi), .fun = function(x, tmpfile){
+#       rcrres <- ReadCrossRef(x, temp.file=tmpfile, delete.file=FALSE)
+#       return(unclass(rcrres))
+#       }, tmpfile = tmpbib, .progress = progress_text(char = "."))
+    #file.remove(tmpbib)  
     message('Done')
     CR.ind <- !is.na(resCR)      # on very rare instances CrossRef doesn't have record for particular DOI
     badCR.ind <- doi.ind[!CR.ind]
@@ -102,8 +103,9 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
 #       for (i in which(CR.ind))
 #         resCR[[i]]$file <- files[doi.ind[i]]
       not.done <- not.done[!not.done %in% doi.ind[CR.ind]]
-      done.inds <- c(done.inds, doi.ind[CR.ind])
     }
+    
+    resCR <- MakeCitationList(resCR[CR.ind])  # llply returns a list of BibEntry objs, NOT single BibEntry obj
    # class(res) <- c('Bibentry', 'bibentry')
    #  not.done <- not.done[-doi.ind[CR.ind]] # seq.int(n.files)[-which(not.na1)[!is.na(res)]]
   }
@@ -117,17 +119,15 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
  # browser()
   resMeta <- NULL
   if (use.metadata && length(not.done)){
-   message(paste0('Attempting to create BibTeX entries from PDF metadata for ', length(not.done), ' entries...'))
-   resMeta <- lapply(out[not.done], ProcessPDFMeta, enc=.Encoding) 
-                 
-   message('Done.')
-   flush.console()
+   #message(paste0('Attempting to create BibTeX entries from PDF metadata for ', length(not.done), ' entries...'))
+   resMeta <- lapply(out[not.done], ProcessPDFMeta, enc=.enc)                
+   #message('Done.')
+   #flush.console()
   # na3 <- is.na(res3)
    #res3 <- res3[!na3]
   # res <- AddListToList(res, resMeta)
   # files3 <- files[!na3]
    # not.done <- not.done[is.na(res2)]
-   
    #res2 <- lapply(res2, MakeBibEntry, GS = TRUE)
    #res2 <- MakeCitationList(res2)
    #res2 <- c(res2, res3)
@@ -135,32 +135,31 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
   }else{
    res <- mapply(CleanAuthorTitle, res, res2, files[not.done], MoreArgs = list(resMeta=NULL)) 
   }
-  done.inds <- c(done.inds, not.done[!is.na(res)])
-  res <- res[!is.na(res)]  # remove entries with no author or title info
-
-  if (use.crossref)
-    resJSTOR <- c(resJSTOR, resCR)
+  #               JSTOR        ReadPDF+Meta           CrossRef
+  done.inds <- c(done.inds, not.done[!is.na(res)], doi.ind[CR.ind])
+  not.done <- not.done[is.na(res)]
+  res <- res[!is.na(res)]  # remove entries with no author or title info - done in MakeCitationList
 
   res <- c(resJSTOR, res)
   res <- lapply(res, MakeBibEntry, GS = TRUE)
+  res <- MakeCitationList(res)
+  
+  if (use.crossref)
+    res <- c(res, resCR)
+
+  
   # add file names and dois as fields (if doi not done already)
   if (length(not.done) < length(out)){
-    inds <- seq.int(n.files)[-not.done]
-    for (i in 1L:length(inds)){
-      res[[i]]$file <- files[inds[i]]
-      if (!use.crossref && !is.na(dois[inds[i]])) 
-        res[[i]]$doi <- dois[inds[i]]
+    res$files <- files[done.inds]
+   # browser()
+    if (!use.crossref && length(doi.ind)){
+      res[done.inds %in% doi.ind]$doi <- comb.doi[doi.ind %in% done.inds]
+    }else if (use.crossref && length(badCR.ind)){  # DOI's missed by CrossRef may be fixed up later
+      res[done.inds %in% badCR.ind]$doi <- comb.doi[doi.ind %in% badCR.ind]
     }
   }
   
-  # add DOI's to results, if necessary
-  if (!crossref || length(bad.crossref.ind))
-  doi.ind <- c(which(doi.meta.ind  && not.done), doi.text.ind)
-  comb.doi <- c(dois[doi.meta.ind  && not.done], more.dois[doi.text.ind])
-  
   #res <- MakeCitationList(res)
-  res <- c(res, resCR)
-  class(res) <- c('BibEntry', 'bibentry')
   
   return(res)
 }
