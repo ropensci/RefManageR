@@ -52,14 +52,14 @@ toBibtex(test2)
 system2('pdftotext', '-l 2 -layout Scott-VarParmNear0slow.pdf M:/test.txt')
 system2('pdftotext', '-l 2 Ohara-BayesVarSelectionReview.pdf')
 system2('pdftotext', '-l 2 -layout ProprietyOfPosteriorsForGLMMs.pdf')
-system2('pdftotext', '-l 2 arxivtest.pdf')
+system2('pdftotext', '-l 1 -layout arxivtest.pdf')
 system2('pdftotext', '-l 2 jasatest.pdf')
 system2('pdftotext', '-l 2 mearxiv.pdf')
-system2('pdftotext', '-l 2 pubmed1.pdf')
-system2('pdftotext', '-l 2 pubmed2.pdf')
+system2('pdftotext', '-l 1 -enc Latin1 pubmed1.pdf')
+system2('pdftotext', '-l 1 pubmed2.pdf')
 system2('pdftotext', '-l 1 Gelfand-ImproperPriorsForGLMs(JASA1999).pdf')
 system2('pdftotext', '-f 2 -l 2 Gelfand-ImproperPriorsForGLMs(JASA1999).pdf')
-system2('pdftotext', '-l 2 jstorLT.pdf')
+system2('pdftotext', '-l 1 -layout jstorLT.pdf')
 doc <- readLines('Scott-VarParmNear0slow.txt')
 doc2 <- readLines('Ohara-BayesVarSelectionReview.txt')
 doc3 <- readLines('ProprietyOfPosteriorsForGLMMs.txt')
@@ -74,6 +74,10 @@ jstordoc2 <- readLines('jstorLT.txt', encoding = 'UTF-8')
 
 setwd('~/BayesFGAM/papers')
 system2('pdftotext', '-l 2 Marriott-DiagnosticsForVB(arXiv2013).pdf')
+system2('pdftotext', '-f 2 -l 2 CowlesCarlin-MCMCdiagnosticsReview(JASA1996).pdf')
+system2('pdftotext', '-f 1 -l 1 -layout MengersenTweedie-ConvRatesForMH(AoS1996).pdf')
+doc2 <- readLines('MengersenTweedie-ConvRatesForMH(AoS1996).txt', encoding = 'UTF-8')
+doc <- readLines('CowlesCarlin-MCMCdiagnosticsReview(JASA1996).txt')
 docarx <- readLines('Marriott-DiagnosticsForVB(arXiv2013).txt')
 tnames <- c('Ana-Maria Staicu', 'A.-M. Staicu', 'R. de Vries', 'Oscar de la Hoya', 'Mathew McLean', 
             'Manuel Febrero-Bande', 'Shaq O\'Neal', 'T. T. T. Smith')
@@ -138,3 +142,153 @@ regmatches(doc, aut.ind)
 
 # journal
 
+GetAuthorTitleWLayout <- function(doc, found.abstract){
+ # browser()
+  abst.ind <- grep('^[[:space:]]*A[Bb][Ss][Tt][Rr][Aa][Cc][Tt]|^S[Uu][Mm][Mm][Aa][Rr][Yy]|^S[Yy][Nn][Oo][Pp][Ss][Ii][Ss][:.]?\\>', doc)
+  if (length(abst.ind) && abst.ind > 2L){  # assume title/author comes before Abstract. need 2nd cond. for ind==1
+    doc <- doc[1L:(abst.ind - 1L)]
+    found.abstract <- TRUE
+  }
+  browser()
+
+   N <- length(doc)
+  i <- 1
+  first.match <- FALSE
+  done.match <- FALSE
+  while (i <= N && !done.match){
+    title.ind <- regexpr(paste0("(?!", BAD.WORDS, ")", "^[[:space:]]+",
+                                "[[:upper:]][[:alpha:]'-]*(,|-|:)?[ -]",
+                                #"([[:alpha:]:,' ]){2,}(\\.|!|\\?)?$"),
+                                "([[:alpha:]:,' -]+){2,}[[:print:]]?$",
+                                "(?<!", BAD.WORDS, ")"),
+                         doc[i], perl = TRUE)
+    if (title.ind != -1){
+      if (!first.match){
+        first.match <- TRUE
+        title.match <- regmatches(doc[i], title.ind)
+      }else{
+        title.match <- c(title.match, regmatches(doc[i], title.ind))  
+      }
+    }else if (first.match){
+      done.match <- TRUE
+    }
+    i <- i + 1
+  }
+  
+  #  browser()
+  #   aut.ind <- regexpr(paste0("^([A-Z][a-z]*[\\.]?[ -]",  # first name, maybe hypenated or abbrev.
+  #                       "([A-Z][a-z]*[\\.]?[ -])*",  # optional middle name or initial, maybe hypenated
+  #                       "[[:upper:]][[:alpha:]'-]+.?[[:space:]]?",  # last name + potential extra char to 
+  #                       "(, )?(Jr)?(II)?(III)?(IV)?(, )?(MD)?(, )?(Ph|HD)?.?",  # optional qualifications      
+  #                       "(and)?[,;&$]?[[:space:]]?)+$"),  # and, ",", ";", or "&" to seperate names. Repeat
+  #                doc)
+  
+  #   aut.ind <- regexpr(paste0(# invalid words negate match
+  #     "(?!Online|Supplement|Data|University|College|Institute|School)",
+  #     "^([A-Z][a-z]*[\\.]?[ -]",  # first name, maybe hypenated or abbrev.
+  #     "([A-Z][a-z]*[\\.]?[ -])*",  # optional middle name or initial, maybe hypenated
+  #     "[[:upper:]][[:alpha:]'-]+.?[[:space:]]?",  # last name + potential extra char to 
+  #     "(, Jr| II| III| IV)?(,? MD.?)?(,? P(h|H)D.?)?",  # optional qualifications      
+  #     "(?<!Online|Supplement|Data|University|College|Institute|School)", 
+  #     "(and)?([,;&$].?)?[[:space:]]?)+$"),  # and, ",", ";", or "&" to seperate names. Repeat
+  #                      doc, perl=TRUE)
+  BAD.WORDS <- paste0('Online|Supplement|Data|University|College|Centre|Center|Working|Faculty|Science',
+                      '|\\b[Oo][Ff]\\b|\\b[Tt][Hh][Ee]\\b|Foundation|Series|Paper|\\b[Uu][Rr][Ll]\\b|Research|Labs',
+                      '|Institute|School|Technical|Department|Staff')
+  aut.ind <- regexpr(paste0(# invalid words negate match
+    "^[[:space:]]+", "(?!", BAD.WORDS,  ")", 
+    "(B[Yy] | A[Uu][Tt][Hh][Oo][Rr][Ss]?:?)?",
+    "([[:upper:]][[:alpha:]]*[\\.]?[ -]",            # first name, maybe hypenated or abbrev.
+    "([[:upper:]][[:alpha:]]*[\\.]?[ -])*",           # optional middle name or initial, maybe hypenated
+    "[[:upper:]][[:alpha:]'-]+.?[[:space:]]?",        # last name + potential extra char to 
+    "(, Jr| II| III| IV)?(,? MD.?)?(,? P(h|H)D.?)?",  # optional qualifications      
+    "(?<!", BAD.WORDS, ")", 
+    "(,.|;.)*([[:space:]]*[Aa][Nn][Dd]| &)?[[:space:]]*)+$"),             # and, ",", ";", or "&" to seperate names. Repeat
+                     doc[-1], perl=TRUE)              # first line can't have authors
+  aut.match <- regmatches(doc[-1], aut.ind)
+  if (length(aut.match) == 0){
+    aut.match <- NULL
+  }else{
+    aut.match <- gsub("(,? MD)?(,? P(H|h)D)?", '', aut.match)  # remove MD and PhD
+    aut.match <- gsub("[^[:alpha:] ,'-]", '', aut.match)  # remove punct at end of last name
+    aut.match <- gsub("^[[:space:]]*Author( |: )|^[[:space:]]*By( |: )", '', aut.match)  # remove author or by at start
+  }
+  
+  match.ind <- which(aut.ind > -1L) + 1  # +1 because had doc[-1] above
+  # if didn't find abstract, make attempt at not including names from doc body
+  if (!found.abstract && length(aut.match) > 1L){
+    spaces <- diff(match.ind)
+    first.too.big <- which(match.ind > 2L)[1]
+    if (!is.na(first.too.big))
+      aut.match <- aut.match[1L:first.too.big]
+  }
+  BAD.WORDS <- paste0('\\bSupplement\\b|University|\\bCollege\\b|\\bCentre\\b|\\bCenter\\b|Working|Faculty',
+                      '|Paper|\\b[Uu][Rr][Ll]\\b|Labs|\\bJournal\\b|Institute|\\bSchool\\b')
+  if (length(match.ind)){  # if found author, assume title comes before author
+    ind <- match.ind[1]
+    doc <- doc[(ind-1L):1L]  # reverse doc, assume title comes just before authors  
+  }
+  
+  # starting either author match and going backwards, or starting from line 1, search for title
+  # have two flags to allow for multiline titles
+ 
+      
+#   }else{
+#     title.ind <- regexpr(paste0("(?!", BAD.WORDS, ")",
+#                                 "^[[:upper:]][[:alpha:]'-]*(,|-|:)?[ -]",
+#                                 "([[:alpha:]:,' -]){2,}(\\.|!|\\?)?$",
+#                                 "(?<!", BAD.WORDS, ")"),
+#                          doc, perl = TRUE)
+#   }
+  # title.match <- regmatches()
+  if (!first.match){
+    title.match <- NULL
+  }else{
+    if (length(match.ind)){  # undo reversing of doc when author matched
+      if (i - 3 > 0){
+        if (length(grep("[[:alpha:]', -]+", doc[i-3])))
+          title.match <- c(title.match, doc[i-3])
+      }
+      title.match <- rev(title.match)
+    }
+    title.match <- paste0(title.match, collapse = ' ')
+    # simple fix for case troubles
+    title.match <- gsub("([[:alpha:]])([[:alpha:]'-]*)", "\\U\\1\\L\\2", title.match, perl=TRUE)
+    title.match <- gsub('[^\\w]$', '', title.match)  # remove superscripted char indicating footnote for title
+  }
+
+#   }else{
+#     match.ind <- which(title.ind > -1L)
+#     if (length(match.ind) != 1L){
+#       spaces <- diff(match.ind)
+#       first.too.big <- which(spaces > 2L)[1]
+#       if (!is.na(first.too.big))
+#         title.match <- title.match[1L:first.too.big]
+#     }
+#   }
+  
+  #return(list(ind=which(aut.ind != -1L), match=aut.match, ab.ind=ind, title.match))
+  return(list(author = aut.match, title = paste0(title.match, collapse = ' '), 
+              found.abstract = found.abstract))
+}
+
+test <- c('Mathew W. McLean', "Science", "Research Institute", "Happy Institute", 
+          "Sean O'Rielly", 'Jane-Lin Wang', 'Cornell University', 'T.M. Lewin', 'Oscar de la Hoya',
+          "Oscar was a loser")
+aut.ind <- regexpr(paste0(# invalid words negate match
+  #  "(?!", BAD.WORDS,  ")",
+ # "^((?!", BAD.WORDS, ").)*$",
+    "^(B[Yy] ?|A[Uu][Tt][Hh][Oo][Rr][Ss]?:? ?)?",
+    "([[:upper:]][[:alpha:]]*[\\.]?[ -]",            # first name, maybe hypenated or abbrev.
+    #"((v[oa]n( (de|den|der))?|de la|de|del|) )?",     # allows some extra Dutch and Spanish names
+    "([[:alpha:]]*[\\.]?[ -])*",          # optional middle name or initial, maybe hypenated
+    # "([[:upper:]][[:alpha:]]*[\\.]?[ -])*",          # optional middle name or initial, maybe hypenated
+    "[[:upper:]][[:alpha:]'-]+.?[[:space:]]?",        # last name + potential extra char to 
+    "(, Jr| II| III| IV)?(,? MD.?)?(,? P(h|H)D.?)?",  # optional qualifications      
+  #  "(?<!", BAD.WORDS, ")", 
+    "(,.|;.)*( and| &)?[[:space:]]?)+$"),             # and, ",", ";", or "&" to seperate names. Repeat
+                     docpm1, perl=FALSE)  
+aut.match <- regmatches(docpm1, aut.ind); aut.match
+
+regmatches(aut.match, regexpr(paste0("^((?!", BAD.WORDS, ").)*$"), aut.match, perl=TRUE))
+regmatches(aut.match, regexpr(paste0("^.*(?!", BAD.WORDS, ").*$"), aut.match, perl=TRUE))
