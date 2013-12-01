@@ -75,23 +75,31 @@ ReadFirstPages <- function(doc, page.one = TRUE){
         if (any(m != -1L))
           res$year <- regmatches(doc, m)[1L]
       }
+      
+      # pages -pdftotext has trouble with "-"
+      m <- regexec('([0-9]{1,4}) ?[-\u1390\u2212\ufe58\ufe63\uff0d\u2012-\u2015] ?([0-9]{1,4})[[:punct:]]?$',
+                   doc)
+      tmatch <- unlist(regmatches(doc, m))
+      if (length(tmatch))
+        res$pages <- paste0(tmatch[-1], collapse='-')
     }
     
-    #browser()
+    browser()
     # keywords
-    ind <- grep('Key ?words( and phrases)?:[[:space:]]?', doc, ignore.case = TRUE)
+    ind <- grep('Key ?words( and phrases)?(:|.)[[:space:]]?', doc, ignore.case = TRUE)
   # m <- regexpr('Keywords:[[:space:]]*[A-Za-z]+\\s', doc, perl=TRUE)
   # regmatches(doc, m)
     if (length(ind)){
-      res$keywords <- sub('Key ?words( and phrases)?:[[:space:]]?', '', doc[ind], ignore.case = TRUE) 
-      if (ind+1 <= length(doc) && length(grep('^([[:alpha:]]+[ ,;]?)+\\.?$', doc[ind+1])))
+      res$keywords <- sub('Key ?words( and phrases)?(:|.)[[:space:]]?', '', doc[ind], ignore.case = TRUE) 
+      if (ind+1 <= length(doc) && length(grep('^([[:alpha:]]+[,;]? ?)+\\.?$', doc[ind+1])))
           res$keywords <- paste(res$keywords, doc[ind+1])
-      if (ind+2 <= length(doc) && length(grep('^([[:alpha:]]+[ ,;]?)+\\.?$', doc[ind+2])))
+      if (ind+2 <= length(doc) && length(grep('^([[:alpha:]]+[,;]? ?)+\\.?$', doc[ind+2])))
           res$keywords <- paste(res$keywords, doc[ind+2])
       res$keywords <- gsub(';', ',', res$keywords)  # keywords need to be comma separated for BibLaTeX
+      res$keywords <- gsub('[;,]$', '', res$keywords)
       doc <- doc[1L:(ind-1)]  # shorten doc used to search for author and title
         found.abstract <- TRUE
-    }else if(length(abst.ind <- grep('(^1|^I)\\.?[[:blank:]]Introduction([[:space:]]|$)', doc))){
+    }else if(length(abst.ind <- grep('^[1I]\\.?[[:blank:]]Introduction([[:space:]]|$)', doc))){
       if (abst.ind > 2L){
         doc <- doc[1L:(abst.ind - 1L)]
         if (page.one)  # allows for first section at top of 2nd page
@@ -99,8 +107,8 @@ ReadFirstPages <- function(doc, page.one = TRUE){
       }
     }
     
-    
-    temp <- try(GetAuthorTitle(doc, found.abstract))
+   # browser()
+    temp <- try(GetAuthorTitle(doc, found.abstract, res$keywords))
     if(inherits(temp, 'try-error')){
       #message('Error reading file')
       #message(file)
@@ -155,7 +163,7 @@ CheckJSTOR <- function(doc1, doc2){
   # m <- regexpr('Keywords:[[:space:]]*[A-Za-z]+\\s', doc, perl=TRUE)
   # regmatches(doc, m)
   if (length(ind)){
-    res$keywords <- sub('Key ?words( and phrases)?:[[:space:]]?', '', doc2[ind], ignore.case = TRUE) 
+    res$keywords <- sub('[[:space:]]*Key ?words( and phrases)?:[[:space:]]?', '', doc2[ind], ignore.case = TRUE) 
     if (ind+1 <= length(doc2) && length(grep('^([[:alpha:]]+[ ,;]?)+\\.?$', doc2[ind+1])))
         res$keywords <- paste(res$keywords, doc2[ind+1])
     if (ind+2 <= length(doc2) && length(grep('^([[:alpha:]]+[ ,;]?)+\\.?$', doc2[ind+2])))
@@ -245,8 +253,7 @@ GetJSTOR <- function(doc){  # take extra caution for long title, author list, or
               pages = pages, year = year, publisher = publisher))
 }
 
-GetAuthorTitle <- function(doc, found.abstract){
- # browser()
+GetAuthorTitle <- function(doc, found.abstract, kw){
   abst.ind <- grep('^A[Bb][Ss][Tt][Rr][Aa][Cc][Tt]|^S[Uu][Mm][Mm][Aa][Rr][Yy]|^S[Yy][Nn][Oo][Pp][Ss][Ii][Ss][:.]?\\>', doc)
   if (length(abst.ind) && abst.ind > 2L){  # assume title/author comes before Abstract. need 2nd cond. for ind==1
     doc <- doc[1L:(abst.ind - 1L)]
@@ -254,7 +261,7 @@ GetAuthorTitle <- function(doc, found.abstract){
   }
   browser()
 
-  #  browser()
+
   #   aut.ind <- regexpr(paste0("^([A-Z][a-z]*[\\.]?[ -]",  # first name, maybe hypenated or abbrev.
   #                       "([A-Z][a-z]*[\\.]?[ -])*",  # optional middle name or initial, maybe hypenated
   #                       "[[:upper:]][[:alpha:]'-]+.?[[:space:]]?",  # last name + potential extra char to 
@@ -271,25 +278,38 @@ GetAuthorTitle <- function(doc, found.abstract){
   #     "(?<!Online|Supplement|Data|University|College|Institute|School)", 
   #     "(and)?([,;&$].?)?[[:space:]]?)+$"),  # and, ",", ";", or "&" to seperate names. Repeat
   #                      doc, perl=TRUE)
-  BAD.WORDS <- paste0('Online|Supplement|Data|University|College|Centre|Center|Working|Faculty|Science',
-                      '|\\bof\\b|\\bthe\\b|Foundation|Series|Paper|\\b[Uu][Rr][Ll]\\b|Research|Labs',
-                      '|Institute|School|Technical|Department|Staff')
+  BAD.WORDS <- paste0('Online|Supplement|[Dd]ata|University|College|Centre|Center|Working|Faculty|Science',
+                      '|\\<of\\>|\\<the\\>|Foundation|Series|Paper|\\<url\\>|Research|Labs',
+                      '|Institute|School|Technical|Department|Staff|\\<to\\>|\\<in\\>')
   aut.ind <- regexpr(paste0(# invalid words negate match
-    "(?!", BAD.WORDS,  ")",
-    "^([[:upper:]][[:lower:]]*[\\.]?[ -]",            # first name, maybe hypenated or abbrev.
-    "([[:upper:]][[:lower:]]*[\\.]?[ -])*",           # optional middle name or initial, maybe hypenated
+  #  "(?!", BAD.WORDS,  ")",
+    "(B[Yy] | A[Uu][Tt][Hh][Oo][Rr][Ss]?:?)?",
+    "^([[:upper:]][[:alpha:]]*[\\.]?[ -]",            # first name, maybe hypenated or abbrev.
+    "([[:alpha:]]*[\\.]?[ -]){0,3}",           # optional middle name or initial, maybe hypenated
+    #"([[:upper:]][[:alpha:]]*[\\.]?[ -])*",           # optional middle name or initial, maybe hypenated
     "[[:upper:]][[:alpha:]'-]+.?[[:space:]]?",        # last name + potential extra char to 
     "(, Jr| II| III| IV)?(,? MD.?)?(,? P(h|H)D.?)?",  # optional qualifications      
-    "(?<!", BAD.WORDS, ")", 
+  #  "(?<!", BAD.WORDS, ")", 
     "(,.|;.)*( and| &)?[[:space:]]?)+$"),             # and, ",", ";", or "&" to seperate names. Repeat
-                     doc[-1], perl=TRUE)              # first line can't have authors
+                     doc[-1], perl=FALSE)              # first line can't have authors
   aut.match <- regmatches(doc[-1], aut.ind)
   if (length(aut.match) == 0){
     aut.match <- NULL
   }else{
     aut.match <- gsub("(,? MD)?(,? P(H|h)D)?", '', aut.match)  # remove MD and PhD
     aut.match <- gsub("[^[:alpha:] ,'-]", '', aut.match)  # remove punct at end of last name
-    aut.match <- gsub("^Author( |: )|^By( |: )", '', aut.match)  # remove author or by at start
+    aut.match <- gsub("^A[Uu][Tt][Hh][Oo][Rr]( |: )|^B[Yy]( |: )", '', aut.match)  # remove author or by at start
+#     aut.match <- regmatches(aut.match, regexpr(paste0("^((?!", BAD.WORDS, ").)*$"), aut.match, perl=TRUE,
+#                                                ignore.case = TRUE))
+# remove bad words. can't get negative look-ahead working :(
+    temp <- grep(BAD.WORDS, aut.match, ignore.case = TRUE)
+    if (length(temp))
+      aut.match <- aut.match[-temp] 
+    if (!is.null(kw)){  # extra protection from including title with author
+      temp <- grep(paste0(unlist(strsplit(kw, ',? ')), collapse = '|'), aut.match, ignore.case = TRUE)
+      if (length(temp))
+        aut.match <- aut.match[-temp] 
+    }
   }
   
   match.ind <- which(aut.ind > -1L) + 1  # +1 because had doc[-1] above
@@ -314,13 +334,14 @@ GetAuthorTitle <- function(doc, found.abstract){
   first.match <- FALSE
   done.match <- FALSE
   while (i <= N && !done.match){
-    title.ind <- regexpr(paste0("(?!", BAD.WORDS, ")",
+    temp <- grep(BAD.WORDS, doc[i], ignore.case = TRUE)
+    title.ind <- regexpr(paste0(  # "(?!", BAD.WORDS, ")",
                                 "^[[:upper:]][[:alpha:]'-]*(,|-|:)?[ -]",
                                 #"([[:alpha:]:,' ]){2,}(\\.|!|\\?)?$"),
-                                "([[:alpha:]:,' -]+){2,}[[:print:]]?$",
-                                "(?<!", BAD.WORDS, ")"),
+                                "([[:alpha:]:,' -]+){2,}[[:print:]]?$"),
+                                #"(?<!", BAD.WORDS, ")"),
                          doc[i], perl = TRUE)
-    if (title.ind != -1){
+    if (title.ind != -1 && length(temp)){
       if (!first.match){
         first.match <- TRUE
         title.match <- regmatches(doc[i], title.ind)
@@ -353,7 +374,8 @@ GetAuthorTitle <- function(doc, found.abstract){
     }
     title.match <- paste0(title.match, collapse = ' ')
     # simple fix for case troubles
-    title.matche <- gsub("([[:alpha:]])([[:alpha:]'-]*)", "\\U\\1\\L\\2", title.match, perl=TRUE)
+    title.match <- gsub("([[:alpha:]])([[:alpha:]'-]*)", "\\U\\1\\L\\2", title.match, perl=TRUE)
+    title.match <- gsub('[^\\w]*$', '', title.match)  # remove superscripted char indicating footnote for title
   }
 
 #   }else{
@@ -370,6 +392,8 @@ GetAuthorTitle <- function(doc, found.abstract){
   return(list(author = aut.match, title = paste0(title.match, collapse = ' '), 
               found.abstract = found.abstract))
 }
+
+
 
 CleanAuthorTitle <- function(bib1, bib2, bibMeta, file){
   if (bib2$found.abstract && (!is.null(bib2$author) || !is.null(bib2$title))){
