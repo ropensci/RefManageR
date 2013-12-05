@@ -12,8 +12,7 @@
 # http://www.omegahat.org/RCurl/philosophy.html
 # .opts explained: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
 
-ReadZotero <- function(user, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE, 
-                       curl = getCurlHandler()){
+ReadZotero <- function(user, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE){
   if (delete.file)
     on.exit(unlink(temp.file, force = TRUE))
   

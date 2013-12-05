@@ -34,6 +34,7 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
 67. Convert to and from data.frame for use with plyr
 592. read from WorldCat   
 33. Read bibentries from clipboard
+98. duplicated() and anyDuplicated() function - use as.data.frame
 
 ### Optional Additional Ideas
 * Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg  

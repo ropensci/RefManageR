@@ -10,8 +10,7 @@ Queries an existing Zotero library to import bibliographic information.
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-ReadZotero(user, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE, 
-           curl = getCurlHandler())
+ReadZotero(user, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -40,10 +39,6 @@ character; file name where the BibTeX data returned by Zotero will be temporaril
   \item{delete.file}{
 %%     ~~Describe \code{file} here~~
 boolean; should \code{temp.file} be removed on exit?
-}
-  \item{curl}{
-%%     ~~Describe \code{curl} here~~
-\code{CURLHandle} object created earlier if one is reusing these objects. Otherwise, a new one is generated and discarded.
 }
 }
 \details{

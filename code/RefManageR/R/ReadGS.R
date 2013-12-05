@@ -26,7 +26,7 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
   }
   cites <- cites[1:min(limit, length(cites))]
   tmp <- lapply(cites, ParseGSCites)
-  out <- lapply(tmp[!is.na(tmp)], MakeBibEntry, GS = TRUE)
+  out <- lapply(tmp[!is.na(tmp)], MakeBibEntry, to.person = FALSE)
   out <- MakeCitationList(out)
   
   .BibOptions$bib.violation <- oldvio
