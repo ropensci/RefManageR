@@ -331,15 +331,16 @@ CheckGSDots <- function(x, title){
   }
 }
 
-MakeBibEntry <- function (x, GS = FALSE) {
+MakeBibEntry <- function (x, to.person = TRUE) {
   type <- attr(x, "entry")
   key <- attr(x, "key")
   y <- as.list(x)
   names(y) <- tolower(names(y))
-  if ("author" %in% names(y) && !GS) {
+  
+  if ("author" %in% names(y) && to.person) {
     y[["author"]] <- ArrangeAuthors(y[["author"]])
   }
-  if ("editor" %in% names(y)  && !GS) {
+  if ("editor" %in% names(y)  && to.person) {
     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
   }
   

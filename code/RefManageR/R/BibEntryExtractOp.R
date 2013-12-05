@@ -125,13 +125,30 @@ SearchField <- function(x, field, pattern){
       return(do.call('[.BibEntry', args))
     }else if (is.character(dot.arg)){  
       dot.arg <- tolower(dot.arg)
-     # browser()
+      #browser()
       if (dot.arg %in% current.fields){
         res <- eval(parse(text=paste0('x$', dot.arg)))
-        names(res) <- names(x)
-        return(unlist(res))
+        if (dot.arg == 'author' || dot.arg == 'editor'){
+          rnames <- names(x)
+          y <- NULL
+          for (i in seq_along(res)){
+            temp <- as.character(res[[i]])
+            names(temp) <- paste0(rnames[i], 1L:length(temp))
+            y <- c(y, temp)
+          }
+          return(setNames(as.person(y), names(y)))
+        }else{
+          names(res) <- names(x)
+          return(unlist(res))
+        }
+          res <- sapply(setNames)
+        res <- unlist(res)
+        return(res)
       }else{  # assumed to be keys
-        return(x[[names(x) %in% dot.arg]])
+        res <- x[[names(x) %in% dot.arg]]
+        if (length(res)==0)
+          message('No results.')
+        return(res)
       }
     }else{
       stop('Invalid argument')
