@@ -4,16 +4,20 @@ as.data.frame.BibEntry <- function(x, ...){
   y <- matrix(nr = length(x), nc = n.fields + 1)
   colnames(y) <- c('bibtype', col.names)
   rownames(y) <- names(x)
-  browser()
-  authors <- sapply(x, function(z) paste0(z$author, collapse = ', '))
-  
+#   browser()
+#   authors <- x$author
+#   names(authors) <- names(x)
+#   authors <- sapply(authors, paste0, collapse =', ')
+  #authors <- setNames(sapply(x, function(z) paste0(z$author, collapse = ', '), USE.NAMES = TRUE), rownames(y))
+       
   y[, 1] <- x['bibtype']
   for (i in 1:n.fields){
     nom <- col.names[i]
-    if (nom != 'author'){
+    if (nom != 'author' && nom != 'editor'){
       temp <- x[nom]
     }else{
-      temp <- authors
+      temp <- eval(parse(text=paste0('x$', nom)))
+      temp <- sapply(setNames(temp, rownames(y)), function(z) paste0(z, collapse = ', '))
     }
     y[names(temp), col.names[i]] <- temp
   }

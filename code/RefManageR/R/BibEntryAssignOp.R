@@ -32,6 +32,7 @@
       }
     }
   }
+ 
   for (i in seq_along(x)) .BibEntryCheckBibEntry1(x[[i]])
   class(x) <- c("BibEntry", "bibentry")
   x

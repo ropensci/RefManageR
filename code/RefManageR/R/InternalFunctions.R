@@ -71,10 +71,11 @@ library(bibtex)
 
 
 .BibEntryCheckBibEntry1 <- function (x, force = FALSE) {
+ # browser()
   fields <- names(x)
   if (!force && !.is_not_nonempty_text(x$crossref)) 
     return(NULL)
-  bibtype <- attr(x, "bibtype")
+  bibtype <- tolower(attr(x, "bibtype"))
   rfields <- strsplit(BibLaTeX_entry_field_db[[bibtype]], 
                       "|", fixed = TRUE)
   if (length(rfields) > 0L) {
