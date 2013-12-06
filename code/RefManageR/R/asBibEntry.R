@@ -22,9 +22,9 @@ as.BibEntry <- function(x){
       warning('rownames of data.frame not meaningful for creating keys')
 
     y <- vector('list', length(x))
-    for (i in seq_along(x)){
+    for (i in 1L:nrow(x)){
       na.ind <- which(!is.na(x[i, ]))
-      y[[i]] <- as.BibEntry(c(setNames(as.character(x[i, na.ind]), .fields[na.ind]), key = keys[1]) )
+      y[[i]] <- as.BibEntry(c(setNames(as.character(x[i, na.ind]), .fields[na.ind]), key = keys[i]) )
     }
     y <- MakeCitationList(y)
     return(y)
