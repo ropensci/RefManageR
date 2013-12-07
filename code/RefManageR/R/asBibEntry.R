@@ -1,5 +1,7 @@
 as.BibEntry <- function(x){
-  if (is.character(x)){
+  if (inherits(x, c('BibEntry', 'bibentry'))){
+    class(x) <- c('BibEntry', 'bibentry')
+  }else if (is.character(x)){
     
     if (is.na(x['bibtype']) || is.na(x['key']))
       stop("Object of class character must have entries named bibtype and key.")
