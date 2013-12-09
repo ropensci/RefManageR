@@ -98,10 +98,12 @@ CompareEntries <- function(entry, searchterms, exact = FALSE, unicode=TRUE){
 SearchField <- function(x, field, pattern){
   # this code loses correct position of matches
   # match(unlist(eval(parse(text=paste0('x$', field)))), pattern, nomatch=FALSE)
-  
+ # browser()
   match.pos <- sapply(eval(parse(text=paste0('x$', field))), CompareEntries, searchterms=pattern, 
                       exact = FALSE, unicode=TRUE)
-  
+  # SLOWER, but no eval(parse(...))
+  #microbenchmark(sapply(x[field], CompareEntries, searchterms=pattern, 
+  #                     exact = FALSE, unicode=TRUE))
   return(match.pos)
 }
 
