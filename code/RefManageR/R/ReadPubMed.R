@@ -142,7 +142,7 @@ ProcessPubMedResult <- function(article){
 LookupPubMedID <- function(bib, index){
   stopifnot(inherits(bib, 'BibEntry'))
   if (missing(index))
-    index <- 1L:length(bib)
+    index <- seq_along(bib)
   
   base.url <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/ecitmatch.cgi?db=pubmed&retmode=xml&bdata="
   cit.strings <- sapply(bib[index], MakeCitationString)
@@ -154,14 +154,15 @@ LookupPubMedID <- function(bib, index){
   m <- gregexpr('KeY\\|(NOT_FOUND|[0-9]+)', results)
   res <- unlist(regmatches(results, m))
   res <- sub('KeY\\|', '', res)
-  for (i in 1:length(index)){
-    if (res[i] != 'NOT_FOUND'){
-      bib[[index[i]]]$eprinttype <- 'pubmed'
-      bib[[index[i]]]$eprint <- res[i]
-    }
+  ind <- grep('[0-9]', res)
+  if (length(ind)){
+    message(paste0('Success for entries: ', paste0(ind, collapse=', ')))
+    bib[ind] <- lapply(res[ind], function(x) c(eprinttype = 'pubmed', eprint = x))
+  }else{
+    message('No PubMed ID\'s found')
   }
   
-  return(bib[index])
+  return(bib)
 }
 
 MakeCitationString <- function(bib.entry){

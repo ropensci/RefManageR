@@ -52,24 +52,24 @@ as.data.frame.BibEntry(x, ...)
 ## The function is currently defined as
 function (x, ...) 
 {
-    col.names <- unique(unlist(fields(test)))
+    col.names <- unique(unlist(fields(x)))
     n.fields <- length(col.names)
     y <- matrix(nr = length(x), nc = n.fields + 1)
     colnames(y) <- c("bibtype", col.names)
     rownames(y) <- names(x)
-    authors <- sapply(x, function(z) paste0(z$author, collapse = ", "))
     y[, 1] <- x["bibtype"]
     for (i in 1:n.fields) {
         nom <- col.names[i]
-        if (nom != "author") {
+        if (nom != "author" && nom != "editor") {
             temp <- x[nom]
         }
         else {
-            temp <- authors
+            temp <- sapply(setNames(x, rownames(y)), function(z) paste0(eval(parse(text = paste0("z$", 
+                nom))), collapse = ", "))
         }
         y[names(temp), col.names[i]] <- temp
     }
-    class(y) <- "data.frame"
+    y <- as.data.frame(y, stringsAsFactors = FALSE)
     return(y)
   }
 }

@@ -36,6 +36,7 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
 33. Read bibentries from clipboard
 98. duplicated() and anyDuplicated() function - use as.data.frame
 2. UpdateSingleAuthor function
+34. Make sure all functions use Date class, make sure print and format truncate to year
 
 ### Optional Additional Ideas
 * Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg  
@@ -92,6 +93,7 @@ BUGS
   * catch errors in MakeBibEntry
   * handle headers better when reading pdf, including getting year, etc. from 2nd line of doc
 * `$<-`: `bib.entry.obj$field.name <- value.vec` adds vector of values to each bib. entry (**FIXED**)
+* testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex")) fails, but read.bib works
 
 DONE     
 ==================================================================================================================
@@ -115,7 +117,10 @@ DONE
 * let users set "[.BibEntry" and "+.BibEntry" defaults using getOptions() or BibEntryOptions() accessors and mutators
 * add function for merging which handles duplicates (needs debugging)
 * allow vector fields in search function `all(pmatch(searchterm, fields))` perhaps?
-
+* `]]<-` for replacing single BibEntries
+* `]<-` for for updating (multiple) fields of (multiple) entries
+* search PubMed and import Bibtex entry, get Pubmed ID from PubMed
+* open BibEntry using file, doi, url, or eprint
 
 =============================================================================================================
 
@@ -131,7 +136,12 @@ JSS Doc Outline
   5. ReadPDFMeta
   7. ReadWorldCat
 3. **Manipulating BibEntry Objects**
-  1. Searching
+  1. Searching and Indexing
+  2. Assignment
+  2. as.BibEntry
+    * unlist, relist.BibEntry
+    * unclass
+    * as.data.frame.BibEntry
   2. Merging
   3. Other Generics - sort, names, $, etc.
 4. **Printing/Viewing/Saving**
