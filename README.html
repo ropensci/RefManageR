@@ -195,6 +195,11 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
 Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>iconv</code></li>
 <li><a href="http://opencitations.net/">http://opencitations.net/</a></li>
 <li>handle crossrefs for new BibLaTeX &ldquo;in&rdquo; fields</li>
+<li>handle xdata in BibLaTeX and entry sets in BibTeX and BibLaTeX
+
+<ul>
+<li>see 3.11.6 and 3.11.5, respectively in BibLaTeX manual</li>
+</ul></li>
 <li>write &ldquo;-.BibEntry&rdquo; function</li>
 <li>see the <code>scholar</code> R package.  Imports bibtex data using scholar id&#39;s</li>
 <li>see R package CITAN for &ldquo;scientometrics&rdquo;</li>
@@ -230,8 +235,8 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 
 <ul>
 <li>merge doesn&#39;t work when <code>length(bib1) &gt; length(bib2)</code> in <code>bib1+bib2</code></li>
-<li>fix tryCatch in MakeBibEntry (<strong>FIXED</strong>)</li>
-<li><code>$</code> doesn&#39;t work for creating field that does not exist in any entries (<strong>FIXED</strong>)
+<li>(<strong>FIXED</strong>) fix tryCatch in MakeBibEntry </li>
+<li>(<strong>FIXED</strong>) <code>$</code> doesn&#39;t work for creating field that does not exist in any entries
 
 <ul>
 <li>happened in ReadPDFs when adding file info after calling MakeCitationList</li>
@@ -241,21 +246,23 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 <li>ReadPDF<br/>
 
 <ul>
-<li>key needs to be made after scanning text and meta data in ReadPDFs, not by both separately (<strong>FIXED</strong>)<br/></li>
-<li>msgs for entries with no author+title should not occur in both reading of text and metadata in <code>ReadPDFs</code> (<strong>FIXED</strong>)</li>
+<li>(<strong>FIXED</strong>) key needs to be made after scanning text and meta data in ReadPDFs, not by both separately<br/></li>
+<li>(<strong>FIXED</strong>) msgs for entries with no author+title should not occur in both reading of text and metadata in <code>ReadPDFs</code> </li>
 <li>bug in adding <code>file</code> to <code>bibentry</code> object in ReadPDFs</li>
 <li>handle ligatures in ReadPDFs: ff: &ldquo;&lt; U + F B 0 0 &gt;&rdquo; </li>
-<li>volume and number not working (<strong>FIXED</strong>)</li>
-<li>files[[13]] - BoveHeld-BFapproximation(ArXiv2013).pdf should work for both authors - only gets one</li>
-<li>year for WoodKohnShivelyJiang-BayesSSselection(JRSSB2002).pdf in GetJSTOR (<strong>FIXED</strong>)</li>
-<li>handle results from CrossRef being list of BibEntry obj, instead of BibEntry obj. itself (<strong>FIXED</strong>)</li>
+<li>(<strong>FIXED</strong>) volume and number not working</li>
+<li>(<strong>FIXED</strong>) files[[13]] - BoveHeld-BFapproximation(ArXiv2013).pdf should work for both authors - only gets one</li>
+<li>year for WoodKohnShivelyJiang-BayesSSselection(JRSSB2002).pdf in GetJSTOR</li>
+<li>(<strong>FIXED</strong>) handle results from CrossRef being list of BibEntry obj, instead of BibEntry obj. itself</li>
 <li>add DOI&#39;s and file names at end</li>
 <li>make sure all corner cases work: no crossref, no c.ref results, no metadata, no meta res, no JSTOR res,
 all jstor, all crossref+jstor</li>
 <li>catch errors in MakeBibEntry</li>
 <li>handle headers better when reading pdf, including getting year, etc. from 2nd line of doc</li>
 </ul></li>
-<li><code>$&lt;-</code>: <code>bib.entry.obj$field.name &lt;- value.vec</code> adds vector of values to each bib. entry (<strong>FIXED</strong>)</li>
+<li>(<strong>FIXED</strong>) <code>$&lt;-</code>: <code>bib.entry.obj$field.name &lt;- value.vec</code> adds vector of values to each bib. entry</li>
+<li>(<strong>FIXED</strong>) testbib &lt;- ReadBib(system.file(&ldquo;REFERENCES.bib&rdquo;, package=&ldquo;bibtex&rdquo;)) fails, but read.bib works</li>
+<li><code>bib[numeric_index, &#39;field_name&#39;]</code> or <code>bib[&#39;field_name&#39;, &#39;numeric_index&#39;]</code> not working</li>
 </ul>
 
 <h1>DONE     </h1>
@@ -280,6 +287,10 @@ all jstor, all crossref+jstor</li>
 <li>let users set &ldquo;[.BibEntry&rdquo; and &ldquo;+.BibEntry&rdquo; defaults using getOptions() or BibEntryOptions() accessors and mutators</li>
 <li>add function for merging which handles duplicates (needs debugging)</li>
 <li>allow vector fields in search function <code>all(pmatch(searchterm, fields))</code> perhaps?</li>
+<li><code>]]&lt;-</code> for replacing single BibEntries</li>
+<li><code>]&lt;-</code> for for updating (multiple) fields of (multiple) entries</li>
+<li>search PubMed and import Bibtex entry, get Pubmed ID from PubMed</li>
+<li>open BibEntry using file, doi, url, or eprint</li>
 </ul>
 
 <h1></h1>
@@ -302,7 +313,12 @@ all jstor, all crossref+jstor</li>
 <li><strong>Manipulating BibEntry Objects</strong>
 
 <ol>
-<li>Searching</li>
+<li>Searching and Indexing</li>
+<li>Assignment</li>
+<li>as.BibEntry</li>
+<li>unlist, relist.BibEntry</li>
+<li>unclass</li>
+<li>as.data.frame.BibEntry</li>
 <li>Merging</li>
 <li>Other Generics - sort, names, $, etc.</li>
 </ol></li>

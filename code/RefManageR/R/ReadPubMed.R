@@ -47,20 +47,18 @@ ReadNCBI <- function(query, database = 'PubMed', ...){
 
 GetPubMedByID <- function(id, db = 'pubmed', ...){
  # browser()
-  parms <- list(id = id, db = db, ...)
+  parms <- list(db = db, ...)
   #parms[[1]] <- NULL
-  if (length(id > 1))
+  if (!missing(id))
     parms$id <- paste0(id, collapse=',')
   
   parms$retmode <- 'xml'
   parms$rettype <- 'medline'
 
-  if (is.null(id))
-    stop('Must specify either id or query')
   base.url <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?"
   temp <- getForm(base.url, .params = parms)
   tdoc <- xmlParse(temp)
-      
+  #    browser()
   # Note: directly using xpathApply on tdoc won't work if some results are missing certain fields    
   results <- getNodeSet(tdoc, '//PubmedArticleSet/PubmedArticle')      
 
@@ -77,23 +75,84 @@ GetPubMedByID <- function(id, db = 'pubmed', ...){
   # first.inits <- gsub('(\\w)', '\\1\\. ', first.inits, perl=TRUE)
 }
 
+GetPubMedRelated <- function(id, database = 'pubmed', return.sim.scores = FALSE, max.results = 100){
+#   .params <- list(...)
+#   bad.ind <- which(!names(.params) %in% c('usehistory', 'WebEnv', 'query_key', 'retstart', 'retmax', 'field',
+#                                           'datetype', 'reldate', 'mindate', 'maxdate'))
+#   .parms <- list(cmd = 'neighbor_history', dbfrom = 'pubmed')
+#   if(length(bad.ind)){
+#     warning('Invalid .params specified and will be ignored')
+#     .parms <- .parms[-bad.ind]
+#   }
+
+  stopifnot(!missing(id))
+  
+  if (inherits(id, 'BibEntry')){
+    ind <- unlist(id$eprinttype)=='pubmed'
+    id <- unlist(id$eprint[ind]) 
+    if (is.null(id))
+      stop('BibEntry object provided contains no PubMed Ids.')
+  }
+  parms <- list(cmd = 'neighbor_score', dbfrom = 'pubmed', db = database, id = id)
+  if (length(id > 1))
+    parms$id <- paste0(id, collapse=',')
+  
+  base.url <- 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi'
+
+  results <- try(getForm(base.url, .params = parms))
+  if (inherits(results, 'try-error'))
+    return(NA)
+  
+  tdoc <- xmlParse(results)
+ # browser()
+  temp <- getNodeSet(tdoc, '/eLinkResult/LinkSet/LinkSetDb')[[1]]
+  temp <- xmlDoc(temp)
+  ids <- unlist(xpathApply(temp, '/LinkSetDb/Link/Id', xmlValue))
+  if (is.null(id)){
+    message('No results.')
+    return()
+  }
+  
+  ind <- seq_len(min(max.results, length(ids)))
+  if (return.sim.scores)
+    scores <- unlist(xpathApply(temp, '/LinkSetDb/Link/Score', xmlValue))[ind]
+
+  #ids <- unlist(xpathApply(tdoc, '/eSearchResult/IdList/Id', xmlValue)) 
+#   if (!length(ids)){
+#     message('No Results.')
+#     return()
+#   }
+  
+  res <- GetPubMedByID(id = ids[ind], db = database)
+  if (return.sim.scores)
+    res[] <- lapply(scores, function(x) c(score = x))
+  
+  return(res)
+}
+
 ProcessPubMedResult <- function(article){
   tdoc <- xmlDoc(article)
+  res <- list()
   
   title <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/ArticleTitle',
                                  xmlValue))
-  title <- gsub('\\.$', '', title)
+  res$title <- gsub('\\.$', '', title)
   last.names <- unlist(xpathApply(tdoc, 
                 '//PubmedArticle/MedlineCitation/Article/AuthorList/Author/LastName', 
                                   xmlValue))
   first.names <- unlist(xpathApply(tdoc,  
                 '//PubmedArticle/MedlineCitation/Article/AuthorList/Author/ForeName',
                          xmlValue)) 
-  author <- as.person(paste(first.names, last.names))
+  res$author <- as.person(paste(first.names, last.names))
   
-  year <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Year',
+  res$year <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Year',
                                  xmlValue))
-    
+    if (is.null(res$year))  # search extra hard for year
+        res$year <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/ArticleDate/Year',
+                                 xmlValue))
+    if (is.null(res$year))
+      res$year <- unlist(xpathApply(tdoc, '//PubmedArticle/PubmedData/History/PubMedPubDate/Year',
+                                 xmlValue))[1]
 #   month <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Month',
 #                                  xmlValue))
 #   day <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Month',
@@ -101,26 +160,27 @@ ProcessPubMedResult <- function(article){
 #   browser()
 #   date <- paste(year, month, day, sep='/')
   
-  journal <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/Title',
+  res$journal <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/Title',
                               xmlValue))
   
-  volume <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/Volume',
+  res$volume <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/Volume',
                               xmlValue))
   
-  number <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/Issue',
+  res$number <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/Issue',
                               xmlValue))
   
-  pages <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Pagination/MedlinePgn',
+  res$pages <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Pagination/MedlinePgn',
                             xmlValue)) 
-  pmid <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/PMID',
+  res$pmid <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/PMID',
                           xmlValue))
   doi <- unlist(xpathApply(tdoc, '//PubmedArticle/PubmedData/ArticleIdList/ArticleId',
                               xmlValue))
-  doi <- grep('/', doi, value = TRUE)
+  res$doi <- grep('/', doi, value = TRUE)
   
   free(tdoc)
-  res <- list(title = title, author = author, year = year, journal = journal, volume = volume, 
-              number = number, pages = pages, eprint = pmid, doi = doi, eprinttype = 'pubmed')
+  res$eprinttype <- 'pubmed'
+  # res <- list(title = title, author = author, year = year, journal = journal, volume = volume, 
+  #            number = number, pages = pages, eprint = pmid, doi = doi, eprinttype = 'pubmed')
   
   if (!is.null(res$journal)){
     attr(res, 'entry') <- 'article'
@@ -128,13 +188,7 @@ ProcessPubMedResult <- function(article){
     attr(res, 'entry') <- 'misc'
   }
   
-  m <- regexpr('\\<([[:alpha:]]{4,})\\>', title)
-  if(m != -1){
-    key.title <- tolower(regmatches(title, m))
-    attr(res, 'key') <- paste0(tolower(last.names[1]), year, key.title)  
-  }else{
-    attr(res, 'key') <- paste0(tolower(last.names[1]), year)
-  }
+  attr(res, 'key') <- CreateBibKey(res$title, res$author, res$year)
     
   return(MakeBibEntry(res, FALSE))
 }
