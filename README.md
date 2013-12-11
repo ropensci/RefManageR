@@ -43,6 +43,8 @@ have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if us
 Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 * http://opencitations.net/
 * handle crossrefs for new BibLaTeX "in" fields
+* handle xdata in BibLaTeX and entry sets in BibTeX and BibLaTeX
+  * see 3.11.6 and 3.11.5, respectively in BibLaTeX manual
 * write "-.BibEntry" function
 * see the `scholar` R package.  Imports bibtex data using scholar id's
 * see R package CITAN for "scientometrics"
@@ -73,27 +75,28 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 BUGS
 =================================================================================
 * merge doesn't work when `length(bib1) > length(bib2)` in `bib1+bib2`
-- fix tryCatch in MakeBibEntry (**FIXED**)
-- `$` doesn't work for creating field that does not exist in any entries (**FIXED**)
+- (**FIXED**) fix tryCatch in MakeBibEntry 
+- (**FIXED**) `$` doesn't work for creating field that does not exist in any entries
   * happened in ReadPDFs when adding file info after calling MakeCitationList
   * possible problem when list elements sent to make citation list are already BibEntry class?
 * if doi + url both available, `print` function formats and includes both as url
 * ReadPDF  
-  - key needs to be made after scanning text and meta data in ReadPDFs, not by both separately (**FIXED**)  
-  - msgs for entries with no author+title should not occur in both reading of text and metadata in `ReadPDFs` (**FIXED**)
+  - (**FIXED**) key needs to be made after scanning text and meta data in ReadPDFs, not by both separately  
+  - (**FIXED**) msgs for entries with no author+title should not occur in both reading of text and metadata in `ReadPDFs` 
   * bug in adding `file` to `bibentry` object in ReadPDFs
   * handle ligatures in ReadPDFs: ff: "< U + F B 0 0 >" 
-  - volume and number not working (**FIXED**)
-  * files[[13]] - BoveHeld-BFapproximation(ArXiv2013).pdf should work for both authors - only gets one
-  - year for WoodKohnShivelyJiang-BayesSSselection(JRSSB2002).pdf in GetJSTOR (**FIXED**)
-  - handle results from CrossRef being list of BibEntry obj, instead of BibEntry obj. itself (**FIXED**)
+  - (**FIXED**) volume and number not working
+  * (**FIXED**) files[[13]] - BoveHeld-BFapproximation(ArXiv2013).pdf should work for both authors - only gets one
+  - year for WoodKohnShivelyJiang-BayesSSselection(JRSSB2002).pdf in GetJSTOR
+  - (**FIXED**) handle results from CrossRef being list of BibEntry obj, instead of BibEntry obj. itself
   * add DOI's and file names at end
   * make sure all corner cases work: no crossref, no c.ref results, no metadata, no meta res, no JSTOR res,
     all jstor, all crossref+jstor
   * catch errors in MakeBibEntry
   * handle headers better when reading pdf, including getting year, etc. from 2nd line of doc
-* `$<-`: `bib.entry.obj$field.name <- value.vec` adds vector of values to each bib. entry (**FIXED**)
-* testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex")) fails, but read.bib works
+- (**FIXED**) `$<-`: `bib.entry.obj$field.name <- value.vec` adds vector of values to each bib. entry
+- (**FIXED**) testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex")) fails, but read.bib works
+- `bib[numeric_index, 'field_name']` or `bib['field_name', numeric_index]` not working
 
 DONE     
 ==================================================================================================================

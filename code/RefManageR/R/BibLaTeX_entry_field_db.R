@@ -29,10 +29,10 @@ BibLaTeX_entry_field_db$mvcollection <- c('editor', 'title', 'year|date')
 BibLaTeX_entry_field_db$incollection <- c('author', 'editor', 'title', 'booktitle', 'year|date') 
 
 # supplement to a collection
-BibLaTeX_entry_field_db$incollection <- c('author', 'editor', 'title', 'booktitle', 'year|date') 
+BibLaTeX_entry_field_db$suppcollection <- c('author', 'editor', 'title', 'booktitle', 'year|date') 
 
 #manual
-BibLaTeX_entry_field_db$incollection <- c('author|editor', 'title', 'year|date') 
+BibLaTeX_entry_field_db$manual <- c('author|editor', 'title', 'year|date') 
 
 # misc
 BibLaTeX_entry_field_db$misc <- character(0)
@@ -74,7 +74,7 @@ BibLaTeX_entry_field_db$report <- c('author', 'title', 'type', 'institution', 'y
 BibLaTeX_entry_field_db$set <- character(0)
 
 # thesis: replaces 'mastersthesis' and 'phdthesis' types by adding 'type' field
-BibLaTeX_entry_field_db$unpublished <- c('author', 'title', 'type', 'institution', 'year|date')  
+BibLaTeX_entry_field_db$thesis <- c('author', 'title', 'type', 'institution', 'year|date')  
 
 # unpublished
 BibLaTeX_entry_field_db$unpublished <- c('author', 'title', 'year|date') 

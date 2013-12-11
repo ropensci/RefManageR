@@ -368,3 +368,16 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   }
   return(res)
 }
+
+CreateBibKey <- function(ti, au, yr){
+  m <- regexpr('\\<([[:alpha:]]{4,})\\>', ti)
+  key.title <- tolower(regmatches(ti, m))  # will be character(0) if no matches or if ti is NULL
+  if (inherits(au, 'person'))
+    au <- gsub(' ', '', tolower(au[1]$family[1]))
+
+  res <- paste0(au, yr, key.title)
+  if (!length(res))
+    return()
+  
+  return(res)
+}
