@@ -1,25 +1,29 @@
 \name{levels.BibEntry}
 \alias{levels.BibEntry}
+\alias{fields}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Get all BibTeX/BibLaTeX fields in a BibEntry object
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Returns the fields that have been defined for each entry in \code{x}.
 }
 \usage{
-levels.BibEntry(x)
+\method{levels}{BibEntry}(x)
+
+fields(x)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-%%     ~~Describe \code{x} here~~
+object of class BibEntry
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+\code{fields} and \code{levels} perform the same function except the list returned by levels has names corresponding to the keys of the BibTeX entries.
 }
 \value{
+A named list.  Each entry in the list is a character vector of the fields defined for the corresponding entry in \code{x}.
 %%  ~Describe the value returned
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
@@ -30,10 +34,10 @@ levels.BibEntry(x)
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+McLean, M. W.
 }
 \note{
-%%  ~~further notes~~
+\code{\sQuote{key}} and \code{\sQuote{bibtype}} are never included in the returned list since they must be present for every entry.
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
