@@ -1,7 +1,14 @@
-ReadBib <- function (file = findBibFile(package), package = "bibtex", .Encoding = "UTF-8", 
+#' BibLaTeX/BibTeX .bib file parser
+#' 
+#' Parser for bibliography databases in the bib format containing either BibLaTeX or BibTeX entries.
+#' @param file 
+#' @imports bibtex
+#' @author Mathew W. McLean \email{mathew.w.mclean@@gmail.com}
+ReadBib <- function (file, package = "bibtex", .Encoding = "UTF-8", 
                      header = if (length(preamble)) paste(preamble, sep = "\n") else "", 
                      footer = "") 
 {
+  stopifnot(!missing(file))
   if (!is.character(file)) {
     stop("'read.bib' only supports reading from files, 'file' should be a character vector of length one")
   }

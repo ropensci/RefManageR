@@ -1,7 +1,7 @@
 library(lubridate)
 
 CompareDates <- function(bib.entry, date2, compare.op='==', match.date = 'year.only'){
-  date1 <- bib.entry$date
+  date1 <- bib.entry$dateobj
   if(is.null(date1))
     return(FALSE)
   #browser()

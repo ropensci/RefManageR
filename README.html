@@ -204,6 +204,18 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use <code>ico
 <li>see the <code>scholar</code> R package.  Imports bibtex data using scholar id&#39;s</li>
 <li>see R package CITAN for &ldquo;scientometrics&rdquo;</li>
 <li>see knitcitations: install_github(&ldquo;knitcitations&rdquo;, &ldquo;cboettig&rdquo;)</li>
+<li>Support for additional features for BibEntry objects
+
+<ol>
+<li>xref entry type</li>
+<li>mkbibquote</li>
+<li>related, relatedtype</li>
+<li>increased crossref support</li>
+<li>support for set entry type</li>
+<li>@strings for shortcut for commonly used strings</li>
+<li>support for pagination and bookpagination fields (predefined: page, column, line, verse, section, paragraph)
+15.</li>
+</ol></li>
 <li>handle Zotero using techreport for arXiv files</li>
 <li>add merge function as wrapper for &ldquo;+.BibEntry&rdquo;</li>
 <li>add search function as wrapper for &ldquo;[.BibEntry&rdquo;</li>
@@ -262,7 +274,7 @@ all jstor, all crossref+jstor</li>
 </ul></li>
 <li>(<strong>FIXED</strong>) <code>$&lt;-</code>: <code>bib.entry.obj$field.name &lt;- value.vec</code> adds vector of values to each bib. entry</li>
 <li>(<strong>FIXED</strong>) testbib &lt;- ReadBib(system.file(&ldquo;REFERENCES.bib&rdquo;, package=&ldquo;bibtex&rdquo;)) fails, but read.bib works</li>
-<li><code>bib[numeric_index, &#39;field_name&#39;]</code> or <code>bib[&#39;field_name&#39;, &#39;numeric_index&#39;]</code> not working</li>
+<li><code>bib[numeric_index, &#39;field_name&#39;]</code> or <code>bib[&#39;field_name&#39;, numeric_index]</code> not working</li>
 </ul>
 
 <h1>DONE     </h1>
@@ -308,7 +320,7 @@ all jstor, all crossref+jstor</li>
 <li>ReadGS</li>
 <li>ReadCrossRef</li>
 <li>ReadPDFMeta</li>
-<li>ReadWorldCat</li>
+<li>ReadPubMed</li>
 </ol></li>
 <li><strong>Manipulating BibEntry Objects</strong>
 
@@ -320,7 +332,7 @@ all jstor, all crossref+jstor</li>
 <li>unclass</li>
 <li>as.data.frame.BibEntry</li>
 <li>Merging</li>
-<li>Other Generics - sort, names, $, etc.</li>
+<li>Other Generics - sort, names, $, levels, </li>
 </ol></li>
 <li><strong>Printing/Viewing/Saving</strong>
 
@@ -336,7 +348,7 @@ all jstor, all crossref+jstor</li>
 <ol>
 <li>Plot</li>
 <li>word diagrams</li>
-<li>d3.js directed graph without and without centre</li>
+<li>d3.js directed graph with and without centre</li>
 <li><code>table</code></li>
 </ol></li>
 </ol>

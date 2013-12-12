@@ -1,6 +1,6 @@
 #' Open BibEntry in PDF viewer or web browser.
 #' 
-#' @param object of class BibEntry.
+#' @param bib object of class BibEntry.
 #' @param entry numeric index or character key of entry in \code{bib} to open.
 #' @param open.field character vector of fields to use in \code{bib} to open the BibEntry.  
 #'   Possible fields are any combination of \dQuote{file},\dQuote{url}, \dQuote{eprint}, or \dQuote{doi}.  
@@ -12,6 +12,7 @@
 #'   \code{getOptions(\dQuote{browser})}, otherwise.
 #' @keywords connection utilities  
 #' @seealso \code{\link{browseURL}}
+#' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
 #' @method open BibEntry
 #' @examples 
 #' \dontrun{

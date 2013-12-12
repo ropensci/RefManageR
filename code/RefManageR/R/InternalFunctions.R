@@ -344,15 +344,27 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   if ("editor" %in% names(y)  && to.person) {
     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
   }
-  
+  browser()
   if ("date" %in% names(y)){
     if (!inherits(y[['date']], "POSIXlt"))
-      y[['date']] <- as.Date(switch(as.character(nchar(y[['date']])),
-                                  '4' = paste0(y[['date']], '-01-01'),    # needed to get around R assigning current day and month when unspecified
-                                  '7' = paste0(y[['date']], '-01'),  # %Y-%d which doesn't work with strptime
-                                  y[['date']]))
+      tdate <- try(ProcessDate(y[['date']], NULL), TRUE)
+      if (inherits(tdate, 'try-error') || is.na(tdate)){
+        warning(paste0('Invalid format for date field in entry: ', key, "; will attempt to use 'year' instead"))
+      }else{
+        y[['dateobj']] <- tdate
+      }
+#     as.Date(switch(as.character(nchar(y[['date']])),
+#                                 '4' = paste0(y[['date']], '-01-01'),    # needed to get around R assigning current day and month when unspecified
+#                                 '7' = paste0(y[['date']], '-01'),  # %Y-%d which doesn't work with strptime
+#                                 y[['date']]))
   }else if ("year" %in% names(y)){
-    y[["date"]] <- as.Date(paste0(y[["year"]], '-01-01'))
+    tdate <- try(ProcessDate(y[['year']], y[['month']]), TRUE)
+    if (inherits(tdate, 'try-error') || is.na(tdate)){
+     message(paste0("No valid 'date' or 'year' for entry: ", key, "; it will be ignored.")) 
+     return()
+    }else{
+      y[["dateobj"]] <- tdate# as.Date(paste0(y[["year"]], '-01-01'))
+    }
   }
 #  browser()
   res <- try(BibEntry(bibtype = type, key = key, other = y), TRUE)
@@ -367,6 +379,36 @@ MakeBibEntry <- function (x, to.person = TRUE) {
     return(NULL)
   }
   return(res)
+}
+
+#' @importFrom lubridate new_interval
+ProcessDate <- function(dat, mon){
+  if (length(grep('^(19|20)[0-9]{2}$', dat))){
+    if (!is.null(mon)){
+      res <- as.Date(paste0(dat, mon, '01'), '%Y%b%d')
+    }else{
+      res <- as.Date(paste0(dat, '0101'), '%Y%m%d')
+    }
+  }else if (length(grep('^(19|20)[0-9]{2}/$', dat))){
+    if (!is.null(mon)){
+      res <- new_interval(as.Date(paste0(substring(dat, 1, 4), mon, '01'), '%Y%b%d'), Sys.Date())
+    }else{
+      res <- new_interval(as.Date(paste0(substring(dat, 1, 4), '0101'), '%Y%m%d'), Sys.Date())
+    }
+  }else if (length(grep('^(19|20)[0-9]{2}-[01][0-9]$', dat))){
+    res <- as.Date(paste0(dat, '01'), '%Y-%m%d')
+  }else if (length(grep('^(19|20)[0-9]{2}-[01][0-9]-[0-3][0-9]$', dat))){
+    res <- as.Date(dat)
+  }else if (length(grep('^(19|20)[0-9]{2}/(19|20)[0-9]{2}$', dat))){
+    res <- new_interval(as.Date(paste0(substring(dat, 1, 4), '0101'), '%Y%m%d'), 
+                        as.Date(paste0(substring(dat, 6, 9), '0101'), '%Y%m%d'))
+  }else if (length(grep('^(19|20)[0-9]{2}-[01][0-9]/(19|20)[0-9]{2}-[01][0-9]$', dat))){
+    res <- new_interval(as.Date(paste0(substring(dat, 1, 7), '0101'), '%Y-%m%d'), 
+                        as.Date(paste0(substring(dat, 9, 15), '0101'), '%Y-%m%d'))
+  }else if (length(grep('^(19|20)[0-9]{2}-[01][0-9]-[0-3][0-9]/(19|20)[0-9]{2}-[01][0-9]-[0-3][0-9]$', dat))){
+    res <- new_interval(as.Date(substring(dat, 1, 10)), 
+                        as.Date(substring(dat, 12, 21)))
+  }
 }
 
 CreateBibKey <- function(ti, au, yr){

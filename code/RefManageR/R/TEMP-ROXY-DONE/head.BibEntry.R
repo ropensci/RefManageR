@@ -18,7 +18,7 @@
 #'   with some additional formatting for the \sQuote{bibtype} and \sQuote{key}, in addition to invisibling
 #'   returning the entries.
 #' @return an object of class BibEntry.  
-#' @author McLean, M. W. \email{mathew.w.mclean@gmail.com}
+#' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
 #' @rdname head
 #' @export 
 head.BibEntry <- function (x, n = 6L, suppress.messages = TRUE, ...){
