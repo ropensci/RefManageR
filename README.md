@@ -146,7 +146,7 @@ JSS Doc Outline
     * unclass
     * as.data.frame.BibEntry
   2. Merging
-  3. Other Generics - sort, names, $, etc.
+  3. Other Generics - sort, names, $, levels, 
 4. **Printing/Viewing/Saving**
   1. Already available in bibentry
   3. toBiblatex - toBibtex
@@ -156,5 +156,5 @@ JSS Doc Outline
 5. **Summarizing**
   1. Plot
     1. word diagrams
-    2. d3.js directed graph without and without centre
+    2. d3.js directed graph with and without centre
   2. `table`

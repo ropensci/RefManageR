@@ -3,5 +3,34 @@ exportClasses(
     "BibOptions"
 )
 
-importFrom(lubridate, year)
+importFrom(lubridate, year, parse_date_time)
 importFrom(stringr, fixed, str_replace_all)
+importFrom(RJSONIO, fromJSON)
+importFrom(RCurl, getForm, getURL)
+S3method("[[", "BibEntry")
+S3method("[[<-", "BibEntry")
+S3method("[", "BibEntry")
+S3method("[<-", "BibEntry")
+S3method("$", "BibEntry")
+S3method("$<-", "BibEntry")
+S3method("names", "BibEntry")
+S3method("levels", "BibEntry")
+S3method("print", "BibEntry")
+S3method("as", "BibEntry")
+S3method("as.data.frame", "BibEntry")
+S3method("unlist", "BibEntry")
+S3method("relist", "BibEntry")
+exports(ReadZotero, 
+        ReadGS,
+        ReadPubMed,
+        ReadPDFs,
+        ReadBib,
+        ReadCrossRef,
+        GetBibEntryWithDOI,
+        WriteBib,
+        ReadPubMed,
+        GetPubMedByID,
+        GetPubMedRelated,
+        LookUpPubMedID,
+        GetPubMedByID)
+

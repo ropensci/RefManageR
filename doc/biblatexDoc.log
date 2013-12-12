@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2013.8.13)  16 NOV 2013 02:03
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2013.8.13)  11 DEC 2013 18:28
 entering extended mode
 **biblatexDoc.tex
 ("\\sf1\users\postdoc\mmclean\My Documents\biblatex\doc\biblatexDoc.tex"
@@ -835,7 +835,7 @@ Package: MattsMacros 10/10/13 v2.0 My own macros
 (C:\Users\mmclean.ADSTAT\AppData\Roaming\MiKTeX\2.9\tex\latex\etoolbox\etoolbox
 .sty
 Package: etoolbox 2011/01/03 v2.1 e-TeX tools for LaTeX
- ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\misc\etex.sty"
+ (M:\LaTeX\tex\latex\etex.sty
 Package: etex 1998/03/26 v2.0 eTeX basic definition package (PEB)
 \et@xins=\count126
 )
@@ -1226,7 +1226,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 382.
  ) 
 Here is how much of TeX's memory you used:
  12670 strings out of 494045
- 182778 string characters out of 3145963
+ 182688 string characters out of 3145963
  341295 words of memory out of 3000000
  15588 multiletter control sequences out of 15000+200000
  145443 words of font info for 148 fonts, out of 3000000 for 9000

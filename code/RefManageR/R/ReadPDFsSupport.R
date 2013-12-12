@@ -149,13 +149,8 @@ CheckJSTOR <- function(doc1, doc2){
     attr(res, 'entry') <- 'misc'  
   }
   
-  m <- regexpr('\\<([[:alpha:]]{4,})\\>', res$title)
-  if(any(m != -1)){
-    key.title <- tolower(regmatches(res$title, m))
-    attr(res, 'key') <- paste0(tolower(res$author[1]$family[1]), res$year, key.title)  
-  }else{
-    attr(res, 'key') <- paste0(tolower(res$author[1]$family[1]), res$year)
-  }
+  attr(res, 'key') <- CreateBibKey(res$title, res$author, res$year)
+
 
   ##########################################
   # try for keywords and DOI on page 2

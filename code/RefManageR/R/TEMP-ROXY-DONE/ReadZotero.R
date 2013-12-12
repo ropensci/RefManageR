@@ -12,6 +12,39 @@
 # http://www.omegahat.org/RCurl/philosophy.html
 # .opts explained: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
 
+#' Get Bibliography Information From a Zotero Library.
+#' 
+#' @param user Zotero userID for use in calls to the Zotero API.  This is not the same as your Zotero 
+#'   username.  The userID for accessing user-owned libraries can be found at 
+#'   \link{https://www.zotero.org/settings/keys}.
+#' @param .params A \emph{named} list of parameters to use in requests to the Zotero API with possible values
+#'  \itemize{
+#'    \item q - Search string to use to search the library
+#'    \item qmode - Search mode. Default is "titleCreatorYear".  Use "everything" to include full-text content in search.
+#'    \item key - API key.  This must be specified to access non-public libraries.
+#'    \item collection - name of a specific collection within the library to search
+#'    \item itemType - type of entry to search for; e.g., "book" or "journalArticle"
+#'    \item tag - name of tag to search for in library
+#'    \item limit - maximum number of entries to return
+#'    \item start - index of first entry to return
+#'  }
+#' @param temp.file character; file name where the BibTeX data returned by Zotero will be temporarily written.
+#' @param delete.file boolean; should \code{temp.file} be removed on exit?
+#' @return An object of class BibEntry
+#' @seealso \code{\link{BibEntry}}, \code{WriteZotero}, \code{\link{getForm}} in package \code{RCurl}
+#' @author McLean, M. W. \email{mathew.w.mclean@gmail.com}
+#' @examples
+#' ## first two entries in library with bayesian in title
+#' ReadZotero(user='1648676', .params=list(q='bayesian', key='7lhgvcwVq60CDi7E68FyE3br', limit=2))
+#'
+#' ## Search specific collection
+#' ## collection key can be found by reading uri when collection is selected in Zotero
+#' ReadZotero(user='1648676', .params=list(q='yu', key='7lhgvcwVq60CDi7E68FyE3br', collection='3STEQRNU'))
+#'
+#' ## Search by tag
+#' ## Notice issue with how Zotero uses Techreport entry for arXiv manuscripts
+#' ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br', tag='Statistics - Machine Learning'))
+#' @keywords database
 ReadZotero <- function(user, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE){
   if (delete.file)
     on.exit(unlink(temp.file, force = TRUE))

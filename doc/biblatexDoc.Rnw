@@ -236,6 +236,8 @@ Although false negatives are rare, the CrossRef Metadata Search can be prone to 
 \section{Manipulating BibEntry Objects}
 \subsection{Searching}
 The extraction operator \code{'['}, has been redefined for BibEntry objects to allow for easily searching a database of references saved in a BibEntry object.  Search options can be changed by set variables in the .BibOptions object or alternatively specified directly as arguments to the function \code{search}.
+
+The list extraction operator, \code{'[['}, is used for extacting a single bibentry object by position (an integer) or the entry key (a string).  List assignment, \code{'[[<-'} is used for replacing one entry in a BibEntry object with another.
 \subsection{Merging}
 The addition operator \code{'+'}, has also been redefined for BibEntry objects to allow for easily merging of two databases of references.  Note that the combine function, \code{c}, which is available for bibentry objects, does not perform any checking for duplicate entries.
 \bibliography{biblatex}

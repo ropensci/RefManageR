@@ -10,7 +10,7 @@
 
 # http://www.ncbi.nlm.nih.gov/books/NBK3837/
 
-ReadNCBI <- function(query, database = 'PubMed', ...){
+ReadPubMed <- function(query, database = 'PubMed', ...){
   .params <- list(...)
   bad.ind <- which(!names(.params) %in% c('usehistory', 'WebEnv', 'query_key', 'retstart', 'retmax', 'field',
                                           'datetype', 'reldate', 'mindate', 'maxdate'))
