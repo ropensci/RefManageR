@@ -49,6 +49,15 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 * see the `scholar` R package.  Imports bibtex data using scholar id's
 * see R package CITAN for "scientometrics"
 * see knitcitations: install_github("knitcitations", "cboettig")
+* Support for additional features for BibEntry objects
+  2. xref entry type
+  1. mkbibquote
+  60. related, relatedtype
+  9. increased crossref support
+  7. support for set entry type
+  10. @strings for shortcut for commonly used strings
+  13. support for pagination and bookpagination fields (predefined: page, column, line, verse, section, paragraph)
+  15. BibLaTeX manual p. 29 Section 2.3 Usage Notes.
 * handle Zotero using techreport for arXiv files
 * add merge function as wrapper for "+.BibEntry"
 * add search function as wrapper for "[.BibEntry"
@@ -137,7 +146,7 @@ JSS Doc Outline
   3. ReadGS
   4. ReadCrossRef
   5. ReadPDFMeta
-  7. ReadWorldCat
+  7. ReadPubMed
 3. **Manipulating BibEntry Objects**
   1. Searching and Indexing
   2. Assignment

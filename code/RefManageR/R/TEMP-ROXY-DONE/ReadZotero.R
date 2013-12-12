@@ -32,7 +32,7 @@
 #' @param delete.file boolean; should \code{temp.file} be removed on exit?
 #' @return An object of class BibEntry
 #' @seealso \code{\link{BibEntry}}, \code{WriteZotero}, \code{\link{getForm}} in package \code{RCurl}
-#' @author McLean, M. W. \email{mathew.w.mclean@gmail.com}
+#' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
 #' @examples
 #' ## first two entries in library with bayesian in title
 #' ReadZotero(user='1648676', .params=list(q='bayesian', key='7lhgvcwVq60CDi7E68FyE3br', limit=2))

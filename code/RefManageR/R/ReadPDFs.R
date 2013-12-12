@@ -1,5 +1,32 @@
-# lapply(list.files('M:/biblatex/code/RefManageR/R/', full=TRUE), source)
-library(plyr)
+#' Create bibliographic information from PDF Metadata.
+#'
+#' This function creates bibliographic information by reading the Metadata and text of PDFs stored in a user 
+#'   specified directory using Poppler (\url{http://poppler.freedesktop.org/}).  IF requested, the function 
+#'   first searches for DOIs and downloads \code{BibTeX} entries from \code{\link{ReadCrossRef}} if DOIs are 
+#'   found.  If this is not requrested or a DOI is not found for an entry, an attempt is made to build a BibTeX 
+#'   entry from the metadata and text.
+#' @param   character; path to directory containing pdfs or filename of one pdf. \code{normalizePath} is 
+#'   used on the specified path   
+#' @param .enc character; text encoding to use for reading pdf and creating BibEntry object. Available 
+#'   encodings for Poppler can be found using \code{system(\dQuote{pdfinfo -listenc})}.  The encoding must 
+#'   also be listed in \code{iconvlist()}.
+#' @param recursive logical; same as \code{\link{list.files}}.  Should pdfs in subdirectories of path be used?   
+#' @details This function requires that the \code{pdfinfo} utility from Poppler PDF 
+#' \url{http://poppler.freedesktop.org/} be installed.
+#' 
+#' This function will create only \code{Article} or \code{Misc} \code{BibTeX} entries.  
+#'
+#' The absolute path to each file will be stored in the bib entry in a field called \sQuote{file}, which is 
+#' recognized by \code{BibLaTeX} (though not printed by any standard style) and can be used by the 
+#' \code{\link{open.BibEntry}} function to open the PDF in the default viewer.
+#'
+#' If the keywords metadata field is available, it will be added to the bib entry in a field 
+#' \sQuote{keywords}, which is recognized by \code{BibLaTeX}.
+#' @return An object of class BibEntry.
+#' @references \url{http://poppler.freedesktop.org/}
+#' @author McLean, M. W. (\url{mathew.w.mclean@gmail.com})
+#' @keywords database
+#' @importFrom plyr llply
 ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRUE, use.metadata = TRUE) {
   #outfile <- tempfile("pdfinfo")
   # browser()
