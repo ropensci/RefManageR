@@ -71,7 +71,7 @@ BibLaTeX_entry_field_db$inreference <- BibLaTeX_entry_field_db$reference
 BibLaTeX_entry_field_db$report <- c('author', 'title', 'type', 'institution', 'year|date') 
 
 # set: special, see Section 3.11.5 of biblatex manual
-BibLaTeX_entry_field_db$set <- character(0)
+BibLaTeX_entry_field_db$set <- c('entryset')
 
 # thesis: replaces 'mastersthesis' and 'phdthesis' types by adding 'type' field
 BibLaTeX_entry_field_db$thesis <- c('author', 'title', 'type', 'institution', 'year|date')  

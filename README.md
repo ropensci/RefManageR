@@ -51,13 +51,15 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 * see knitcitations: install_github("knitcitations", "cboettig")
 * Support for additional features for BibEntry objects
   2. xref entry type
+  6. xdata
   1. mkbibquote
-  60. related, relatedtype
+  60. related, relatedtype, relatedstring, relatedoptions p. 26
   9. increased crossref support
-  7. support for set entry type
-  10. @strings for shortcut for commonly used strings
+  7. support for set entry type (for citing multiple references with one key)
+  10. @strings for shortcut for commonly used strings (*Implemented already for bibentry*)
   13. support for pagination and bookpagination fields (predefined: page, column, line, verse, section, paragraph)
   15. BibLaTeX manual p. 29 Section 2.3 Usage Notes.
+  18. **All the fancy sorting**
 * handle Zotero using techreport for arXiv files
 * add merge function as wrapper for "+.BibEntry"
 * add search function as wrapper for "[.BibEntry"

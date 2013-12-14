@@ -1,4 +1,4 @@
-format.Bibentry <- function (x, style = "text", .bibstyle = NULL, citation.bibtex.max = getOption("citation.bibtex.max", 
+format.BibEntry <- function (x, style = "text", .bibstyle = NULL, citation.bibtex.max = getOption("citation.bibtex.max", 
                                                                                                   1), sort = FALSE, ...) {
   style <- .bibentry_match_format_style(style)
   if (sort) 

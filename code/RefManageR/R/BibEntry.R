@@ -120,10 +120,13 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
     .BibEntryCheckBibEntry1(rval)
     pos <- fields %in% c("author", "editor")
     if (any(pos)) {
-      for (i in which(pos)) rval[[i]] <- as.person(rval[[i]])
+      for (i in which(pos)) 
+        rval[[i]] <- as.person(rval[[i]])
     }
+  #  pos <- fields %in% c("dateobj") | pos
     if (any(!pos)) {
-      for (i in which(!pos)) rval[[i]] <- as.character(rval[[i]])
+      for (i in which(!pos)) 
+        rval[[i]] <- as.character(rval[[i]])
     }
     attr(rval, "key") <- if (is.null(key)) 
       NULL
@@ -136,10 +139,11 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
       attr(rval, "footer") <- paste(footer, collapse = "\n")
     return(rval)
   }
-  #browser()
+  
   rval <- lapply(seq_along(args$bibtype), function(i) do.call("bibentry1", 
-                                                              c(lapply(args, "[[", i), list(other = lapply(other, "[[", 
-                                                                                                           i)))))
+                                                              c(lapply(args, "[[", i), 
+                                                                list(other = lapply(other, "[[", i)))))
+  
   if (!.is_not_nonempty_text(mheader)) 
     attr(rval, "mheader") <- paste(mheader, collapse = "\n")
   if (!.is_not_nonempty_text(mfooter)) 
