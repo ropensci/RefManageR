@@ -88,6 +88,16 @@ library(bibtex)
   }
 }
 
+.BibEntry_match_format_style <- function (style){
+    ind <- pmatch(tolower(style), tolower(bibentry_format_styles), 
+        nomatch = 0L)
+    if (all(ind == 0L)) 
+        stop(gettextf("%s should be one of %s", sQuote("style"), 
+            paste(dQuote(bibentry_format_styles), collapse = ", ")), 
+            domain = NA)
+    bibentry_format_styles[ind]
+}
+
 .BibEntry_expand_crossrefs <- function (x, more = list()) {
   y <- if (length(more)) 
     do.call(c, c(list(x), more))
@@ -97,7 +107,7 @@ library(bibtex)
   crossrefs <- lapply(x, `[[`, "crossref")
   pc <- which(vapply(crossrefs, length, 0L) > 0L)
   if (length(pc)) {
-    pk <- match(unlist(crossrefs[pc]), .bibentry_get_key(y))
+    pk <- match(unlist(crossrefs[pc]), .BibEntry_get_key(y))
     ok <- !is.na(pk)
     x[pc[ok]] <- Map(function(u, v) {
       add <- setdiff(names(v), names(u))
@@ -118,41 +128,7 @@ library(bibtex)
       x[pc[bad]] <- NULL
     }
   }
-  class(x) <- C("BibEntry", "bibentry")
-  x
-}
-
-.bibentry_expand_crossrefs <- function (x, more = list()) {
-  y <- if (length(more)) 
-    do.call(c, c(list(x), more))
-  else x
-  x <- unclass(x)
-  y <- unclass(y)
-  crossrefs <- lapply(x, `[[`, "crossref")
-  pc <- which(vapply(crossrefs, length, 0L) > 0L)
-  if (length(pc)) {
-    pk <- match(unlist(crossrefs[pc]), .bibentry_get_key(y))
-    ok <- !is.na(pk)
-    x[pc[ok]] <- Map(function(u, v) {
-      add <- setdiff(names(v), names(u))
-      u[add] <- v[add]
-      if (!is.na(match(tolower(attr(u, "bibtype")), c("incollection", 
-                                                      "inproceedings"))) && is.null(u$booktitle)) 
-        u$booktitle <- v$title
-      u
-    }, x[pc[ok]], y[pk[ok]])
-    status <- lapply(x[pc], function(e) tryCatch(.BibEntryCheckBibEntry1(e, 
-                                                                           TRUE), error = identity))
-    bad <- which(sapply(status, inherits, "error"))
-    if (length(bad)) {
-      for (b in bad) {
-        warning(gettextf("Dropping invalid entry %d:\n%s", 
-                         pc[b], conditionMessage(status[[b]])))
-      }
-      x[pc[bad]] <- NULL
-    }
-  }
-  class(x) <- "bibentry"
+  class(x) <- c("BibEntry", "bibentry")
   x
 }
 
@@ -199,14 +175,13 @@ MakeCitationList <- function( x, header, footer){
   if (inherits(x, "list")) x else list(x)
 }
 
-sort.BibEntry <- function (x, decreasing = FALSE, .bibstyle = NULL, drop = FALSE, 
-          ...) 
-{
+sort.BibEntry <- function (x, decreasing = FALSE, .bibstyle = NULL, drop = FALSE, ...){
   x[order(tools::bibstyle(.bibstyle)$sortKeys(x), decreasing = decreasing), 
     drop = drop]
 }
 
 bibentry_attribute_names <- c("bibtype", "textVersion", "header", "footer", "key")
+bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "textVersion", "R")
 
 # from utils:::toBibtex, good for matching by given name initials only
 format_author <- function(author) paste(sapply(author, function(p) {
@@ -225,8 +200,7 @@ format_author <- function(author) paste(sapply(author, function(p) {
 
 bibentry_list_attribute_names <- c("mheader", "mfooter")
 
-.bibentry_get_key <- function (x) 
-{
+.BibEntry_get_key <- function (x) {
   if (!length(x)) 
     return(character())
   keys <- lapply(unclass(x), attr, "key")
@@ -344,29 +318,17 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   if ("editor" %in% names(y)  && to.person) {
     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
   }
-  browser()
-  if ("date" %in% names(y)){
-    if (!inherits(y[['date']], "POSIXlt"))
-      tdate <- try(ProcessDate(y[['date']], NULL), TRUE)
-      if (inherits(tdate, 'try-error') || is.na(tdate)){
-        warning(paste0('Invalid format for date field in entry: ', key, "; will attempt to use 'year' instead"))
-      }else{
-        y[['dateobj']] <- tdate
-      }
-#     as.Date(switch(as.character(nchar(y[['date']])),
-#                                 '4' = paste0(y[['date']], '-01-01'),    # needed to get around R assigning current day and month when unspecified
-#                                 '7' = paste0(y[['date']], '-01'),  # %Y-%d which doesn't work with strptime
-#                                 y[['date']]))
-  }else if ("year" %in% names(y)){
-    tdate <- try(ProcessDate(y[['year']], y[['month']]), TRUE)
-    if (inherits(tdate, 'try-error') || is.na(tdate)){
-     message(paste0("No valid 'date' or 'year' for entry: ", key, "; it will be ignored.")) 
-     return()
-    }else{
-      y[["dateobj"]] <- tdate# as.Date(paste0(y[["year"]], '-01-01'))
+
+  tdate <- NULL
+  if (!is.null(y[['date']]) || !is.null(y[['year']])){
+    if (type != 'set'  && type != 'xdata'){
+      tdate <- try(ProcessDates(y[['date']], y[['year']], y[['month']]), TRUE)
+   #   if (inherits(tdate, 'try-error') || is.null(tdate) || is.na(tdate))
+   #      message(paste0("No valid 'date' or 'year' for entry: ", key)) 
     }
   }
-#  browser()
+
+
   res <- try(BibEntry(bibtype = type, key = key, other = y), TRUE)
   if (inherits(res, 'try-error')){
     if(!is.null(y[['title']])){
@@ -378,37 +340,67 @@ MakeBibEntry <- function (x, to.person = TRUE) {
     }
     return(NULL)
   }
+  if (!(is.null(tdate) || inherits(tdate, 'try-error') || is.na(tdate)))
+    attr(res, 'dateobj') <- tdate
+ # browser()
   return(res)
+}
+
+ProcessDates <- function(this.date, this.year, this.month){
+  stopifnot(!is.null(this.date) || !is.null(this.year))
+  if (!is.null(this.date)){
+    tdate <- try(ProcessDate(this.date, NULL), TRUE)
+     
+    if (!inherits(tdate, 'try-error'))
+      return(tdate)
+  }
+  if (!is.null(this.year)){
+    tdate <- try(ProcessDate(this.year, this.month), TRUE)
+    return(tdate)
+  }
 }
 
 #' @importFrom lubridate new_interval
 ProcessDate <- function(dat, mon){
-  if (length(grep('^(19|20)[0-9]{2}$', dat))){
+  .day <- FALSE
+  .mon <- FALSE
+  if (length(grep('^(1|2)[0-9]{3}$', dat))){
     if (!is.null(mon)){
       res <- as.Date(paste0(dat, mon, '01'), '%Y%b%d')
+      .mon <- TRUE
     }else{
       res <- as.Date(paste0(dat, '0101'), '%Y%m%d')
     }
-  }else if (length(grep('^(19|20)[0-9]{2}/$', dat))){
+  }else if (length(grep('^(1|2)[0-9]{3}/$', dat))){
     if (!is.null(mon)){
       res <- new_interval(as.Date(paste0(substring(dat, 1, 4), mon, '01'), '%Y%b%d'), Sys.Date())
+      .mon <- TRUE
     }else{
       res <- new_interval(as.Date(paste0(substring(dat, 1, 4), '0101'), '%Y%m%d'), Sys.Date())
     }
-  }else if (length(grep('^(19|20)[0-9]{2}-[01][0-9]$', dat))){
+  }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]$', dat))){
     res <- as.Date(paste0(dat, '01'), '%Y-%m%d')
-  }else if (length(grep('^(19|20)[0-9]{2}-[01][0-9]-[0-3][0-9]$', dat))){
+    .mon <- TRUE
+  }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat))){
     res <- as.Date(dat)
-  }else if (length(grep('^(19|20)[0-9]{2}/(19|20)[0-9]{2}$', dat))){
+    .day <- .mon <- TRUE
+  }else if (length(grep('^(1|2)[0-9]{3}/(1|2)[0-9]{3}$', dat))){
     res <- new_interval(as.Date(paste0(substring(dat, 1, 4), '0101'), '%Y%m%d'), 
                         as.Date(paste0(substring(dat, 6, 9), '0101'), '%Y%m%d'))
-  }else if (length(grep('^(19|20)[0-9]{2}-[01][0-9]/(19|20)[0-9]{2}-[01][0-9]$', dat))){
+  }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]/(1|2)[0-9]{3}-[01][0-9]$', dat))){
     res <- new_interval(as.Date(paste0(substring(dat, 1, 7), '0101'), '%Y-%m%d'), 
                         as.Date(paste0(substring(dat, 9, 15), '0101'), '%Y-%m%d'))
-  }else if (length(grep('^(19|20)[0-9]{2}-[01][0-9]-[0-3][0-9]/(19|20)[0-9]{2}-[01][0-9]-[0-3][0-9]$', dat))){
+    .mon <- TRUE
+  }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]/(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat))){
     res <- new_interval(as.Date(substring(dat, 1, 10)), 
                         as.Date(substring(dat, 12, 21)))
+    .day <- .mon <- TRUE
+  }else{
+    stop()
   }
+  attr(res, 'month') <- .mon
+  attr(res, 'day') <- .day
+  return(res)
 }
 
 CreateBibKey <- function(ti, au, yr){

@@ -16,6 +16,7 @@ ReadBib <- function (file, package = "bibtex", .Encoding = "UTF-8",
                                                                encoding = .Encoding))
   out <- .External("do_read_bib", file = file, encoding = .Encoding, 
                    srcfile = srcfile)
+  
   at <- attributes(out)
   if ((typeof(out) != "integer") || (getRversion() < "3.0.0")) 
     out <- lapply(out, MakeBibEntry)
