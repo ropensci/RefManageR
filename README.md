@@ -56,7 +56,6 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
   60. related, relatedtype, relatedstring, relatedoptions p. 26
   9. increased crossref support
   7. support for set entry type (for citing multiple references with one key)
-  10. @strings for shortcut for commonly used strings (*Implemented already for bibentry*)
   13. support for pagination and bookpagination fields (predefined: page, column, line, verse, section, paragraph)
   15. BibLaTeX manual p. 29 Section 2.3 Usage Notes.
   18. **All the fancy sorting**
@@ -69,7 +68,6 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 * read all of R Journal paper on person and bibentry classes
 * OR in search function - split
 * discuss methods(class='bibentry') in JSS manuscript
-* Review CrossRef [work on GitHub](https://github.com/gavinsimpson/orcid/blob/master/R/crossrefDOI.R)
 * add saved search parameter to ReadZotero function
 * summary function
 * add option for sorting results of subsetting based on diff fields and printing. See: utils:::sort.bibentry
@@ -135,6 +133,7 @@ DONE
 * `]<-` for for updating (multiple) fields of (multiple) entries
 * search PubMed and import Bibtex entry, get Pubmed ID from PubMed
 * open BibEntry using file, doi, url, or eprint
+- @strings for shortcut for commonly used strings (*Implemented already for bibentry*)
 
 =============================================================================================================
 

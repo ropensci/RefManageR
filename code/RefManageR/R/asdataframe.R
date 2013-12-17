@@ -1,7 +1,7 @@
 as.data.frame.BibEntry <- function(x, ...){
   col.names <- unique(unlist(fields(x)))
   n.fields <- length(col.names)
-  y <- matrix(nr = length(x), nc = n.fields + 1)
+  y <- matrix(nr = length(x), nc = n.fields + 1L)
   colnames(y) <- c('bibtype', col.names)
   rownames(y) <- names(x)
 #   browser()
@@ -11,7 +11,7 @@ as.data.frame.BibEntry <- function(x, ...){
   #authors <- setNames(sapply(x, function(z) paste0(z$author, collapse = ', '), USE.NAMES = TRUE), rownames(y))
        
   y[, 1] <- x['bibtype']
-  for (i in 1:n.fields){
+  for (i in seq_len(n.fields)){
     nom <- col.names[i]
     if (nom != 'author' && nom != 'editor'){
       temp <- x[nom]

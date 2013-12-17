@@ -83,7 +83,7 @@ ReadZotero <- function(user, .params, temp.file = tempfile(fileext = '.bib'), de
   }
   write(res, file=temp.file)
                   
-  read.bib(temp.file)
+  ReadBib(temp.file)
 }
 
 # # GOOD

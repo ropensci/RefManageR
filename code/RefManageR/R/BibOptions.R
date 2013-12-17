@@ -19,8 +19,10 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
                                      'match.field',  # criteria for matching all other fields: 
                                      'return.ind',  # T/F should search return index of matches or bibentry objects
                                      'duplicate.fields',  # vector of fields for determining duplicate entries  `+` 
-                                     'bib.violation'   # how to handle violations when creating bibentries? 
+                                     'bib.violation',   # how to handle violations when creating bibentries? 
                                                        # p.v.: 'drop', 'warn', 'to.misc'
+                                     'print.doi',
+                                     'bib.prefix'
                                      ), methods = list(
                                        duplicate.handler = function(...){
                                          if(bib.violation == 'drop'){
@@ -36,4 +38,4 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
             
 
 .BibOptions <- new('BibOptions', match.author='family.name', match.date='year.only', return.ind=FALSE, match.field='partial', 
-                   duplicate.fields = 'key', bib.violation = 'error')
+                   duplicate.fields = 'key', bib.violation = 'error', print.doi = TRUE, bib.prefix = 'none')

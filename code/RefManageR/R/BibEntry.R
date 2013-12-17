@@ -123,7 +123,7 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
       for (i in which(pos)) 
         rval[[i]] <- as.person(rval[[i]])
     }
-  #  pos <- fields %in% c("dateobj") | pos
+    pos <- fields %in% c("dateobj") | pos
     if (any(!pos)) {
       for (i in which(!pos)) 
         rval[[i]] <- as.character(rval[[i]])
@@ -131,6 +131,7 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
     attr(rval, "key") <- if (is.null(key)) 
       NULL
     else as.character(key)
+    attr(rval, 'dateobj') <- rval[['dateobj']]
     if (!is.null(textVersion)) 
       attr(rval, "textVersion") <- as.character(textVersion)
     if (!.is_not_nonempty_text(header)) 
