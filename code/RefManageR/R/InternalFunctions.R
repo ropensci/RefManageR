@@ -329,7 +329,7 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   }
 
 
-  res <- try(BibEntry(bibtype = type, key = key, other = y), TRUE)
+  res <- try(BibEntry(bibtype = type, key = key, dateobj = tdate, other = y), TRUE)
   if (inherits(res, 'try-error')){
     if(!is.null(y[['title']])){
       message(paste0('Ignoring entry ', y[['title']], ' because'))
@@ -342,7 +342,7 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   }
   if (!(is.null(tdate) || inherits(tdate, 'try-error') || is.na(tdate)))
     attr(res, 'dateobj') <- tdate
- # browser()
+  browser()
   return(res)
 }
 
@@ -398,8 +398,7 @@ ProcessDate <- function(dat, mon){
   }else{
     stop()
   }
-  attr(res, 'month') <- .mon
-  attr(res, 'day') <- .day
+  attr(res, 'day.mon') <- .day + .mon
   return(res)
 }
 
@@ -414,4 +413,15 @@ CreateBibKey <- function(ti, au, yr){
     return()
   
   return(res)
+}
+
+# Clean up LaTeX accents and braces
+cleanupLatex <- function(x) {
+    if (!length(x)) return(x)
+    latex <- tryCatch(parseLatex(x), error = function(e)e)
+    if (inherits(latex, "error")) {
+      x
+    } else {
+    	deparseLatex(latexToUtf8(latex), dropBraces=TRUE)
+    }
 }
