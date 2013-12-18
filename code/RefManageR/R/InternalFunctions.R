@@ -312,12 +312,32 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   y <- as.list(x)
   names(y) <- tolower(names(y))
   
-  if ("author" %in% names(y) && to.person) {
-    y[["author"]] <- ArrangeAuthors(y[["author"]])
+  if (to.person){
+    lapply(c('author', 'editor', 'editora', 'editorb', 'editorc', 'translator', 'commentator', 'annotator',
+             'introduction', 'foreword', 'afterword'), function(fld){
+                 if (fld %in% names(y)) 
+                    y[[fld]] <<- ArrangeAuthors(y[[fld]])
+             })
   }
-  if ("editor" %in% names(y)  && to.person) {
-    y[["editor"]] <- ArrangeAuthors(y[["editor"]])
-  }
+  
+#   if ("author" %in% names(y) && to.person) {
+#     y[["author"]] <- ArrangeAuthors(y[["author"]])
+#   }
+#   if ("editor" %in% names(y)  && to.person) {
+#     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
+#   }
+#   if ("editor" %in% names(y)  && to.person) {
+#     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
+#   }
+#     if ("editor" %in% names(y)  && to.person) {
+#     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
+#   }
+#     if ("editor" %in% names(y)  && to.person) {
+#     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
+#   }
+#     if ("editor" %in% names(y)  && to.person) {
+#     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
+#   }
 
   tdate <- NULL
   if (!is.null(y[['date']]) || !is.null(y[['year']])){
@@ -342,7 +362,6 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   }
   if (!(is.null(tdate) || inherits(tdate, 'try-error') || is.na(tdate)))
     attr(res, 'dateobj') <- tdate
-  browser()
   return(res)
 }
 

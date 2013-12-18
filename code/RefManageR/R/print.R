@@ -31,17 +31,18 @@ format.BibEntry <- function (x, style = "text", .bibstyle = NULL, citation.bibte
     x$.index <- as.list(seq_along(x))
     .format_bibentry_via_Rd <- function(f) {
         out <- file()
+      #  browser()
         saveopt <- tools::Rd2txt_options(width = getOption("width"))
         on.exit({
             tools::Rd2txt_options(saveopt)
             close(out)
         })
         sapply(.BibEntry_expand_crossrefs(x), function(y) {
-          browser()
-            rd <- tools::toRd(y, style = .bibstyle)
+          #browser()
+            rd <- toRd.BibEntry(y, style = .bibstyle)
             con <- textConnection(rd)
             on.exit(close(con))
-            f(con, fragment = TRUE, out = out, ...)
+            f(con, fragment = TRUE, out = out, encoding = 'UTF-8', ...)
             paste(readLines(out), collapse = "\n")
         })
     }
