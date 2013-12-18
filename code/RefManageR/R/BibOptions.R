@@ -22,7 +22,8 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
                                      'bib.violation',   # how to handle violations when creating bibentries? 
                                                        # p.v.: 'drop', 'warn', 'to.misc'
                                      'print.doi',
-                                     'bib.prefix'
+                                     'bib.prefix',
+                                     'abbrev.names'
                                      ), methods = list(
                                        duplicate.handler = function(...){
                                          if(bib.violation == 'drop'){
@@ -38,4 +39,5 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
             
 
 .BibOptions <- new('BibOptions', match.author='family.name', match.date='year.only', return.ind=FALSE, match.field='partial', 
-                   duplicate.fields = 'key', bib.violation = 'error', print.doi = TRUE, bib.prefix = 'none')
+                   duplicate.fields = 'key', bib.violation = 'error', print.doi = TRUE, bib.prefix = 'none',
+                   abbrev.names = TRUE)

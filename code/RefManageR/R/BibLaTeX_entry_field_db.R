@@ -8,13 +8,13 @@ BibLaTeX_entry_field_db$book <- c('author', 'title', 'year|date')
 BibLaTeX_entry_field_db$mvbook <- c('author', 'title', 'year|date')  
 
 # different from BibTeX
-BibLaTeX_entry_field_db$inbook <- c('author', 'title', 'booktitle', 'year|date')  
+BibLaTeX_entry_field_db$inbook <- c('author', 'title', 'booktitle|maintitle', 'year|date')  
 
 # e.g. book reprint in selected works of author
-BibLaTeX_entry_field_db$bookinbook <- c('author', 'title', 'booktitle', 'year|date')  
+BibLaTeX_entry_field_db$bookinbook <- c('author', 'title', 'booktitle|maintitle', 'year|date')  
 
 # supplemental material for book
-BibLaTeX_entry_field_db$suppbook <- c('author', 'title', 'booktitle', 'year|date')  
+BibLaTeX_entry_field_db$suppbook <- c('author', 'title', 'booktitle|maintitle', 'year|date')  
 
 # book without formal publisher
 BibLaTeX_entry_field_db$booklet <- c('author|editor', 'title', 'year|date')  
@@ -47,7 +47,7 @@ BibLaTeX_entry_field_db$patent <- c('author', 'title', 'number', 'year|date')
 BibLaTeX_entry_field_db$periodical <- c('editor', 'title', 'year|date') 
 
 # supplement to periodical; alias for article in most styles; e.g. regular columns, obituaries, letters to editor, etc.
-BibLaTeX_entry_field_db$supperiodical <- c('editor', 'title', 'year|date') 
+BibLaTeX_entry_field_db$suppperiodical <- c('editor', 'title', 'year|date') 
 
 # proceedings
 BibLaTeX_entry_field_db$proceedings <- c('editor', 'title', 'year|date') 
