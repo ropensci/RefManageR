@@ -72,11 +72,19 @@ BibReplace <- function(orig, replace.vals){
     stop('Replacement object must have names corresponding to fields')
   if ('key' %in% replace.fields){
     attr(orig, 'key') <- replace.vals[['key']]
-    replace.vals[['key']] <- NULL
+    if (length(replace.vals) > 1){
+      replace.vals[['key']] <- NULL
+    }else{
+      return(orig)
+    }
   }
   if ('bibtype' %in% replace.fields){
     attr(orig, 'bibtype') <- replace.vals[['bibtype']]
-    replace.vals[['bibtype']] <- NULL
+    if (length(replace.vals) > 1){
+      replace.vals[['bibtype']] <- NULL
+    }else{
+      return(orig)
+    }
   }
 
   if ('author' %in% replace.fields){

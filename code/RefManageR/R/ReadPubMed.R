@@ -143,7 +143,7 @@ ProcessPubMedResult <- function(article){
   first.names <- unlist(xpathApply(tdoc,  
                 '//PubmedArticle/MedlineCitation/Article/AuthorList/Author/ForeName',
                          xmlValue)) 
-  res$author <- as.person(paste(first.names, last.names))
+  res$author <- paste(first.names, last.names)
   
   res$year <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Year',
                                  xmlValue))

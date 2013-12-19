@@ -175,11 +175,6 @@ MakeCitationList <- function( x, header, footer){
   if (inherits(x, "list")) x else list(x)
 }
 
-sort.BibEntry <- function (x, decreasing = FALSE, .bibstyle = NULL, drop = FALSE, ...){
-  x[order(tools::bibstyle(.bibstyle)$sortKeys(x), decreasing = decreasing), 
-    drop = drop]
-}
-
 bibentry_attribute_names <- c("bibtype", "textVersion", "header", "footer", "key")
 bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "textVersion", "R")
 
@@ -314,10 +309,16 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   
   if (to.person){
     lapply(c('author', 'editor', 'editora', 'editorb', 'editorc', 'translator', 'commentator', 'annotator',
-             'introduction', 'foreword', 'afterword'), function(fld){
+             'introduction', 'foreword', 'afterword', 'bookauthor'), function(fld){
                  if (fld %in% names(y)) 
                     y[[fld]] <<- ArrangeAuthors(y[[fld]])
              })
+  }else{
+    lapply(c('author', 'editor', 'editora', 'editorb', 'editorc', 'translator', 'commentator', 'annotator',
+         'introduction', 'foreword', 'afterword', 'bookauthor'), function(fld){
+             if (fld %in% names(y)) 
+                y[[fld]] <<- as.person(y[[fld]])
+         })
   }
   
 #   if ("author" %in% names(y) && to.person) {
@@ -340,14 +341,11 @@ MakeBibEntry <- function (x, to.person = TRUE) {
 #   }
 
   tdate <- NULL
-  if (!is.null(y[['date']]) || !is.null(y[['year']])){
-    if (type != 'set'  && type != 'xdata'){
-      tdate <- try(ProcessDates(y[['date']], y[['year']], y[['month']]), TRUE)
+  if (type != 'set'  && type != 'xdata'){
+    tdate <- try(ProcessDates(y), TRUE)
    #   if (inherits(tdate, 'try-error') || is.null(tdate) || is.na(tdate))
    #      message(paste0("No valid 'date' or 'year' for entry: ", key)) 
-    }
   }
-
 
   res <- try(BibEntry(bibtype = type, key = key, dateobj = tdate, other = y), TRUE)
   if (inherits(res, 'try-error')){
@@ -365,22 +363,26 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   return(res)
 }
 
-ProcessDates <- function(this.date, this.year, this.month){
-  stopifnot(!is.null(this.date) || !is.null(this.year))
-  if (!is.null(this.date)){
-    tdate <- try(ProcessDate(this.date, NULL), TRUE)
-     
-    if (!inherits(tdate, 'try-error'))
-      return(tdate)
+ProcessDates <- function(bib){
+  tdate <- try(ProcessDate(bib[['date']], NULL), TRUE)
+   
+  if (inherits(tdate, 'try-error') || is.null(tdate)){
+    tdate <- try(ProcessDate(bib[['year']], bib[['month']]), TRUE)
+    if (inherits(tdate, 'try-error') || is.null(tdate))
+      tdate <- try(ProcessDate(bib[['eventdate']], NULL), TRUE)
+    if (inherits(tdate, 'try-error') || is.null(tdate))  
+      tdate <- try(ProcessDate(bib[['origdate']], NULL), TRUE)
+    if (inherits(tdate, 'try-error') || is.null(tdate))  
+      tdate <- try(ProcessDate(bib[['urldate']], NULL), TRUE)
   }
-  if (!is.null(this.year)){
-    tdate <- try(ProcessDate(this.year, this.month), TRUE)
-    return(tdate)
-  }
+  return(tdate)
 }
 
 #' @importFrom lubridate new_interval
 ProcessDate <- function(dat, mon){
+  if (!length(dat))
+    return()
+  
   .day <- FALSE
   .mon <- FALSE
   if (length(grep('^(1|2)[0-9]{3}$', dat))){

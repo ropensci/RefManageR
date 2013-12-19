@@ -6,10 +6,6 @@ as.BibEntry <- function(x){
     if (is.na(x['bibtype']) || is.na(x['key']))
       stop("Object of class character must have entries named bibtype and key.")
     x <- as.list(x)
-    if (!is.null(x$author))
-      x$author <- as.person(x$author)
-    if (!is.null(x$editor))
-      x$editor <- as.person(x$editor)
     attr(x, 'entry') <- x$bibtype
     attr(x, 'key') <- x$key
     x$bibtype <- NULL

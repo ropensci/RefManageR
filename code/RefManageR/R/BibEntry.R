@@ -119,7 +119,7 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
     attr(rval, "bibtype") <- bibtype
     .BibEntryCheckBibEntry1(rval)
     pos <- fields %in% c('author', 'editor', 'editora', 'editorb', 'editorc', 'translator', 'commentator', 'annotator',
-             'introduction', 'foreword', 'afterword')
+             'introduction', 'foreword', 'afterword', 'bookauthor')
     if (any(pos)) {
       for (i in which(pos)) 
         rval[[i]] <- as.person(rval[[i]])
