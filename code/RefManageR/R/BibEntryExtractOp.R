@@ -108,12 +108,20 @@ SearchField <- function(x, field, pattern){
 }
 
 # TO Do: x['keyval']
-`[.BibEntry` <- function(x, ..., return.ind=.BibOptions$return.ind, drop=TRUE){
- # browser()
-  if(!length(x))
+`[.BibEntry` <- function(x, i, j, ..., drop =TRUE){
+  #browser()
+  if (!length(x) || missing(i))
     return(x)
-  # browser()
-  dots <- list(...)
+  if (!missing(j) && !missing(...)){
+    dots <- list(i, j, ...)
+  }else if (!missing(j)){
+    dots <- list(i, j)
+  }else{
+    if (!is.list(i))
+      dots <- list(i)
+  }
+  return.ind <- .BibOptions$return.ind 
+
   current.fields <- c(unique(names(unlist(x))), 'bibtype', 'key')
      # browser()
   if(length(dots)==1){
