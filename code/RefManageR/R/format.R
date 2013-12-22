@@ -1,9 +1,10 @@
 format.BibEntry <- function(x, style = "text", .bibstyle = .BibOptions$bib.style, 
-                             citation.bibtex.max = getOption("citation.bibtex.max", 1), sort = FALSE, ...){
+                             citation.bibtex.max = getOption("citation.bibtex.max", 1), sort = TRUE, 
+                            .sorting = 'nty', ...){
    
     style <- .BibEntry_match_format_style(style)
     if (sort) 
-        x <- sort(x, .bibstyle = .bibstyle)
+        x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.ind = TRUE)
 
     .format_bibentry_via_Rd <- function(f){
         out <- file()
@@ -13,15 +14,13 @@ format.BibEntry <- function(x, style = "text", .bibstyle = .BibOptions$bib.style
             tools::Rd2txt_options(saveopt)
             close(out)
         })
-#         sapply(.BibEntry_expand_crossrefs(x[1:2]), function(y) {
-# 
-#             rd <- toRd.BibEntry(y, style = .bibstyle)
-#                       browser()
-#             con <- textConnection(rd)
-#             on.exit(close(con))
-#             f(con, fragment = TRUE, out = out, encoding = 'UTF-8', ...)
-#             paste(readLines(out), collapse = "\n")
-#         })
+        sapply(.BibEntry_expand_crossrefs(x), function(y) {
+            rd <- toRd.BibEntry(y, style = .bibstyle, .sorting = 'none')
+            con <- textConnection(rd, encoding = 'UTF-8')
+            on.exit(close(con))
+            f(con, fragment = TRUE, out = out, encoding = 'UTF-8', ...)
+            paste(readLines(out), collapse = "\n")
+        })
 #         browser()
 #         sapply(rd[1], function(y){
 #           con <- textConnection(y)
@@ -29,18 +28,18 @@ format.BibEntry <- function(x, style = "text", .bibstyle = .BibOptions$bib.style
 #           f(con, fragment = TRUE, out = out, encoding = 'UTF-8', ...)
 #            paste(readLines(out), collapse = "\n")
 #         }, simplify = FALSE, USE.NAMES = FALSE)
-       rd <- toRd.BibEntry(.BibEntry_expand_crossrefs(x), style = .bibstyle) 
-       lenrd <- length(rd)  
-       for (i in seq_len(lenrd-1)){
-          con <- textConnection(rd[i])
-          f(con, fragment = TRUE, out = out, encoding = 'UTF-8', ...)
-          cat(paste(readLines(out), collapse = "\n"), '\n\n')
-          close(con)
-       }
-      con <- textConnection(rd[lenrd])
-      f(con, fragment = TRUE, out = out, encoding = 'UTF-8', ...)
-      cat(paste(readLines(out), collapse = "\n"))
-      close(con)
+#        rd <- toRd.BibEntry(.BibEntry_expand_crossrefs(x), style = .bibstyle, .sorting = 'none') 
+#        lenrd <- length(rd)  
+#        for (i in seq_len(lenrd-1)){
+#           con <- textConnection(rd[i])
+#           f(con, fragment = TRUE, out = out, encoding = 'UTF-8', ...)
+#           cat(paste(readLines(out, encoding = 'UTF-8'), collapse = "\n"), '\n\n')
+#           close(con)
+#        }
+#       con <- textConnection(rd[lenrd])
+#       f(con, fragment = TRUE, out = out, encoding = 'UTF-8', ...)
+#       cat(encodeString(paste(readLines(out, encoding = 'UTF-8'), collapse = "\n")))
+#       close(con)
 
     }
     .format_bibentry_as_citation <- function(x) {

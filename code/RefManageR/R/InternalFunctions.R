@@ -308,43 +308,24 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   names(y) <- tolower(names(y))
   
   if (to.person){
-    lapply(c('author', 'editor', 'editora', 'editorb', 'editorc', 'translator', 'commentator', 'annotator',
-             'introduction', 'foreword', 'afterword', 'bookauthor'), function(fld){
+    lapply(.BibEntryNameList, function(fld){
                  if (fld %in% names(y)) 
                     y[[fld]] <<- ArrangeAuthors(y[[fld]])
              })
   }else{
-    lapply(c('author', 'editor', 'editora', 'editorb', 'editorc', 'translator', 'commentator', 'annotator',
-         'introduction', 'foreword', 'afterword', 'bookauthor'), function(fld){
+    lapply(.BibEntryNameList, function(fld){
              if (fld %in% names(y)) 
                 y[[fld]] <<- as.person(y[[fld]])
          })
   }
   
-#   if ("author" %in% names(y) && to.person) {
-#     y[["author"]] <- ArrangeAuthors(y[["author"]])
-#   }
-#   if ("editor" %in% names(y)  && to.person) {
-#     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
-#   }
-#   if ("editor" %in% names(y)  && to.person) {
-#     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
-#   }
-#     if ("editor" %in% names(y)  && to.person) {
-#     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
-#   }
-#     if ("editor" %in% names(y)  && to.person) {
-#     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
-#   }
-#     if ("editor" %in% names(y)  && to.person) {
-#     y[["editor"]] <- ArrangeAuthors(y[["editor"]])
-#   }
-
   tdate <- NULL
   if (type != 'set'  && type != 'xdata'){
     tdate <- try(ProcessDates(y), TRUE)
-   #   if (inherits(tdate, 'try-error') || is.null(tdate) || is.na(tdate))
-   #      message(paste0("No valid 'date' or 'year' for entry: ", key)) 
+#     if (inherits(tdate, 'try-error') || is.null(tdate) || is.na(tdate)){
+#        message(paste0("A valid Date object could not be created for entry: ", key)) 
+#        message('This should be corrected or certain package features may work incorrectly.')  
+#     }
   }
 
   res <- try(BibEntry(bibtype = type, key = key, dateobj = tdate, other = y), TRUE)
@@ -358,8 +339,9 @@ MakeBibEntry <- function (x, to.person = TRUE) {
     }
     return(NULL)
   }
-  if (!(is.null(tdate) || inherits(tdate, 'try-error') || is.na(tdate)))
-    attr(res, 'dateobj') <- tdate
+#   if (!(is.null(tdate) || inherits(tdate, 'try-error') || is.na(tdate)))
+#     attr(res, 'dateobj') <- tdate
+
   return(res)
 }
 
@@ -387,34 +369,31 @@ ProcessDate <- function(dat, mon){
   .mon <- FALSE
   if (length(grep('^(1|2)[0-9]{3}$', dat))){
     if (!is.null(mon)){
-      res <- as.Date(paste0(dat, mon, '01'), '%Y%b%d')
+      res <- as.POSIXct(paste0(dat, '-', mon, '-01'))
       .mon <- TRUE
     }else{
-      res <- as.Date(paste0(dat, '0101'), '%Y%m%d')
+      res <- as.POSIXct(paste0(dat, '-01-01'))
     }
   }else if (length(grep('^(1|2)[0-9]{3}/$', dat))){
     if (!is.null(mon)){
-      res <- new_interval(as.Date(paste0(substring(dat, 1, 4), mon, '01'), '%Y%b%d'), Sys.Date())
+      res <- new_interval(paste0(substring(dat, 1, 4), '-', mon, '-01'), Sys.time())
       .mon <- TRUE
     }else{
-      res <- new_interval(as.Date(paste0(substring(dat, 1, 4), '0101'), '%Y%m%d'), Sys.Date())
+      res <- new_interval(paste0(substring(dat, 1, 4), '-01-01'), Sys.time())
     }
   }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]$', dat))){
-    res <- as.Date(paste0(dat, '01'), '%Y-%m%d')
+    res <- as.POSIXct(paste0(dat, '-01'))
     .mon <- TRUE
   }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat))){
-    res <- as.Date(dat)
+    res <- as.POSIXct(dat)
     .day <- .mon <- TRUE
   }else if (length(grep('^(1|2)[0-9]{3}/(1|2)[0-9]{3}$', dat))){
-    res <- new_interval(as.Date(paste0(substring(dat, 1, 4), '0101'), '%Y%m%d'), 
-                        as.Date(paste0(substring(dat, 6, 9), '0101'), '%Y%m%d'))
+    res <- new_interval(paste0(substring(dat, 1, 4), '-01-01'), paste0(substring(dat, 6, 9), '-01-01'))
   }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]/(1|2)[0-9]{3}-[01][0-9]$', dat))){
-    res <- new_interval(as.Date(paste0(substring(dat, 1, 7), '0101'), '%Y-%m%d'), 
-                        as.Date(paste0(substring(dat, 9, 15), '0101'), '%Y-%m%d'))
+    res <- new_interval(paste0(substring(dat, 1, 7), '-01'), paste0(substring(dat, 9, 15), '-01'))
     .mon <- TRUE
   }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]/(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat))){
-    res <- new_interval(as.Date(substring(dat, 1, 10)), 
-                        as.Date(substring(dat, 12, 21)))
+    res <- new_interval(substring(dat, 1, 10), substring(dat, 12, 21))
     .day <- .mon <- TRUE
   }else{
     stop()
@@ -446,3 +425,10 @@ cleanupLatex <- function(x) {
     	deparseLatex(latexToUtf8(latex), dropBraces=TRUE)
     }
 }
+
+.BibEntryNameList <- c('author', 'editor', 'editora', 'editorb', 'editorc', 'translator', 'commentator', 'annotator',
+             'introduction', 'foreword', 'afterword', 'bookauthor', 'holder')
+.BibEntryDateField <- c('date', 'year', 'month', 'eventdate', 'origdate', 'urldate')
+.BibEntryTypeField <- c(mathesis = 'MA Thesis', phdthesis = 'PhD thesis', datacd = 'CD-ROM',
+                        candthesis = 'Cand. thesis', techreport = 'Tech. rep.', 
+                        resreport = 'Research rep.', software = 'Comp. software', audiocd = 'Audio CD')

@@ -21,14 +21,18 @@
       attr(x[[i]], name) <- if (is.null(value[[i]])) 
         NULL
       else paste(value[[i]])
-    }
-    else {
+    }else {
       x[[i]][[name]] <- if (is.null(value[[i]])) 
         NULL
       else {
-        if (name %in% c("author", "editor")) 
-          as.person(value[[i]])
+        if (name %in% .BibEntryNameList) 
+          ArrangeAuthors(value[[i]])
         else paste(value[[i]])
+      }
+      if ( name %in% .BibEntryDateField){  # dateobj may need to be updated
+        tdate <- ProcessDates(x)
+        if (!(is.null(tdate) || inherits(tdate, 'try-error') || is.na(tdate)))
+          attr(res, 'dateobj') <- tdate
       }
     }
   }

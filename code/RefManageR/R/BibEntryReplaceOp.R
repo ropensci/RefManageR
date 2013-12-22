@@ -86,30 +86,50 @@ BibReplace <- function(orig, replace.vals){
       return(orig)
     }
   }
-
-  if ('author' %in% replace.fields){
-    orig[['author']] <- as.person(replace.vals[['author']])
+  
+  nl.to.update <- replace.fields %in% .BibEntryNameList
+  if (any(nl.to.update)){
+    #tmp <- orig
+    orig[replace.fields[nl.to.update]] <- sapply(replace.vals[nl.to.update], ArrangeAuthors)
   }
-  if ('editor' %in% replace.fields)
-    orig[['editor']] <- as.person(replace.vals[['editor']])
-  if ("date" %in% replace.fields){
-    if (!inherits(replace.vals[['date']], "POSIXlt"))
-      orig[['date']] <- as.Date(switch(as.character(nchar(replace.vals[['date']])),
-                                  '4' = paste0(replace.vals[['date']], '-01-01'),    # needed to get around R assigning current day and month when unspecified
-                                  '7' = paste0(replace.vals[['date']], '-01'),  # %Y-%d which doesn't work with strptime
-                                  replace.vals[['date']]))
-    orig[['year']] <- as.Date(paste0(year(replace.vals[['date']]), '-01-01'))
-  }
-  if ("year" %in% replace.fields){
-    orig[['year']] <- as.Date(paste0(replace.vals[['year']], '-01-01'))
-    orig[['date']] <- as.Date(paste(replace.vals[['year']], month(orig$date), day(orig$date), sep='-'))
-  }
+#   if ('author' %in% replace.fields){
+#     orig[['author']] <- as.person(replace.vals[['author']])
+#   }
+#   if ('editor' %in% replace.fields)
+#     orig[['editor']] <- as.person(replace.vals[['editor']])
+#   df.to.update <- replace.fields %in% .BibEntryDateField
+#   if (any(df.to.update)){
+#     for (i in which(df.to.update)){
+#       if (replace.fields[i] == 'month'){
+#         orig[['month']] <- replace.vals[i]
+#       }else{
+#         
+#       }
+#       
+#     }
+#     if (!inherits(replace.vals[['date']], "POSIXlt"))
+#       orig[['date']] <- as.Date(switch(as.character(nchar(replace.vals[['date']])),
+#                                   '4' = paste0(replace.vals[['date']], '-01-01'),    # needed to get around R assigning current day and month when unspecified
+#                                   '7' = paste0(replace.vals[['date']], '-01'),  # %Y-%d which doesn't work with strptime
+#                                   replace.vals[['date']]))
+#     orig[['year']] <- as.Date(paste0(year(replace.vals[['date']]), '-01-01'))
+#   }
+#   if ("year" %in% replace.fields){
+#     orig[['year']] <- as.Date(paste0(replace.vals[['year']], '-01-01'))
+#     orig[['date']] <- as.Date(paste(replace.vals[['year']], month(orig$date), day(orig$date), sep='-'))
+#   }
  # browser()
-  replace.remains <- replace.vals[!replace.fields %in% c('bibtype', 'key', 'author', 'editor', 'year', 'date')]
+  replace.remains <- replace.vals[!replace.fields %in% c('bibtype', 'key', .BibEntryNameList)]
   if (length(replace.remains)){
     replace.names <- names(replace.remains)
     for (i in seq_along(replace.remains))
       orig[[replace.names[i]]] <- replace.remains[i]
+  }
+  if (any(replace.fields %in% .BibEntryDateField)){  # update dateobj attribute
+    tdate <- try(ProcessDates(orig), TRUE)
+    if (inherits(tdate, 'try-error') || is.null(tdate) || is.na(tdate))
+      stop(paste0('The specified Date Field value is not in a valid format for Bibtex/Biblatex'))
+    attr(orig, 'dateobj') <- tdate
   }
 
   return(orig)

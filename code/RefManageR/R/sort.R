@@ -12,31 +12,39 @@ sort.BibEntry <- function (x, decreasing = FALSE, .bibstyle = .BibOptions$bib.st
     ttl <- tools::bibstyle('BibLaTeX')$sortKeysT(x)
     if (sorting %in% c('nyvt', 'anyvt'))
       vol <- tools::bibstyle('BibLaTeX')$sortKeysV(x)
-    if (.bibstyle =='alphabetic' || sorting == 'anyt' || sorting == 'anyvt'){
-      alabs <- tools::bibstyle('BibLaTeX')$sortKeysLA(x, aut, yr)
-      alabs <- paste0(alabs, unlist(lapply(rle(rank(alabs, ties.method = 'min'))$len, 
+    if (.bibstyle == 'alphabetic' || sorting == 'anyt' || sorting == 'anyvt'){
+     # browser()
+      alabs <- tools::bibstyle('BibLaTeX')$sortKeysLA(x, yr)
+      alabs <- paste0(alabs, unlist(lapply(rle(alabs[rank(alabs, ties.method = 'min')])$len, 
                        function(x){
                          if (x == 1)
                            ''
                          else letters[seq_len(x)]
                        }))) 
-    }
-    x <- switch(sorting, nyt = x[order(aut, yr, ttl, decreasing = decreasing)],
-                nyvt = x[order(aut, yr, vol, ttl, decreasing = decreasing)],
-                anyt = x[order(alabs, aut, yr, ttl, decreasing = decreasing)],
-                anyvt = x[order(alabs, aut, yr, vol, ttl, decreasing = decreasing)],
-                ynt = x[order(yr, aut, ttl, decreasing = decreasing)],
-                ydnt = x[order(yr, aut, ttl, decreasing = decreasing)],
-                x[order(aut, ttl, yr, decreasing = decreasing)])  # DEFAULT = nty
+    }  
+    ord <- switch(sorting, nyt = order(ps, aut, yr, ttl, decreasing = decreasing),
+              nyvt = order(ps, aut, yr, vol, ttl, decreasing = decreasing),
+              anyt = order(ps, alabs, aut, yr, ttl, decreasing = decreasing),   
+              anyvt = order(ps, alabs, aut, yr, vol, ttl, decreasing = decreasing),    
+              ynt = order(ps, yr, aut, ttl, decreasing = decreasing),
+              ydnt = order(ps, rev(yr), aut, ttl, decreasing = decreasing),
+              order(ps, aut, ttl, yr, decreasing = decreasing))  # DEFAULT = nty
+    x <- x[ord]
 
     if (hasArg(return.ind)){  
-      if (.bibstyle == 'authoryear')
-        alabs <- unlist(lapply(rle(rank(paste0(aut, yr), ties.method = 'min'))$len, 
+      if (.bibstyle == 'alphabetic'){
+        alabs <- alabs[ord]
+      }else if (.bibstyle == 'authoryear'){
+      #  browser()
+        tmp <- tools::bibstyle('authoryear')$GetLastNames(x)
+        tmp <- paste0(tmp, yr[ord])
+        alabs <- unlist(lapply(rle(tmp[rank(tmp, ties.method = 'min')])$len, 
                                function(x){
                                  if (x == 1)
                                    ''
                                  else letters[seq_len(x)]
                                })) 
+      }
       x$.index <- switch(.bibstyle, numeric = seq_along(x), alphabetic = alabs, authoryear = alabs, NULL)  
     }
     x
@@ -45,8 +53,4 @@ sort.BibEntry <- function (x, decreasing = FALSE, .bibstyle = .BibOptions$bib.st
       drop = drop]
   }
 }
-
-MakeAlphaLabel <- function(author, year){
   
-}
-
