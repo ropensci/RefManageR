@@ -118,8 +118,7 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
     names(rval) <- fields
     attr(rval, "bibtype") <- bibtype
     .BibEntryCheckBibEntry1(rval)
-    pos <- fields %in% c('author', 'editor', 'editora', 'editorb', 'editorc', 'translator', 'commentator', 'annotator',
-             'introduction', 'foreword', 'afterword', 'bookauthor')
+    pos <- fields %in% .BibEntryNameList
     if (any(pos)) {
       for (i in which(pos)) 
         rval[[i]] <- as.person(rval[[i]])
@@ -133,6 +132,7 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
       NULL
     else as.character(key)
     attr(rval, 'dateobj') <- rval[['dateobj']]
+    rval[['dateobj']] <- NULL
     if (!is.null(textVersion)) 
       attr(rval, "textVersion") <- as.character(textVersion)
     if (!.is_not_nonempty_text(header)) 

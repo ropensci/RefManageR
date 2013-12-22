@@ -42,5 +42,5 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
 
 .BibOptions <- new('BibOptions', match.author='family.name', match.date='year.only', return.ind=FALSE, match.field='partial', 
                    duplicate.fields = 'key', bib.violation = 'error', print.doi = TRUE, 
-                   bib.style = 'numeric', abbrev.names = TRUE, dashed = TRUE, sorting = 'nty'
+                   bib.style = 'numeric', abbrev.names = TRUE, dashed = TRUE, sorting = NULL
                    )

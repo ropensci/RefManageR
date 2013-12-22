@@ -106,6 +106,10 @@ BUGS
 - (**FIXED**) `$<-`: `bib.entry.obj$field.name <- value.vec` adds vector of values to each bib. entry
 - (**FIXED**) testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex")) fails, but read.bib works
 - `bib[numeric_index, 'field_name']` or `bib['field_name', numeric_index]` not working
+- warnings in ReadBib
+- handling duplicates authors when printing in "authoryear" format (`extrafield` in BibLaTeX)
+- Don't duplicate printing of Date if urldate or eventdate but no date in entry
+- '\u00a7' encoded incorrectly for fmtPages, for some reason correct for fmtTotalPages
 
 DONE     
 ==================================================================================================================
