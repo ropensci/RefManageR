@@ -99,6 +99,7 @@ library(bibtex)
 }
 
 .BibEntry_expand_crossrefs <- function (x, more = list()) {
+  browser()
   y <- if (length(more)) 
     do.call(c, c(list(x), more))
   else x
