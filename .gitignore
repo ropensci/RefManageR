@@ -1,4 +1,3 @@
-papers/
 nogit/
 .Rproj.user/
 *.Rproj
@@ -8,6 +7,7 @@ cache/
 *.css
 includeCSS.R
 *.pdf
+!papers/*.pdf
 *.bcf
 framed.sty
 *.synctex.gz

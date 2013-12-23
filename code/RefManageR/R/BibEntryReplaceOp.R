@@ -86,12 +86,14 @@ BibReplace <- function(orig, replace.vals){
       return(orig)
     }
   }
-  
+ # browser()
   nl.to.update <- replace.fields %in% .BibEntryNameList
-  if (any(nl.to.update)){
-    #tmp <- orig
-    orig[replace.fields[nl.to.update]] <- sapply(replace.vals[nl.to.update], ArrangeAuthors)
-  }
+  for (i in replace.fields[nl.to.update])
+    orig[i] <- ArrangeAuthors(i)
+#   if (any(nl.to.update)){
+#     #tmp <- orig
+#     orig[replace.vals[nl.to.update]] <- sapply(replace.vals[nl.to.update], ArrangeAuthors)
+#   }
 #   if ('author' %in% replace.fields){
 #     orig[['author']] <- as.person(replace.vals[['author']])
 #   }
