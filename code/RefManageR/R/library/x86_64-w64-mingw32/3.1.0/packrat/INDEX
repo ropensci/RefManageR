@@ -1,0 +1,11 @@
+bootstrap               Initialize Packrat on a new or existing R
+                        project
+clean                   Remove unused packages
+libdir                  Show the path to the current private library
+packify                 Install packrat startup directives
+packrat                 Packrat: Reproducible dependency management
+restore                 Apply the most recent snapshot to the library
+snapshot                Capture and store the packages and versions in
+                        use
+status                  Show differences between the last snapshot and
+                        the library

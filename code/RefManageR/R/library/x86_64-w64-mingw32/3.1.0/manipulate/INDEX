@@ -1,0 +1,9 @@
+button                  Create a button control
+checkbox                Create a checkbox control
+manipulate              Create an interactive plot
+manipulate-package      Interactive Plots for RStudio
+manipulatorMouseClick   Receive notification of mouse clicks on a
+                        manipulator plot
+manipulatorSetState     Modify manipulator state
+picker                  Create a picker control
+slider                  Create a slider control

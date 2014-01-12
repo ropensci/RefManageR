@@ -1,18 +1,24 @@
+@string{cup     = {Cambridge University Press}}
 
 @inbook{crchild,
 title = {Child Title},
-author = {Aunpu, Bob},
-date = {2001},
-addendum = {A minimal unpublished entry},
-crossref = {crparent},
+pages = {2--25},
+author = {Gentleman, Jack},
+xdata = {xrtest},
+}
+
+@xdata{xrtest,
+booktitle = {XDATA Book Title},
+date = {2013-01-11},
 }
 
 @book{crparent,
-title = {A book Title},
-%author = {Aun, Tim and Apu, Bob},
+title = {The Parent Title},
+author = {Aun, Tim and Apu, Bob},
 date = {2012-02-30},
 addendum = {A full unpublished entry},
-booktitle = {The Book title},
+subtitle = {Book Subtitle},
+title = {The Book title},
 titleaddon = {The Title Addon},
 language = {spanish},
 note = {The note},
@@ -22,7 +28,7 @@ url = {http://example.com},
 urldate = {2013-09},
 pubstate = {The Pubstate},
 label = {PLab},
-crossref = {min:inbook}
+%crossref = {min:inbook}
 }
 
 @inbook{min:inbook,
@@ -33,6 +39,7 @@ crossref = {min:inbook}
   volume = 2,
   addendum   = {A minimal inbook entry},
   presort = {AA},
+  crossref = {max:inbook}
 }
 
 @inbook{max:inbook,
@@ -86,7 +93,7 @@ crossref = {min:inbook}
   doi = {98-DOI-a34-3},
   language = {english},
   pagination = {verse},
- % bookpagination = {section},
+  bookpagination = {section},
   origlanguage = {french},
   langid       = {english},
   langidopts   = {variant=british},

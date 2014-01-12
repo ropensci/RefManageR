@@ -44,3 +44,4 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
                    duplicate.fields = 'key', bib.violation = 'error', print.doi = TRUE, 
                    bib.style = 'numeric', abbrev.names = TRUE, dashed = TRUE, sorting = NULL
                    )
+options(useFancyQuotes = FALSE)
