@@ -4,7 +4,6 @@ sort.BibEntry <- function (x, decreasing = FALSE, .bibstyle = .BibOptions$bib.st
     return(x)
   if (sorting == 'debug' || .bibstyle == 'draft')
     return(x[order(names(x))])
- # browser()
   if (tolower(.bibstyle) %in% c('biblatex', 'alphabetic', 'numeric', 'authoryear', 'authortitle')){    
     aut <- tools::bibstyle('BibLaTeX')$sortKeys(x)
     yr <- tools::bibstyle('BibLaTeX')$sortKeysY(x)    
@@ -46,6 +45,7 @@ sort.BibEntry <- function (x, decreasing = FALSE, .bibstyle = .BibOptions$bib.st
                                })) 
       }
       x$.index <- switch(.bibstyle, numeric = seq_along(x), alphabetic = alabs, authoryear = alabs, NULL)  
+      x$.duplicated <- duplicated(aut[ord])
     }
     x
   }else{

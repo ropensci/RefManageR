@@ -91,3 +91,8 @@ local({
   invisible()
 })
 # -- END PACKRAT --
+.libPaths('~/R/win-library/3.1')
+invisible(lapply(list.files('~/biblatex/RefManageR/code/RefManageR/R/', recursive = FALSE, pattern = '.\\.R$', full = TRUE), 
+                 source))
+invisible(lapply(list.files('~/biblatex/RefManageR/code/RefManageR/R/TEMP-ROXY-DONE', recursive = FALSE, 
+                            pattern = '.\\.R$', full = TRUE), source))

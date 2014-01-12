@@ -73,7 +73,7 @@ library(bibtex)
 .BibEntryCheckBibEntry1 <- function (x, force = FALSE) {
  # browser()
   fields <- names(x)
-  if (!force && !.is_not_nonempty_text(x$crossref)) 
+  if (!force && (!.is_not_nonempty_text(x$crossref) || !.is_not_nonempty_text(x$xdata))) 
     return(NULL)
   bibtype <- tolower(attr(x, "bibtype"))
   rfields <- strsplit(BibLaTeX_entry_field_db[[bibtype]], 
@@ -99,24 +99,102 @@ library(bibtex)
 }
 
 .BibEntry_expand_crossrefs <- function (x, more = list()) {
-  browser()
+ # browser()
   y <- if (length(more)) 
     do.call(c, c(list(x), more))
   else x
   x <- unclass(x)
   y <- unclass(y)
+  xrefs <- lapply(x, '[[', "xdata")
+  px <- which(vapply(xrefs, length, 0L) > 0L)
+  if (length(px)){
+    xk <- match(unlist(xrefs[px]), .BibEntry_get_key(y)) 
+    ok <- !is.na(xk)
+    x[px[ok]] <- Map(function(chi, xdat) {
+      add <- setdiff(names(xdat), names(chi))
+      # titleaddon and subtitle in parent have special fields for child
+      # ensure child with no subtitle, titleaddon don't inherit them incorrectly
+      chi[add] <- xdat[add]      
+      if (is.null(attr(chi, 'dateobj')))
+        attr(chi, 'dateobj') <- attr(xdat, 'dateobj')
+      chi
+    }, x[px[ok]], y[xk[ok]])
+  }
   crossrefs <- lapply(x, `[[`, "crossref")
   pc <- which(vapply(crossrefs, length, 0L) > 0L)
   if (length(pc)) {
     pk <- match(unlist(crossrefs[pc]), .BibEntry_get_key(y))
     ok <- !is.na(pk)
-    x[pc[ok]] <- Map(function(u, v) {
-      add <- setdiff(names(v), names(u))
-      u[add] <- v[add]
-      if (!is.na(match(tolower(attr(u, "bibtype")), c("incollection", 
-                                                      "inproceedings"))) && is.null(u$booktitle)) 
-        u$booktitle <- v$title
-      u
+    x[pc[ok]] <- Map(function(chi, par) {
+      add <- setdiff(names(par), names(chi))
+      # titleaddon and subtitle in parent have special fields for child
+      # ensure child with no subtitle, titleaddon don't inherit them incorrectly
+      chi.type <- tolower(attr(chi, 'bibtype'))
+      par.type <- tolower(attr(par, 'bibtype'))
+      if (!is.na(match(chi.type, c('incollection', 'suppcollection', 'collection', 'reference', 'inreference',
+                                   'inbook', 'suppbook', 'bookinbook', 'book', 'inproceedings', 'proceedings',
+                                   'article', 'suppperiodical'))))
+        add <- add[!add %in% c('subtitle', 'titleaddon')]
+      chi[add] <- par[add]      
+      if (is.null(attr(chi, 'dateobj')))
+        attr(chi, 'dateobj') <- attr(par, 'dateobj')
+      # special handling for bookauthor, maintitle, mainsubtitle, maintitleaddon, booktitle, booktitleaddon, 
+      #  booksubtitle, journaltitle, journalsubtitle; see Appendix B of biblatex manual
+      if (!is.na(match(par.type, c('mvbook', 'book'))) && 
+            !is.na(match(chi.type, c('inbook', 'bookinbook', 'suppbook'))) && is.null(chi$bookauthor)) 
+        chi$bookauthor <- par$author
+      
+      if (par.type == 'mvbook' && !is.na(match(chi.type, c('book', 'inbook', 'bookinbook', 'suppbook')))){
+        if (is.null(chi$maintitle))
+          chi$maintitle <- par$title
+        if (is.null(chi$mainsubtitle))
+          chi$mainsubtitle <- par$subtitle
+        if (is.null(chi$maintitleaddon))
+          chi$maintitleaddon <- par$titleaddon
+      }else if (par.type == 'mvcollection' && !is.na(match(chi.type, c('collection', 'reference', 'incollection')))){
+        if (is.null(chi$maintitle))
+          chi$maintitle <- par$title
+      }else if (par.type == 'mvreference' && !is.na(match(chi.type, c('inreference', 'suppcollection')))){
+        if (is.null(chi$mainsubtitle))
+          chi$mainsubtitle <- par$subtitle
+        if (is.null(chi$maintitleaddon))
+          chi$maintitleaddon <- par$titleaddon
+      }else if (par.type == 'mvproceedings' && !is.na(match(chi.type, c('proceedings', 'inproceedings')))){
+        if (is.null(chi$maintitle))
+          chi$maintitle <- par$title
+        if (is.null(chi$mainsubtitle))
+          chi$mainsubtitle <- par$subtitle
+        if (is.null(chi$maintitleaddon))
+          chi$maintitleaddon <- par$titleaddon
+      }else if (par.type == 'book' && !is.na(match(chi.type, c('inbook', 'bookinbook', 'suppbook')))){
+        if (is.null(chi$booktitle))
+          chi$booktitle <- par$title
+        if (is.null(chi$booksubtitle))
+          chi$booksubtitle <- par$subtitle
+        if (is.null(chi$booktitleaddon))
+          chi$booktitleaddon <- par$titleaddon
+      }else if (par.type == 'collection' && !is.na(match(chi.type, c('incollection', 'inreference')))){
+        if (is.null(chi$booktitle))
+          chi$booktitle <- par$title
+      }else if (par.type == 'reference' && chi.type == 'suppcollection'){
+        if (is.null(chi$booksubtitle))
+          chi$booksubtitle <- par$subtitle
+        if (is.null(chi$booktitleaddon))
+          chi$booktitleaddon <- par$titleaddon
+      }else if (par.type == 'proceedings' && chi.type == 'inproceedings'){
+        if (is.null(chi$booktitle))
+          chi$booktitle <- par$title
+        if (is.null(chi$booksubtitle))
+          chi$booksubtitle <- par$subtitle
+        if (is.null(chi$booktitleaddon))
+          chi$booktitleaddon <- par$titleaddon
+      }else if (par.type == 'periodical' && !is.na(match(chi.type, c('article', 'suppperiodical')))){
+        if (is.null(chi$journaltitle) && is.null(journal))
+          chi$journaltitle <- par$title
+        if (is.null(chi$journalsubtitle))
+          chi$journalsubtitle <- par$subtitle
+      }
+      chi
     }, x[pc[ok]], y[pk[ok]])
     status <- lapply(x[pc], function(e) tryCatch(.BibEntryCheckBibEntry1(e, 
                                                                            TRUE), error = identity))
@@ -130,7 +208,8 @@ library(bibtex)
     }
   }
   class(x) <- c("BibEntry", "bibentry")
-  x
+  types <- unlist(x$bibtype)
+  x[!types %in% c('set', 'xdata')]
 }
 
 ArrangeAuthors <- function (x) {
@@ -321,7 +400,7 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   }
   
   tdate <- NULL
-  if (type != 'set'  && type != 'xdata'){
+  if (type != 'set'){
     tdate <- try(ProcessDates(y), TRUE)
 #     if (inherits(tdate, 'try-error') || is.null(tdate) || is.na(tdate)){
 #        message(paste0("A valid Date object could not be created for entry: ", key)) 

@@ -109,7 +109,8 @@ BUGS
 - warnings in ReadBib
 - handling duplicates authors when printing in "authoryear" format (`extrafield` in BibLaTeX)
 - Don't duplicate printing of Date if urldate or eventdate but no date in entry
-- '\u00a7' encoded incorrectly for fmtPages, for some reason correct for fmtTotalPages
+- (**FIXED**) '\u00a7' encoded incorrectly for fmtPages, for some reason correct for fmtTotalPages
+- authoryear bibstyle date, pages and title, totalpages
 
 DONE     
 ==================================================================================================================

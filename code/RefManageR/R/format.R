@@ -1,10 +1,10 @@
 format.BibEntry <- function(x, style = "text", .bibstyle = .BibOptions$bib.style, 
                              citation.bibtex.max = getOption("citation.bibtex.max", 1), sort = TRUE, 
-                            .sorting = 'nty', ...){
+                            .sorting = 'nty', enc = 'UTF-8', ...){
    
     style <- .BibEntry_match_format_style(style)
-    if (sort) 
-        x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.ind = TRUE)
+    if (sort && !style %in% c('html', 'text', 'latex')) 
+      x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.ind = TRUE)
 
     .format_bibentry_via_Rd <- function(f){
         out <- file()
@@ -14,12 +14,16 @@ format.BibEntry <- function(x, style = "text", .bibstyle = .BibOptions$bib.style
             tools::Rd2txt_options(saveopt)
             close(out)
         })
-        sapply(.BibEntry_expand_crossrefs(x), function(y) {
+        x <- .BibEntry_expand_crossrefs(x)
+        if (sort) 
+          x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.ind = TRUE)
+        sapply(x, function(y) {
+
             rd <- toRd.BibEntry(y, style = .bibstyle, .sorting = 'none')
-            con <- textConnection(rd, encoding = 'UTF-8')
+            con <- textConnection(rd)
             on.exit(close(con))
-            f(con, fragment = TRUE, out = out, encoding = 'UTF-8', ...)
-            paste(readLines(out), collapse = "\n")
+            f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8', ...)
+            paste(readLines(out, encoding = 'UTF-8'), collapse = "\n")
         })
 #         browser()
 #         sapply(rd[1], function(y){

@@ -9,7 +9,6 @@
   }
   if (!length(y))
     stop('Object to replace has length 0, bad index specified.')
-  
   names.to.replace <- names(y)
   N.to.replace <- length(y)
   y <- unclass(y)
@@ -57,7 +56,6 @@
 #  browser()
   replace.ind <- match(names.to.replace, names(x))
   x <- unclass(x)
-
   for (k in seq_len(N.to.replace))
     x[[replace.ind[k]]] <- y[[k]]
   
@@ -66,7 +64,6 @@
 }
 
 BibReplace <- function(orig, replace.vals){
- # browser()
   replace.fields <- names(replace.vals)
   if (is.null(replace.fields) || any(replace.fields == ''))
     stop('Replacement object must have names corresponding to fields')
@@ -89,7 +86,7 @@ BibReplace <- function(orig, replace.vals){
  # browser()
   nl.to.update <- replace.fields %in% .BibEntryNameList
   for (i in replace.fields[nl.to.update])
-    orig[i] <- ArrangeAuthors(i)
+    orig[[i]] <- ArrangeAuthors(replace.vals[[i]])
 #   if (any(nl.to.update)){
 #     #tmp <- orig
 #     orig[replace.vals[nl.to.update]] <- sapply(replace.vals[nl.to.update], ArrangeAuthors)
@@ -120,7 +117,7 @@ BibReplace <- function(orig, replace.vals){
 #     orig[['year']] <- as.Date(paste0(replace.vals[['year']], '-01-01'))
 #     orig[['date']] <- as.Date(paste(replace.vals[['year']], month(orig$date), day(orig$date), sep='-'))
 #   }
- # browser()
+#  browser()
   replace.remains <- replace.vals[!replace.fields %in% c('bibtype', 'key', .BibEntryNameList)]
   if (length(replace.remains)){
     replace.names <- names(replace.remains)
