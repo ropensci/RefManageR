@@ -255,7 +255,7 @@ MakeCitationList <- function( x, header, footer){
   if (inherits(x, "list")) x else list(x)
 }
 
-bibentry_attribute_names <- c("bibtype", "textVersion", "header", "footer", "key")
+bibentry_attribute_names <- c("bibtype", "textVersion", "header", "footer", "key", "dateobj")
 bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "textVersion", "R")
 
 # from utils:::toBibtex, good for matching by given name initials only
@@ -441,7 +441,7 @@ ProcessDates <- function(bib){
 }
 
 #' @importFrom lubridate new_interval
-ProcessDate <- function(dat, mon){
+ProcessDate <- function(dat, mon, searching = FALSE){
   if (!length(dat))
     return()
   
@@ -456,11 +456,17 @@ ProcessDate <- function(dat, mon){
     }
   }else if (length(grep('^(1|2)[0-9]{3}/$', dat))){
     if (!is.null(mon)){
-      res <- new_interval(paste0(substring(dat, 1, 4), '-', mon, '-01'), Sys.time())
+      res <- new_interval(paste0(substring(dat, 1, 4), '-', mon, '-01'), Sys.Date())
       .mon <- TRUE
     }else{
-      res <- new_interval(paste0(substring(dat, 1, 4), '-01-01'), Sys.time())
+      res <- new_interval(paste0(substring(dat, 1, 4), '-01-01'), Sys.Date())
     }
+  }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]/$', dat))){
+    res <- new_interval(paste0(substring(dat, 1, 7), '-01'), Sys.Date())
+    .mon <- TRUE
+  }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]/$', dat))){
+    res <- new_interval(substring(dat, 1, 10), Sys.Date())
+    .mon <- .day <- TRUE
   }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]$', dat))){
     res <- as.POSIXct(paste0(dat, '-01'))
     .mon <- TRUE
@@ -475,8 +481,18 @@ ProcessDate <- function(dat, mon){
   }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]/(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat))){
     res <- new_interval(substring(dat, 1, 10), substring(dat, 12, 21))
     .day <- .mon <- TRUE
+  }else if (searching){
+    if (length(grep('^/(1|2)[0-9]{3}$', dat))){
+      res <- new_interval('0001-01-01', paste0(substring(dat, 2, 5), '-01-01'))
+    }else if (length(grep('^/(1|2)[0-9]{3}-[01][0-9]$', dat))){
+      res <- new_interval('0001-01-01', paste0(substring(dat, 2, 8), '-01'))
+    }else if (length(grep('^/(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat))){
+      res <- new_interval('0001-01-01', substring(dat, 2, 11))
+    }else{
+      stop('No valid date format available.')
+    }
   }else{
-    stop()
+    stop('No valid date format available.')
   }
   attr(res, 'day.mon') <- .day + .mon
   return(res)
