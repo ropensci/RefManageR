@@ -268,9 +268,11 @@ FindBibEntry <- function(bib, term, field){
       term <- year(term)
     }
     res <- sapply(vals, `==`, term)
-    res[sapply(temp, length)==0] <- FALSE
+    res[sapply(res, length)==0] <- FALSE
   }else{
-    res <- sapply(vals, pmatch, table = term, nomatch = FALSE)
+    res <- lapply(vals, pmatch, table = term)
+    res[sapply(res, length)==0] <- FALSE  # lame behaviour of nomatch necessitates this
+    res <- as.logical(unlist(res))
   }
   res
 }
