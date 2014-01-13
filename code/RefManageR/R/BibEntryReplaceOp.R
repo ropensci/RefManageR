@@ -3,7 +3,6 @@
     y <- x
   }else if (missing(j)){
     y <- x[i]
-    
   }else{
     y <- x[i, j, ...]
   }
