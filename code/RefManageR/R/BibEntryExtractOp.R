@@ -270,9 +270,12 @@ FindBibEntry <- function(bib, term, field){
     res <- sapply(vals, `==`, term)
     res[sapply(res, length)==0] <- FALSE
   }else{
-    res <- lapply(vals, pmatch, table = term)
-    res[sapply(res, length)==0] <- FALSE  # lame behaviour of nomatch necessitates this
-    res <- as.logical(unlist(res))
+    res <- logical(length(bib))
+    for (i in seq_along(bib))
+      res[i] <- as.logical(pmatch(vals[i], term, 0L))
+#     res <- lapply(vals, pmatch, table = term)
+#     res[sapply(res, length)==0] <- FALSE  # lame behaviour of nomatch necessitates this
+#     res <- as.logical(unlist(res))
   }
   res
 }
