@@ -1,47 +1,63 @@
 # Mathew McLean
-# October 27, 2013
+# January 15, 2014
 # Define addition operator for objects of BibEntry class
 # Note: will not remove duplicates entries already present in e1 or e2
 
-`+.BibEntry` <- function(e1, e2, duplicate.fields = .BibOptions$duplicate.fields){
-  dup.ind <- match(names(e2), names(e1), nomatch=FALSE)
-  good.ind <- 1:length(e2)  # need to print indices of removed 
-
-  message(paste0('Repeated keys in ', deparse(substitute(e2)), ' for entries'))
-  message(paste0(dup.ind, ' '))
-  if('key' %in% duplicate.fields){
-    message('These entries will be dropped in result')
-    duplicate.fields <- duplicate.fields[duplicate.fields != 'key']
-    e2 <- e2[-dup.ind]
-    good.ind <- good.ind[-dup.ind]
-  }else{
-    message('Adding \'2\' to end of these keys in result')
-    names(e2)[dup.ind] <- paste0(names(e2)[dup.ind],'2')
-    dup.ind <- NULL
-  }
-  #browser()
-  curopt <- .BibOptions$return.ind
-  .BibOptions$return.ind <- TRUE
-  current.fields <- c(unique(c(names(unlist(e1)), names(unlist(e2)))), 'bibtype')
-  if(length(duplicate.fields)){
-    for (i in 1:length(duplicate.fields)){
-      curfield <- duplicate.fields[i]
-      if(curfield %in% current.fields){
-        cur.ind <- unlist(lapply(eval(parse(text=paste0('e2$', curfield))), function(x) suppressMessages(e1[curfield, x])))
-        dup.ind <- c(dup.ind, cur.ind)
-        if (length(dup.ind) == length(e2)){
-          message(paste0('Only duplicates in ', deparse(substitute(e2))))
-          return(e1)
-        }
-        e2 <- e2[-cur.ind]
-        message(paste0('Repeated entries found in ', deparse(subsitute(e2)), ' when examining ', curfield, 'field for entries'))
-        message(paste0(good.ind[cur.ind], ' '))
-        good.ind <- good.ind[-cur.ind]
-      }else{
-        paste0(curfield, ' is not a field in any entries.  Ignoring.')
-      }
+`+.BibEntry` <- function(e1, e2, fields.to.check = .BibOptions$merge.fields.to.check){
+  awl <- "all" %in% fields.to.check
+  if (length(fields.to.check) && !awl){
+    possible.dup <- seq_along(e2) 
+    temp <- c("key", "bibtype") %in% fields.to.check
+    if (all(temp)){
+      possible.dup <- which(sapply(e2, 
+                                    function(x, y){
+                                      ykeys <- unlist(y$key)
+                                      ytypes <- unlist(y$bibtype)
+                                      xkey <- x$key
+                                      xtype <- x$bibtype
+                                      for (i in seq_along(y)){
+                                        if (ykeys[i] == xkey && ytypes[i] == xtype)
+                                          return(TRUE)
+                                      }
+                                      return(FALSE)
+                                    }, y = e1))
+    }else if (temp[1]){
+      possible.dup <- which(names(e2) %in% names(e1))
+    }else if (temp[2]){
+      possible.dup <- unlist(e2$bibtype) %in% unlist(e1$bibtype)
+    }
+    remain.dup.f <- setdiff(fields.to.check, c('bibtype', 'key'))
+    if (length(remain.dup.f)){
+      dup.ind <- which(sapply(unclass(e2[possible.dup]), 
+                      function(x, y, flds){
+                        x <- x[flds]
+                        for (i in seq_along(y)){
+                          if (identical(y[[i]][flds], x))
+                            return(TRUE)
+                        }
+                        return(FALSE)
+                      }, y = unclass(e1), flds = remain.dup.f))
+    }else{
+      dup.ind <- possible.dup
+    }
+    if (length(dup.ind) == length(e2)){
+      message('Only duplicates in second BibEntry object')
+      return(e1)
+    }
+    if (length(dup.ind)){
+      e2 <- e2[-dup.ind]
+      message(paste0('Duplicate entries found in second BibEntry object in position(s): ', 
+                     paste0(dup.ind, collapse = ', ')))
     }
   }
-  .BibOptions$return.ind <- curopt
-  c(e1)
+  x <- c(e1, e2)
+  if (awl){
+    x <- x[!duplicated(x)]  
+  }
+  names(x) <- make.unique(names(x), sep = ":")
+
+  return(x)
 }
+
+merge.BibEntry <- function(x, y, fields.to.check = .BibOptions$merge.fields.to.check)
+  UseMethod('+')

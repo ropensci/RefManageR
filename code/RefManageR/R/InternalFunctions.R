@@ -411,11 +411,11 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   res <- try(BibEntry(bibtype = type, key = key, dateobj = tdate, other = y), TRUE)
   if (inherits(res, 'try-error')){
     if(!is.null(y[['title']])){
-      message(paste0('Ignoring entry ', y[['title']], ' because'))
-      message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines      
+      message(paste0('Ignoring entry titled \"', y[['title']], '\" because ', strsplit(res, '\\n[[:space:]]*')[[1]][2]))
+      #message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines      
     }else{
-      message(paste0('Ignoring entry ', key, ' because'))
-      message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines      
+      message(paste0('Ignoring entry with key \"', key, '\" because ', strsplit(res, '\\n[[:space:]]*')[[1]][2]))
+      # message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines      
     }
     return(NULL)
   }
