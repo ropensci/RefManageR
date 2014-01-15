@@ -1,4 +1,4 @@
-BibLaTeX_entry_field_db <- tools:::BibTeX_entry_field_db
+BibLaTeX_entry_field_db <- list()  # tools:::BibTeX_entry_field_db
 
 BibLaTeX_entry_field_db$article <- c('author', 'title', 'journaltitle|journal', 'year|date')
 

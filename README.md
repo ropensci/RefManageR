@@ -111,6 +111,9 @@ BUGS
 - Don't duplicate printing of Date if urldate or eventdate but no date in entry
 - (**FIXED**) '\u00a7' encoded incorrectly for fmtPages, for some reason correct for fmtTotalPages
 - authoryear bibstyle date, pages and title, totalpages
+- (maybe) `bib[-seq_along(bib)]` returns nothing, probably should return NULL, empty list, or empty bib
+- can't remove or create class with `$.BibEntry<-`
+- crossrefs in `toBibtex.BibEntry`
 
 DONE     
 ==================================================================================================================

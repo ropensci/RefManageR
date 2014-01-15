@@ -1,80 +1,5 @@
 library(lubridate)
 
-# CompareDates <- function(bib.entry, date2, compare.op='==', match.date = 'year.only'){
-#   date1 <- bib.entry$dateobj
-#   if(is.null(date1))
-#     return(FALSE)
-#   #browser()
-#   if(match.date != 'exact'){
-#     date1 <- year(date1)
-#   }
-#   
-#  
-#   return(do.call(compare.op, list(date1, date2)))
-# }
-
-# MatchDate <- function(x, pattern){
-#  # browser()
-#   match.date <- 'yearonly'  # .BibOptions()$
-#   x <- unclass(x)
-#   if(length(grep('--', pattern))){  # range of dates specified, perform search twice
-#     pos <- regexpr('--', pattern)[1]
-#     str1 <- substr(pattern, 1, pos-1)
-#     d2 <- as.POSIXct(switch(as.character(nchar(str1)),
-#           '4' = paste0(str1, '-01-01'),    # needed to get around R assigning current day and month when unspecified
-#           '7' = paste0(str1, '-01'),  # %Y-%d which doesn't work with strptime
-#                 str1))
-#     if(match.date != 'exact')
-#       d2 <- year(d2)       
-#     
-#     match.pos <- sapply(x, CompareDates, date2=d2, compare.op ='>=')
-#     if(sum(match.pos)==0){ # MatchDate returned false for all bib entries
-#       print('No matches')
-#       return()
-#     }  
-#     
-#     # if matches for >= low year, before search for <= high year
-#     x <- x[match.pos]
-#     str1 <- substr(pattern, pos+2, nchar(pattern))
-#     comp.op <- '<='
-#   }else if ((comp.op <- substr(pattern, 1, 2)) == '<=' || comp.op == '>='){
-#     str1 <- substr(pattern, 3, nchar(pattern))
-#   }else if ((comp.op <- substr(pattern, 1, 1)) == '>' || comp.op == '<'){
-#     str1 <- substr(pattern, 2, nchar(pattern))
-#   }else{  # exact date search requested
-#     comp.op <- '=='
-#     str1 <- pattern
-#   }
-#   
-#   d2 <- as.POSIXct(switch(as.character(nchar(str1)),
-#           '4' = paste0(str1, '-01-01'),    # needed to get around R assigning current day and month when unspecified
-#           '7' = paste0(str1, '-01'),  # %Y-%d which doesn't work with strptime
-#                 str1))
-#   if (match.date != 'exact')
-#     d2 <- year(d2)  
-#   
-#   match.pos <- sapply(x, CompareDates, date2=d2, compare.op =comp.op)
-#   if (sum(match.pos) == 0){
-#     print('No Matches')
-#     return()
-#   }
-#   
-#   return(match.pos)
-# }
-
-# CompareAuthors <- function(entry, searchterms, match.author='family.name', unicode=TRUE){
-#   if(is.null(entry))
-#     return(FALSE)
-#   
-#   if(match.author=='family.name'){
-#     entry <- tolower(entry)
-#     searchterms <- tolower(searchterms)
-#   }
-#   #fun <- ifelse(exact, 'match', 'pmatch')
-#   return(all())
-#   return(all(match(x=searchterms, table=entry, nomatch=FALSE)))
-# }
-
 MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
   # browser()
   if (is.null(x))
@@ -102,54 +27,7 @@ MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
     }
   }
 }
-#   
-#   x <- unclass(x)
-#   if(length(grep('--', pattern))){  # range of dates specified, perform search twice
-#     pos <- regexpr('--', pattern)[1]
-#     str1 <- substr(pattern, 1, pos-1)
-#     d2 <- as.POSIXct(switch(as.character(nchar(str1)),
-#                             '4' = paste0(str1, '-01-01'),    # needed to get around R assigning current day and month when unspecified
-#                             '7' = paste0(str1, '-01'),  # %Y-%d which doesn't work with strptime
-#                             str1))
-#     if(match.date != 'exact')
-#       d2 <- year(d2)       
-#     
-#     match.pos <- sapply(x, CompareDates, date2=d2, compare.op ='>=')
-#     if(sum(match.pos)==0){ # MatchDate returned false for all bib entries
-#       print('No matches')
-#       return()
-#     }  
-#     
-#     # if matches for >= low year, before search for <= high year
-#     x <- x[match.pos]
-#     str1 <- substr(pattern, pos+2, nchar(pattern))
-#     comp.op <- '<='
-#   }else if ((comp.op <- substr(pattern, 1, 2)) == '<=' || comp.op == '>='){
-#     str1 <- substr(pattern, 3, nchar(pattern))
-#   }else if ((comp.op <- substr(pattern, 1, 1)) == '>' || comp.op == '<'){
-#     str1 <- substr(pattern, 2, nchar(pattern))
-#   }else{  # exact date search requested
-#     comp.op <- '=='
-#     str1 <- pattern
-#   }
-#   
-#   d2 <- as.POSIXct(switch(as.character(nchar(str1)),
-#                           '4' = paste0(str1, '-01-01'),    # needed to get around R assigning current day and month when unspecified
-#                           '7' = paste0(str1, '-01'),  # %Y-%d which doesn't work with strptime
-#                           str1))
-#   if (match.date != 'exact')
-#     d2 <- year(d2)  
-#   
-#   match.pos <- sapply(x, CompareDates, date2=d2, compare.op =comp.op)
-#   if (sum(match.pos) == 0){
-#     print('No Matches')
-#     return()
-#   }
-#   
-#   return(match.pos)
-# }
 
-# UTF-8 compatible
 MatchName <- function(nom, pattern, match.author=.BibOptions$match.author){
   if (is.null(nom))
     return(FALSE)
@@ -163,31 +41,6 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author){
   return(all(pattern %in% nom))
 }
 
-# CompareEntries <- function(entry, searchterms, exact = FALSE, unicode=TRUE){
-#   if(is.null(entry))
-#     return(FALSE)
-#   
-#   if(!exact){
-#     entry <- tolower(entry)
-#     searchterms <- tolower(searchterms)
-#   }
-#   #fun <- ifelse(exact, 'match', 'pmatch')
-#   
-#   return(all(match(x=searchterms, table=entry, nomatch=FALSE)))
-# }
-
-# make UTF-8 compatible
-# does not work: setGeneric('search', signature=)
-# SearchField <- function(x, field, pattern){
-#   # this code loses correct position of matches
-#   # match(unlist(eval(parse(text=paste0('x$', field)))), pattern, nomatch=FALSE)
-#  # browser()
-#   match.pos <- sapply(do.call('$', list(x = x, name = field)), CompareEntries, searchterms=pattern, 
-#                       exact = FALSE, unicode=TRUE)
-#   return(match.pos)
-# }
-
-# TO Do: x['keyval']
 `[.BibEntry` <- function(x, i, j, ..., drop =TRUE){
   # i is character vector
   # i is numeric
@@ -211,16 +64,21 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author){
   }else{
     stop('Invalid index.')
   }
-  
+  keys <- names(x)  
   fields <- names(dots)
+  add <- function(x) suppressMessages(Reduce("+", x))
   for (i in seq_along(dots))
-    x <- x[FindBibEntry(x, dots[[i]], fields[i])]
+    x <- add(lapply(dots[[i]], function(trm, bib, fld) x[FindBibEntry(bib, trm, fld)], bib = x, fld = fields[i]))  # x[FindBibEntry(x, dots[[i]], fields[i])]
   if (!length(x)){
     message("No results.")
-    return()
+    return(list())
   }
   # class(x) <- c("BibEntry", "bibentry")
-  return(x)    
+  if (.BibOptions$return.ind){
+    return(which(keys %in% names(x))) 
+  }else{
+    return(x)      
+  }
   # current.fields <- c(unique(names(unlist(x))), 'bibtype', 'key')    
 }
 

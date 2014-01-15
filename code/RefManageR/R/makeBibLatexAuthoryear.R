@@ -425,7 +425,7 @@ fmtVolumes <- label(suffix = ' vols.')
 
 fmtBAuthor <- function(doc){
   if (doc$.duplicated)
-    return('---')  # \u2500\u200a\u2500\u2009\u2500
+    return("\u2014\u2013\u2014")  # \u2500\u200a\u2500\u2009\u2500
   #browser()
   out <- NULL
   if (length(doc$author)){

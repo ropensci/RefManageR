@@ -18,7 +18,7 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
                                      'match.date',   # criteria for matching dates. p.v.: exact, year only
                                      'match.field',  # criteria for matching all other fields: 
                                      'return.ind',  # T/F should search return index of matches or bibentry objects
-                                     'duplicate.fields',  # vector of fields for determining duplicate entries  `+` 
+                                     'merge.fields.to.check',  # vector of fields for determining duplicate entries  `+` 
                                      'bib.violation',   # how to handle violations when creating bibentries? 
                                                        # p.v.: 'drop', 'warn', 'to.misc'
                                      'print.doi',      # should the DOI be printed?
@@ -26,22 +26,22 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
                                      'abbrev.names',   # should names in printing be abbreviated
                                      'dashed',         # should duplicate author names be replaced with \u2500
                                      'sorting'         # method to use for sorting (p. 44 of manual)
-                                     ), methods = list(
-                                       duplicate.handler = function(...){
-                                         if(bib.violation == 'drop'){
-                                           # message about dropped entry
-                                         }else if (bib.violation == 'warn'){
-                                           # message about bad entry
-                                           # add entry anyway
-                                         }else{
-                                           
-                                         }
-                                       })  
+                                     )  #, methods = list(
+#                                        duplicate.handler = function(...){
+#                                          if(bib.violation == 'drop'){
+#                                            # message about dropped entry
+#                                          }else if (bib.violation == 'warn'){
+#                                            # message about bad entry
+#                                            # add entry anyway
+#                                          }else{
+#                                            
+#                                          }
+#                                        })  
             )
             
 
 .BibOptions <- new('BibOptions', match.author='family.name', match.date='year.only', return.ind=FALSE, match.field='partial', 
-                   duplicate.fields = 'key', bib.violation = 'error', print.doi = TRUE, 
+                   merge.fields.to.check = 'key', bib.violation = 'error', print.doi = TRUE, 
                    bib.style = 'numeric', abbrev.names = TRUE, dashed = TRUE, sorting = NULL
                    )
 options(useFancyQuotes = FALSE)

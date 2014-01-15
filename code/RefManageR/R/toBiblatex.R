@@ -1,17 +1,4 @@
 toBiblatex <- function(object, ...){
-    format_author <- function(author) paste(sapply(author, function(p) {
-        fnms <- p$family
-        only_given_or_family <- is.null(fnms) || is.null(p$given)
-        fbrc <- if (length(fnms) > 1L || any(grepl("[[:space:]]", 
-            fnms)) || only_given_or_family) 
-            c("{", "}")
-        else ""
-        gbrc <- if (only_given_or_family) 
-            c("{", "}")
-        else ""
-        format(p, include = c("given", "family"), braces = list(given = gbrc, 
-            family = fbrc))
-    }), collapse = " and ")
     format_bibentry1 <- function(object) {
       object <- unclass(object)[[1L]]
       rval <- paste0("@", attr(object, "bibtype"), "{", attr(object, 
