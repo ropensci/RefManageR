@@ -1,8 +1,12 @@
 print.BibEntry <- function (x, style = "text", .bibstyle = .BibOptions$bib.style, 
-                            sorting = .BibOptions$sorting, ...){
+                            sorting = .BibOptions$sorting, no.print.fields = NULL, ...){
   if (!length(sorting))
     sorting <- switch(.bibstyle, authoryear = 'nyt', alphabetic = 'anyt', draft = 'debug', 'nty')
   style <- .BibEntry_match_format_style(style)
+  if (length(x) && length(no.print.fields)){
+    for (i in seq_along(no.print.fields))
+      x <- do.call(`$<-`, list(x = x, name = tolower(no.print.fields[i]), value = NULL))
+  }
   if (style == "R") {
       writeLines(format(x, "R", collapse = TRUE, ...))
   }

@@ -83,37 +83,39 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 
 BUGS
 =================================================================================
-* merge doesn't work when `length(bib1) > length(bib2)` in `bib1+bib2`
+- (**FIXED**) merge doesn't work when `length(bib1) > length(bib2)` in `bib1+bib2`
 - (**FIXED**) fix tryCatch in MakeBibEntry 
 - (**FIXED**) `$` doesn't work for creating field that does not exist in any entries
-  * happened in ReadPDFs when adding file info after calling MakeCitationList
-  * possible problem when list elements sent to make citation list are already BibEntry class?
-* if doi + url both available, `print` function formats and includes both as url
-* ReadPDF  
+  - happened in ReadPDFs when adding file info after calling MakeCitationList
+  - possible problem when list elements sent to make citation list are already BibEntry class?
+- if doi + url both available, `print` function formats and includes both as url
+- ReadPDF  
   - (**FIXED**) key needs to be made after scanning text and meta data in ReadPDFs, not by both separately  
   - (**FIXED**) msgs for entries with no author+title should not occur in both reading of text and metadata in `ReadPDFs` 
-  * bug in adding `file` to `bibentry` object in ReadPDFs
-  * handle ligatures in ReadPDFs: ff: "< U + F B 0 0 >" 
+  - handle ligatures in ReadPDFs: ff: "< U + F B 0 0 >" 
   - (**FIXED**) volume and number not working
-  * (**FIXED**) files[[13]] - BoveHeld-BFapproximation(ArXiv2013).pdf should work for both authors - only gets one
+  - (**FIXED**) files[[13]] - BoveHeld-BFapproximation(ArXiv2013).pdf should work for both authors - only gets one
   - year for WoodKohnShivelyJiang-BayesSSselection(JRSSB2002).pdf in GetJSTOR
   - (**FIXED**) handle results from CrossRef being list of BibEntry obj, instead of BibEntry obj. itself
-  * add DOI's and file names at end
-  * make sure all corner cases work: no crossref, no c.ref results, no metadata, no meta res, no JSTOR res,
+  - add DOI's and file names at end
+  - make sure all corner cases work: no crossref, no c.ref results, no metadata, no meta res, no JSTOR res,
     all jstor, all crossref+jstor
-  * catch errors in MakeBibEntry
-  * handle headers better when reading pdf, including getting year, etc. from 2nd line of doc
+  - catch errors in MakeBibEntry
+  - handle headers better when reading pdf, including getting year, etc. from 2nd line of doc
 - (**FIXED**) `$<-`: `bib.entry.obj$field.name <- value.vec` adds vector of values to each bib. entry
 - (**FIXED**) testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex")) fails, but read.bib works
 - `bib[numeric_index, 'field_name']` or `bib['field_name', numeric_index]` not working
 - warnings in ReadBib
-- handling duplicates authors when printing in "authoryear" format (`extrafield` in BibLaTeX)
+- (**FIXED**) handling duplicates authors when printing in "authoryear" format (`extrafield` in BibLaTeX)
 - Don't duplicate printing of Date if urldate or eventdate but no date in entry
 - (**FIXED**) '\u00a7' encoded incorrectly for fmtPages, for some reason correct for fmtTotalPages
 - authoryear bibstyle date, pages and title, totalpages
 - (maybe) `bib[-seq_along(bib)]` returns nothing, probably should return NULL, empty list, or empty bib
-- can't remove or create class with `$.BibEntry<-`
-- crossrefs in `toBibtex.BibEntry`
+- (**FIXED**) crossrefs in `toBibtex.BibEntry`
+- (should be **FIXED**) capitalization when assigning bibtypes
+- (**FIXED**) no.print.fields in print.BibEntry
+- (**FIXED**) test.bib not printing: `Error in as.POSIXlt.numeric(x, tz = tz(x)) : 'origin' must be supplied` - is year(interval)
+- (**FIXED**) BibEntry doesn't create `dateobj` if it is not supplied
 
 DONE     
 ==================================================================================================================

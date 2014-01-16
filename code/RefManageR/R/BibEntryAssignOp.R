@@ -1,5 +1,4 @@
 `$<-.BibEntry` <- function(x, name, value){
- # browser()
   stopifnot(length(x) == length(value) || length(value) <= 1)
   is_attribute <- name %in% bibentry_attribute_names
   x <- unclass(x)
