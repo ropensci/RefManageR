@@ -131,8 +131,15 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
     attr(rval, "key") <- if (is.null(key)) 
       NULL
     else as.character(key)
-    attr(rval, 'dateobj') <- rval[['dateobj']]
-    rval[['dateobj']] <- NULL
+    if (is.null(rval[['dateobj']])){
+      tdate <- try(ProcessDates(rval), TRUE)
+      if (!inherits(tdate, "try-error"))
+        attr(rval, 'dateobj') <- tdate
+    }else{
+      attr(rval, 'dateobj') <- rval[['dateobj']]
+      rval[['dateobj']] <- NULL  
+    }
+    
     if (!is.null(textVersion)) 
       attr(rval, "textVersion") <- as.character(textVersion)
     if (!.is_not_nonempty_text(header)) 

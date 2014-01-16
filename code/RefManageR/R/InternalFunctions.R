@@ -70,12 +70,13 @@ library(bibtex)
 # test <- ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br', tag='Statistics - Machine Learning'))
 
 
-.BibEntryCheckBibEntry1 <- function (x, force = FALSE) {
- # browser()
+.BibEntryCheckBibEntry1 <- function (x, force = FALSE, check = .BibOptions$check) {
+  if (!check)
+    return(NULL)
   fields <- names(x)
   if (!force && (!.is_not_nonempty_text(x$crossref) || !.is_not_nonempty_text(x$xdata))) 
     return(NULL)
-  bibtype <- tolower(attr(x, "bibtype"))
+  bibtype <- attr(x, "bibtype")
   rfields <- strsplit(BibLaTeX_entry_field_db[[bibtype]], 
                       "|", fixed = TRUE)
   if (length(rfields) > 0L) {

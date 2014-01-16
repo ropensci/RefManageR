@@ -75,7 +75,11 @@ BibReplace <- function(orig, replace.vals){
     }
   }
   if ('bibtype' %in% replace.fields){
-    attr(orig, 'bibtype') <- replace.vals[['bibtype']]
+    BibLaTeX_names <- names(BibLaTeX_entry_field_db)
+    pos <- match(tolower(replace.vals[['bibtype']]), tolower(BibLaTeX_names))
+    if (is.na(pos))
+      stop('Invalid bibtype specified')
+    attr(orig, 'bibtype') <- BibLaTeX_names
     if (length(replace.vals) > 1){
       replace.vals[['bibtype']] <- NULL
     }else{

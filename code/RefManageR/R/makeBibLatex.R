@@ -1161,7 +1161,6 @@ toRd.BibEntry <- function(obj, style = .BibOptions$bib.style, .sorting ='nty', .
         is.null(obj$.duplicated))
     obj$.duplicated <- FALSE
   assign('bibstyle', .BibOptions$bib.style, style)
-
   bib <- unclass(obj)
   result <- character(length(bib))
   #browser()
@@ -1170,42 +1169,42 @@ toRd.BibEntry <- function(obj, style = .BibOptions$bib.style, .sorting ='nty', .
 #     if (dashed)
 #       assign('dup', dups[i], env)
   	result[i] <- with(env,
-  	  switch(tolower(attr(paper, "bibtype")),
-  	    article = formatArticle(paper),  
-  	    book = formatBook(paper),        
-        mvbook = formatBook(paper, collection = FALSE),              
-  	    inbook = formatInBook(paper),
-        bookinbook = formatInBook(paper, TRUE),                 
-        suppbook = formatInBook(paper),                 
-        booklet = formatBooklet(paper),          
-        collection = formatBook(paper, TRUE),                 
-        mvcollection = formatBook(paper, collection = TRUE),                 
-  	    incollection = formatInCollection(paper),
-        suppcollection = formatInCollection(paper),         
-        manual = formatManual(paper),
-  	    misc = formatMisc(paper),    
-        online = formatOnline(paper),
-        patent = formatPatent(paper),
-        periodical = formatPeriodical(paper),
-        suppperiodical = formatArticle(paper),
-        proceedings = formatProceedings(paper),
-        mvproceedings = formatProceedings(paper),                  
-        inproceedings = formatInProceedings(paper), 
-        reference = formatBook(paper, TRUE),  # alias for collection   
-        mvreference = formatBook(paper, collection = TRUE),                 
-        inreference = formatInCollection(paper),         
-        report = formatReport(paper),
-        thesis = formatThesis(paper),                 
-  	    unpublished = formatUnpublished(paper),
-        set = "",
-        xdata = "",     
+  	  switch(attr(paper, "bibtype"),
+  	    Article = formatArticle(paper),  
+  	    Book = formatBook(paper),        
+        MVBook = formatBook(paper, collection = FALSE),              
+  	    InBook = formatInBook(paper),
+        BookInBook = formatInBook(paper, TRUE),                 
+        SuppBook = formatInBook(paper),                 
+        Booklet = formatBooklet(paper),          
+        Collection = formatBook(paper, TRUE),                 
+        MVCollection = formatBook(paper, collection = TRUE),                 
+  	    InCollection = formatInCollection(paper),
+        SuppCollection = formatInCollection(paper),         
+        Manual = formatManual(paper),
+  	    Misc = formatMisc(paper),    
+        Online = formatOnline(paper),
+        Patent = formatPatent(paper),
+        Periodical = formatPeriodical(paper),
+        SuppPeriodical = formatArticle(paper),
+        Proceedings = formatProceedings(paper),
+        MVProceedings = formatProceedings(paper),                  
+        InProceedings = formatInProceedings(paper), 
+        Reference = formatBook(paper, TRUE),  # alias for collection   
+        MVReference = formatBook(paper, collection = TRUE),                 
+        InReference = formatInCollection(paper),         
+        Report = formatReport(paper),
+        Thesis = formatThesis(paper),                 
+  	    Unpublished = formatUnpublished(paper),
+        Set = "",
+        Xdata = "",     
 # Aliases                 
-        techreport = formatReport(paper, ifelse(is.null(paper$type), 'technical report', paper$type)),          
-        phdthesis = formatThesis(paper, ifelse(is.null(paper$type), 'PhD Thesis', paper$type)),
-        mastersthesis = formatThesis(paper, ifelse(is.null(paper$type), "Master's Thesis", paper$type)),
-        www = formatOnline(paper),
-        electronic = formatOnline(paper),
-        conference = formatInProceedings(paper),       
+        TechReport = formatReport(paper, ifelse(is.null(paper$type), 'technical report', paper$type)),          
+        PhdThesis = formatThesis(paper, ifelse(is.null(paper$type), 'PhD Thesis', paper$type)),
+        MastersThesis = formatThesis(paper, ifelse(is.null(paper$type), "Master's Thesis", paper$type)),
+        Www = formatOnline(paper),
+        Electronic = formatOnline(paper),
+        Conference = formatInProceedings(paper),       
   	    paste("bibtype", attr(paper, "bibtype"), "not implemented") ))
   }
   .BibOptions$bib.style <- curstyle
