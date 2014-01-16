@@ -28,17 +28,22 @@ MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
   }
 }
 
-MatchName <- function(nom, pattern, match.author=.BibOptions$match.author){
+MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.case = .BibOptions$ignore.case,
+                      regx = .BibOptions$use.regex){
   if (is.null(nom))
     return(FALSE)
   if (match.author == 'exact'){
     nom <- as.character(nom)
   }else if (match.author == 'last.with.initials'){
-    nom <- sapply(nom, function(x) paste0(paste0(substring(x$given, 1, 1), collapse = ''), x$family))
+    nom <- sapply(nom, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''), x$family))
   }else{
     nom <- nom$family
   }
-  return(all(pattern %in% nom))
+  if (!regx && ign.case){
+    return(length(grep(pattern, tolower(nom), fixed = TRUE)))
+  }else{
+    return(length(grep(pattern, nom, fixed = !regx, ignore.case = ign.case)))  
+  }
 }
 
 `[.BibEntry` <- function(x, i, j, ..., drop =TRUE){
@@ -67,6 +72,7 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author){
   keys <- names(x)  
   fields <- names(dots)
   add <- function(x) suppressMessages(Reduce("+", x))
+  browser()
   for (i in seq_along(dots))
     x <- add(lapply(dots[[i]], function(trm, bib, fld) x[FindBibEntry(bib, trm, fld)], bib = x, fld = fields[i]))  # x[FindBibEntry(x, dots[[i]], fields[i])]
   if (!length(x)){
@@ -83,6 +89,8 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author){
 }
 
 FindBibEntry <- function(bib, term, field){
+  usereg <- .BibOptions$use.regex
+  ignorec <- .BibOptions$ignore.case
   vals <- do.call('$', list(x = bib, name = field))
   if (!length(unlist(vals))){
     res <- logical(length(bib))
@@ -92,11 +100,13 @@ FindBibEntry <- function(bib, term, field){
     if (match.aut == 'exact'){
       term <- as.character(term)
     }else if (match.aut == 'last.with.initials'){
-      term <- sapply(term, function(x) paste0(paste0(substring(x$given, 1, 1), collapse = ''), x$family))
+      term <- sapply(term, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''), x$family))
     }else{
       term <- term$family
     }
-    res <- sapply(vals, MatchName, pattern = term, match.author = match.aut)
+    if (ignorec)
+      term <- tolower(term)
+    res <- as.logical(sapply(vals, MatchName, pattern = term, match.author = match.aut, regx = usereg, ign.case = ignorec))
   }else if (field %in% .BibEntryDateField){
     if (field == 'month'){
       res <- sapply(vals, pmatch, table = term, nomatch = FALSE)
@@ -129,11 +139,11 @@ FindBibEntry <- function(bib, term, field){
     res[sapply(res, length)==0] <- FALSE
   }else{
     res <- logical(length(bib))
-    for (i in seq_along(bib))
-      res[i] <- as.logical(pmatch(vals[i], term, 0L))
-#     res <- lapply(vals, pmatch, table = term)
-#     res[sapply(res, length)==0] <- FALSE  # lame behaviour of nomatch necessitates this
-#     res <- as.logical(unlist(res))
+    if (!usereg && ignorec){
+      res[grep(tolower(term), tolower(unlist(vals)), fixed = TRUE)] <- TRUE
+    }else{
+      res[grep(term, unlist(vals), fixed = !.BibOptions$use.regex, ignore.case = .BibOptions$ignore.case)] <- TRUE
+    }
   }
   res
 }
