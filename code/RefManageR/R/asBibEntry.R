@@ -28,7 +28,24 @@ as.BibEntry <- function(x){
     return(y)
 
   }else if(is.list(x)){
-    x <- relist.BibEntry(x)
+    if(length(x) == 1L){
+      if (!is.null(attr(x, 'bibtype'))){  # x simply unclass'ed
+        class(x) <- c('BibEntry', 'bibentry')
+      }else if (!is.null(x$dateobj)){  # x has been unlist'ed
+        x <- relist.BibEntry(x)
+      }else{  # user supplied list
+        x <- do.call('BibEntry', x)
+      }
+    }else{
+      if (!is.null(attr(x[[1L]], 'bibtype'))){  # x simply unclass'ed
+        class(x) <- c('BibEntry', 'bibentry')
+      }else if (!is.null(x[[1L]]$dateobj)){
+        x <- relist.BibEntry(x)
+      }else{
+        x <- sapply(x, function(...) do.call(BibEntry, ...))
+        class(x) <- c('BibEntry', 'bibentry')            
+      }
+    }
   }else{
     stop(paste0("Cannot coerce object of class '", class(x), "' to BibEntry"))
   }

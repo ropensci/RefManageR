@@ -116,7 +116,7 @@ addPeriod <- function (string){
 authorList <- function(aut){
  # browser()
     names <- sapply(aut, shortName)
-    if (length(names) > 1){ 
+    if (length(names) > 1L){ 
         result <- paste(paste(names[-length(names)], collapse = ", "), 
             "and", names[length(names)])
     }else{
@@ -144,7 +144,7 @@ shortNameLF <- function(pers){
         if (length(pers$given)){ 
           if (.BibOptions$abbrev.names){
             paste0(paste(res, paste(substr(sapply(pers$given, cleanupLatex), 
-                1, 1), collapse = ". "), sep=', '), '.')
+                1L, 1L), collapse = ". "), sep=', '), '.')
           }else{
             paste(res, paste(sapply(pers$given, cleanupLatex), collapse = ' '), sep = ', ')
           }
@@ -162,7 +162,7 @@ shortName <- function(pers){
         if (length(pers$given)){ 
           if (.BibOptions$abbrev.names){
             paste0(c(substr(sapply(pers$given, cleanupLatex), 
-                1, 1), res), collapse = ". ")
+                1L, 1L), res), collapse = ". ")
           }else{
             cleanupLatex(as.character(pers))
           }
@@ -272,9 +272,9 @@ ProcessNamesLA <- function(nam){
     if (!inherits(nam, 'person'))
       nam <- ArrangeAuthors(nam)
     nam <- nam$family
-    res <- substr(nam, start = 1, stop = 1)
-    switch(as.character(length(res)), '0'= NULL, '1' = substr(nam, 1, 3), '2' = paste0(res[seq_len(2)], collapse =''),
-           paste0(res[seq_len(3)], collapse =''))
+    res <- substr(nam, start = 1L, stop = 1L)
+    switch(as.character(length(res)), '0'= NULL, '1' = substr(nam, 1L, 3L), '2' = paste0(res[seq_len(2L)], collapse =''),
+           paste0(res[seq_len(3L)], collapse =''))
   }
 }
 
@@ -463,13 +463,13 @@ fmtBAuthor <- function(doc){
   nnames <- length(res)
   if (nnames){
     if (bibstyle == 'alphabetic' || bibstyle == 'numeric'){
-      out <- shortName(res[1])
+      out <- shortName(res[1L])
     }else{
-      out <- shortNameLF(res[1])
+      out <- shortNameLF(res[1L])
     } 
-    if (nnames == 2){
-      out <- paste(out, shortName(res[-1]), sep = ' and ')
-    }else if (nnames > 2){
+    if (nnames == 2L){
+      out <- paste(out, shortName(res[-1L]), sep = ' and ')
+    }else if (nnames > 2L){
       out <- paste(paste(out, paste0(sapply(res[-c(1, length(res))], shortName), collapse = ", "), sep = ', '), 
         shortName(res[length(res)]), sep = ' and ')
     }

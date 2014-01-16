@@ -13,52 +13,35 @@ To Do:
 ==================================================================================================================
 Important
 -------------------
-23. create bibstyle for biblatex
-25. dig around in `utils:::citeNatbib`
-1. new open function; convert all other RefManager.R functions to work with bibentry class
-4. write to zotero: http://www.zotero.org/support/dev/server_api/v2/write_requests
-5. boolean for how invalid entries are handled: either change to misc or drop (see what force=TRUE does in bibentry fnctn)
-8. plot function. sig.: plot(db, field, plottype, ...)  both 'author' and 'author-full' possible          
-  * See igraph pkg or perhaps adapt http://bl.ocks.org/mbostock/3037015 (add counts on edges)
-  * See the [wordcloud package](http://blog.fellstat.com/?cat=11)
-9. make table function.  table(db, field)  both 'author' and 'author-full'    
-10. change the print.bibentry function for when style='bibtex' and add style='biblatex'  
-  * (i.e. convert biblatex to bibtex for submitting to journal.  
-  * i.e. change toBibtex function and add toBibLaTeX function)
-[S/O thread explaining how to do this](http://tex.stackexchange.com/questions/114787/converting-from-biblatex-to-bibtex-format-using-biber)  
-have check=FALSE argument in print.BibEntry if user does not want to check proper format when printing biblatex or bibtex  
-have printonly=FALSE argument in toBibtex.BibEntry and toBibLatex.BibEntry if user does not want converted BibEntry object returned - see `utils:::toBibtex.bibentry`
-11. fix print to handle date field and _requires adding a bibstyle_
-12. implement a useful summary function
-16. update print function to include index (i.e. entry numbers) in database
-67. Convert to and from data.frame for use with plyr
-592. read from WorldCat   
-33. Read bibentries from clipboard
-98. duplicated() and anyDuplicated() function - use as.data.frame
-2. UpdateSingleAuthor function
-34. Make sure all functions use Date class, make sure print and format truncate to year
+65. `check='warn'` or `check=convert.to.misc` option
+78. `as.Bibentry` for bibentry (create `dateobj`)
+34. option to only print year instead of full date
+5. Write to Zotero
+6. fix up `as.BibEntry(x)` when `x` is list: dump to BibEntry
+09. implement "et al." when printing
 
 ### Optional Additional Ideas
+- implement a useful summary function
+- read from WorldCat (*investigated - worldcat sucks*)   
+- Read bibentries from clipboard
+- UpdateSingleAuthor function
 * Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg  
 Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
+- plot function. sig.: plot(db, field, plottype, ...)  both 'author' and 'author-full' possible          
+  * See igraph pkg or perhaps adapt http://bl.ocks.org/mbostock/3037015 (add counts on edges)
+  * See the [wordcloud package](http://blog.fellstat.com/?cat=11)
+- make table function.  table(db, field)  both 'author' and 'author-full'    
 * http://opencitations.net/
-* handle crossrefs for new BibLaTeX "in" fields
-* handle xdata in BibLaTeX and entry sets in BibTeX and BibLaTeX
-  * see 3.11.6 and 3.11.5, respectively in BibLaTeX manual
 * write "-.BibEntry" function
 * see the `scholar` R package.  Imports bibtex data using scholar id's
 * see R package CITAN for "scientometrics"
 * see knitcitations: install_github("knitcitations", "cboettig")
 * Support for additional features for BibEntry objects
-  2. xref entry type
-  6. xdata
   1. mkbibquote
+  3. xref (*relavent when citing in LaTeX doc, not in R*)
   60. related, relatedtype, relatedstring, relatedoptions p. 26
-  9. increased crossref support
   7. support for set entry type (for citing multiple references with one key)
-  13. support for pagination and bookpagination fields (predefined: page, column, line, verse, section, paragraph)
   15. BibLaTeX manual p. 29 Section 2.3 Usage Notes.
-  18. **All the fancy sorting**
 * handle Zotero using techreport for arXiv files
 * add merge function as wrapper for "+.BibEntry"
 * add search function as wrapper for "[.BibEntry"
@@ -144,7 +127,15 @@ DONE
 * search PubMed and import Bibtex entry, get Pubmed ID from PubMed
 * open BibEntry using file, doi, url, or eprint
 - @strings for shortcut for commonly used strings (*Implemented already for bibentry*)
-
+- new open function; convert all other RefManager.R functions to work with bibentry class
+- created multiple bibstyles for biblatex
+- implemented all sorting options
+- increased crossref support
+- eprints supported
+- support for pagination and bookpagination fields (predefined: page, column, line, verse, section, paragraph)
+- Convert to and from data.frame for use with plyr
+- xdata entry supported
+- toBiblatex and toBibtex functions [S/O thread explaining how to do this](http://tex.stackexchange.com/questions/114787/converting-from-biblatex-to-bibtex-format-using-biber)  
 =============================================================================================================
 
 JSS Doc Outline

@@ -1,11 +1,12 @@
-SearchBib <- function(x, ..., match.date = 'yearonly', match.author='lastonly'){
-  
-  # opt.def <- BibOptions()
-  # BibOptions()$match.date <- match.date
-  # BibOptions()$match.author <- match.author
-  fcall <- match.call()
-  fcall$return.ind <- TRUE
-  fcall[[1L]] <- as.name('[.BibEntry')
-  # BibOptions() <- opt.def
-  return(eval(fcall))
+SearchBib <- function(x, use.regex = TRUE, ignore.case = TRUE, match.date = .BibOptions$match.date, 
+                      match.author = .BibOptions$match.author, return.index = .BibOptions$return.ind, ...){
+  bibopts <- .BibOptions
+  .BibOptions$use.regex <- use.regex
+  .BibOptions$ignore.case <- TRUE
+  .BibOptions$match.date <- match.date
+  .BibOptions$match.author <- match.author
+  .BibOptions$return.ind <- return.index
+  x <- do.call(`[.BibEntry`, list(x, ...))
+  .BibOptions <- bibopts
+  return(x)
 }
