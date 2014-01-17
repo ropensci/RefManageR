@@ -46,45 +46,56 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
   }
 }
 
-`[.BibEntry` <- function(x, i, j, ..., drop =TRUE){
+`[.BibEntry` <- function(x, i, j, ..., drop =FALSE){
   # i is character vector
   # i is numeric
   # i is logical
   # i is list
-  # i is missing
+  # i is missing 
+  #browser()
   if (!length(x) || (missing(i) && missing(...))) 
     return(x)
+  ind <- NULL
   if (missing(i)){
     if (missing(...))
       return(x)
     dots <- list(...)
-  }else if (is.numeric(i) || is.logical(i)){  # obvious indices
-    return(x[[i]])
+  }else if (is.numeric(i)){  # obvious indices
+    ind <- i
+  }else if (is.logical(i)){
+    ind <- which(i)
   }else if (is.character(i)){
-    if (is.null(names(i)))  # assume keys
-      return(x[[i]])
+    if (is.null(names(i))){  # assume keys
+      ind <- match(i, names(x))
+      ind <- ind[!is.na(ind)]
+    }
     dots <- as.list(i)  # names correspond to fields, value to search terms
   }else if (is.list(i)){
     dots <- i
   }else{
     stop('Invalid index.')
   }
-  keys <- names(x)  
-  fields <- names(dots)
-  add <- function(x) suppressMessages(Reduce("+", x))
-  browser()
-  for (i in seq_along(dots))
-    x <- add(lapply(dots[[i]], function(trm, bib, fld) x[FindBibEntry(bib, trm, fld)], bib = x, fld = fields[i]))  # x[FindBibEntry(x, dots[[i]], fields[i])]
-  if (!length(x)){
-    message("No results.")
-    return(list())
+  if (is.null(ind)){
+    y <- .BibEntry_expand_crossrefs(x)
+    keys <- names(y)  
+    fields <- names(dots)
+    add <- function(x) suppressMessages(Reduce("|", x))
+    for (i in seq_along(dots))
+      ind <- add(lapply(dots[[i]], function(trm, bib, fld) FindBibEntry(bib, trm, fld), bib = y, fld = fields[i]))  # x[FindBibEntry(x, dots[[i]], fields[i])]
+    if (sum(ind) == 0){
+      message("No results.")
+      return(list())
+    }
   }
+
   # class(x) <- c("BibEntry", "bibentry")
-  if (.BibOptions$return.ind){
-    return(which(keys %in% names(x))) 
-  }else{
-    return(x)      
-  }
+  if (.BibOptions$return.ind)
+    return(ind) 
+  y <- .BibEntry_expand_crossrefs(unclass(x[[ind]]), unclass(x[[-ind]]))
+  if (!drop) 
+    attributes(y) <- attributes(x)[bibentry_list_attribute_names]
+  class(y) <- c('BibEntry', 'bibentry')
+  return(y)      
   # current.fields <- c(unique(names(unlist(x))), 'bibtype', 'key')    
 }
 
@@ -147,6 +158,7 @@ FindBibEntry <- function(bib, term, field){
   }
   res
 }
+
 
 #       
 #   if (!missing(j) && !missing(...)){
