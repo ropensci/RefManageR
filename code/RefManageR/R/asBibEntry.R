@@ -1,6 +1,22 @@
 as.BibEntry <- function(x){
-  if (inherits(x, c('BibEntry', 'bibentry'))){
+  if (inherits(x, 'BibEntry')){
     class(x) <- c('BibEntry', 'bibentry')
+  }else if (inherits(x, 'bibentry')){
+    att <- attributes(x)
+    x <- lapply(unclass(x), function(y){
+      attr(y, 'dateobj') <- ProcessDates(y)
+      check <- try(.BibEntryCheckBibEntry1(y), TRUE)
+      if (inherits(check, 'try-error')){
+        message(paste0('Ignoring entry titled \"', y[['title']], '\" because ', strsplit(check, '\\n[[:space:]]*')[[1]][2]))
+        return(NULL)
+      }
+      y
+    })
+    x <- x[!sapply(x, is.null)]
+    if (length(x)){
+      attributes(x) <- att
+      class(x) <- c('BibEntry', 'bibentry')  
+    }
   }else if (is.character(x)){
     
     if (is.na(x['bibtype']) || is.na(x['key']))

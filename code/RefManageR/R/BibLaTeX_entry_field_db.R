@@ -80,7 +80,7 @@ BibLaTeX_entry_field_db$Thesis <- c('author', 'title', 'type', 'institution', 'y
 BibLaTeX_entry_field_db$Unpublished <- c('author', 'title', 'year|date') 
 
 # xdata. special containers for data to be enherited by other entries which specify an 'xdata' field; see Section 3.11.6 of bibtex manual
-BibLaTeX_entry_field_db$Xdata <- character(0)
+BibLaTeX_entry_field_db$XData <- character(0)
 
 ######################
 # custom types # not supported by standard bib. styles, for which they will be treated as 'misc' type
@@ -95,9 +95,9 @@ BibLaTeX_entry_field_db$`Custom[f]` <- character(0)
 # aliases for compatibility with BibTeX
 BibLaTeX_entry_field_db$Conference <- BibLaTeX_entry_field_db$InProceedings
 BibLaTeX_entry_field_db$Electronic <- BibLaTeX_entry_field_db$Online
-BibLaTeX_entry_field_db$MastersThesis <- BibLaTeX_entry_field_db$Thesis
-BibLaTeX_entry_field_db$PhdThesis <- BibLaTeX_entry_field_db$Thesis
-BibLaTeX_entry_field_db$TechReport <- BibLaTeX_entry_field_db$Report
+BibLaTeX_entry_field_db$MastersThesis <- c('author', 'title', 'school', 'year')
+BibLaTeX_entry_field_db$PhdThesis <- c('author', 'title', 'school', 'year')
+BibLaTeX_entry_field_db$TechReport <- c('author', 'title', 'institution', 'year')
 BibLaTeX_entry_field_db$Www <- BibLaTeX_entry_field_db$Online
 
 ##########################################

@@ -27,6 +27,8 @@ fmtNumPre <- function(doc){
 cleanupLatex <- function (x){
     if (!length(x)) 
         return(x)
+    x <- gsub('mkbibquote', 'dQuote', x)
+    x <- gsub('\\\\hyphen', '-', x)
     latex <- try(tools::parseLatex(x), silent = TRUE)
     if (inherits(latex, "try-error")) {
         x
@@ -94,6 +96,19 @@ sentence <- function (..., sep = ", "){
     if (length(strings)) {
         addPeriod(paste(strings, collapse = sep))
     }
+}
+
+sentenceP <- function (..., pgs = NULL, tp = NULL, sep = ", "){
+  strings <- c(...)
+  res <- NULL
+  if (length(strings)) 
+    res <- paste(strings, collapse = sep)
+  res <- gsub('\\.$', '', res)
+  if (!is.null(pgs))
+    res <- paste(res, pgs, sep = ', ')
+  if (!is.null(tp))
+    res <- paste(res, tp, sep = '. ')
+  addPeriod(res)  
 }
 
 addPeriod <- function (string){ 
@@ -344,18 +359,18 @@ fmtPages <- function(pgs, pref){
   if (length(pgs)){
     if (!length(pref)){
       if (length(grep('-', pgs))){
-        paste0(', pp. ', pgs)
+        paste0('pp. ', pgs)
       }else{
-        paste0(', p. ', pgs)
+        paste0('p. ', pgs)
       }
     }else{
       if (length(grep('-', pgs))){
-        paste0(switch(pref, column = ', cols. ', verse = ', vv. ', line = ', ll. ', 
-            section = ', \u00a7\u00a7 ', paragraph = ', par. ', none = ', ', ', pp. '), pgs)
+        paste0(switch(pref, column = 'cols. ', verse = 'vv. ', line = 'll. ', 
+            section = '\u00a7\u00a7 ', paragraph = 'par. ', none = '', 'pp. '), pgs)
 
       }else{
-        paste0(switch(pref, column = ', col. ', verse = ', v. ', line = ', l. ', 
-                    section = ', \u00a7 ', paragraph = ', par. ', none = ', ', ', p. '), pgs)
+        paste0(switch(pref, column = 'col. ', verse = 'v. ', line = 'l. ', 
+                    section = '\u00a7 ', paragraph = 'par. ', none = '', 'p. '), pgs)
       }
     }
   }
@@ -365,16 +380,16 @@ fmtTotalPages <- function(pgs, pref){
   if (length(pgs)){
     if (!length(pref)){
       if (pgs == 1){
-        paste0('. ', pgs, ' p')        
+        paste0(pgs, ' p')        
       }else{
-        paste0('. ', pgs, ' pp')
+        paste0(pgs, ' pp')
       }
     }else{
       if (pgs == 1){
-        paste0('. ', pgs, switch(pref, column = ' col', verse = ' v', line = ' l', 
+        paste0(pgs, switch(pref, column = ' col', verse = ' v', line = ' l', 
                     section = ' \u00a7', paragraph = ' par', none = '', ' p'))
       }else{
-        paste0('. ', pgs, switch(pref, column = ' cols', verse = ' vv', line = ' ll', 
+        paste0(pgs, switch(pref, column = ' cols', verse = ' vv', line = ' ll', 
                     section = ' \u00a7\u00a7', paragraph = ' par', none = '', ' pp'))
       }
     }
@@ -468,10 +483,22 @@ fmtBAuthor <- function(doc){
       out <- shortNameLF(res[1L])
     } 
     if (nnames == 2L){
-      out <- paste(out, shortName(res[-1L]), sep = ' and ')
+      if (max.n < 2L){
+        out <- paste0(out, ' et al.')
+      }else{
+        out <- paste(out, shortName(res[-1L]), sep = ' and ') 
+      }
     }else if (nnames > 2L){
-      out <- paste(paste(out, paste0(sapply(res[-c(1, length(res))], shortName), collapse = ", "), sep = ', '), 
-        shortName(res[length(res)]), sep = ' and ')
+      if (nnames > max.n){
+        if (max.n <= 1L){
+          out <- paste0(out, ' et al.')
+        }else{
+          out <- paste(paste(out, paste0(sapply(res[2L:max.n], shortName), collapse = ", "), sep = ', '), 'et al.')    
+        }
+      }else{
+        out <- paste(paste(out, paste0(sapply(res[-c(1L, length(res))], shortName), collapse = ", "), sep = ', '),  
+                     shortName(res[length(res)]), sep = ' and ')
+      }
     }
   }
 
@@ -493,13 +520,13 @@ fmtBAuthor <- function(doc){
 fmtPublisher <- function(pub, loc, addr){
   if (length(loc) || length(addr)){
     res <- if (length(loc))
-               loc
-           else addr
+               plainclean(loc)
+           else plainclean(addr)
     if (length(pub))
-      res <- paste(res, pub, sep = ': ')
+      res <- paste(res, plainclean(pub), sep = ': ')
     paste0(res, ', ')
   }else if (length(pub)){
-    paste0(pub, ', ')
+    paste0(plainclean(pub), ', ')
   }
 }
 
@@ -723,13 +750,13 @@ formatArticle <- function(paper){
       collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtJTitle(paper$title), 
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
-        fmtVersion(paper$version), sentence(paste0(c(paste0(c(fmtJournal(paper), 
+        fmtVersion(paper$version), sentenceP(paste0(c(paste0(c(fmtJournal(paper), 
                                       fmtSeries(paper$series)), collapse = ''), fmtVolume(paper$volume, paper$number), 
                                                fmtJournDate(paper)), collapse =' '), fmtBTitle(paper$issuetitle, 
                                                                                                paper$issuesubtitle), 
                                             fmtEditor(paper, suffix = NULL, prefix = '. '), 
                                             fmtNote(paper$note, prefix ='. ', suffix = NULL),
-                        fmtPages(paper$pages, paper$pagination), sep = ''), fmtISSN(paper$issn), 
+                        pgs = fmtPages(paper$pages, paper$pagination), sep = ''), fmtISSN(paper$issn), 
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
                ))
@@ -769,10 +796,10 @@ formatBook <- function(paper, collection = FALSE){
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                fmtEdition(paper$edition), addPeriod(fmtBVolume(paper$volume, paper$part)), 
                fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '), 
-               fmtNote(paper$note), sentence(fmtPublisher(paper$publisher, paper$location, paper$address),
+               fmtNote(paper$note), sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
                                                      fmtDate(attr(paper, 'dateobj')),                                  
-               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), 
-               fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
+               fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination), 
+               tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
                ))
@@ -811,10 +838,10 @@ formatInBook <- function(paper, bookinbook = FALSE){
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
         fmtEdition(paper$edition), fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '),
                                             fmtNote(paper$note),  
-                                        sentence(fmtPublisher(paper$publisher, paper$location, paper$address),
+                                        sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
                                                      fmtDate(attr(paper, 'dateobj')),                                  
-               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), 
-               fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
+               fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination), 
+               tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
                ))
@@ -834,10 +861,10 @@ formatInBook <- function(paper, bookinbook = FALSE){
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                fmtEdition(paper$edition), addPeriod(fmtBVolume(paper$volume, paper$part)), 
                fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '), 
-               fmtNote(paper$note), sentence(fmtPublisher(paper$publisher, paper$location, paper$address),
+               fmtNote(paper$note), sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
                                                      fmtDate(attr(paper, 'dateobj')),                                  
-               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), 
-               fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
+               fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination), 
+               tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
            ))
@@ -851,10 +878,10 @@ formatBooklet <- function(paper){
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                fmtHowPublished(paper$howpublished),
-               fmtNote(paper$note), sentence(fmtPublisher(NULL, paper$location, paper$address),
+               fmtNote(paper$note), sentenceP(fmtPublisher(NULL, paper$location, paper$address),
                                                      fmtDate(attr(paper, 'dateobj')),                                  
-               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), 
-               fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), 
+               fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination), 
+               tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), 
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
                ))
@@ -875,10 +902,10 @@ formatInCollection <- function(paper){
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                fmtEdition(paper$edition), fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '),
                fmtNote(paper$note),  
-               sentence(fmtPublisher(paper$publisher, paper$location, paper$address),
+               sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
                         fmtDate(attr(paper, 'dateobj')),                                  
-                        fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), 
-                        fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
+                        fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination), 
+                        tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
     ))
@@ -898,10 +925,10 @@ formatInCollection <- function(paper){
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                fmtEdition(paper$edition), addPeriod(fmtBVolume(paper$volume, paper$part)), 
                fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '), 
-               fmtNote(paper$note), sentence(fmtPublisher(paper$publisher, paper$location, paper$address),
+               fmtNote(paper$note), sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
                                              fmtDate(attr(paper, 'dateobj')),                                  
-                                             fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), 
-                                             fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
+                                             fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination), 
+                                             tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
     ))
@@ -915,10 +942,10 @@ formatManual <- function(paper){
                fmtEdition(paper$edition), sentence(paper$series, paper$number, sep = ' '),
                addPeriod(fmtType(paper$type)), fmtVersion(paper$version),
                fmtNote(paper$note), fmtOrganization(paper$organization), 
-               sentence(fmtPublisher(paper$publisher, paper$location, paper$address),
+               sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
                                                      fmtDate(attr(paper, 'dateobj')),                                  
-               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), 
-               fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
+               fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination), 
+               tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
                ))
@@ -1011,10 +1038,10 @@ formatProceedings <- function(paper){
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '),
                                            fmtOrganization(paper$organization), fmtNote(paper$note),  
-                                        sentence(fmtPublisher(paper$publisher, paper$location, paper$address),
+                                        sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
                                                      fmtDate(attr(paper, 'dateobj')),                                  
-               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), 
-               fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
+               fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination), 
+               tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
                ))
@@ -1028,10 +1055,10 @@ formatProceedings <- function(paper){
                fmtEdition(paper$edition), addPeriod(fmtBVolume(paper$volume, paper$part)), 
                fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '), 
                fmtNote(paper$note), fmtOrganization(paper$organization), 
-               sentence(fmtPublisher(paper$publisher, paper$location, paper$address),
+               sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
                                                      fmtDate(attr(paper, 'dateobj')),                                  
-               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), 
-               fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
+               fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination), 
+               tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
                ))
@@ -1055,10 +1082,10 @@ formatInProceedings <- function(paper){
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '),
                                             fmtNote(paper$note), fmtOrganization(paper$organization),  
-                                        sentence(fmtPublisher(paper$publisher, paper$location, paper$address),
+                                        sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
                                                      fmtDate(attr(paper, 'dateobj')),                                  
-               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination),
-               fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
+               fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination),
+               tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
                ))
@@ -1081,10 +1108,10 @@ formatInProceedings <- function(paper){
                addPeriod(fmtBVolume(paper$volume, paper$part)), 
                fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '), 
                fmtNote(paper$note), fmtOrganization(paper$organization), 
-               sentence(fmtPublisher(paper$publisher, paper$location, paper$address),
+               sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
                                                      fmtDate(attr(paper, 'dateobj')),                                  
-               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination),
-               fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
+               fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination),
+               tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISBN(paper$isbn), 
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
            ))
@@ -1092,28 +1119,38 @@ formatInProceedings <- function(paper){
   }
 }
 
-formatReport <- function(paper){
+formatReport <- function(paper, type = NULL){
+  if (!is.null(type))
+    paper$type <- type
+  if (!is.null(paper$school) && is.null(paper$institution))
+    paper$institution <- paper$school
+  
     collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$title, paper$subtitle), fmtAddOn(paper$titleaddon), 
                fmtLanguage(paper$language), sentence(fmtType(paper$type), paper$number, sep = ' '), 
                fmtVersion(paper$version), fmtNote(paper$note), 
-               sentence(fmtPublisher(paper$institution, paper$location, paper$address),
+               sentenceP(fmtPublisher(paper$institution, paper$location, paper$address),
                                                      fmtDate(attr(paper, 'dateobj')),                                  
-               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), 
-               fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISRN(paper$isrn),
+               fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination), 
+               tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''), fmtISRN(paper$isrn),
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
                ))    
 }
 
-formatThesis <- function(paper){
+formatThesis <- function(paper, type = NULL){
+  if (!is.null(type))
+    paper$type <- type
+  if (!is.null(paper$school) && is.null(paper$institution))
+    paper$institution <- paper$school
+  
     collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtIBTitle(paper$title, paper$subtitle, FALSE),
                fmtAddOn(paper$titleaddon), 
                fmtLanguage(paper$language), addPeriod(fmtType(paper$type)), 
                fmtNote(paper$note), 
-               sentence(fmtPublisher(paper$institution, paper$location, paper$address),
+               sentenceP(fmtPublisher(paper$institution, paper$location, paper$address),
                                                      fmtDate(attr(paper, 'dateobj')),                                  
-               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), 
-               fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''),
+               fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination), 
+               tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''),
                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
                fmtPubstate(paper$pubstate)
                ))    
@@ -1161,6 +1198,7 @@ toRd.BibEntry <- function(obj, style = .BibOptions$bib.style, .sorting ='nty', .
         is.null(obj$.duplicated))
     obj$.duplicated <- FALSE
   assign('bibstyle', .BibOptions$bib.style, style)
+  assign('max.n', .BibOptions$max.names, style)
   bib <- unclass(obj)
   result <- character(length(bib))
   #browser()
@@ -1196,12 +1234,12 @@ toRd.BibEntry <- function(obj, style = .BibOptions$bib.style, .sorting ='nty', .
         Report = formatReport(paper),
         Thesis = formatThesis(paper),                 
   	    Unpublished = formatUnpublished(paper),
-        Set = "",
-        Xdata = "",     
+        Set = paste0('Set: ', attr(paper, 'key')),
+        XData = paste0('Xdata: ', attr(paper, 'key')),     
 # Aliases                 
-        TechReport = formatReport(paper, ifelse(is.null(paper$type), 'technical report', paper$type)),          
-        PhdThesis = formatThesis(paper, ifelse(is.null(paper$type), 'PhD Thesis', paper$type)),
-        MastersThesis = formatThesis(paper, ifelse(is.null(paper$type), "Master's Thesis", paper$type)),
+        TechReport = formatReport(paper, ifelse(is.null(paper$type), 'techreport', NULL)),          
+        PhdThesis = formatThesis(paper, ifelse(is.null(paper$type), 'phdthesis', NULL)),
+        MastersThesis = formatThesis(paper, ifelse(is.null(paper$type), "mathesis", NULL)),
         Www = formatOnline(paper),
         Electronic = formatOnline(paper),
         Conference = formatInProceedings(paper),       

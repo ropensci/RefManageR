@@ -20,6 +20,8 @@ fmtPrefix <- function(paper){
 cleanupLatex <- function (x){
     if (!length(x)) 
         return(x)
+    x <- gsub('mkbibquote', 'dQuote', x)
+    x <- gsub('\\\\hyphen', '-', x)
     latex <- try(tools::parseLatex(x), silent = TRUE)
     if (inherits(latex, "try-error")) {
         x
@@ -171,11 +173,13 @@ shortName <- function(pers){
     }
 }
 
-DateFormatter <- function(dat, other = FALSE){
+DateFormatter <- function(dat, field = 'date'){
   if (!is.null(dat)){
-    if (other){
+    if (field == 'date'){
+      fmt <- '%Y'
+    }else if (field == 'url'){
       fmt <- switch(as.character(attr(dat, 'day.mon')), '2' = '%m/%d/%Y', '1' ='%m/%Y', '0' ='%Y')
-    }else{
+    }else{  # eventdate
       fmt <- switch(as.character(attr(dat, 'day.mon')), '2' = '%b. %d, %Y', '1' = '%b. %Y', '0' = '%Y')
     }
     if (is.interval(dat)){
@@ -437,10 +441,22 @@ fmtBAuthor <- function(doc){
   if (nnames){
     out <- shortNameLF(res[1L])
     if (nnames == 2L){
-      out <- paste(out, shortName(res[-1L]), sep = ' and ')
+      if (max.n < 2L){
+        out <- paste0(out, ' et al.')
+      }else{
+        out <- paste(out, shortName(res[-1L]), sep = ' and ') 
+      }
     }else if (nnames > 2L){
-      out <- paste(paste(out, paste0(sapply(res[-c(1L, length(res))], shortName), collapse = ", "), sep = ', '), 
-        shortName(res[length(res)]), sep = ' and ')
+      if (nnames > max.n){
+        if (max.n <= 1L){
+          out <- paste0(out, ' et al.')
+        }else{
+          out <- paste(paste(out, paste0(sapply(res[2L:max.n], shortName), collapse = ", "), sep = ', '), 'et al.')    
+        }
+      }else{
+        out <- paste(paste(out, paste0(sapply(res[-c(1L, length(res))], shortName), collapse = ", "), sep = ', '),  
+                     shortName(res[length(res)]), sep = ' and ')
+      }
     }
   }
 
@@ -489,7 +505,7 @@ fmtEventDate <- function(ed, ven){
       if (length(ven))
         paste0('(', ven, ').')
     }else{
-      paste0('(', paste0(c(ven, DateFormatter(fDate)), collapse = ', '), ').')  
+      paste0('(', paste0(c(ven, DateFormatter(fDate, 'event')), collapse = ', '), ').')  
     } 
   }
 }
@@ -500,7 +516,7 @@ fmtURL <- function(paper){
     if (length(paper$urldate)){
       fDate <- try(ProcessDate(paper$urldate, NULL))
       if (!is.null(fDate) && !inherits(fDate, 'try-error'))
-        res <- paste0(res, ' (visited on ', DateFormatter(fDate, TRUE), ')')
+        res <- paste0(res, ' (visited on ', DateFormatter(fDate, 'url'), ')')
     }
     addPeriod(res)
   }
