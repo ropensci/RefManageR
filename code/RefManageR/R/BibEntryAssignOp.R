@@ -30,8 +30,9 @@
       }
       if ( name %in% .BibEntryDateField){  # dateobj may need to be updated
         tdate <- ProcessDates(x)
-        if (!(is.null(tdate) || inherits(tdate, 'try-error') || is.na(tdate)))
-          attr(res, 'dateobj') <- tdate
+        if (is.null(tdate))
+          stop(paste0('The specified Date Field value is not in a valid format for Bibtex/Biblatex'))
+        attr(res, 'dateobj') <- tdate
       }
     }
   }

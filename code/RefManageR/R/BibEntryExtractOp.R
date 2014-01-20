@@ -151,9 +151,9 @@ FindBibEntry <- function(bib, term, field){
   }else{
     res <- logical(length(bib))
     if (!usereg && ignorec){
-      res[grep(tolower(term), tolower(unlist(vals)), fixed = TRUE)] <- TRUE
+      res[grep(tolower(term), tolower(as.character(vals)), fixed = TRUE)] <- TRUE
     }else{
-      res[grep(term, unlist(vals), fixed = !.BibOptions$use.regex, ignore.case = .BibOptions$ignore.case)] <- TRUE
+      res[grep(term, as.character(vals), fixed = !.BibOptions$use.regex, ignore.case = .BibOptions$ignore.case)] <- TRUE
     }
   }
   res

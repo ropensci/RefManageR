@@ -13,15 +13,13 @@ To Do:
 ==================================================================================================================
 Important
 -------------------
-65. `check='warn'` or `check=convert.to.misc` option
-78. `as.Bibentry` for bibentry (create `dateobj`)
-34. option to only print year instead of full date
 5. Write to Zotero
-6. fix up `as.BibEntry(x)` when `x` is list: dump to BibEntry
-09. implement "et al." when printing
+99. expand `@strings`
 
 ### Optional Additional Ideas
 - implement a useful summary function
+- BibStyle function so no conflicts with bibentry styles
+- `check='warn'` or `check=convert.to.misc` option
 - read from WorldCat (*investigated - worldcat sucks*)   
 - Read bibentries from clipboard
 - UpdateSingleAuthor function
@@ -99,6 +97,26 @@ BUGS
 - (**FIXED**) no.print.fields in print.BibEntry
 - (**FIXED**) test.bib not printing: `Error in as.POSIXlt.numeric(x, tz = tz(x)) : 'origin' must be supplied` - is year(interval)
 - (**FIXED**) BibEntry doesn't create `dateobj` if it is not supplied
+- (**FIXED** Map vs. mapply -- simplify) error when extracting one entry with a crossref
+- (**FIXED**) author (year)., pp. 12
+- 'authoryear' style still screws up unicode when `bookpagination = true`
+- (**FIXED**) 'authoryear' style should only display year for date
+- print not working with `@strings`: pass strings to `expand_crossref` then 
+`if (!is.null(attr(test2, 'strings'))){
+ tmp <-  lapply(unclass(test2), function(x, strs){ 
+    y <- mapply(function(string, name, bib){
+    x <- gsub(string, name, bib)
+    names(x) <- names(bib)
+    x
+  }, strs, names(strs), MoreArgs = list(bib = x), SIMPLIFY = FALSE)
+    attributes(y) <- attributes(x)
+    y
+    }, strs = attr(test2,'strings'))
+ tmp2 <- lapply(tmp, MakeBibEntry)
+ attributes(tmp) <- attributes(test2)
+}`
+- indices wrong for search: e.g. `testb[location='berlin']`
+- (**FIXED**) last year of dates being truncated: DateFormatter issue
 
 DONE     
 ==================================================================================================================

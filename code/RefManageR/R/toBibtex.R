@@ -98,7 +98,7 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
     return(rval)
   }
   
-  object <- .BibEntryExpandCrossrefsTB(object)
+  object <- .BibEntry_expand_crossrefs(unclass(object), to.bibtex = TRUE)
   if (length(object)) {
     object$.index <- NULL
     rval <- head(unlist(lapply(object, format_bibentry1)), 
@@ -112,55 +112,3 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
 .Bibtex_fields <- c("address", "author", "annote", "booktitle", "chapter", "crossref", "edition", "editor", "eprint", "year",
                     "howpublished", "institution", "journal", "month", "key", "note", "primaryclass", "archiveprefix", "doi",
                     "number", "organization", "pages", "publisher", "school", "series", "title", "type", "url", "volume")
-
-.BibEntryExpandCrossrefsTB <- function (x) {
-  # browser()
-  if (!length(x))
-    return(NULL)
-  x <- unclass(x)
-  xrefs <- lapply(x, '[[', "xdata")
-  px <- which(vapply(xrefs, length, 0L) > 0L)
-  if (length(px)){
-    xk <- match(unlist(xrefs[px]), .BibEntry_get_key(x)) 
-    ok <- !is.na(xk)
-    x[px[ok]] <- Map(function(chi, xdat) {
-      add <- setdiff(names(xdat), names(chi))
-      # titleaddon and subtitle in parent have special fields for child
-      # ensure child with no subtitle, titleaddon don't inherit them incorrectly
-      chi[add] <- xdat[add]      
-      if (is.null(attr(chi, 'dateobj')))
-        attr(chi, 'dateobj') <- attr(xdat, 'dateobj')
-      chi
-    }, x[px[ok]], x[xk[ok]])
-  }
-  crossrefs <- lapply(x, `[[`, "crossref")
-  pc <- which(vapply(crossrefs, length, 0L) > 0L)
-  if (length(pc)) {
-    pk <- match(unlist(crossrefs[pc]), .BibEntry_get_key(x))
-    ok <- !is.na(pk)
-    x[pc[ok]] <- lapply(x[pc[ok]], function(bib){
-      if (attr(bib, 'bibtype') %in% c("InBook", "InCollection", "InProceedings") && is.null(bib$subtitle))
-        bib$subtitle <- ''
-      bib
-    })
-    x[pk[ok]] <- lapply(x[pk[ok]], function(bib){
-      if (attr(bib, 'bibtype') %in% c("Book", "Proceedings") && is.null(bib$subtitle))
-        bib$booktitle <- bib$title
-      bib
-    })
-    status <- lapply(x[pc], function(e) tryCatch(utils:::.bibentry_check_bibentry1(e, 
-                                                                     FALSE), error = identity))
-    bad <- which(sapply(status, inherits, "error"))
-    if (length(bad)) {
-      for (b in bad) {
-        warning(gettextf("Dropping invalid entry %d:\n%s", 
-                         pc[b], conditionMessage(status[[b]])))
-      }
-      x[pc[bad]] <- NULL
-    }
-  }
-  types <- sapply(x, attr, "bibtype")
-  class(x) <- c("BibEntry", "bibentry")
-  
-  x[!types %in% c('Set', 'Xdata')]
-}

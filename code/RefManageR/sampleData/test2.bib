@@ -1,34 +1,45 @@
-@string{cup     = {Cambridge University Press}}
-
-@inbook{crchild,
-title = {Child Title},
-pages = {2--25},
-author = {Gentleman, Jack},
-xdata = {xrtest},
-}
+@string{cup = {Cambridge University Press}}
+@string{rjc = {Carroll, Raymond J.}}
 
 @xdata{xrtest,
-booktitle = {XDATA Book Title},
-date = {2013-01-11},
+maintitle = {XDATA Main Title},
+year = {1980},
 }
 
-@book{crparent,
+@xdata{xrtest2,
+journaltitle = {JASA},
+year = {2013},
+}
+
+@xdata{xrtest3,
+publisher = {cup},
+location = {The Moon},
+}
+
+@book{xdatbook,
 title = {The Parent Title},
-author = {Aun, Tim and Apu, Bob},
-date = {2012-02-30},
+author = {McLean, Mathew} # rjc,
 addendum = {A full unpublished entry},
 subtitle = {Book Subtitle},
-title = {The Book title},
-titleaddon = {The Title Addon},
 language = {spanish},
 note = {The note},
 howpublished = {Howpublished for additional info.},
-location = {The city},
 url = {http://example.com},
 urldate = {2013-09},
 pubstate = {The Pubstate},
 label = {PLab},
+xdata = {xrtest3,xrtest},
 %crossref = {min:inbook}
+}
+
+@article{crchild,
+title = {Child Title},
+pages = {2--25},
+author = {Gentleman, Jack},
+xdata = {xrtest2},
+volume = 3,
+number = 10,
+series = {All About Plants},
 }
 
 @inbook{min:inbook,
@@ -75,7 +86,7 @@ label = {PLab},
   part = {PartNum},
   number = {NumNum},
   note = {This is the note},
-  publisher    = cup,
+  publisher    = {cup},
   location     = {Cambridge},
   keywords     = {primary},
   chapter = {TheChapter},

@@ -128,8 +128,8 @@ BibReplace <- function(orig, replace.vals){
       orig[[replace.names[i]]] <- replace.remains[i]
   }
   if (any(replace.fields %in% .BibEntryDateField)){  # update dateobj attribute
-    tdate <- try(ProcessDates(orig), TRUE)
-    if (inherits(tdate, 'try-error') || is.null(tdate) || is.na(tdate))
+    tdate <- ProcessDates(orig)
+    if (is.null(tdate))
       stop(paste0('The specified Date Field value is not in a valid format for Bibtex/Biblatex'))
     attr(orig, 'dateobj') <- tdate
   }

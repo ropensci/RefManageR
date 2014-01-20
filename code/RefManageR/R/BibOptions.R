@@ -28,7 +28,8 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
                                      'sorting',        # method to use for sorting (p. 44 of manual)
                                      'check',          # should entries be checked for proper fields?
                                      'use.regex',      # are search terms regular expressions?
-                                     'ignore.case'     # should case be ignored when searching?
+                                     'ignore.case',     # should case be ignored when searching?
+                                     'max.names'       # maximum number of names to print
                                      )  #, methods = list(
 #                                        duplicate.handler = function(...){
 #                                          if(bib.violation == 'drop'){
@@ -46,6 +47,6 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
 .BibOptions <- new('BibOptions', match.author='family.name', match.date='year.only', return.ind=FALSE, match.field='partial', 
                    merge.fields.to.check = 'key', bib.violation = 'error', print.doi = TRUE, 
                    bib.style = 'numeric', abbrev.names = TRUE, dashed = TRUE, sorting = NULL, check = TRUE, use.regex = TRUE,
-                   ignore.case = TRUE
+                   ignore.case = TRUE, max.names = 3
                    )
 options(useFancyQuotes = FALSE)

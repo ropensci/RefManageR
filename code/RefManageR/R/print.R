@@ -1,5 +1,7 @@
 print.BibEntry <- function (x, style = "text", .bibstyle = .BibOptions$bib.style, 
-                            sorting = .BibOptions$sorting, no.print.fields = NULL, ...){
+                            sorting = .BibOptions$sorting, no.print.fields = NULL, 
+                            max.names = .BibOptions$max.names, ...){
+  .BibOptions$max.names <- max.names
   if (!length(sorting))
     sorting <- switch(.bibstyle, authoryear = 'nyt', alphabetic = 'anyt', draft = 'debug', 'nty')
   style <- .BibEntry_match_format_style(style)
@@ -25,5 +27,6 @@ print.BibEntry <- function (x, style = "text", .bibstyle = .BibOptions$bib.style
           writeLines(paste(y, collapse = "\n\n"))
       }
   }
+  .BibOptions$max.names <- max.names
   invisible(x)
 }
