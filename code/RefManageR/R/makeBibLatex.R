@@ -154,28 +154,36 @@ fmtSingleEditor <- function(nom, job, prefix = NULL, suffix = '.'){
 }
 
 shortNameLF <- function(pers){
-    if (length(pers$family)) {
-        res <- cleanupLatex(pers$family)
-        if (length(pers$given)){ 
-          if (.BibOptions$abbrev.names){
-            paste0(paste(res, paste(substr(sapply(pers$given, cleanupLatex), 
-                1L, 1L), collapse = ". "), sep=', '), '.')
-          }else{
-            paste(res, paste(sapply(pers$given, cleanupLatex), collapse = ' '), sep = ', ')
-          }
+  fam <- pers$family
+  lfam <- length(fam)
+  if (lfam) {
+      von <- lfam > 1L && substr(fam[1L], 1L, 1L) %in% letters
+      if (von){
+        res <- cleanupLatex(fam[2L:lfam])  
+      }else{
+        res <- cleanupLatex(fam)
+      }
+      if (length(pers$given)){ 
+        if (.BibOptions$first.inits){
+          res <- paste0(paste(res, paste(substr(sapply(pers$given, cleanupLatex), 
+              1L, 1L), collapse = ". "), sep=', '), '.')
         }else{
-          res
+          res <- paste(res, paste(sapply(pers$given, cleanupLatex), collapse = ' '), sep = ', ')
         }
-    }else{
-      paste(cleanupLatex(pers$given), collapse = " ")
-    }
+      }
+      if (von)
+          res <- paste(res, cleanupLatex(fam[1L]))
+      res
+  }else{
+    paste(cleanupLatex(pers$given), collapse = " ")
+  }
 }
 
 shortName <- function(pers){
     if (length(pers$family)) {
         res <- cleanupLatex(pers$family)
         if (length(pers$given)){ 
-          if (.BibOptions$abbrev.names){
+          if (.BibOptions$first.inits){
             paste0(c(substr(sapply(pers$given, cleanupLatex), 
                 1L, 1L), res), collapse = ". ")
           }else{
@@ -261,20 +269,21 @@ sortKeysPS <- function(bib){
 
 sortKeysLA <- function(bib, yrs){
     result <- character(length(bib))
+    max.names <- .BibOptions$max.names
     for (i in seq_along(bib)) {
         res <- bib[[i]]$shorthand
         if (!length(res)){ 
           res <- bib[[i]]$label
           if (!length(res)) 
-            res <- ProcessNamesLA(bib[[i]]$shortauthor)
+            res <- ProcessNamesLA(bib[[i]]$shortauthor, max.names)
           if (!length(res)) 
-            res <- ProcessNamesLA(bib[[i]]$shorteditor)
+            res <- ProcessNamesLA(bib[[i]]$shorteditor, max.names)
           if (!length(res)) 
-            res <- ProcessNamesLA(bib[[i]]$author)
+            res <- ProcessNamesLA(bib[[i]]$author, max.names)
           if (!length(res)) 
-            res <- ProcessNamesLA(bib[[i]]$editor)
+            res <- ProcessNamesLA(bib[[i]]$editor, max.names)
           if (!length(res)) 
-            res <- ProcessNamesLA(bib[[i]]$translator)          
+            res <- ProcessNamesLA(bib[[i]]$translator, max.names)          
           res <- paste0(res, substr(yrs[i], 3, 4))
         }
         result[i] <- res
@@ -282,14 +291,29 @@ sortKeysLA <- function(bib, yrs){
     result
 }
 
-ProcessNamesLA <- function(nam){
-  if (length(nam)){
+ProcessNamesLA <- function(nam, mn = .BibOptions$max.names){
+  nam.len <- length(nam)
+  if (nam.len){
     if (!inherits(nam, 'person'))
       nam <- ArrangeAuthors(nam)
-    nam <- nam$family
-    res <- substr(nam, start = 1L, stop = 1L)
-    switch(as.character(length(res)), '0'= NULL, '1' = substr(nam, 1L, 3L), '2' = paste0(res[seq_len(2L)], collapse =''),
-           paste0(res[seq_len(3L)], collapse =''))
+    # nam <- sapply(nam$family, as.character)
+    if (nam.len == 1){
+      res <- paste0(nam$family, collapse = '')
+      res <- regmatches(res, regexpr('[[:upper:]][[:punct:]]?[[:alpha:]][[:punct:]]?[[:alpha:]]', res))
+      res <- gsub('[[:punct:]]', '', res)
+    }else if (nam.len == 2 || nam.len == 3){
+      res <- sapply(nam$family, paste0, collapse = '')
+      res <- paste0(regmatches(res, regexpr('[[:upper:]]', res)), collapse = '')
+    }else{
+      res <- paste0(nam$family[[1]], collapse = '')
+      res <- regmatches(res, regexpr('[[:upper:]][[:punct:]]?[[:alpha:]][[:punct:]]?[[:alpha:]]', res))
+      res <- gsub('[[:punct:]]', '', res)
+      res <- paste0(res, '+')
+    }
+#     res <- substr(nam, start = 1L, stop = 1L)
+#     switch(as.character(length(res)), '0'= NULL, '1' = substr(nam, 1L, 3L), '2' = paste0(res[seq_len(2L)], collapse =''),
+#            paste0(res[seq_len(3L)], collapse =''))
+    res
   }
 }
 

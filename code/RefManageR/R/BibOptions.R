@@ -23,7 +23,7 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
                                                        # p.v.: 'drop', 'warn', 'to.misc'
                                      'print.doi',      # should the DOI be printed?
                                      'bib.style',      # what bibstyle should be used? Possible biblatex
-                                     'abbrev.names',   # should names in printing be abbreviated
+                                     'first.inits',   # should names in printing be abbreviated
                                      'dashed',         # should duplicate author names be replaced with \u2500
                                      'sorting',        # method to use for sorting (p. 44 of manual)
                                      'check',          # should entries be checked for proper fields?
@@ -46,7 +46,7 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
 
 .BibOptions <- new('BibOptions', match.author='family.name', match.date='year.only', return.ind=FALSE, match.field='partial', 
                    merge.fields.to.check = 'key', bib.violation = 'error', print.doi = TRUE, 
-                   bib.style = 'numeric', abbrev.names = TRUE, dashed = TRUE, sorting = NULL, check = TRUE, use.regex = TRUE,
+                   bib.style = 'numeric', first.inits = TRUE, dashed = TRUE, sorting = NULL, check = TRUE, use.regex = TRUE,
                    ignore.case = TRUE, max.names = 3
                    )
 options(useFancyQuotes = FALSE)

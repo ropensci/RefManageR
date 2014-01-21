@@ -30,19 +30,26 @@ MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
 
 MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.case = .BibOptions$ignore.case,
                       regx = .BibOptions$use.regex){
+  #browser()
+  regx <- FALSE
   if (is.null(nom))
     return(FALSE)
   if (match.author == 'exact'){
     nom <- as.character(nom)
   }else if (match.author == 'last.with.initials'){
-    nom <- sapply(nom, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''), x$family))
+    nom <- sapply(nom, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''), 
+                                          paste0(x$family, collapse = '')))
   }else{
-    nom <- nom$family
+    nom <- sapply(nom$family, paste0, collapse = '')
   }
+  # nom <- cleanupLatex(nom)
+  
   if (!regx && ign.case){
-    return(length(grep(pattern, tolower(nom), fixed = TRUE)))
+    # return(length(grep(pattern, tolower(nom), fixed = TRUE)))
+    return(all(pattern %in% tolower(nom)))
   }else{
-    return(length(grep(pattern, nom, fixed = !regx, ignore.case = ign.case)))  
+    #return(length(grep(pattern, nom, fixed = !regx, ignore.case = ign.case)))  
+    return(all(sapply(pattern, function(pat) any(grepl(pat, x = nom, fixed = !regx, ignore.case = ign.case)))))  
   }
 }
 
@@ -90,7 +97,7 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 
   # class(x) <- c("BibEntry", "bibentry")
   if (.BibOptions$return.ind)
-    return(ind) 
+    return(which(ind)) 
   y <- .BibEntry_expand_crossrefs(unclass(x[[ind]]), unclass(x[[-ind]]))
   if (!drop) 
     attributes(y) <- attributes(x)[bibentry_list_attribute_names]
@@ -103,21 +110,27 @@ FindBibEntry <- function(bib, term, field){
   usereg <- .BibOptions$use.regex
   ignorec <- .BibOptions$ignore.case
   vals <- do.call('$', list(x = bib, name = field))
+  if (length(bib) == 1)
+    vals <- list(vals)
   if (!length(unlist(vals))){
     res <- logical(length(bib))
   }else if (field %in% .BibEntryNameList){
-    term <- ArrangeAuthors(term)
     match.aut <- .BibOptions$match.author
-    if (match.aut == 'exact'){
-      term <- as.character(term)
-    }else if (match.aut == 'last.with.initials'){
-      term <- sapply(term, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''), x$family))
-    }else{
-      term <- term$family
+    if (TRUE){  # !usereg
+      term <- ArrangeAuthors(term)
+      if (match.aut == 'exact'){
+        term <- as.character(term)
+      }else if (match.aut == 'last.with.initials'){
+        term <- sapply(term, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''), 
+                                                paste0(x$family, collapse = '')))
+      }else{
+        term <- sapply(term$family, paste0, collapse = ' ')
+      }
     }
+    
     if (ignorec)
       term <- tolower(term)
-    res <- as.logical(sapply(vals, MatchName, pattern = term, match.author = match.aut, regx = usereg, ign.case = ignorec))
+    res <- sapply(vals, MatchName, pattern = term, match.author = match.aut, regx = usereg, ign.case = ignorec)
   }else if (field %in% .BibEntryDateField){
     if (field == 'month'){
       res <- sapply(vals, pmatch, table = term, nomatch = FALSE)

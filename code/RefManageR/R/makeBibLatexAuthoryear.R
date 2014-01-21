@@ -137,29 +137,55 @@ fmtSingleEditor <- function(nom, job, prefix = NULL, suffix = '.'){
   }
 }
 
+# shortNameLF <- function(pers){
+#     if (length(pers$family)) {
+#         res <- cleanupLatex(pers$family)
+#         if (length(pers$given)){ 
+#           if (.BibOptions$first.inits){
+#             paste0(paste(res, paste(substr(sapply(pers$given, cleanupLatex), 
+#                 start = 1L, stop = 1L), collapse = ". "), sep=', '), '.')
+#           }else{
+#             paste(res, paste(sapply(pers$given, cleanupLatex), collapse = ' '), sep = ', ')
+#           }
+#         }else{
+#           res
+#         }
+#     }else{
+#       paste(cleanupLatex(pers$given), collapse = " ")
+#     }
+# }
+
 shortNameLF <- function(pers){
-    if (length(pers$family)) {
-        res <- cleanupLatex(pers$family)
-        if (length(pers$given)){ 
-          if (.BibOptions$abbrev.names){
-            paste0(paste(res, paste(substr(sapply(pers$given, cleanupLatex), 
-                start = 1L, stop = 1L), collapse = ". "), sep=', '), '.')
-          }else{
-            paste(res, paste(sapply(pers$given, cleanupLatex), collapse = ' '), sep = ', ')
-          }
-        }else{
-          res
-        }
+  fam <- pers$family
+  lfam <- length(fam)
+  if (lfam) {
+    von <- lfam > 1L && substr(fam[1L], 1L, 1L) %in% letters
+    if (von){
+      res <- cleanupLatex(fam[2L:lfam])  
     }else{
-      paste(cleanupLatex(pers$given), collapse = " ")
+      res <- cleanupLatex(fam)
     }
+    if (length(pers$given)){ 
+      if (.BibOptions$first.inits){
+        res <- paste0(paste(res, paste(substr(sapply(pers$given, cleanupLatex), 
+                                              1L, 1L), collapse = ". "), sep=', '), '.')
+      }else{
+        res <- paste(res, paste(sapply(pers$given, cleanupLatex), collapse = ' '), sep = ', ')
+      }
+    }
+    if (von)
+      res <- paste(res, cleanupLatex(fam[1L]))
+    res
+  }else{
+    paste(cleanupLatex(pers$given), collapse = " ")
+  }
 }
 
 shortName <- function(pers){
     if (length(pers$family)) {
         res <- cleanupLatex(pers$family)
         if (length(pers$given)){ 
-          if (.BibOptions$abbrev.names){
+          if (.BibOptions$first.inits){
             paste0(c(substr(sapply(pers$given, cleanupLatex), 
                 start = 1L, stop = 1L), res), collapse = ". ")
           }else{
