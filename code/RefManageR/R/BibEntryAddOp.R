@@ -59,5 +59,5 @@
   return(x)
 }
 
-merge.BibEntry <- function(x, y, fields.to.check = .BibOptions$merge.fields.to.check)
+merge.BibEntry <- function(x, y, fields.to.check = .BibOptions$merge.fields.to.check, ...)
   UseMethod('+')

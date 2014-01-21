@@ -115,8 +115,12 @@ BUGS
  tmp2 <- lapply(tmp, MakeBibEntry)
  attributes(tmp) <- attributes(test2)
 }`
-- indices wrong for search: e.g. `testb[location='berlin']`
+- (**FIXED**) indices wrong for search: e.g. `testb[location='berlin']`
 - (**FIXED**) last year of dates being truncated: DateFormatter issue
+- (**FIXED**) searching for multiple authors on same paper
+- `.bibstyle = alphabetical` - label when et al. needed
+- sorting with von, de la, etc.
+- `.bibstyle = alphabetical` labels when von, de la, etc.
 
 DONE     
 ==================================================================================================================
