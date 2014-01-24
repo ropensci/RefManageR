@@ -19,14 +19,12 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
                                      'match.field',  # criteria for matching all other fields: 
                                      'return.ind',  # T/F should search return index of matches or bibentry objects
                                      'merge.fields.to.check',  # vector of fields for determining duplicate entries  `+` 
-                                     'bib.violation',   # how to handle violations when creating bibentries? 
-                                                       # p.v.: 'drop', 'warn', 'to.misc'
                                      'print.doi',      # should the DOI be printed?
                                      'bib.style',      # what bibstyle should be used? Possible biblatex
                                      'first.inits',   # should names in printing be abbreviated
                                      'dashed',         # should duplicate author names be replaced with \u2500
                                      'sorting',        # method to use for sorting (p. 44 of manual)
-                                     'check',          # should entries be checked for proper fields?
+                                     'check.entries',          # should entries be checked for proper fields?
                                      'use.regex',      # are search terms regular expressions?
                                      'ignore.case',     # should case be ignored when searching?
                                      'max.names'       # maximum number of names to print
@@ -45,8 +43,7 @@ setRefClass('BibOptions', fields = c('match.author',  # criteria for matching au
             
 
 .BibOptions <- new('BibOptions', match.author='family.name', match.date='year.only', return.ind=FALSE, match.field='partial', 
-                   merge.fields.to.check = 'key', bib.violation = 'error', print.doi = TRUE, 
-                   bib.style = 'numeric', first.inits = TRUE, dashed = TRUE, sorting = NULL, check = TRUE, use.regex = TRUE,
-                   ignore.case = TRUE, max.names = 3
+                   merge.fields.to.check = 'key', print.doi = TRUE, bib.style = 'numeric', first.inits = TRUE, 
+                   dashed = TRUE, sorting = NULL, check.entries = 'error', use.regex = TRUE, ignore.case = TRUE, max.names = 3
                    )
 options(useFancyQuotes = FALSE)

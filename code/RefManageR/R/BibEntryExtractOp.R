@@ -1,5 +1,3 @@
-library(lubridate)
-
 MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
   # browser()
   if (is.null(x))
@@ -30,8 +28,7 @@ MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
 
 MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.case = .BibOptions$ignore.case,
                       regx = .BibOptions$use.regex){
-  #browser()
-  regx <- FALSE
+  #regx <- FALSE
   if (is.null(nom))
     return(FALSE)
   if (match.author == 'exact'){
@@ -53,7 +50,28 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
   }
 }
 
-`[.BibEntry` <- function(x, i, j, ..., drop =FALSE){
+#' Search BibEntry objects by field
+#' 
+#' Allows for searching and indexing a BibEntry object by fields, including names and dates.  The extraction operator and 
+#' the SearchBib function simplying provide different interfaces to the same search functionality.  
+#' 
+#' @param x - an object of class BibEntry
+#' @param i - A named list or character vector of search terms with names corresponding to the field to search for the term,
+#' or a vector of entry key values or numeric or logical indices specifying which bibentries to exctract.
+#' @param j - ignored
+#' @param ... - arguments in the form \code{bib.field = search.term}.  For \code{SearchBib}, can alternatively have same
+#' form as \code{i}.
+#' @param drop - ignored
+#' @value an object of class BibEntry (the results of the search/indexing)
+#' @details 
+#' @note The arguments to the SearchBib function that control certain search features can also be changed for the extraction
+#' operator by changing the corresponding option in the .BibOptions object; see \code{\link{BibOptions}}.
+#' @seealso \code{\link{BibEntry}}
+#' @aliases SearchBib
+#' @author McLean, M.W. 
+#' @importFrom lubridate int_start int_end year month is.interval %within%
+#' 
+`[.BibEntry` <- function(x, i, j, ..., drop = FALSE){
   # i is character vector
   # i is numeric
   # i is logical
@@ -127,7 +145,7 @@ FindBibEntry <- function(bib, term, field){
         term <- sapply(term$family, paste0, collapse = ' ')
       }
     }
-    
+    #browser()
     if (ignorec)
       term <- tolower(term)
     res <- sapply(vals, MatchName, pattern = term, match.author = match.aut, regx = usereg, ign.case = ignorec)

@@ -78,8 +78,7 @@
 #'   as with \code{bibentry}, but many addition methods are defined for building and manipulating a database
 #'   of references.
 BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL, 
-                      key = NULL, ..., other = list(), mheader = NULL, mfooter = NULL) 
-{
+                      key = NULL, ..., other = list(), mheader = NULL, mfooter = NULL){
   BibTeX_names <- names(BibLaTeX_entry_field_db)
   args <- c(list(...), other)
   if (!length(args)) 

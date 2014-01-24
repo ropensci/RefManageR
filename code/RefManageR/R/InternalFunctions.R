@@ -70,8 +70,8 @@ library(bibtex)
 # test <- ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br', tag='Statistics - Machine Learning'))
 
 
-.BibEntryCheckBibEntry1 <- function (x, force = FALSE, check = .BibOptions$check) {
-  if (!check)
+.BibEntryCheckBibEntry1 <- function (x, force = FALSE, check = .BibOptions$check.entries) {
+  if (identical(check, FALSE))
     return(NULL)
   fields <- names(x)
   if (!force && (!.is_not_nonempty_text(x$crossref) || !.is_not_nonempty_text(x$xdata))) 
@@ -81,11 +81,20 @@ library(bibtex)
                       "|", fixed = TRUE)
   if (length(rfields) > 0L) {
     ok <- sapply(rfields, function(f) any(f %in% fields))
-    if (any(!ok)) 
-      stop(sprintf(ngettext(sum(!ok), "A bibentry of bibtype %s has to specify the field: %s", 
-                            "A bibentry of bibtype %s has to specify the fields: %s"), 
-                   sQuote(bibtype), paste(rfields[!ok], collapse = ", ")), 
-           domain = NA)
+    if (any(!ok)){ 
+      if (check == 'warn'){
+        warning(sprintf(ngettext(sum(!ok), "A bibentry of bibtype %s has to specify the field: %s", 
+                              "A bibentry of bibtype %s has to specify the fields: %s"), 
+                     sQuote(bibtype), paste(rfields[!ok], collapse = ", ")), 
+             domain = NA)
+        return(NULL)
+      }else{
+        stop(sprintf(ngettext(sum(!ok), "A bibentry of bibtype %s has to specify the field: %s", 
+                              "A bibentry of bibtype %s has to specify the fields: %s"), 
+                     sQuote(bibtype), paste(rfields[!ok], collapse = ", ")), 
+             domain = NA) 
+      }
+    }
   }
 }
 
@@ -398,7 +407,7 @@ format_author <- function(author) paste(sapply(author, function(p) {
                                                           family = fbrc))
 }), collapse = " and ")
 
-bibentry_list_attribute_names <- c("mheader", "mfooter")
+bibentry_list_attribute_names <- c("mheader", "mfooter", "strings")
 
 .BibEntry_get_key <- function (x) {
   if (!length(x)) 
@@ -408,7 +417,7 @@ bibentry_list_attribute_names <- c("mheader", "mfooter")
   unlist(keys)
 }
 
-ParseGSCites <- function(l, encoding, bib.violation=.BibOptions$bib.violation) {
+ParseGSCites <- function(l, encoding, bib.violation=.BibOptions$check.entries) {
   td <- l[[1]]
   title <- xmlValue(td[[1]], encoding)
   author <- xmlValue(td[[3]], encoding)
@@ -429,10 +438,12 @@ ParseGSCites <- function(l, encoding, bib.violation=.BibOptions$bib.violation) {
                               str_length(src)))
   
   # handle '...' in title, journal, or authors
-  if (is.null(title <- CheckGSDots(title, title)) || 
+  if (!identical(check, FALSE)){
+    if (is.null(title <- CheckGSDots(title, title)) || 
           is.null(author <- CheckGSDots(author, title)) ||
           is.null(journal <- CheckGSDots(journal, title)))
-    return(NA)
+      return(NA)
+  }
   
   res <- list(title = title, author = author, 
               journal = journal, number = numbers, cites = cited_by, 
@@ -490,11 +501,11 @@ ProcessGSNumbers <- function(numbers){
   return(list(pages = pages, number = number, volume = volume))
 }
 
-CheckGSDots <- function(x, title){
+CheckGSDots <- function(x, title, check){
   tx <- gsub(' [.]{3,}$', '', x)
   if(tx != x){
     entry <- deparse(substitute(x))
-    if(.BibOptions$bib.violation != 'error'){
+    if (check == 'warn'){
       message(paste0('Incomplete ', entry, ' information for entry \"', title, '\" adding anyway'))
       return(tx)
     }else{

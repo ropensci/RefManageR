@@ -16,7 +16,7 @@ as.data.frame.BibEntry <- function(x, ...){
     if (nom != 'author' && nom != 'editor'){
       temp <- x[nom]
     }else{
-      temp <- eval(parse(text=paste0('x$', nom)))
+      temp <- do.call(`$`, list(x = x, name = nom))  # eval(parse(text=paste0('x$', nom)))
       temp <- sapply(setNames(temp, rownames(y)), function(z) paste0(z, collapse = ', '))
     }
     y[names(temp), col.names[i]] <- temp
