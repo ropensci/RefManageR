@@ -6,8 +6,9 @@
 #' @author Mathew W. McLean \email{mathew.w.mclean@@gmail.com}
 ReadBib <- function (file, package = "bibtex", .Encoding = "UTF-8", 
                      header = if (length(preamble)) paste(preamble, sep = "\n") else "", 
-                     footer = "") 
-{
+                     footer = "", check = .BibOptions$check.entries){
+  oldchk <- .BibOptions$check.entries
+  .BibOptions$check.entries <- check
   stopifnot(!missing(file))
   if (!is.character(file)) {
     stop("'read.bib' only supports reading from files, 'file' should be a character vector of length one")
@@ -24,5 +25,6 @@ ReadBib <- function (file, package = "bibtex", .Encoding = "UTF-8",
   preamble <- at[["preamble"]]
   out <- MakeCitationList(out, header, footer)
   attr(out, "strings") <- at[["strings"]]
+  .BibOptions$check.entries <- oldchk
   out
 }

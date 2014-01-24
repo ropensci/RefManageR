@@ -13,6 +13,8 @@ To Do:
 ==================================================================================================================
 Important
 -------------------
+87. merge should handle year and date specially
+90. formatting of name fields with useregex TRUE
 5. Write to Zotero
 99. expand `@strings`
 
@@ -118,9 +120,9 @@ BUGS
 - (**FIXED**) indices wrong for search: e.g. `testb[location='berlin']`
 - (**FIXED**) last year of dates being truncated: DateFormatter issue
 - (**FIXED**) searching for multiple authors on same paper
-- `.bibstyle = alphabetical` - label when et al. needed
-- sorting with von, de la, etc.
-- `.bibstyle = alphabetical` labels when von, de la, etc.
+- (**FIXED**) `.bibstyle = alphabetical` - label when et al. needed
+- (**FIXED**) sorting with von, de la, etc.
+- (**FIXED** same as useprefix=false in BibLaTeX) `.bibstyle = alphabetical` labels when von, de la, etc.
 
 DONE     
 ==================================================================================================================

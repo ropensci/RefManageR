@@ -2,6 +2,5 @@ UpdateFieldName <- function(x, old.field, new.field){
   # browser()
   x <- unlist(x)
   names(x)[names(x)==old.field] <- new.field
-  x <- relist.BibEntry(x)
-  x
+  relist.BibEntry(x)
 }
