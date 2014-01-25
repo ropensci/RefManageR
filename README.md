@@ -13,6 +13,7 @@ To Do:
 ==================================================================================================================
 Important
 -------------------
+76. multiple list in ... arg to SearchBib to do 'OR' search for different fields
 87. merge should handle year and date specially
 90. formatting of name fields with useregex TRUE
 5. Write to Zotero
