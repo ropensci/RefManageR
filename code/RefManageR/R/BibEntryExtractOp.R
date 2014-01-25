@@ -78,6 +78,7 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
   # i is list
   # i is missing 
   #browser()
+  
   if (!length(x) || (missing(i) && missing(...))) 
     return(x)
   ind <- NULL
@@ -89,33 +90,60 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
     ind <- i
   }else if (is.logical(i)){
     ind <- which(i)
-  }else if (is.character(i)){
+  }else if (is.character(i) && missing(j) && missing(...)){
     if (is.null(names(i))){  # assume keys
       ind <- match(i, names(x))
       ind <- ind[!is.na(ind)]
     }
     dots <- as.list(i)  # names correspond to fields, value to search terms
-  }else if (is.list(i)){
-    dots <- i
+  }else if (is.list(i) || is.character(i)){
+    i <- as.list(i)
+    if (!missing(j))
+      i <- c(i ,j)
+    if (!missing(...))
+      i <- c(i, ...)
+    ret.ind <- .BibOptions$return.ind
+    .BibOptions$return.ind <- TRUE
+    kall <- match.call()
+    ind <- NULL
+   # browser()  test
+    #args <- i
+    for (j in seq_along(i)){
+      kall$i <- unlist(i[j])
+      ind <- c(ind, suppressMessages(eval(kall)))
+      if (!length(ind))  # {
+        break
+#       }  # else{
+#         kall$x <- x[[ind]]  
+#       }
+    }
+    ind <- unique(ind)
+    .BibOptions$return.ind <- ret.ind
+    # ind <- add(lapply(i, SearchBib, x = x, return.index = TRUE))  # x[FindBibEntry(x, dots[[i]], fields[i])]
   }else{
-    stop('Invalid index.')
+    stop("Invalid index.")
   }
-  if (is.null(ind)){
+  if (exists("dots", inherits = FALSE)){
+    add <- function(x) suppressMessages(Reduce("|", x))
     y <- .BibEntry_expand_crossrefs(x)
     keys <- names(y)  
     fields <- names(dots)
-    add <- function(x) suppressMessages(Reduce("|", x))
-    for (i in seq_along(dots))
-      ind <- add(lapply(dots[[i]], function(trm, bib, fld) FindBibEntry(bib, trm, fld), bib = y, fld = fields[i]))  # x[FindBibEntry(x, dots[[i]], fields[i])]
-    if (sum(ind) == 0){
-      message("No results.")
-      return(list())
+    ind <- as.logical(seq_along(x))
+    for (i in seq_along(dots)){
+      ind <- add(lapply(dots[[i]], function(trm, bib, fld) FindBibEntry(bib, trm, fld), bib = y[[ind]], fld = fields[i]))  # x[FindBibEntry(x, dots[[i]], fields[i])]
+      if (!any(ind))
+        break
     }
+    ind <- which(ind)
+  }
+  if (!length(ind)){
+    message("No results.")
+    return(list())
   }
 
   # class(x) <- c("BibEntry", "bibentry")
   if (.BibOptions$return.ind)
-    return(which(ind)) 
+    return(ind) 
   y <- .BibEntry_expand_crossrefs(unclass(x[[ind]]), unclass(x[[-ind]]))
   if (!drop) 
     attributes(y) <- attributes(x)[bibentry_list_attribute_names]
@@ -127,7 +155,11 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 FindBibEntry <- function(bib, term, field){
   usereg <- .BibOptions$use.regex
   ignorec <- .BibOptions$ignore.case
-  vals <- do.call('$', list(x = bib, name = field))
+  if (d.yr <- field %in% c('date', 'year')){
+    vals <- do.call('$', list(x = bib, name = 'dateobj'))
+  }else{
+    vals <- do.call('$', list(x = bib, name = field))
+  }
   if (length(bib) == 1)
     vals <- list(vals)
   if (!length(unlist(vals))){
@@ -145,7 +177,6 @@ FindBibEntry <- function(bib, term, field){
         term <- sapply(term$family, paste0, collapse = ' ')
       }
     }
-    #browser()
     if (ignorec)
       term <- tolower(term)
     res <- sapply(vals, MatchName, pattern = term, match.author = match.aut, regx = usereg, ign.case = ignorec)
@@ -153,8 +184,8 @@ FindBibEntry <- function(bib, term, field){
     if (field == 'month'){
       res <- sapply(vals, pmatch, table = term, nomatch = FALSE)
     }else{  
-      if (field %in% c('date', 'year')){
-        vals <- do.call('$', list(x = bib, name = 'dateobj'))
+      if (d.yr){
+        # vals <- do.call('$', list(x = bib, name = 'dateobj'))
         match.dat <- ifelse(field == 'year', 'year.only', .BibOptions$match.date)
       }else{  # eventdate, origdate, urldate
         vals <- lapply(vals, function(x){

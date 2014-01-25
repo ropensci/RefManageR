@@ -1,3 +1,8 @@
+#' Extract entries from a BibEntry by index
+#' 
+#' 
+#' @param x - a BibEntry object
+#' 
 `[[.BibEntry` <- function (x, i, drop = TRUE){
   if (!length(x)) 
     return(x)
