@@ -83,8 +83,6 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
     return(x)
   ind <- NULL
   if (missing(i)){
-    if (missing(...))
-      return(x)
     dots <- list(...)
   }else if (is.numeric(i)){  # obvious indices
     ind <- i
@@ -96,28 +94,57 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
       ind <- ind[!is.na(ind)]
     }
     dots <- as.list(i)  # names correspond to fields, value to search terms
+  }else if (is.list(i)  && missing(j) && missing(...)){
+    dots <- i
   }else if (is.list(i) || is.character(i)){
-    i <- as.list(i)
-    if (!missing(j))
-      i <- c(i ,j)
-    if (!missing(...))
-      i <- c(i, ...)
+    # i <- as.list(i)
+    kall <- match.call(expand.dots = FALSE)
+    if (!missing(j)){
+      # i <- c(i ,as.list(j))
+      kall$j <- NULL
+    }
+    if (!missing(...)){
+      # i <- c(i, as.list(...))
+      kall$`...` <- NULL
+    }
+    if (is.list(i[[1L]])){
+      #browser()
+      kall$i <- i[[1L]]
+      kall$j <- i[[-1L]]
+    }
+   # browser()
     ret.ind <- .BibOptions$return.ind
     .BibOptions$return.ind <- TRUE
-    kall <- match.call()
-    ind <- NULL
-   # browser()  test
-    #args <- i
-    for (j in seq_along(i)){
-      kall$i <- unlist(i[j])
-      ind <- c(ind, suppressMessages(eval(kall)))
-      if (!length(ind))  # {
-        break
-#       }  # else{
-#         kall$x <- x[[ind]]  
-#       }
+    #browser()  
+    ind <- suppressMessages(eval(kall))
+    if (!missing(j)){
+      #browser()
+      if (is.list(j[[1L]])){  # original call had at least two lists in ... 
+        kall$i <- j[[1L]]
+        kall$j <- j[[-1L]]
+      }else{
+        kall$i <- j
+        if (!missing(...)){
+          kall$j <- list(...)
+        }
+      }
+      ind <- unique(c(ind, suppressMessages(eval(kall))))
+    }else if (!missing(...)){
+      kall$i <- list(...)
+      ind <- unique(c(ind, suppressMessages(eval(kall))))
     }
-    ind <- unique(ind)
+#     ind <- NULL
+#     #args <- i
+#     for (j in seq_along(i)){
+#       kall$i <- unlist(i[j])
+#       ind <- c(ind, suppressMessages(eval(kall)))
+#       if (!length(ind))  # {
+#         break
+# #       }  # else{
+# #         kall$x <- x[[ind]]  
+# #       }
+#     }
+#     ind <- unique(ind)
     .BibOptions$return.ind <- ret.ind
     # ind <- add(lapply(i, SearchBib, x = x, return.index = TRUE))  # x[FindBibEntry(x, dots[[i]], fields[i])]
   }else{
@@ -126,24 +153,26 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
   if (exists("dots", inherits = FALSE)){
     add <- function(x) suppressMessages(Reduce("|", x))
     y <- .BibEntry_expand_crossrefs(x)
-    keys <- names(y)  
+    #keys <- names(y)  
     fields <- names(dots)
-    ind <- as.logical(seq_along(x))
+    ind <- seq_along(x)
     for (i in seq_along(dots)){
-      ind <- add(lapply(dots[[i]], function(trm, bib, fld) FindBibEntry(bib, trm, fld), bib = y[[ind]], fld = fields[i]))  # x[FindBibEntry(x, dots[[i]], fields[i])]
-      if (!any(ind))
+      ind <- ind[add(lapply(dots[[i]], function(trm, bib, fld) FindBibEntry(bib, trm, fld), 
+                            bib = y[[ind]], fld = fields[i]))]  # x[FindBibEntry(x, dots[[i]], fields[i])]
+      if (!length(ind))
         break
     }
-    ind <- which(ind)
-  }
-  if (!length(ind)){
-    message("No results.")
-    return(list())
+    
+    #ind <- which(ind)
   }
 
   # class(x) <- c("BibEntry", "bibentry")
   if (.BibOptions$return.ind)
     return(ind) 
+  if (!length(ind)){
+    message("No results.")
+    return(list())
+  }
   y <- .BibEntry_expand_crossrefs(unclass(x[[ind]]), unclass(x[[-ind]]))
   if (!drop) 
     attributes(y) <- attributes(x)[bibentry_list_attribute_names]

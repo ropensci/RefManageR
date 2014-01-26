@@ -4,6 +4,7 @@ print.BibEntry <- function (x, style = "text", .bibstyle = .BibOptions$bib.style
   opts <- .BibOptions$copy()
   .BibOptions$max.names <- max.names
   .BibOptions$first.inits <- first.inits
+  .BibOptions$return.ind <- FALSE
   if (!length(sorting))
     sorting <- switch(.bibstyle, authoryear = 'nyt', alphabetic = 'anyt', draft = 'debug', 'nty')
   style <- .BibEntry_match_format_style(style)
