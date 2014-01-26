@@ -3,6 +3,8 @@ format.BibEntry <- function(x, style = "text", .bibstyle = .BibOptions$bib.style
                             .sorting = 'nty', enc = 'UTF-8', ...){
    
     style <- .BibEntry_match_format_style(style)
+    ret.ind <- .BibOptions$return.ind
+    .BibOptions$return.ind <- FALSE
     if (sort && !style %in% c('html', 'text', 'latex')) 
       x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.ind = TRUE)
 
@@ -72,5 +74,6 @@ format.BibEntry <- function(x, style = "text", .bibstyle = .BibOptions$bib.style
             unlist(out)
         }, citation = .format_bibentry_as_citation(x), R = .format_bibentry_as_R_code(x, 
             ...))
+    .BibOptions$return.ind <- ret.ind
     as.character(out)
 }
