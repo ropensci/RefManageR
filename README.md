@@ -13,6 +13,7 @@ To Do:
 ==================================================================================================================
 Important
 -------------------
+9. Name lists need to be converted back to LaTeX from UTF-8!! use `encoded_text_to_latex`
 98. toBibtex - UTF-8 to latex option
 87. merge should handle year and date specially
 90. formatting of name fields with useregex TRUE
@@ -124,6 +125,8 @@ BUGS
 - (**FIXED**) `.bibstyle = alphabetical` - label when et al. needed
 - (**FIXED**) sorting with von, de la, etc.
 - (**FIXED** same as useprefix=false in BibLaTeX) `.bibstyle = alphabetical` labels when von, de la, etc.
+- (**FIXED**) ArrangeAuthors with UTF-8 input
+- (**FIXED**) Herrmann entry in biblatexExamples.bib is not processed correctly by ArrangeAuthors
 
 DONE     
 ==================================================================================================================

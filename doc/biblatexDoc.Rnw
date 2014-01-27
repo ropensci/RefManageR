@@ -243,16 +243,18 @@ Although false negatives are rare, the CrossRef Metadata Search can be prone to 
 \subsection{Extraction Operators - Searching and Indexing}
 The extraction operator \code{'['}, has been redefined for BibEntry objects to allow for easily searching a database of references saved in a BibEntry object.  A different interface providing the same functionality is the function \code{SearchBib}.  Search options can be changed by set variables in the .BibOptions object or alternatively specified directly as arguments to the function \code{SearchBib}.  BibLaTeX date fields (\code{date,year,origdate,urldate,eventdate}) and name lists (author, editor, editora, editorb, editorc, translator, commentator, annotator, introduction, foreword, afterword, bookauthor, and holder) are handled specially as outlined below.  Other fields can be searched using either exact string matching or regular expressions, with or without ignoring case.
 
-Valid values for date fields in \Biblatex{} have the form \code{yyyy}, \code{yyyy-mm}, \code{yyyy-mm-dd}, and can be intervals of the form \code{yyyy/yyyy}, \code{yyyy-mm/yyyy-mm}, \code{yyyy-mm-dd/yyyy-mm-dd}.  The second date can be omitted in the interval to allow for open-ended end dates, e.g. \code{yyyy/}.  When searching using a date field, the search string should have one of these formats.  Additionally, the search string have be an interval with no start date, e.g. \code{date = ``/1980-06''} to return all entries published before June, 1980.  \pkg{The lubridate package} \citep{lubridate} is used to compare date fields, dates specified as intervals are converted to class \code{Interval} and non-interval dates are converted to class \code{POSIXct}.  The format \code{yyyy-mm} it is not currently supported despite not being supported in base \R{} or \pkg{lubridate}.  For compatibility with \Bibtex{}, \Biblatex{} and \ourpkg{} support the fields \code{year} and \code{month}, which are used if the \code{date} field is missing. Whether to ignore month and day values, if available, and only compare based on the year portion of the date field, is controlled by the option \code{match.date}, which supports two values ``exact'' or ``year.only''.
+Indices and search terms can be specified in a number of ways.  Similar to the default extraction operator for list objects, a vector of numeric indices or logical values can be given.  Additionally, a character vector of key values can be specified.  To search by field, a query can be specified with comma delimited \code{field=search.term} pairs, with \code{search.term} potentially being a vector with length greater than one to match multiple terms for \code{field} (think ``OR'').  Each \code{field=search.term} pair will have to match to declare a match for that entry (think ``AND'').  Multiple queries (``OR'') can be handled (involving different fields) by enclosing each separater query preferably a \code{list} or alternatively \code{c}.  For example, $\text{list}(field_{11} = \mathbf{search.term}_{11},field_{12}=\mathbf{search.term_{12}}),\text{list}(field_{21}=\mathbf{search.term_{21}})$.  If \code{c} is used instead of \code{list}, then the search terms \emph{must} have length one.  Examples will be provided shortly after discussing the special handling of date and name fields.  
 
-When searching name list fields, the search term is expected to have the same format as used in a .bib file, e.g. \code{``Doe, Jr., John and Jane \{Doe Smith\}''}.  Names can be matched based on family names only, by family name and given name initials, or by full name, depending on the value of the argument \code{match.author}.  
+Valid values for date fields in \Biblatex{} have the form \code{yyyy}, \code{yyyy-mm}, \code{yyyy-mm-dd}, and can be intervals of the form \code{yyyy/yyyy}, \code{yyyy-mm/yyyy-mm}, \code{yyyy-mm-dd/yyyy-mm-dd}.  The second date can be omitted in the interval to allow for open-ended end dates, e.g. \code{yyyy/}.  When searching using a date field, the search string should have one of these formats.  Additionally, the search string have be an interval with no start date, e.g. \code{date = ``/1980-06''} to return all entries published before June, 1980.  \pkg{The lubridate package} \citep{lubridate} is used to compare date fields, dates specified as intervals are converted to class \code{Interval} and non-interval dates are converted to class \code{POSIXct}.  The format \code{yyyy-mm} it \emph{is} currently supported despite not being supported in base \R{} or \pkg{lubridate}.  For compatibility with \Bibtex{}, \Biblatex{} and \ourpkg{} support the fields \code{year} and \code{month}, which are used if the \code{date} field is missing. Whether to ignore month and day values, if available, and only compare based on the year portion of the date field, is controlled by the option \code{match.date}, which supports two values ``exact'' or ``year.only''.
+
+When searching name list fields, the search term is expected to have the same format as used in a \code{.bib} file, e.g., \code{``Doe, Jr., John and Jane \{Doe Smith\}''}.  Names can be matched based on family names only, by family name and given name initials, or by full name, depending on the value of the argument \code{match.author}.  
 
 Entries containing valid \code{crossref} and \code{xdata} fields are expanded prior to searching, so that when a match is found for a field and value that a child entry inherits from its parent, the result is both the parent and child being returned.  If a match is found in a child entry and not in the parent, only the child entry is returned, but the returned entry will contain any fields it inherits from its parent.  Any xdata entries that the child references will also be returned.  Examples follow.
 
 <<Search1, tidy=TRUE, highlight=TRUE, echo=-1>>=
 setwd("C:/Users/Matthew/Documents/biblatex/RefManageR/code/RefManageR/sampleData")
 bib <- ReadBib('biblatexExamples.bib', check = FALSE)
-# by default .BibOptions$match.author = 'family.only' and .BibOptions$ignore.case = TRUE
+# by default match.author = 'family.only' and ignore.case = TRUE
 # inbook entry inheriting editor field from parent
 bib[editor = "westfahl"]
 
@@ -260,6 +262,14 @@ bib[editor = "westfahl"]
 bib[author = "westfahl"]
 @
 
+<<Search2, dependson=Search1, tidy=TRUE, highlight=TRUE>>=
+# Entries published in Zürich (in bib file Z{\"u}ich)
+# OR entries written by Aristotle and published before 1930
+bib[list(location="Zürich"),list(author = "Aristotle", year = '/1930')]
+
+# no match with parent entry, the returned child has inherited fields
+bib[author = "westfahl"]
+@
 The list extraction operator, \code{`[[`}, is used for extacting bibentry objects by position (an integer) or the entry key (a string).  Unlike the default operator, a vector of indices may be given to extract more than one entry at a time.
 
 As with \code{bibentry} objects, the \code{`$`} operator for BibEntry objects is used to return a list containing the value of a particular field for all entries, with a value of \code{NULL} returned for entries that to no use the specified field.  A list of all entry types or keys for the \code{BibEntry} object, \code{bib}, can be obtained using \code{bib$bibtype} and \code{bib$key}, respectively.
