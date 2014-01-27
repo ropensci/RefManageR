@@ -27,14 +27,31 @@ fmtNumPre <- function(doc){
 cleanupLatex <- function (x){
     if (!length(x)) 
         return(x)
-    x <- gsub('mkbibquote', 'dQuote', x)
+    
+    if (any(grepl('mkbib', x))){
+      x <- gsub('mkbibquote', 'dQuote', x)
+      x <- gsub('mkbibemph', 'emph', x)
+      x <- gsub('mkbibbold', 'bold', x)
+    }
     x <- gsub('\\\\hyphen', '-', x)
+    
     latex <- try(tools::parseLatex(x), silent = TRUE)
     if (inherits(latex, "try-error")) {
         x
-    }
-    else {
-        tools::deparseLatex(tools::latexToUtf8(latex), dropBraces = TRUE)
+    }else {
+        x <- tools::deparseLatex(tools::latexToUtf8(latex), dropBraces = TRUE)
+        if (grepl("\\\\[[:punct:]]", x)){
+          x <- gsub("\\\\'I", '\u00cd', x)
+          x <- gsub("\\\\'i", '\u00ed', x)
+          x <- gsub('\\\\"I', '\u00cf', x)
+          x <- gsub('\\\\"i', '\u00ef', x)
+          x <- gsub("\\\\\\^I", '\u00ce', x)
+          x <- gsub("\\\\\\^i", '\u00ee', x)
+          x <- gsub("\\\\`I", '\u00cc', x)
+          x <- gsub("\\\\`i", '\u00ec', x)
+          Encoding(x) <- 'UTF-8'
+        }
+        x
     }
 }
 

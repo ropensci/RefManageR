@@ -275,9 +275,12 @@ ArrangeAuthors <- function (x){
 # } 
 
 ArrangeSingleAuthor <- function(y){
-  tmp <- try(parseLatex(y), TRUE)
-  if (!inherits(tmp, 'try-error'))
-    y <- deparseLatex(latexToUtf8(tmp))
+  #browser()
+  if (grepl('[\\]', y)){
+    tmp <- try(parseLatex(y), TRUE)
+    if (!inherits(tmp, 'try-error'))
+      y <- deparseLatex(latexToUtf8(tmp))
+  }
   #   if( grepl( ",", y) ) {
   #     y <- sub( "^([^,]+)[[:space:]]*,[[:space:]]*(.*?)$", "\\2 \\1", y , perl = TRUE )
   #   }
@@ -326,7 +329,7 @@ ArrangeSingleAuthor <- function(y){
     }
   }else if (len.parts == 2L){
     if (grepl('^[{]', parts[1L])){  # e.g. {de Gama}, Vasco
-      person(cleanupLatex(parts[2L]), UnlistSplitClean(parts[1L]))
+      person(UnlistSplitClean(parts[2L]), UnlistSplitClean(parts[1L]))
     }else{
       vonrx <- "^([[:lower:]+[:space:]?]+)[[:space:]]"
       m <- regexec(vonrx, parts[1L])
@@ -354,20 +357,50 @@ ArrangeSingleAuthor <- function(y){
 
 UnlistSplitClean <- function(s){
   #cleanupLatex(str_trim(s))
-  unlist(strsplit(cleanupLatex(str_trim(s)), ' '))
+  unlist(strsplit(gsub("[{}]", "", str_trim(s)), " "))
 }
+
+# cleanupLatex <- function (x){
+#   if (!length(x)) 
+#     return(x)
+#   x <- gsub('mkbibquote', 'dQuote', x)
+#   x <- gsub('\\\\hyphen', '-', x)
+#   latex <- try(tools::parseLatex(x), silent = TRUE)
+#   if (inherits(latex, "try-error")) {
+#     x
+#   }else {
+#     tools::deparseLatex(tools::latexToUtf8(latex), dropBraces = TRUE)
+#   }
+# }
 
 cleanupLatex <- function (x){
   if (!length(x)) 
     return(x)
-  x <- gsub('mkbibquote', 'dQuote', x)
+  
+  if (any(grepl('mkbib', x))){
+    x <- gsub('mkbibquote', 'dQuote', x)
+    x <- gsub('mkbibemph', 'emph', x)
+    x <- gsub('mkbibbold', 'bold', x)
+  }
   x <- gsub('\\\\hyphen', '-', x)
+  
   latex <- try(tools::parseLatex(x), silent = TRUE)
   if (inherits(latex, "try-error")) {
     x
-  }
-  else {
-    tools::deparseLatex(tools::latexToUtf8(latex), dropBraces = TRUE)
+  }else {
+    x <- tools::deparseLatex(tools::latexToUtf8(latex), dropBraces = TRUE)
+    if (grepl("\\\\[[:punct:]]", x)){
+      x <- gsub("\\\\'I", '\u00cd', x)
+      x <- gsub("\\\\'i", '\u00ed', x)
+      x <- gsub('\\\\"I', '\u00cf', x)
+      x <- gsub('\\\\"i', '\u00ef', x)
+      x <- gsub("\\\\\\^I", '\u00ce', x)
+      x <- gsub("\\\\\\^i", '\u00ee', x)
+      x <- gsub("\\\\`I", '\u00cc', x)
+      x <- gsub("\\\\`i", '\u00ec', x)
+      Encoding(x) <- 'UTF-8'
+    }
+    x
   }
 }
 

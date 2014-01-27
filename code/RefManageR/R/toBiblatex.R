@@ -5,7 +5,7 @@ toBiblatex <- function(object, ...){
           "key"), ",")
       nl.ind <- which(names(object) %in% .BibEntryNameList)
       for (i in nl.ind)
-        object[i] <- format_author(object[[i]])
+        object[i] <- encoded_text_to_latex(format_author(object[[i]]), "UTF-8")
       rval <- c(rval, sapply(names(object), function(n) paste0("  ", 
           n, " = {", object[[n]], "},")), "}", "")
       return(rval)

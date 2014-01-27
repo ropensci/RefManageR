@@ -33,14 +33,14 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
     return(FALSE)
   if (match.author == 'exact'){
     nom <- as.character(nom)
-  }else if (match.author == 'last.with.initials'){
+  }else if (match.author == 'family.with.initials'){
     nom <- sapply(nom, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''), 
                                           paste0(x$family, collapse = '')))
   }else{
     nom <- sapply(nom$family, paste0, collapse = '')
   }
   # nom <- cleanupLatex(nom)
-  
+  #browser()
   if (!regx && ign.case){
     # return(length(grep(pattern, tolower(nom), fixed = TRUE)))
     return(all(pattern %in% tolower(nom)))
@@ -92,8 +92,9 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
     if (is.null(names(i))){  # assume keys
       ind <- match(i, names(x))
       ind <- ind[!is.na(ind)]
+    }else{
+      dots <- as.list(i)  # names correspond to fields, value to search terms  
     }
-    dots <- as.list(i)  # names correspond to fields, value to search terms
   }else if (is.list(i)  && missing(j) && missing(...)){
     dots <- i
   }else if (is.list(i) || is.character(i)){
@@ -171,7 +172,7 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
     return(ind) 
   if (!length(ind)){
     message("No results.")
-    return(list())
+    return(invisible(list()))
   }
   y <- .BibEntry_expand_crossrefs(unclass(x[[ind]]), unclass(x[[-ind]]))
   if (!drop) 
@@ -199,7 +200,7 @@ FindBibEntry <- function(bib, term, field){
       term <- ArrangeAuthors(term)
       if (match.aut == 'exact'){
         term <- as.character(term)
-      }else if (match.aut == 'last.with.initials'){
+      }else if (match.aut == 'family.with.initials'){
         term <- sapply(term, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''), 
                                                 paste0(x$family, collapse = '')))
       }else{
@@ -241,10 +242,14 @@ FindBibEntry <- function(bib, term, field){
     res[sapply(res, length)==0] <- FALSE
   }else{
     res <- logical(length(bib))
+    not.nulls <- which(!sapply(vals, is.null))
+    vals <- gsub('\\n[[:space:]]*', ' ', unlist(vals[not.nulls]))
+    vals <- unlist(strsplit(cleanupLatex(vals), '\n') )
+    
     if (!usereg && ignorec){
-      res[grep(tolower(term), tolower(as.character(vals)), fixed = TRUE)] <- TRUE
+      res[not.nulls[grepl(tolower(term), tolower(vals), fixed = TRUE)]] <- TRUE
     }else{
-      res[grep(term, as.character(vals), fixed = !.BibOptions$use.regex, ignore.case = .BibOptions$ignore.case)] <- TRUE
+      res[not.nulls[grepl(term, vals, fixed = !.BibOptions$use.regex, ignore.case = .BibOptions$ignore.case)]] <- TRUE
     }
   }
   res

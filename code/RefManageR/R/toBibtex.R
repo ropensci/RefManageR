@@ -1,3 +1,5 @@
+#' @S3method toBibtex BibEntry
+#' @importFrom tools encoded_text_to_latex
 toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate", "addendum"), extra.fields = NULL, ...){
   format_bibentry1 <- function(object) {
     object <- unclass(object)[[1L]]
@@ -7,9 +9,9 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
 #     for (i in nl.ind)
 #       object[i] <- format_author(object[[i]])
     if ("author" %in% obj.names)
-      object$author <- format_author(object$author)
+      object$author <- encoded_text_to_latex(format_author(object$author), "UTF-8")
     if ("editor" %in% obj.names)
-      object$editor <- format_author(object$editor)  
+      object$editor <- encoded_text_to_latex(format_author(object$editor), "UTF-8")
     # see 2.3 Usage Notes p. 28
     # DONE don't need to format non-author/editor Name lists
     # map entry types
