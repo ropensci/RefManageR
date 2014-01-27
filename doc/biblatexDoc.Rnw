@@ -22,6 +22,7 @@
 \usepackage[utf8]{inputenc} % input encoding. some others complain of frequent conflicts. i have not had many issues
 \usepackage{lmodern} % latin modern fonts
 \usepackage{microtype} % conserves space, and makes text prettier by making micro adjustments to text
+\usepackage{upquote}
 %\usepackage[condensed]{iwona}
 %\usepackage[condensed,math]{anttor}
 %\usepackage{html} % for urls with line breaks. OLD
@@ -134,9 +135,9 @@ URL: \url{http://stat.tamu.edu/~mmclean}
 \Plainkeywords{R, Biblatex, Bibtex, reference management, document generation, Unicode, cURL}
 
 \begin{document}
+%\SweaveOpts{concordance=TRUE}
 \maketitle
 
-%\SweaveOpts{concordance=TRUE}
 The \code{person} and \code{bibentry} classes available in the base-priority \pkg{utils} package in \R{} provide very useful functionality for citing not only \R{} packages, but also any entry type supported in \Bibtex.  \Bibtex{} \citep{bibtex} is the most popular tool for producing bibliographies with the typesetting software \proglang{\TeX}.  An introduction to these classes is available in \citet{hornik2012who}.
 
 Mention \pkg{bibtex}, \pkg{CITAN}, \pkg{scholar}, \pkg{tm}, ROpenSCi, \pkg{knitcitations}, \pkg{RMendeley}.
@@ -147,9 +148,13 @@ The amount of extra features offered by \Biblatex{} and \biber{} compared to \na
 ## opts_knit$set(self.contained = TRUE,
 ##              root.dir = '~/biblatex/code')
 ## opts_chunk$set(concordance = TRUE)
-setwd('~/biblatex/code/RefManageR/R')
-lapply(list.files(pattern='*.R', full=TRUE), source, echo = FALSE, verbose = FALSE)
-setwd('~/biblatex/code/')
+#setwd('~/biblatex/code/RefManageR/R')
+setwd('C:/Users/Matthew/Documents/biblatex/RefManageR/code/RefManageR/R')
+library(knitr)
+library(lubridate)
+lapply(list.files(pattern='.R$', full=TRUE), source, echo = FALSE, verbose = FALSE)
+lapply(list.files(path = "./TEMP-ROXY-DONE/", pattern='.R$', full=TRUE), source, echo = FALSE, verbose = FALSE)
+
 opts_knit$set(out.format = "latex")
 # opts_chunk$set(cache=TRUE, autodep=TRUE)
 knit_theme$set('fine_blue')
@@ -184,14 +189,14 @@ Another advantage of \Biblatex{} is its support for UTF-8 encoding. ``bibtex is 
 \section{Importing Citations From the Web}
 \subsection{Zotero}
 \code{Zotero} is free, open source software for collecting and sharing bibliographic information.  \code{Zotero} can automatically retrieve bibliographic metadata that has been embedded in webpages using \code{ContextObjects in Spans} (\code{COinS}), and is thus a very convenient way to collect bibliographic information when browsing, for example, journal websites.  The \ourpkg{} package contains functions for querying existing \code{Zotero} libraries and converting the results to a BibEntry object and also for uploaded an existing BibEntry object to a Zotero library.  To use the Zotero API, a Zotero account, their userID and an API key for the library one wishes to access.  The userID and API key for personal libraries may be found by logging in and visiting the page \url{https://www.zotero.org/settings/keys}.  The following example, the following call to ReadZotero returns the first two entries in the library specified by the \code{``key''} that contain the word ``Bayesian'' in the title.
-<<ReadZotero, tidy=FALSE, highlight=TRUE, echo=-1>>=
+<<ReadZotero, tidy=FALSE, highlight=TRUE, echo=-1, cache=TRUE>>=
 knit_theme$set('fine_blue')
 ReadZotero(user = '1648676', .params = list(q = 'bayesian', 
                                key = '7lhgvcwVq60CDi7E68FyE3br', limit = 2))
 @
 \subsection{Google Scholar}
 We provide a function for downloading citations from a public Google Scholar profile.  This function is partially based on the function \code{get_publications} in the \pkg{scholar} package \citep{scholar}, but provides additional functionality and processes the results into a \code{BibEntry} object.  The function requires the Google Scholar ID of the researcher of interest.  A user can obtain this ID by navigating to the researcher's Google Scholar profile and copying the value of the \code{user} parameter in the URL.  The profile must be public for the function to work.  The function assumes that each entry is either of type \code{'Article'} or type \code{'Book'}.  If any numbers are available with the entry relating to journal volume, number, or pages; then the entry will be classified as type \code{'Article'}.  Otherwise, the type will be \code{'Book'}.  The code that follows will return the second author's three most recent papers indexed by Google Scholar.
-<<ReadGS1, tidy=FALSE, highlight=TRUE>>=
+<<ReadGS1, tidy=FALSE, highlight=TRUE, cache=TRUE>>=
 ## RJC's Google Scholar profile is at: 
 ## http://scholar.google.com/citations?user=CJOHNoQAAAAJ
 rjc.bib <- ReadGS(scholar.id = 'CJOHNoQAAAAJ', sort.by.date = TRUE, 
@@ -199,31 +204,32 @@ rjc.bib <- ReadGS(scholar.id = 'CJOHNoQAAAAJ', sort.by.date = TRUE,
 rjc.bib
 @
 
-The function also stores the number of citations of each result.  If the work has been cited, then the corresponding \code{BibEntry} will store the number of citations in a field \code{'cites'}, which would be ignored by \Biblatex{} or \Bibtex{} without additional effort to handle a custom entry field.  The following code will obtain the second author's three most cited works according to Google Scholar and prints the citation count and entry type for each entry.
-<<ReadGS2, tidy=FALSE, highlight=TRUE>>=
+The function also stores the number of citations of each result.  Each \code{BibEntry} will store the number of citations in a field \code{'cites'}, which is ignored when generating a bibliography by \Biblatex{} or \Bibtex{} without additional effort to handle a custom entry field.  The following code will obtain the second author's three most cited works according to Google Scholar and prints the citation count and entry type for each entry.
+<<ReadGS2, tidy=FALSE, highlight=TRUE, cache=TRUE>>=
 ## RJC's Google Scholar profile is at: 
 ## http://scholar.google.com/citations?user=CJOHNoQAAAAJ
 rjc.bib <- ReadGS(scholar.id = 'CJOHNoQAAAAJ', sort.by.date = FALSE, 
                   limit = 3)
 rjc.bib
-rbind(rjc.bib['cites'], rjc.bib['bibtype'])
+cbind(rjc.bib$key, rjc.bib$cites, rjc.bib$bibtype)
 @
 
-A shortcoming of this approach, is that long author lists, long titles, or long journal/publisher info can all lead to incomplete information being returned for those fields for the offending entries.  In this case, the \code{ReadGS} function will either not include entry or provide a add the entry with a warning depending on the value of the \code{bib.violation} argument.
-<<ReadGS3, tidy=FALSE, highlight=TRUE>>=
+A shortcoming of this approach, is that long author lists, long titles, or long journal/publisher info can all lead to incomplete information being returned for those fields for the offending entries.  In this case, the \code{ReadGS} function will either not include entry or provide a add the entry with a warning depending on the value of the \code{check.entries} argument.
+<<ReadGS3, tidy=FALSE, highlight=TRUE, cache=TRUE>>=
 ## RJC's Google Scholar profile is at: 
 ## http://scholar.google.com/citations?user=CJOHNoQAAAAJ
 rjc.bib <- ReadGS(scholar.id = 'CJOHNoQAAAAJ', sort.by.date = FALSE, 
-                  limit = 10, bib.violation = 'error')
+                  limit = 10, check.entries = 'error')
 rjc.bib2 <- ReadGS(scholar.id = 'CJOHNoQAAAAJ', sort.by.date = FALSE, 
-                  limit = 10, bib.violation = 'warn')
+                  limit = 10, check.entries = 'warn')
 length(rjc.bib) == length(rjc.bib2)
-## the offending entry.  RJC missing because author list too long!!!
-rjc.bib2[[7]]
+## the offending entry.  RJC is missing because author list too long
+print(rjc.bib2[title='dietary measurement error'], max.names = 99, 
+      .bibstyle = 'alphabetic')
 @
 \subsection{CrossRef}
 The function \code{ReadCrossRef} uses the CrossRef Metadata Search API to import references based on a search of CrossRef's nearly 60 million records.  Given a search and possibly a search year, the function receives \Bibtex{} entries as JSON objects using the \pkg{RJSONIO} package \citep{RJSONIO}, which are saved to a temporary file and then read back into \R{} using the \code{ReadBib} function to be returned as a \code{BibEntry} object.
-<<ReadCR1, tidy=TRUE, highlight=TRUE>>=
+<<ReadCR1, tidy=TRUE, highlight=TRUE, cache=TRUE>>=
 ReadCrossRef(query = 'rj carroll measurement error', limit = 3, sort = "relevance", 
              min.relevance = 80, verbose = FALSE)
 @
@@ -234,11 +240,36 @@ Although false negatives are rare, the CrossRef Metadata Search can be prone to 
 % #              min.relevance = 50, verbose = TRUE)
 % # @
 \section{Manipulating BibEntry Objects}
-\subsection{Searching}
-The extraction operator \code{'['}, has been redefined for BibEntry objects to allow for easily searching a database of references saved in a BibEntry object.  Search options can be changed by set variables in the .BibOptions object or alternatively specified directly as arguments to the function \code{search}.
+\subsection{Extraction Operators - Searching and Indexing}
+The extraction operator \code{'['}, has been redefined for BibEntry objects to allow for easily searching a database of references saved in a BibEntry object.  A different interface providing the same functionality is the function \code{SearchBib}.  Search options can be changed by set variables in the .BibOptions object or alternatively specified directly as arguments to the function \code{SearchBib}.  BibLaTeX date fields (\code{date,year,origdate,urldate,eventdate}) and name lists (author, editor, editora, editorb, editorc, translator, commentator, annotator, introduction, foreword, afterword, bookauthor, and holder) are handled specially as outlined below.  Other fields can be searched using either exact string matching or regular expressions, with or without ignoring case.
 
-The list extraction operator, \code{'[['}, is used for extacting a single bibentry object by position (an integer) or the entry key (a string).  List assignment, \code{'[[<-'} is used for replacing one entry in a BibEntry object with another.
+Valid values for date fields in \Biblatex{} have the form \code{yyyy}, \code{yyyy-mm}, \code{yyyy-mm-dd}, and can be intervals of the form \code{yyyy/yyyy}, \code{yyyy-mm/yyyy-mm}, \code{yyyy-mm-dd/yyyy-mm-dd}.  The second date can be omitted in the interval to allow for open-ended end dates, e.g. \code{yyyy/}.  When searching using a date field, the search string should have one of these formats.  Additionally, the search string have be an interval with no start date, e.g. \code{date = ``/1980-06''} to return all entries published before June, 1980.  \pkg{The lubridate package} \citep{lubridate} is used to compare date fields, dates specified as intervals are converted to class \code{Interval} and non-interval dates are converted to class \code{POSIXct}.  The format \code{yyyy-mm} it is not currently supported despite not being supported in base \R{} or \pkg{lubridate}.  For compatibility with \Bibtex{}, \Biblatex{} and \ourpkg{} support the fields \code{year} and \code{month}, which are used if the \code{date} field is missing. Whether to ignore month and day values, if available, and only compare based on the year portion of the date field, is controlled by the option \code{match.date}, which supports two values ``exact'' or ``year.only''.
+
+When searching name list fields, the search term is expected to have the same format as used in a .bib file, e.g. \code{``Doe, Jr., John and Jane \{Doe Smith\}''}.  Names can be matched based on family names only, by family name and given name initials, or by full name, depending on the value of the argument \code{match.author}.  
+
+Entries containing valid \code{crossref} and \code{xdata} fields are expanded prior to searching, so that when a match is found for a field and value that a child entry inherits from its parent, the result is both the parent and child being returned.  If a match is found in a child entry and not in the parent, only the child entry is returned, but the returned entry will contain any fields it inherits from its parent.  Any xdata entries that the child references will also be returned.  Examples follow.
+
+<<Search1, tidy=TRUE, highlight=TRUE, echo=-1>>=
+setwd("C:/Users/Matthew/Documents/biblatex/RefManageR/code/RefManageR/sampleData")
+bib <- ReadBib('biblatexExamples.bib', check = FALSE)
+# by default .BibOptions$match.author = 'family.only' and .BibOptions$ignore.case = TRUE
+# inbook entry inheriting editor field from parent
+bib[editor = "westfahl"]
+
+# no match with parent entry, the returned child has inherited fields
+bib[author = "westfahl"]
+@
+
+The list extraction operator, \code{`[[`}, is used for extacting bibentry objects by position (an integer) or the entry key (a string).  Unlike the default operator, a vector of indices may be given to extract more than one entry at a time.
+
+As with \code{bibentry} objects, the \code{`$`} operator for BibEntry objects is used to return a list containing the value of a particular field for all entries, with a value of \code{NULL} returned for entries that to no use the specified field.  A list of all entry types or keys for the \code{BibEntry} object, \code{bib}, can be obtained using \code{bib$bibtype} and \code{bib$key}, respectively.
+\subsection{Assignment Operators} 
+List assignment, \code{'[[<-'} is used for replacing one entry in a BibEntry object with another.
 \subsection{Merging}
 The combine function, \code{c}, is available for concatenating multiple \code{BibEntry} objects, and has been inherited from the \code{bibentry} class.  Of course, this does not perform any checking for duplicate entries.  For this, there is the \code{base} package generics \code{anyDuplicated}, \code{duplicated}, and \code{unique}, which check vectors for duplicate elements.  However if \code{BibEntry} objects have been complied from a number of different sources, these functions may be too strict, declaring entries distinct even if only one field has a small difference between the two entries.  For this reason, we provide an additional operator \code{'+'} and a wrapper function \code{merge}, that compare entries only based on the fields specified by the user.  Given \code{BibEntry} objects \code{bib1} and \code{bib2}, \code{bib1 + bib2} will return \code{bib1} appended with all entries of bib2 that have been determined not be duplicates of entries already in \code{bib1} by comparing all fields in \code{.BibOptions$merge.fields.to.check}, which can include \code{bibtype} and \code{key}.  The function also checks if there are any duplicate keys in the result, and will force them to be unique if duplicates are detected using \code{make.unique}. 
+\subsection{BibEntry Conversion To and From Other Object Types}
+The \code{as.BibEntry} function will convert objects of several other data types to BibEntry if they have the proper format.
+
+The BibEntry class also has methods \code{as.data.frame} and \code{unlist} to convert BibEntry objects to a data frame and unlist'ed vector, respectively.
 \bibliography{biblatex}
 \end{document}

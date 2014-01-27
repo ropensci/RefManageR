@@ -1,4 +1,4 @@
-\begin{thebibliography}{4}
+\begin{thebibliography}{5}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -8,6 +8,12 @@
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 \providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{Grolemund and Wickham(2011)}]{lubridate}
+Grolemund G, Wickham H (2011).
+\newblock \enquote{Dates and Times Made Easy with {lubridate}.}
+\newblock \emph{Journal of Statistical Software}, \textbf{40}(3), 1--25.
+\newblock \urlprefix\url{http://www.jstatsoft.org/v40/i03/}.
 
 \bibitem[{Hornik \emph{et~al.}(2012)Hornik, Murdoch, and
   Zeileis}]{hornik2012who}
