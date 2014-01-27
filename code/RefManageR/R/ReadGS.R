@@ -15,13 +15,13 @@ require(stringr)
 #' @param limit - numeric; maximum number of results to return.  Cannot exceed 100.
 #' @param sort.by.date - boolean; if true, newest citations are imported first; otherwise, most cited works are imported first.
 #' @param .Encoding - character; text encoding to use for importing the results and creating the bib entries.
-#' @param bib.violation - .BibOptions$
+#' @param check.entries - .BibOptions$
 ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
-                     .Encoding = 'UTF-8', bib.violation = .BibOptions$bib.violation){
+                     .Encoding = 'UTF-8', check.entries = .BibOptions$check.entries){
   limit <- min(limit, 100)
   ps <- ifelse(limit <= 20, 20, 100)
-  oldvio <- .BibOptions$bib.violation
-  .BibOptions$bib.violation <- bib.violation
+  oldvio <- .BibOptions$check.entries
+  .BibOptions$check.entries <- check.entries
   .params <- list(hl = 'en', user = scholar.id, oe = .Encoding, pagesize = ps,
                   view_op = 'list_works', cstart = start)
   if (sort.by.date)
@@ -40,7 +40,7 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
   out <- lapply(tmp[!is.na(tmp)], MakeBibEntry, to.person = FALSE)
   out <- MakeCitationList(out)
   
-  .BibOptions$bib.violation <- oldvio
+  .BibOptions$check.entries <- oldvio
   
   return(out)
 }

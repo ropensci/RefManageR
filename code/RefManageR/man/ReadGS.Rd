@@ -27,14 +27,14 @@ numeric; maximum number of results to return.  Cannot be more than 100.
   \item{.Encoding}{
 character; text encoding to use for importing the results and creating the bib entries.
 }
-  \item{bib.violation}{
-character; If there is an error in the format of a citation, how should the entry be handled?  If \code{bib.violation = \sQuote{error}} then the entry is not added.  Otherwise, the entry is added with a warning message.  The default is set based on the current value of the parameter in .BibOptions.  See \code{Details}.}
+  \item{check.entries}{
+character or logical; If there is an error in the format of a citation (i.e. it is missing a field required for that entry type), how should the entry be handled?  If \code{check.entry = \sQuote{error}} then the entry is not added.  If \code{check.entry = \sQuote{warn}}, the entry is added with a warning message.  If \code{check.entry = FALSE}, entries are not checked.  The default is set based on the current value of the parameter in .BibOptions.  See \code{Details}.}
 }
 }
 \details{
 This function creates \sQuote{Article} or \sQuote{Book} BibTeX entries from an author's Google Scholar page.  If the function finds numbers corresponding to volume/number/pages of a journal article, an \sQuote{Article} entry is created; otherwise, a \sQuote{Book} entry is created.
 
-Long author lists, long titles, and long journal/publisher names can all lead to these fields being incomplete for a particular entry.  When this occurs, these entries are either dropped or added with warning depending on the value of the \code{bib.violation} argument.
+Long author lists, long titles, and long journal/publisher names can all lead to these fields being incomplete for a particular entry.  When this occurs, these entries are either dropped or added with warning depending on the value of the \code{check.entries} argument.
 
 It is not possible to automatically import BibTeX entries directly from Google Scholar as no API is available and this violates their Terms of Service.
 }

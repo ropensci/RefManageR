@@ -12,7 +12,7 @@ sort.BibEntry <- function (x, decreasing = FALSE, .bibstyle = .BibOptions$bib.st
     if (sorting %in% c('nyvt', 'anyvt'))
       vol <- tools::bibstyle('BibLaTeX')$sortKeysV(x)
     if (.bibstyle == 'alphabetic' || sorting == 'anyt' || sorting == 'anyvt'){
-      browser()
+      #browser()
       alabs <- tools::bibstyle('BibLaTeX')$sortKeysLA(x, yr)
       alabs <- paste0(alabs, unlist(lapply(rle(alabs[rank(alabs, ties.method = 'min')])$len, 
                        function(x){
