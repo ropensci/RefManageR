@@ -11,7 +11,7 @@
 #' @param ... - arguments in the form \code{bib.field = search.term}.  For \code{SearchBib}, can alternatively have same
 #' form as \code{i}.
 #' @aliases [.BibEntry
-#' @export
+#' @keywords database manip list
 SearchBib <- function(x, use.regex = TRUE, ignore.case = TRUE, match.date = .BibOptions$match.date, 
                       match.author = .BibOptions$match.author, return.index = .BibOptions$return.ind, ...){
   bibopts <- .BibOptions$copy()

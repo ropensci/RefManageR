@@ -1,3 +1,7 @@
+#' Search for a date in a BibEntry object
+#' 
+#' Find a date in a date field of a BibEntry object 
+#' @keywords internal
 MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
   # browser()
   if (is.null(x))
@@ -26,6 +30,11 @@ MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
   }
 }
 
+#' Search for a name in a BibEntry object
+#' 
+#' Find name in a name field of a BibEntry object
+#' 
+#' @keywords internal
 MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.case = .BibOptions$ignore.case,
                       regx = .BibOptions$use.regex){
   #regx <- FALSE
@@ -56,11 +65,12 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 #' the SearchBib function simplying provide different interfaces to the same search functionality.  
 #' 
 #' @param x - an object of class BibEntry
-#' @param i - A named list or character vector of search terms with names corresponding to the field to search for the term,
-#' or a vector of entry key values or numeric or logical indices specifying which bibentries to exctract.
-#' @param j - ignored
-#' @param ... - arguments in the form \code{bib.field = search.term}.  For \code{SearchBib}, can alternatively have same
-#' form as \code{i}.
+#' @param i - A named list or character vector of search terms with names corresponding to the field to search for the
+#' search term.  Alternatively, a vector of entry key values or numeric or logical indices specifying which bibentries to exctract.
+#' @param j - A named list or character vector, as \code{i}.  Entries matching the search specified by i \emph{OR} matching
+#' the query specified by \code{j} will be return
+#' @param ... - arguments in the form \code{bib.field = search.term}, or as \code{j} list\emph{s} or character vector\emph{s}
+#' for additional searches.  For \code{SearchBib}, can alternatively have same form as \code{i}.
 #' @param drop - ignored
 #' @value an object of class BibEntry (the results of the search/indexing)
 #' @details 
@@ -70,6 +80,8 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 #' @aliases SearchBib
 #' @author McLean, M.W. 
 #' @importFrom lubridate int_start int_end year month is.interval %within%
+#' @example
+#' @keywords database manip list
 #' 
 `[.BibEntry` <- function(x, i, j, ..., drop = FALSE){
   # i is character vector
@@ -182,6 +194,11 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
   # current.fields <- c(unique(names(unlist(x))), 'bibtype', 'key')    
 }
 
+#' Find a search term in the specified field of a BibEntry object
+#' 
+#' Workhorse function for SearchBib
+#' 
+#' @keywords internal
 FindBibEntry <- function(bib, term, field){
   usereg <- .BibOptions$use.regex
   ignorec <- .BibOptions$ignore.case
