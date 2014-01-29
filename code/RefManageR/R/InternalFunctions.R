@@ -69,7 +69,7 @@ library(bibtex)
 #test <- ReadBib('~/biblatex/code/biblatexTestBib.bib', encoding='UTF-8')
 # test <- ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br', tag='Statistics - Machine Learning'))
 
-
+#' @keywords internal
 .BibEntryCheckBibEntry1 <- function (x, force = FALSE, check = .BibOptions$check.entries) {
   if (identical(check, FALSE))
     return(NULL)
@@ -98,6 +98,7 @@ library(bibtex)
   }
 }
 
+#' @keywords internal
 .BibEntry_match_format_style <- function (style){
     ind <- pmatch(tolower(style), tolower(bibentry_format_styles), 
         nomatch = 0L)
@@ -108,6 +109,7 @@ library(bibtex)
     bibentry_format_styles[ind]
 }
 
+#' @keywords internal
 .BibEntry_expand_crossrefs <- function (x, more = list(), to.bibtex = FALSE){
   if (!length(x))
     return(NULL)
@@ -176,6 +178,7 @@ library(bibtex)
   x
 }
 
+#' @keywords internal
 ResolveBibLaTeXCrossRef <- function(chi, par){
   add <- setdiff(names(par), names(chi))
 
@@ -249,6 +252,7 @@ ResolveBibLaTeXCrossRef <- function(chi, par){
   chi
 }
 
+#' @keywords internal
 ArrangeAuthors <- function (x){
   rx <- "[[:space:]]+and[[:space:]]+"
   x <- gsub('[[:space:]]{2,}', ' ', x)
@@ -274,6 +278,7 @@ ArrangeAuthors <- function (x){
 #   }
 # } 
 
+#' @keywords internal
 ArrangeSingleAuthor <- function(y){
   #browser()
   if (grepl('[\\]', y)){
@@ -355,6 +360,7 @@ ArrangeSingleAuthor <- function(y){
   }
 } 
 
+#' @keywords internal
 UnlistSplitClean <- function(s){
   #cleanupLatex(str_trim(s))
   unlist(strsplit(gsub("[{}]", "", str_trim(s)), " "))
@@ -373,6 +379,7 @@ UnlistSplitClean <- function(s){
 #   }
 # }
 
+#' @keywords internal
 cleanupLatex <- function (x){
   if (!length(x)) 
     return(x)
@@ -404,6 +411,7 @@ cleanupLatex <- function (x){
   }
 }
 
+#' @keywords internal
 MakeCitationList <- function( x, header, footer){
     rval <- list()
     for (i in seq_along(x)){
@@ -414,10 +422,12 @@ MakeCitationList <- function( x, header, footer){
     rval
 }
 
+#' @keywords internal
 .is_not_nonempty_text <- function(x){
   is.null(x) || any(is.na(x)) || all(grepl("^[[:space:]]*$", x))
 }
 
+#' @keywords internal
 .listify <- function (x) {
   if (inherits(x, "list")) x else list(x)
 }
@@ -426,6 +436,7 @@ bibentry_attribute_names <- c("bibtype", "textVersion", "header", "footer", "key
 bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "textVersion", "R")
 
 # from utils:::toBibtex, good for matching by given name initials only
+#' @keywords internal
 format_author <- function(author) paste(sapply(author, function(p) {
   fnms <- p$family
   only_given_or_family <- is.null(fnms) || is.null(p$given)
@@ -442,6 +453,7 @@ format_author <- function(author) paste(sapply(author, function(p) {
 
 bibentry_list_attribute_names <- c("mheader", "mfooter", "strings")
 
+#' @keywords internal
 .BibEntry_get_key <- function (x) {
   if (!length(x)) 
     return(character())
@@ -450,6 +462,7 @@ bibentry_list_attribute_names <- c("mheader", "mfooter", "strings")
   unlist(keys)
 }
 
+#' @keywords internal
 ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries) {
   td <- l[[1L]]
   title <- xmlValue(td[[1L]], encoding)
@@ -507,6 +520,7 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries) {
   return(res)
 }
 
+#' @keywords internal
 ProcessGSAuthors <- function(authors){
   authors <- gsub(',', ', and', authors)  # add "and" to separate authors
   authors <- gsub('([A-Z])([A-Z])', '\\1 \\2', authors)  # add space between given name initials
@@ -514,6 +528,7 @@ ProcessGSAuthors <- function(authors){
   return(as.personList(authors))
 }
 
+#' @keywords internal
 ProcessGSNumbers <- function(numbers){
   pages <- volume <- number <- NULL
   
@@ -536,6 +551,7 @@ ProcessGSNumbers <- function(numbers){
   return(list(pages = pages, number = number, volume = volume))
 }
 
+#' @keywords internal
 CheckGSDots <- function(x, title, check){
   tx <- gsub(' [.]{3,}$', '', x)
   if(tx != x){
@@ -552,6 +568,7 @@ CheckGSDots <- function(x, title, check){
   }
 }
 
+#' @keywords internal
 MakeBibEntry <- function (x, to.person = TRUE) {
   type <- attr(x, "entry")
   key <- attr(x, "key")
@@ -591,6 +608,7 @@ MakeBibEntry <- function (x, to.person = TRUE) {
   return(res)
 }
 
+#' @keywords internal
 ProcessDates <- function(bib){
   tdate <- try(ProcessDate(bib[['date']], NULL), TRUE)
    
@@ -609,6 +627,7 @@ ProcessDates <- function(bib){
   return(tdate)
 }
 
+#' @keywords internal
 #' @importFrom lubridate new_interval
 ProcessDate <- function(dat, mon, searching = FALSE){
   if (!length(dat))
@@ -667,6 +686,7 @@ ProcessDate <- function(dat, mon, searching = FALSE){
   return(res)
 }
 
+#' @keywords internal
 CreateBibKey <- function(ti, au, yr){
   m <- regexpr('\\<([[:alpha:]]{4,})\\>', ti)
   key.title <- tolower(regmatches(ti, m))  # will be character(0) if no matches or if ti is NULL

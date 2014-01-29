@@ -518,23 +518,23 @@ fmtBAuthor <- function(doc){
   }
   nnames <- length(res)
   if (nnames){
-    if (bibstyle == 'alphabetic' || bibstyle == 'numeric'){
+    if (bibstyle != "authortitle"){
       out <- shortName(res[1L])
     }else{
       out <- shortNameLF(res[1L])
     } 
     if (nnames == 2L){
       if (max.n < 2L){
-        out <- paste0(out, ' et al.')
+        out <- paste0(out, ', et al.')
       }else{
         out <- paste(out, shortName(res[-1L]), sep = ' and ') 
       }
     }else if (nnames > 2L){
       if (nnames > max.n){
         if (max.n <= 1L){
-          out <- paste0(out, ' et al.')
+          out <- paste0(out, ', et al.')
         }else{
-          out <- paste(paste(out, paste0(sapply(res[2L:max.n], shortName), collapse = ", "), sep = ', '), 'et al.')    
+          out <- paste0(paste(out, paste0(sapply(res[2L:max.n], shortName), collapse = ", "), sep = ', '), ', et al.')    
         }
       }else{
         out <- paste(paste(out, paste0(sapply(res[-c(1L, length(res))], shortName), collapse = ", "), sep = ', '),  
@@ -1211,6 +1211,19 @@ formatUnpublished <- function(paper){
 environment()
 }))
 
+#' Convert BibEntry object to a fragment of Rd code.
+#' 
+#' Renders references in a BibEntry object as a fragment of Rd code, which can then be rendered into text, HTML, or LaTex.
+#' 
+#' @param obj - An object of class BibEntry
+#' @param style - The bibstyle to be used for converting \code{obj}; see \code{\link{print.BibEntry}}
+#' @param .sorting - the BibLaTeX sorting method to use; see \code{\link{sort.BibEntry}}
+#' @param ... - ignored
+#' @S3method toRd BibEntry
+#' @value Returns a character vector containing a fragment of Rd code that could be parsed and rendered.
+#' @keywords internal
+#' @seealso \code{\link{print.BibEntry}}, \code{\link{sort.BibEntry}}, \code{\link{BibEntry}}, \code{\link{bibstyle}}
+#' @importFrom tools getBibstyle bibstyle
 toRd.BibEntry <- function(obj, style = .BibOptions$bib.style, .sorting ='nty', ...) { 
   curstyle <- .BibOptions$bib.style 
   

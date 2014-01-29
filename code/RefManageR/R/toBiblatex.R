@@ -1,3 +1,11 @@
+#' Convert BibEntry objects to BibTeX or BibLaTeX
+#' 
+#' toBiblatex converts a BibEntry object to character vectors with BibLaTeX markup.  toBibtex will convert a BibEntry object
+#' to character vectors with BibTeX markup, converting some BibLaTeX fields and all entry types that are not supported 
+#' by BibTeX to ones that are supported.  
+#' 
+#' @aliases toBibtex.BibEntry
+#' @S3method toBiblatex BibEntry
 toBiblatex <- function(object, ...){
     format_bibentry1 <- function(object) {
       object <- unclass(object)[[1L]]
