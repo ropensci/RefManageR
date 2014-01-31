@@ -21,12 +21,11 @@
 #' @examples
 #' file.name <- system.file("sampleData", "biblatexExamples.bib", package="RefManageR")
 #' bib <- suppressMessages(ReadBib(file.name))
-#' bib[seq_len(5L)] 
+#' print(testb[author="aristotle"], .bibstyle = 'authoryear')
 #' print(bib[55:57], .bibstyle = "authortitle", first.inits = FALSE)
 #' print(bib[80:88], .bibstyle = "alphabetic", max.names = 1)
 #' print(bib[32:36], .bibstyle = "draft")
 #' print(bib[editor="westfahl"], .bibstyle = 'authoryear', dashed = TRUE)
-
 print.BibEntry <- function (x, style = "text", .bibstyle = .BibOptions$bib.style, 
                             sorting = .BibOptions$sorting, no.print.fields = NULL, 
                             max.names = .BibOptions$max.names, first.inits = .BibOptions$first.inits, 

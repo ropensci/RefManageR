@@ -29,14 +29,14 @@
         else paste(value[[i]])
       }
       if ( name %in% .BibEntryDateField){  # dateobj may need to be updated
-        tdate <- ProcessDates(x)
+        tdate <- ProcessDates(x[[i]])
         if (is.null(tdate))
           stop(paste0('The specified Date Field value is not in a valid format for Bibtex/Biblatex'))
-        attr(res, 'dateobj') <- tdate
+        attr(x[[i]], 'dateobj') <- tdate
       }
     }
   }
- 
+ #browser()
   for (i in seq_along(x)) .BibEntryCheckBibEntry1(x[[i]])
   class(x) <- c("BibEntry", "bibentry")
   x

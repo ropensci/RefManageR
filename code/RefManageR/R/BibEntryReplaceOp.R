@@ -1,11 +1,25 @@
 `[<-.BibEntry` <- function(x, i, j, ..., value){
-  if (missing(i)){
-    y <- x
-  }else if (missing(j)){
-    y <- x[i]
-  }else{
-    y <- x[i, j, ...]
-  }
+  if (!length(value))
+    return(x)
+  
+  ret.ind <- .BibOptions$return.ind
+  .BibOptions$return.ind <- TRUE
+  kal <- match.call(expand.dots = TRUE)
+  kal$value <- NULL
+  kal[[1]] <- `[.BibEntry`
+  ind <- eval(kal)
+  y <- x[[ind]]
+  
+#   if (missing(i)){
+#     y <- x
+#   }else if (missing(j)){
+#     ind <- x[i]
+#     y <- x[[ind]]
+#   }else{
+#     ind <- x[i, j, ...]
+#     y <- x[[ind]]
+#   }
+  browser()
   if (!length(y))
     stop('Object to replace has length 0, bad index specified.')
   names.to.replace <- names(y)
@@ -15,11 +29,10 @@
     stop('No elements to replace.')
  
   if (inherits(value, 'bibentry')){
-   
     N.replacements <- length(value)
     value <- unclass(value)
     
-    ind <- rep_len(1L:N.replacements, N.to.replace)
+    ind <- rep_len(seq_len(N.replacements), N.to.replace)
     if (N.to.replace%%N.replacements != 0L)
       warning('Number of items to replace is not a multiple of replacement length.')
 #     if(!inherits(y, 'BibEntry'))
@@ -52,13 +65,14 @@
 #   if (!is.null(value) && N %% length(x) == 0){
 #     warning(paste0('BibEntry object length is not a multiple of replacement length'))
 #   }
-#  browser()
+  #browser()
   replace.ind <- match(names.to.replace, names(x))
   x <- unclass(x)
   for (k in seq_len(N.to.replace))
     x[[replace.ind[k]]] <- y[[k]]
   
   class(x) <- c('BibEntry', 'bibentry')
+  .BibOptions$return.ind <- ret.ind
   return(x)
 }
 
