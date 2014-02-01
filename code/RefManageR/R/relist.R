@@ -1,3 +1,14 @@
+#' relist a unlisted BibEntry object
+#' 
+#' Recreates a BibEntry object from a one that has been unlisted with \code{\link{unlist}}
+#' 
+#' @param flesh - list; an unlisted BibEntry object
+#' @param skeleton currently ignored
+#' @details Only used for converting a unlisted BibEntry object back to class BibEntry
+#' @seealso unlist.BibEntry
+#' @examples
+#' bib <- 
+#' @keywords database list
 relist.BibEntry <- function(flesh, skeleton = NULL){
   key.ind <- which(names(flesh) == 'key')
   type.ind <- which(names(flesh) == 'bibtype')

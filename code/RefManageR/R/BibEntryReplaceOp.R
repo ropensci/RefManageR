@@ -1,3 +1,6 @@
+#' @S3method [<- BibEntry
+#' @examples
+#' 
 `[<-.BibEntry` <- function(x, i, j, ..., value){
   if (!length(value))
     return(x)
@@ -19,7 +22,6 @@
 #     ind <- x[i, j, ...]
 #     y <- x[[ind]]
 #   }
-  browser()
   if (!length(y))
     stop('Object to replace has length 0, bad index specified.')
   names.to.replace <- names(y)

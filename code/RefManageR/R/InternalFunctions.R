@@ -463,7 +463,11 @@ bibentry_list_attribute_names <- c("mheader", "mfooter", "strings")
 }
 
 #' @keywords internal
+#' importFrom XML xmlValue
+#' importFrom stringr str_sub str_trim
 ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries) {
+  if (!length(l))
+    return(list())
   td <- l[[1L]]
   title <- xmlValue(td[[1L]], encoding)
   author <- xmlValue(td[[3L]], encoding)
@@ -497,9 +501,15 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries) {
               journal = journal, number = numbers, cites = cited_by, 
               year = year)
   if(res$number==''){  # assume book entry if no number
-    attr(res, 'entry') <- 'book'
+    if (as.numeric(cited_by) < 10L){
+      attr(res, 'entry') <- "report"
+      res$institution <- res$journal
+      res$type <- "techreport"
+    }else{
+      attr(res, 'entry') <- "book"
+      res$publisher <- res$journal  
+    }
     res$number <- NULL
-    res$publisher <- res$journal
     res$journal <- NULL
   }else{
     attr(res, 'entry') <- 'article'
@@ -509,13 +519,9 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries) {
     res$volume <- numbers$volume
   }
   
-  # create key
-  aut <- tolower(strsplit(res$author, ' ')[[1]][2])  # get last name of first author
-  aut <- gsub(',', '', aut)  # remove trailing commas
-  first.word <- tolower(strsplit(res$title, ' ')[[1]][[1]])  # get first word of title
-  attr(res, 'key') <- paste0(aut, res$year, first.word)
-  
   res$author <- ProcessGSAuthors(res$author)  # format authors for MakeBibEntry
+  # create key
+  attr(res, "key") <- CreateBibKey(res$title, res$author, res$year)
   
   return(res)
 }
@@ -554,7 +560,7 @@ ProcessGSNumbers <- function(numbers){
 #' @keywords internal
 CheckGSDots <- function(x, title, check){
   tx <- gsub(' [.]{3,}$', '', x)
-  if(tx != x){
+  if(is.na(x) || tx != x){
     entry <- deparse(substitute(x))
     if (check == 'warn'){
       message(paste0('Incomplete ', entry, ' information for entry \"', title, '\" adding anyway'))
@@ -688,10 +694,10 @@ ProcessDate <- function(dat, mon, searching = FALSE){
 
 #' @keywords internal
 CreateBibKey <- function(ti, au, yr){
-  m <- regexpr('\\<([[:alpha:]]{4,})\\>', ti)
+  m <- regexpr("\\w{4,}", ti)
   key.title <- tolower(regmatches(ti, m))  # will be character(0) if no matches or if ti is NULL
   if (inherits(au, 'person'))
-    au <- gsub(' ', '', tolower(au[1]$family[1]))
+    au <- gsub('[^a-z]', '', tolower(au[1L]$family[1L]))
 
   res <- paste0(au, yr, key.title)
   if (!length(res))

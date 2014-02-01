@@ -14,6 +14,7 @@ To Do:
 Important
 -------------------
 098. no printing, sorting, searching, etc. errors when check = FALSE and bib missing fields
+6. `[[<-` with length > 1 `BibEntry` objects
 98. toBibtex - UTF-8 to latex option
 87. merge should handle year and date specially
 90. formatting of name fields with useregex TRUE
@@ -128,8 +129,8 @@ BUGS
 - (**FIXED**) ArrangeAuthors with UTF-8 input
 - (**FIXED**) Herrmann entry in biblatexExamples.bib is not processed correctly by ArrangeAuthors
 - `authoryear` still has some encoding issues - e.g. print(testb[location="München"], .bibstyle = 'authoryear')
-- `sorting = "none"` an bibstyle needs labels
-- make sure all sorting methods are implemented
+- (**FIXED**) `sorting = "none"` an bibstyle needs labels
+- (**FIXED**) CreateBibKey when special chars in author or title
 
 DONE     
 ==================================================================================================================
@@ -167,6 +168,7 @@ DONE
 - Convert to and from data.frame for use with plyr
 - xdata entry supported
 - toBiblatex and toBibtex functions [S/O thread explaining how to do this](http://tex.stackexchange.com/questions/114787/converting-from-biblatex-to-bibtex-format-using-biber)  
+- field = "!search.term" to negate match for search.term
 =============================================================================================================
 
 JSS Doc Outline
