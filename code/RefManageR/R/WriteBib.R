@@ -1,13 +1,25 @@
-WriteBib <- function (entry, file = "Rpackages.bib", append = FALSE, verbose = TRUE) {
-  bibs <- if (inherits(entry, "bibentry")) 
-    entry
-  else if (is.character(entry)) {
-    if (length(entry) == 0) {
+#' Create a BibTeX File from a BibEntry Object
+#' 
+#' Creates a Bibtex File from a BibEntry object for use with either BibTeX or BibLaTex.
+#' @param bib - a BibEntry object to be written to file
+#' @param file - character string naming a file, should; end in \dQuote{.bib}
+#' @param biblatex - boolean; if \code{TRUE}, \code{\link{toBiblatex}} is used and no conversions of the BibEntry object
+#' are done; if \code{FALSE} entries will be converted as described in \code{\link{toBibtex.BibEntry}}.
+#' @param append - as in \code{\link{write.bib}}
+#' @param verbose - as in \code{\link{write.bib}}
+#' @author McLean, M. W. - based on \code{write.bib} function in package \code{bibtex} by Francois, R.
+#' @seealso \code{\link{write.bib}}, \code{\link{toBibtex.BibEntry}}, \code{\link{toBiblatex}}, \code{\link{BibEntry}}
+#' @keywords IO
+WriteBib <- function (bib, file = "references.bib", biblatex = TRUE, append = FALSE, verbose = TRUE, ...) {
+  bibs <- if (inherits(bib, "bibentry")) 
+    bib
+  else if (is.character(bib)) {
+    if (length(bib) == 0) {
       if (verbose) 
         message("Empty package list: nothing to be done.")
       return(invisible())
     }
-    pkgs <- entry
+    pkgs <- bib
     if (is.null(pkgs)) 
       pkgs <- unique(installed.packages()[, 1])
     bibs <- sapply(pkgs, function(x) try(citation(x)), simplify = FALSE)
@@ -57,7 +69,12 @@ WriteBib <- function (entry, file = "Rpackages.bib", append = FALSE, verbose = T
   if (verbose) 
     message("Writing ", length(bibs), " Bibtex entries ... ", 
             appendLF = FALSE)
-  writeLines(toBibtex(bibs), fh)
+  if (biblatex){
+    writeLines(toBibtex(bibs, ...), fh)  
+  }else{
+    writeLines(toBiblatex(bibs, ...), fh)
+  }
+  
   if (verbose) 
     message("OK\nResults written to file '", file, "'")
   invisible(bibs)

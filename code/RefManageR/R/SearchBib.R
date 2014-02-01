@@ -8,6 +8,11 @@
 #' @param match.date - how should the date fields date, urldate, eventdate, and origdate.  Default is \dQuote{year.only}, so 
 #' that months and days in dates are ignored when comparing.  Currently, specifying any other value results the full date being
 #' used.  See the Note section.
+#' @param match.author - character string; how should name fields be searched? If \dQuote{family.only}, only family names are
+#' compared; if \dQuote{family.with.initials}, family name and given name initials are used; if \dQuote{exact}, full 
+#' names  are used.
+#' @param return.index - boolean; if TRUE the returned object is numeric indices of match locations; otherwise, a BibEntry
+#' object is returned
 #' @param ... - arguments in the form \code{bib.field = search.term}.  For \code{SearchBib}, can alternatively have same
 #' form as \code{i}.
 #' @aliases [.BibEntry
@@ -21,6 +26,6 @@ SearchBib <- function(x, use.regex = TRUE, ignore.case = TRUE, match.date = .Bib
   .BibOptions$match.author <- match.author
   .BibOptions$return.ind <- return.index
   x <- do.call(`[.BibEntry`, list(x, ...))
-  .BibOptions <- bibopts$copy()
+  assign(".BibOptions", bibopts$copy(), 1)  # assign(.BibOptions, bibopts$copy(), "package:RefManageR")
   return(x)
 }

@@ -274,7 +274,25 @@ The list extraction operator, \code{`[[`}, is used for extacting bibentry object
 
 As with \code{bibentry} objects, the \code{`$`} operator for BibEntry objects is used to return a list containing the value of a particular field for all entries, with a value of \code{NULL} returned for entries that to no use the specified field.  A list of all entry types or keys for the \code{BibEntry} object, \code{bib}, can be obtained using \code{bib$bibtype} and \code{bib$key}, respectively.
 \subsection{Assignment Operators} 
-List assignment, \code{'[[<-'} is used for replacing one entry in a BibEntry object with another.
+List assignment, \code{'[[<-'} is used for replacing one entry in a BibEntry object with another.  The below example uses a bibliography of just under 500 works of Raymond J.\ Carroll indexed on Google Scholar.
+<<RJC1, tidy=TRUE, highlight=TRUE, cache=TRUE>>=
+# Some selected works of Raymond J. Carroll
+file.name <- system.file("sampleData", "RJC.bib", package="RefManageR")
+bib <- ReadBib(file.name)
+length(bib)
+length(bib) == length(bib[author="Carroll"])
+# which entries are missing RJC?
+ind <- SearchBib(bib, author = "!Carroll", return.index = TRUE)
+bib[ind]$author  
+@
+We can see that one paper is incorrectly attributed to RJC and the other four have spelling errors.  We thus drop that entry and correct the spelling on the other four entries.
+<<RJC2, tidy=TRUE, dependson=RJC1, highlight=TRUE, cache=TRUE>>=
+bib <- bib[-ind[4L]]
+bib[author="!Carroll"]$author <- c("Martinez, J. G. and Carroll, R. J.", 
+  "Carroll, R. J. and Ruppert, D. and Stefanski, L. A. and Crainiceanu, C. M.",
+  "Carroll, R. J.", "Carroll, R. J.")
+length(bib) == length(bib[author="Carroll"])
+@
 \subsection{Merging}
 The combine function, \code{c}, is available for concatenating multiple \code{BibEntry} objects, and has been inherited from the \code{bibentry} class.  Of course, this does not perform any checking for duplicate entries.  For this, there is the \code{base} package generics \code{anyDuplicated}, \code{duplicated}, and \code{unique}, which check vectors for duplicate elements.  However if \code{BibEntry} objects have been complied from a number of different sources, these functions may be too strict, declaring entries distinct even if only one field has a small difference between the two entries.  For this reason, we provide an additional operator \code{'+'} and a wrapper function \code{merge}, that compare entries only based on the fields specified by the user.  Given \code{BibEntry} objects \code{bib1} and \code{bib2}, \code{bib1 + bib2} will return \code{bib1} appended with all entries of bib2 that have been determined not be duplicates of entries already in \code{bib1} by comparing all fields in \code{.BibOptions$merge.fields.to.check}, which can include \code{bibtype} and \code{key}.  The function also checks if there are any duplicate keys in the result, and will force them to be unique if duplicates are detected using \code{make.unique}. 
 \subsection{BibEntry Conversion To and From Other Object Types}

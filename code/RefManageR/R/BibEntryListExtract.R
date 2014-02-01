@@ -2,7 +2,8 @@
 #' 
 #' 
 #' @param x - a BibEntry object
-#' 
+#' @S3method [[ BibEntry
+#' @keywords database manip list
 `[[.BibEntry` <- function (x, i, drop = TRUE){
   if (!length(x)) 
     return(x)
