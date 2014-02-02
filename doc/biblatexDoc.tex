@@ -214,9 +214,82 @@ The amount of extra features offered by \Biblatex{} and \biber{} compared to \na
 
 Notice that in the reference section the full url is not given, but the hyper-reference still works.  You may also notice that the 'year' field is missing, and that there is instead a field 'date'.  The 'year' field is still supported and could have been specified instead of date, but date allows for specifying a month and day in addition to year.
 
-One of the biggest advantages of \Biblatex{} over \Bibtex{}, is that it does use \bst{} files for styling the bibliography. A \bst{} file must be written in a special-purpose language that few are familiar with.  One style is implemented in base \proglang{R}, namely the one used by the Journal of Statistical Software.  The code may be viewed in \proglang{R} by entering \code{as.list(tools:::makeJSS())} at the console.  On the other hand \Biblatex{} bibliographies, are styled entirely using \TeX{} macros.  Multilanguage support.  Better support for crossreferences.  No memory issues for large databases like with \Bibtex{}.  Sorting and encoding issues (discussed in biblatex doc section 2.4.3). Mention eTeX and url handling
+One advantage of \Biblatex{} over \Bibtex{} is that it does use \bst{} files for styling the bibliography. A \bst{} file must be written in a special-purpose language that few are familiar with.  One style is implemented in base \proglang{R}, namely the one used by the Journal of Statistical Software.  The code may be viewed in \proglang{R} by entering \code{as.list(tools:::makeJSS())} at the console.  On the other hand \Biblatex{} bibliographies, are styled entirely using \TeX{} macros.  Multilanguage support.  Better support for crossreferences.  No memory issues for large databases like with \Bibtex{}.  Sorting and encoding issues (discussed in biblatex doc section 2.4.3). Mention eTeX and url handling
 
 Another advantage of \Biblatex{} is its support for UTF-8 encoding. ``bibtex is an 8bit engine so it processes every file in 8-bit pieces. In utf8 non-ascii chars are longer than 8 bit so they are splitted by bibtex. This means that bibtex has problems to sort references with non-ascii chars correctly. It can also happen that bibtex inserts a line break in the middle of an utf8-char and then you will get errors.''  A list of the supported encodings on your system can be viewed in \proglang{R} using \code{iconvlist()}.  By default, ReadBib will read in a .bib file using UTF-8.  UTF-8 is  
+\section{Creating BibEntry Objects and Importing From Files}
+Similar to the \code{bibentry} function in \pkg{utils}, \ourpkg{} provides a function \code{BibEntry} for creating a \code{BibEntry} object containing a single reference, which can be combined with other references into a single \code{BibEntry} object.  Though the ``year'' field is still supported for backwards compatibility with \Bibtex{}, the field ``date'' is preferred and allows for a number of different formats for the date, which will be discussed later.  The field ``journaltitle'' is preferred for specifying journals, though ``journal'' remains supported.  An entry is specified to the \code{BibEntry} function via an argument \code{bibtype} for the entry type, an argument \code{key} for the entry key and by specifying other arguments
+in \code{field = value} form.  Below we create and print an entry of type online with fields author, title, date, journaltitle, volume, and number.  The \code{print} function for \code{BibEntry} objects offers a number of features which will be discussed in detail later.  It's default settings are chosen to mimic the defaults of \Biblatex{}.  The \code{toBiblatex} function can be used to display the entry in its \code{.bib} file format.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{bib} \hlkwb{<-} \hlkwd{BibEntry}\hlstd{(}\hlkwc{bibtype}\hlstd{=}\hlstr{"Article"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"barry1996"}\hlstd{,} \hlkwc{date} \hlstd{=} \hlstr{"1996-08"}\hlstd{,}
+  \hlkwc{title} \hlstd{=} \hlstr{"A Diagnostic to Assess the Fit of a Variogram to Spatial Data"}\hlstd{,}
+  \hlkwc{author} \hlstd{=} \hlstr{"Ronald Barry"}\hlstd{,} \hlkwc{journaltitle} \hlstd{=} \hlstr{"Journal of Statistical Software"}\hlstd{,}
+                 \hlkwc{volume} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{number} \hlstd{=} \hlnum{1}\hlstd{)}
+\hlstd{bib}
+\end{alltt}
+\begin{verbatim}
+## [1] R. Barry. "A Diagnostic to Assess the Fit of a Variogram to
+## Spatial Data". In: _Journal of Statistical Software_ 1.1 (Aug.
+## 1996).
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+As with \code{bibentry} objects, the operator \code{c} may be used to combine \code{BibEntry} objects.  The \code{bibentry} class supports \Bibtex{}-style crossreferencing as does the \code{Bibentry} class.  Cross references are handled specially when indexing and searching \code{BibEntry} objects and discussed in Section~\ref{searchsec}.  In a similar vain as cross-referencing, \Biblatex{} supports a entry type ``xdata'' which is never printed, but may be used to store fields that are shared by several entries.  Entries can specify a field xdata containing a comma separated list of keys belonging to Xdata entries that the child inherits from.  The following example demonstrates its use for online references available on arXiv.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{bib} \hlkwb{<-} \hlkwd{BibEntry}\hlstd{(}\hlkwc{bibtype}\hlstd{=}\hlstr{"Xdata"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"statME"}\hlstd{,} \hlkwc{eprinttype} \hlstd{=} \hlstr{"arxiv"}\hlstd{,}
+                \hlkwc{eprintclass} \hlstd{=} \hlstr{"stat.ME"}\hlstd{)}
+\hlstd{bib} \hlkwb{<-} \hlkwd{c}\hlstd{(bib,} \hlkwd{BibEntry}\hlstd{(}\hlkwc{bibtype}\hlstd{=}\hlstr{"Xdata"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"online2013"}\hlstd{,} \hlkwc{year} \hlstd{=} \hlstr{"2013"}\hlstd{,}
+                       \hlkwc{urldate} \hlstd{=} \hlstr{"2013-12-20"}\hlstd{))}
+\hlkwd{toBiblatex}\hlstd{(bib)}
+\end{alltt}
+\begin{verbatim}
+## @XData{statME,
+##   eprinttype = {arxiv},
+##   eprintclass = {stat.ME},
+## }
+## 
+## @XData{online2013,
+##   year = {2013},
+##   urldate = {2013-12-20},
+## }
+\end{verbatim}
+\begin{alltt}
+\hlstd{bib} \hlkwb{<-} \hlkwd{c}\hlstd{(bib,} \hlkwd{BibEntry}\hlstd{(}\hlkwc{bibtype}\hlstd{=}\hlstr{"Online"}\hlstd{,} \hlkwc{key}\hlstd{=}\hlstr{"mclean2013rlrt"}\hlstd{,}
+  \hlkwc{author} \hlstd{=} \hlstr{"Mathew McLean and Giles Hooker and David Ruppert"}\hlstd{,}
+  \hlkwc{title} \hlstd{=} \hlstr{"Restricted Likelihood Ratio Tests for Scalar-on-Function Regression"}\hlstd{,}
+  \hlkwc{eprint} \hlstd{=} \hlstr{"1310.5811"}\hlstd{,} \hlkwc{url} \hlstd{=} \hlstr{"http://arxiv.org/abs/1310.5811"}\hlstd{,}
+  \hlkwc{xdata} \hlstd{=} \hlstr{"statME,online2013"}\hlstd{))}
+\hlstd{bib} \hlkwb{<-} \hlkwd{c}\hlstd{(bib,} \hlkwd{BibEntry}\hlstd{(}\hlkwc{bibtype}\hlstd{=}\hlstr{"Online"}\hlstd{,} \hlkwc{key}\hlstd{=}\hlstr{"mclean2013bayesian"}\hlstd{,}
+  \hlkwc{author} \hlstd{=} \hlkwd{paste}\hlstd{(}\hlstr{"Mathew McLean and Fabian Scheipl and Giles Hooker"}\hlstd{,}
+                \hlstr{"and Sonja Greven and David Ruppert"}\hlstd{),}
+  \hlkwc{title} \hlstd{=} \hlkwd{paste}\hlstd{(}\hlstr{"Bayesian Functional Generalized Additive Models"}\hlstd{,}
+               \hlstr{"for Sparsely Observed Covariates"}\hlstd{),}
+  \hlkwc{eprint} \hlstd{=} \hlstr{"1305.3585"}\hlstd{,} \hlkwc{url} \hlstd{=} \hlstr{"http://arxiv.org/abs/1305.3585"}\hlstd{,}
+  \hlkwc{xdata} \hlstd{=} \hlstr{"statME,online2013"}\hlstd{))}
+\hlstd{bib}
+\end{alltt}
+\begin{verbatim}
+## XData: online2013
+## 
+## XData: statME
+## 
+## [1] M. McLean, G. Hooker and D. Ruppert. _Restricted Likelihood
+## Ratio Tests for Scalar-on-Function Regression_. 2013. arXiv:
+## 1310.5811 [stat.ME]. <URL: http://arxiv.org/abs/1310.5811>
+## (visited on 12/20/2013).
+## 
+## [2] M. McLean, F. Scheipl, G. Hooker, et al. _Bayesian Functional
+## Generalized Additive Models for Sparsely Observed Covariates_.
+## 2013. arXiv: 1305.3585 [stat.ME]. <URL:
+## http://arxiv.org/abs/1305.3585> (visited on 12/20/2013).
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 \section{Importing Citations From the Web}
 \subsection{Zotero}
@@ -352,8 +425,8 @@ The function \code{ReadCrossRef} uses the CrossRef Metadata Search API to import
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{ReadCrossRef}\hlstd{(}\hlkwc{query} \hlstd{=} \hlstr{"rj carroll measurement error"}\hlstd{,} \hlkwc{limit} \hlstd{=} \hlnum{3}\hlstd{,} \hlkwc{sort} \hlstd{=} \hlstr{"relevance"}\hlstd{,}
-    \hlkwc{min.relevance} \hlstd{=} \hlnum{80}\hlstd{,} \hlkwc{verbose} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlkwd{ReadCrossRef}\hlstd{(}\hlkwc{query} \hlstd{=} \hlstr{'rj carroll measurement error'}\hlstd{,} \hlkwc{limit} \hlstd{=} \hlnum{3}\hlstd{,}
+             \hlkwc{sort} \hlstd{=} \hlstr{"relevance"}\hlstd{,} \hlkwc{min.relevance} \hlstd{=} \hlnum{80}\hlstd{,} \hlkwc{verbose} \hlstd{=} \hlnum{FALSE}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
 ## [1] R. J. Carroll. _Measurement Error in Epidemiologic Studies_.
@@ -381,12 +454,14 @@ Although false negatives are rare, the CrossRef Metadata Search can be prone to 
 % #              min.relevance = 50, verbose = TRUE)
 % # @
 \section{Manipulating BibEntry Objects}
-\subsection{Extraction Operators - Searching and Indexing}
+\subsection{Extraction Operators - Searching and Indexing}\label{searchsec}
 The extraction operator \code{'['}, has been redefined for BibEntry objects to allow for easily searching a database of references saved in a BibEntry object.  A different interface providing the same functionality is the function \code{SearchBib}.  Search options can be changed by set variables in the .BibOptions object or alternatively specified directly as arguments to the function \code{SearchBib}.  BibLaTeX date fields (\code{date,year,origdate,urldate,eventdate}) and name lists (author, editor, editora, editorb, editorc, translator, commentator, annotator, introduction, foreword, afterword, bookauthor, and holder) are handled specially as outlined below.  Other fields can be searched using either exact string matching or regular expressions, with or without ignoring case.
 
-Valid values for date fields in \Biblatex{} have the form \code{yyyy}, \code{yyyy-mm}, \code{yyyy-mm-dd}, and can be intervals of the form \code{yyyy/yyyy}, \code{yyyy-mm/yyyy-mm}, \code{yyyy-mm-dd/yyyy-mm-dd}.  The second date can be omitted in the interval to allow for open-ended end dates, e.g. \code{yyyy/}.  When searching using a date field, the search string should have one of these formats.  Additionally, the search string have be an interval with no start date, e.g. \code{date = ``/1980-06''} to return all entries published before June, 1980.  \pkg{The lubridate package} \citep{lubridate} is used to compare date fields, dates specified as intervals are converted to class \code{Interval} and non-interval dates are converted to class \code{POSIXct}.  The format \code{yyyy-mm} it is not currently supported despite not being supported in base \R{} or \pkg{lubridate}.  For compatibility with \Bibtex{}, \Biblatex{} and \ourpkg{} support the fields \code{year} and \code{month}, which are used if the \code{date} field is missing. Whether to ignore month and day values, if available, and only compare based on the year portion of the date field, is controlled by the option \code{match.date}, which supports two values ``exact'' or ``year.only''.
+Indices and search terms can be specified in a number of ways.  Similar to the default extraction operator for list objects, a vector of numeric indices or logical values can be given.  Additionally, a character vector of key values can be specified.  To search by field, a query can be specified with comma delimited \code{field=search.term} pairs, with \code{search.term} potentially being a vector with length greater than one to match multiple terms for \code{field} (think ``OR'').  Each \code{field=search.term} pair will have to match to declare a match for that entry (think ``AND'').  Multiple queries (``OR'') can be handled (involving different fields) by enclosing each separater query preferably a \code{list} or alternatively \code{c}.  For example, $\text{list}(field_{11} = \mathbf{search.term}_{11},field_{12}=\mathbf{search.term_{12}}),\text{list}(field_{21}=\mathbf{search.term_{21}})$.  If \code{c} is used instead of \code{list}, then the search terms \emph{must} have length one.  Examples will be provided shortly after discussing the special handling of date and name fields.  
 
-When searching name list fields, the search term is expected to have the same format as used in a .bib file, e.g. \code{``Doe, Jr., John and Jane \{Doe Smith\}''}.  Names can be matched based on family names only, by family name and given name initials, or by full name, depending on the value of the argument \code{match.author}.  
+Valid values for date fields in \Biblatex{} have the form \code{yyyy}, \code{yyyy-mm}, \code{yyyy-mm-dd}, and can be intervals of the form \code{yyyy/yyyy}, \code{yyyy-mm/yyyy-mm}, \code{yyyy-mm-dd/yyyy-mm-dd}.  The second date can be omitted in the interval to allow for open-ended end dates, e.g. \code{yyyy/}.  When searching using a date field, the search string should have one of these formats.  Additionally, the search string have be an interval with no start date, e.g. \code{date = ``/1980-06''} to return all entries published before June, 1980.  \pkg{The lubridate package} \citep{lubridate} is used to compare date fields, dates specified as intervals are converted to class \code{Interval} and non-interval dates are converted to class \code{POSIXct}.  The format \code{yyyy-mm} it \emph{is} currently supported despite not being supported in base \R{} or \pkg{lubridate}.  For compatibility with \Bibtex{}, \Biblatex{} and \ourpkg{} support the fields \code{year} and \code{month}, which are used if the \code{date} field is missing. Whether to ignore month and day values, if available, and only compare based on the year portion of the date field, is controlled by the option \code{match.date}, which supports two values ``exact'' or ``year.only''.
+
+When searching name list fields, the search term is expected to have the same format as used in a \code{.bib} file, e.g., \code{``Doe, Jr., John and Jane \{Doe Smith\}''}.  Names can be matched based on family names only, by family name and given name initials, or by full name, depending on the value of the argument \code{match.author}.  
 
 Entries containing valid \code{crossref} and \code{xdata} fields are expanded prior to searching, so that when a match is found for a field and value that a child entry inherits from its parent, the result is both the parent and child being returned.  If a match is found in a child entry and not in the parent, only the child entry is returned, but the returned entry will contain any fields it inherits from its parent.  Any xdata entries that the child references will also be returned.  Examples follow.
 
@@ -394,9 +469,8 @@ Entries containing valid \code{crossref} and \code{xdata} fields are expanded pr
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{bib} \hlkwb{<-} \hlkwd{ReadBib}\hlstd{(}\hlstr{"biblatexExamples.bib"}\hlstd{,} \hlkwc{check} \hlstd{=} \hlnum{FALSE}\hlstd{)}
-\hlcom{# by default .BibOptions$match.author = 'family.only' and}
-\hlcom{# .BibOptions$ignore.case = TRUE inbook entry inheriting editor field from}
-\hlcom{# parent}
+\hlcom{# by default match.author = 'family.only' and ignore.case = TRUE inbook}
+\hlcom{# entry inheriting editor field from parent}
 \hlstd{bib[}\hlkwc{editor} \hlstd{=} \hlstr{"westfahl"}\hlstd{]}
 \end{alltt}
 \begin{verbatim}
@@ -422,11 +496,153 @@ Entries containing valid \code{crossref} and \code{xdata} fields are expanded pr
 \end{knitrout}
 
 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Entries published in Zürich (in bib file Z\{\textbackslash{}'u\}ich) OR entries written by}
+\hlcom{# Aristotle and published before 1930}
+\hlstd{bib[}\hlkwd{list}\hlstd{(}\hlkwc{location} \hlstd{=} \hlstr{"Zürich"}\hlstd{),} \hlkwd{list}\hlstd{(}\hlkwc{author} \hlstd{=} \hlstr{"Aristotle"}\hlstd{,} \hlkwc{year} \hlstd{=} \hlstr{"/1930"}\hlstd{)]}
+\end{alltt}
+\begin{verbatim}
+## [1] Aristotle. _De Anima_. Ed. by R. D. Hicks. Cambridge:
+## Cambridge University Press, 1907.
+## 
+## [2] Aristotle. _Physics_. Trans.  by P. H. Wicksteed and F. M.
+## Cornford. New York: G. P. Putnam, 1929.
+## 
+## [3] Aristotle. _The Rhetoric of Aristotle with a commentary by the
+## late Edward Meredith Cope_. Ed. by E. M. Cope. With a comment. by
+## E. M. Cope. Vol. 3. 3 vols. Cambridge University Press, 1877.
+## 
+## [4] Homer. _Die Ilias_. Trans.  by W. Schadewaldt. With an intro.
+## by J. Latacz. 3rd ed. Düsseldorf and Zürich: Artemis \& Winkler,
+## 2004.
+\end{verbatim}
+\begin{alltt}
+\hlcom{# no match with parent entry, the returned child has inherited fields}
+\hlstd{bib[}\hlkwc{author} \hlstd{=} \hlstr{"westfahl"}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+## [1] G. Westfahl. "The True Frontier. Confronting and Avoiding the
+## Realities of Space in American Science Fiction Films". In: _Space
+## and Beyond. The Frontier Theme in Science Fiction_. Ed. by G.
+## Westfahl. Westport, Conn. and London: Greenwood, 2000, pp. 55-65.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
 The list extraction operator, \code{`[[`}, is used for extacting bibentry objects by position (an integer) or the entry key (a string).  Unlike the default operator, a vector of indices may be given to extract more than one entry at a time.
 
 As with \code{bibentry} objects, the \code{`$`} operator for BibEntry objects is used to return a list containing the value of a particular field for all entries, with a value of \code{NULL} returned for entries that to no use the specified field.  A list of all entry types or keys for the \code{BibEntry} object, \code{bib}, can be obtained using \code{bib$bibtype} and \code{bib$key}, respectively.
 \subsection{Assignment Operators} 
-List assignment, \code{'[[<-'} is used for replacing one entry in a BibEntry object with another.
+List assignment, \code{'[[<-'} is used for replacing one entry in a BibEntry object with another.  The below example uses a bibliography of just under 500 works of Raymond J.\ Carroll indexed on Google Scholar.  It contains a number of errors, some of which we correct below to help demonstrate the use of the package.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Some selected works of Raymond J. Carroll}
+\hlcom{## file.name <- system.file("sampleData", "RJC.bib", package = "RefManageR")}
+\hlstd{bib} \hlkwb{<-} \hlkwd{ReadBib}\hlstd{(file.name)}
+\hlkwd{length}\hlstd{(bib)}
+\end{alltt}
+\begin{verbatim}
+## [1] 494
+\end{verbatim}
+\begin{alltt}
+\hlkwd{length}\hlstd{(bib)} \hlopt{==} \hlkwd{length}\hlstd{(bib[}\hlkwc{author} \hlstd{=} \hlstr{"Carroll"}\hlstd{])}
+\end{alltt}
+\begin{verbatim}
+## [1] FALSE
+\end{verbatim}
+\begin{alltt}
+\hlcom{# which entries are missing RJC?}
+\hlstd{ind} \hlkwb{<-} \hlkwd{SearchBib}\hlstd{(bib,} \hlkwc{author} \hlstd{=} \hlstr{"!Carroll"}\hlstd{,} \hlkwc{return.index} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlstd{bib[ind]}\hlopt{$}\hlstd{author}
+\end{alltt}
+\begin{verbatim}
+## [[1]]
+## [1] "J G M AR TI NE Z" "R J C AR RO LL"  
+## 
+## [[2]]
+## [1] "R J Caroll"      "D Ruppert"       "L A Stefanski"   "C M Crainiceanu"
+## 
+## [[3]]
+## [1] "R J C AR RO LL"
+## 
+## [[4]]
+## [1] "M C Wu"     "K R Bailey"
+## 
+## [[5]]
+## [1] "R J Caroll"
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+We can see that one paper is incorrectly attributed to RJC and the other four have spelling errors.  We thus drop that entry and correct the spelling on the other four entries.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{bib} \hlkwb{<-} \hlstd{bib[}\hlopt{-}\hlstd{ind[}\hlnum{4L}\hlstd{]]}
+\hlstd{bib[}\hlkwc{author}\hlstd{=}\hlstr{"!Carroll"}\hlstd{]}\hlopt{$}\hlstd{author} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"Martinez, J. G. and Carroll, R. J."}\hlstd{,}
+ \hlstr{"Carroll, R. J. and Ruppert, D. and Stefanski, L. A. and Crainiceanu, C. M."}\hlstd{,}
+ \hlstr{"Carroll, R. J."}\hlstd{,} \hlstr{"Carroll, R. J."}\hlstd{)}
+\hlkwd{length}\hlstd{(bib)} \hlopt{==} \hlkwd{length}\hlstd{(bib[}\hlkwc{author}\hlstd{=}\hlstr{"Carroll"}\hlstd{])}
+\end{alltt}
+\begin{verbatim}
+## [1] TRUE
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+We can update different fields of multiple entries using operator \code{[<-} as follows.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{print}\hlstd{(bib[}\hlkwd{seq_len}\hlstd{(}\hlnum{3L}\hlstd{)],} \hlkwc{sorting} \hlstd{=} \hlstr{"none"}\hlstd{,} \hlkwc{.bibstyle} \hlstd{=} \hlstr{"alphabetic"}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [SSC13] N. Serban, A. M. Staicu and R. J. Carroll. "Multilevel
+## Cross-Dependent Binary Longitudinal Data". In: _Biometrics_ 69.4
+## (2013), pp. 903-913.
+## 
+## [Jen+13] E. M. Jennings, J. S. Morris, R. J. Carroll, et al.
+## "Bayesian methods for expression-based integration of various
+## types of genomics data". In: _EURASIP Journal on Bioinformatics
+## and Systems Biology_ 2013.1 (2013), pp. 1-11.
+## 
+## [Gar+13] T. P. Garcia, S. Müller, R. J. Carroll, et al.
+## "Identification of important regressor groups, subgroups and
+## individuals via regularization methods: application to gut
+## microbiome data". In: _Bioinformatics, btt_ 608 (2013).
+\end{verbatim}
+\begin{alltt}
+\hlstd{bib[}\hlkwd{seq_len}\hlstd{(}\hlnum{3L}\hlstd{)]} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{date}\hlstd{=}\hlstr{"2013-12"}\hlstd{),} \hlcom{## add month to Serban et al.}
+        \hlkwd{c}\hlstd{(}\hlkwc{url}\hlstd{=}\hlstr{"http://bsb.eurasipjournals.com/content/2013/1/13"}\hlstd{,}
+          \hlkwc{urldate} \hlstd{=} \hlstr{"2014-02-02"}\hlstd{),} \hlcom{## add URL and urldate to Jennings et al.}
+        \hlkwd{c}\hlstd{(}\hlkwc{doi}\hlstd{=}\hlstr{"10.1093/bioinformatics/btt608"}\hlstd{,}
+          \hlkwc{journal} \hlstd{=} \hlstr{"Bioinformatics"}\hlstd{))} \hlcom{## add DOI and correct journal}
+\hlkwd{print}\hlstd{(bib[}\hlkwd{seq_len}\hlstd{(}\hlnum{3L}\hlstd{)],} \hlkwc{sorting} \hlstd{=} \hlstr{"none"}\hlstd{,} \hlkwc{.bibstyle} \hlstd{=} \hlstr{"alphabetic"}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [SSC13] N. Serban, A. M. Staicu and R. J. Carroll. "Multilevel
+## Cross-Dependent Binary Longitudinal Data". In: _Biometrics_ 69.4
+## (Dec. 2013), pp. 903-913.
+## 
+## [Jen+13] E. M. Jennings, J. S. Morris, R. J. Carroll, et al.
+## "Bayesian methods for expression-based integration of various
+## types of genomics data". In: _EURASIP Journal on Bioinformatics
+## and Systems Biology_ 2013.1 (2013), pp. 1-11. <URL:
+## http://bsb.eurasipjournals.com/content/2013/1/13> (visited on
+## 02/02/2014).
+## 
+## [Gar+13] T. P. Garcia, S. Müller, R. J. Carroll, et al.
+## "Identification of important regressor groups, subgroups and
+## individuals via regularization methods: application to gut
+## microbiome data". In: _Bioinformatics_ 608 (2013). DOI:
+## 10.1093/bioinformatics/btt608.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
 \subsection{Merging}
 The combine function, \code{c}, is available for concatenating multiple \code{BibEntry} objects, and has been inherited from the \code{bibentry} class.  Of course, this does not perform any checking for duplicate entries.  For this, there is the \code{base} package generics \code{anyDuplicated}, \code{duplicated}, and \code{unique}, which check vectors for duplicate elements.  However if \code{BibEntry} objects have been complied from a number of different sources, these functions may be too strict, declaring entries distinct even if only one field has a small difference between the two entries.  For this reason, we provide an additional operator \code{'+'} and a wrapper function \code{merge}, that compare entries only based on the fields specified by the user.  Given \code{BibEntry} objects \code{bib1} and \code{bib2}, \code{bib1 + bib2} will return \code{bib1} appended with all entries of bib2 that have been determined not be duplicates of entries already in \code{bib1} by comparing all fields in \code{.BibOptions$merge.fields.to.check}, which can include \code{bibtype} and \code{key}.  The function also checks if there are any duplicate keys in the result, and will force them to be unique if duplicates are detected using \code{make.unique}. 
 \subsection{BibEntry Conversion To and From Other Object Types}
