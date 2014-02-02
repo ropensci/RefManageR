@@ -1289,7 +1289,7 @@ toRd.BibEntry <- function(obj, style = .BibOptions$bib.style, .sorting ='nty', .
         Thesis = formatThesis(paper),                 
   	    Unpublished = formatUnpublished(paper),
         Set = paste0('Set: ', attr(paper, 'key')),
-        XData = paste0('Xdata: ', attr(paper, 'key')),     
+        XData = paste0('XData: ', attr(paper, 'key')),     
 # Aliases                 
         TechReport = formatReport(paper, ifelse(is.null(paper$type), 'techreport', NULL)),          
         PhdThesis = formatThesis(paper, ifelse(is.null(paper$type), 'phdthesis', NULL)),

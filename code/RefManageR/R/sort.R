@@ -65,7 +65,12 @@ sort.BibEntry <- function (x, decreasing = FALSE, .bibstyle = .BibOptions$bib.st
                                })) 
       }
     }
-    x$.index <- switch(.bibstyle, numeric = seq_along(x), alphabetic = alabs, authoryear = alabs, NULL)  
+    x$.index <- switch(.bibstyle, numeric = {
+      ind <- which(!unlist(x$bibtype) %in% c('Set', 'XData'))
+      index <- numeric(length(x))
+      index[ind] <- seq_along(ind)
+      index
+      }, alphabetic = alabs, authoryear = alabs, NULL)  
   }
   x
 #   }else{
