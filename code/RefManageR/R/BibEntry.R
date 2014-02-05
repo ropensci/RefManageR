@@ -14,6 +14,7 @@
 #' @return an object of class BibEntry
 #' @seealso \code{\link{bibentry}}
 #' @export
+#' @keywords database
 #' @section Entry Types: 
 #'   bibentry creates "bibentry" objects, which are modeled after BibLaTeX and BibTeX entries. The entry should 
 #'   be a valid BibLaTeX or BibTeX entry type.  For a list of valid BibTeX entry types, see 
@@ -75,7 +76,7 @@
 #' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
 #' @references BibLaTeX manual \url{http://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}
 #' @details The BibEntry objects created by BibEntry can represent an arbitrary positive number of references,
-#'   as with \code{bibentry}, but many addition methods are defined for building and manipulating a database
+#'   as with \code{bibentry}, but many additional methods are defined for building and manipulating a database
 #'   of references.
 BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL, 
                       key = NULL, ..., other = list(), mheader = NULL, mfooter = NULL){

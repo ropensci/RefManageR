@@ -3,9 +3,17 @@
 #' toBiblatex converts a BibEntry object to character vectors with BibLaTeX markup.  toBibtex will convert a BibEntry object
 #' to character vectors with BibTeX markup, converting some BibLaTeX fields and all entry types that are not supported 
 #' by BibTeX to ones that are supported.  
-#' 
+#' @param object - an object of class BibEntry
+#' @param ... - not used
 #' @aliases toBibtex.BibEntry
 #' @S3method toBiblatex BibEntry
+#' @keywords database IO
+#' @return a character vector, each element containing a line of the BibLaTeX markup corresponding to \code{object}.
+#' @seealso \code{\link{toBibtex.BibEntry}}, \code{print.BibEntry}
+#' @examples
+#' file.name <- system.file("sampleData", "biblatexExamples.bib", package="RefManageR")
+#' bib <- suppressMessages(ReadBib(file.name))
+#' toBiblatex(bib[70:72])
 toBiblatex <- function(object, ...){
     format_bibentry1 <- function(object) {
       object <- unclass(object)[[1L]]

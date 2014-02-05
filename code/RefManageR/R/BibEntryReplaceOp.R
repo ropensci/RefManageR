@@ -1,6 +1,39 @@
-#' @S3method [<- BibEntry
-#' @examples
+#' Update Different Fields of Multiple Entries of a BibEntry Object
 #' 
+#' Assign new values for specified fields in a BibEntry object using a named
+#' character vector or list of named character vectors.
+#' @param x - a BibEntry object.
+#' @param i - see \code{\link{[.BibEntry}}
+#' @param j - see \code{\link{[.BibEntry}
+#' @param ... - see \code{\link{[.BibEntry}
+#' @param value - values to be assigned to \code{x}.  To update one entry only,
+#' should be a named character vector with names corresponding to fields.  To update
+#' multiple entries, should be a list of named character vectors.  Can also be an object of 
+#' class BibEntry.
+#' @return an object of class BibEntry.
+#' @note Date and name list fields should be in the format expected
+#' by Biblatex (see \code{\link{BibEntry}}).
+#' @S3method [<- BibEntry
+#' @keywords methods manip
+#' @seealso \code{\link{[.BibEntry}}, \code{\link{$<-.BibEntry}}, \code{\link{[[<-.BibEntry}}
+#' @examples
+#' file.name <- system.file("sampleData", "RJC.bib", package="RefManageR")
+#' bib <- ReadBib(file.name)
+#' print(bib[seq_len(3L)], .opts = list(sorting = "none", .bibstyle = "alphabetic"))
+#' ## add month to Serban et al., add URL and urldate to Jennings et al., and
+#' ##   add DOI and correct journal to Garcia et al.
+#' bib[seq_len(3L)] <- list(c(date="2013-12"), 
+#'                         c(url="http://bsb.eurasipjournals.com/content/2013/1/13", 
+#'                           urldate = "2014-02-02"), 
+#'                         c(doi="10.1093/bioinformatics/btt608", 
+#'                           journal = "Bioinformatics")) 
+#' print(bib[seq_len(3L)], .opts = list(sorting = "none", bib.style = "alphabetic"))
+#' bib2 <- bib[seq_len(3L)]
+#' bib2[2:3] <- bib[5:6]
+#' bib2
+#' bib2[3] <- c(journal='', eprinttype = "arxiv", eprint = "1308.5427", eprintclass = "math.ST",
+#'                            pubstate = "submitted", bibtype = "misc")
+#' bib2                            
 `[<-.BibEntry` <- function(x, i, j, ..., value){
   if (!length(value))
     return(x)
@@ -84,28 +117,52 @@ BibReplace <- function(orig, replace.vals){
     stop('Replacement object must have names corresponding to fields')
   if ('key' %in% replace.fields){
     attr(orig, 'key') <- replace.vals[['key']]
-    if (length(replace.vals) > 1){
-      replace.vals[['key']] <- NULL
-    }else{
-      return(orig)
-    }
+#     if (length(replace.vals) > 1){
+#       replace.vals[['key']] <- NULL
+#     }else{
+#       return(orig)
+#     }
   }
   if ('bibtype' %in% replace.fields){
     BibLaTeX_names <- names(BibLaTeX_entry_field_db)
     pos <- match(tolower(replace.vals[['bibtype']]), tolower(BibLaTeX_names))
     if (is.na(pos))
       stop('Invalid bibtype specified')
-    attr(orig, 'bibtype') <- BibLaTeX_names
-    if (length(replace.vals) > 1){
-      replace.vals[['bibtype']] <- NULL
-    }else{
-      return(orig)
-    }
+    attr(orig, 'bibtype') <- BibLaTeX_names[pos]
+#     browser()
+#     if (length(replace.vals) > 1){
+#       replace.vals[['bibtype']] <- NULL
+#     }else{
+#       return(orig)
+#     }
   }
  # browser()
   nl.to.update <- replace.fields %in% .BibEntryNameList
   for (i in replace.fields[nl.to.update])
     orig[[i]] <- ArrangeAuthors(replace.vals[[i]])
+
+  replace.remains <- replace.vals[!replace.fields %in% c('bibtype', 'key', .BibEntryNameList)]
+  if (length(replace.remains)){
+    replace.names <- names(replace.remains)
+    for (i in seq_along(replace.remains)){
+      if (nchar(replace.remains[i])){
+        orig[[replace.names[i]]] <- replace.remains[i]  
+      }else{
+        orig[[replace.names[i]]] <- NULL
+      }
+    }
+      
+  }
+  if (any(replace.fields %in% .BibEntryDateField)){  # update dateobj attribute
+    tdate <- ProcessDates(orig)
+    if (is.null(tdate))
+      stop(paste0('The specified Date Field value is not in a valid format for Bibtex/Biblatex'))
+    attr(orig, 'dateobj') <- tdate
+  }
+
+  return(orig)
+}
+
 #   if (any(nl.to.update)){
 #     #tmp <- orig
 #     orig[replace.vals[nl.to.update]] <- sapply(replace.vals[nl.to.update], ArrangeAuthors)
@@ -137,18 +194,3 @@ BibReplace <- function(orig, replace.vals){
 #     orig[['date']] <- as.Date(paste(replace.vals[['year']], month(orig$date), day(orig$date), sep='-'))
 #   }
 #  browser()
-  replace.remains <- replace.vals[!replace.fields %in% c('bibtype', 'key', .BibEntryNameList)]
-  if (length(replace.remains)){
-    replace.names <- names(replace.remains)
-    for (i in seq_along(replace.remains))
-      orig[[replace.names[i]]] <- replace.remains[i]
-  }
-  if (any(replace.fields %in% .BibEntryDateField)){  # update dateobj attribute
-    tdate <- ProcessDates(orig)
-    if (is.null(tdate))
-      stop(paste0('The specified Date Field value is not in a valid format for Bibtex/Biblatex'))
-    attr(orig, 'dateobj') <- tdate
-  }
-
-  return(orig)
-}

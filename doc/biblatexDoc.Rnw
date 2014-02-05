@@ -197,11 +197,11 @@ bib <- BibEntry(bibtype="Article", key = "barry1996", date = "1996-08",
 bib
 toBiblatex(bib)
 @
-As with \code{bibentry} objects, the operator \code{c} may be used to combine \code{BibEntry} objects.  The \code{bibentry} class supports \Bibtex{}-style crossreferencing as does the \code{Bibentry} class.  Cross references are handled specially when indexing and searching \code{BibEntry} objects and discussed in Section~\ref{searchsec}.  In a similar vain as cross-referencing, \Biblatex{} supports a entry type ``xdata'' which is never printed, but may be used to store fields that are shared by several entries.  Entries can specify a field xdata containing a comma separated list of keys belonging to Xdata entries that the child inherits from.  The following example demonstrates its use for online references available on arXiv.
+As with \code{bibentry} objects, the operator \code{c} may be used to combine \code{BibEntry} objects.  The \code{bibentry} class supports \Bibtex{}-style crossreferencing as does the \code{Bibentry} class.  Cross references are handled specially when indexing and searching \code{BibEntry} objects and discussed in Section~\ref{searchsec}.  In a similar vain as cross-referencing, \Biblatex{} supports a entry type ``XData'' which is never printed, but may be used to store fields that are shared by several entries.  Entries can specify a field xdata containing a comma separated list of keys belonging to Xdata entries that the child inherits from.  The following example demonstrates its use for online references available on arXiv.
 <<arxiv, tidy=FALSE, highlight=TRUE, cache=TRUE>>=
-bib <- BibEntry(bibtype="Xdata", key = "statME", eprinttype = "arxiv", 
+bib <- BibEntry(bibtype="XData", key = "statME", eprinttype = "arxiv", 
                 eprintclass = "stat.ME")
-bib <- c(bib, BibEntry(bibtype="Xdata", key = "online2013", year = "2013", 
+bib <- c(bib, BibEntry(bibtype="XData", key = "online2013", year = "2013", 
                        urldate = "2013-12-20"))
 toBiblatex(bib)
 bib <- c(bib, BibEntry(bibtype="Online", key="mclean2013rlrt", 
@@ -315,7 +315,7 @@ bib <- ReadBib(file.name)
 length(bib)
 length(bib) == length(bib[author="Carroll"])
 # which entries are missing RJC?
-ind <- SearchBib(bib, author = "!Carroll", return.index = TRUE)
+ind <- SearchBib(bib, author = "!Carroll", .opts = list(return.ind = TRUE))
 bib[ind]$author  
 @
 We can see that one paper is incorrectly attributed to RJC and the other four have spelling errors.  We thus drop that entry and correct the spelling on the other four entries.
@@ -328,13 +328,27 @@ length(bib) == length(bib[author="Carroll"])
 @
 We can update different fields of multiple entries using operator \code{[<-} as follows.
 <<RJC3, tidy=FALSE, dependson="RJC2", highlight=TRUE, cache=TRUE>>=
-print(bib[seq_len(3L)], sorting = "none", .bibstyle = "alphabetic")
-bib[seq_len(3L)] <- list(c(date="2013-12"), ## add month to Serban et al.
+BibOptions(sorting = "none", bib.style = "alphabetic")
+bib[seq_len(3)]
+bib[seq_len(3)] <- list(c(date="2013-12"), ## add month to Serban et al.
         c(url="http://bsb.eurasipjournals.com/content/2013/1/13", 
           urldate = "2014-02-02"), ## add URL and urldate to Jennings et al.
         c(doi="10.1093/bioinformatics/btt608", 
           journal = "Bioinformatics")) ## add DOI and correct journal
-print(bib[seq_len(3L)], sorting = "none", .bibstyle = "alphabetic")
+bib[seq_len(3)]
+@
+Alternatively, a BibEntry object may be used as the replacement value.  A field may be removed by specifying its value be
+set to the empty string \code{''}.
+<<RJC4, tidy=FALSE, dependson="RJC3", highlight=TRUE, cache=TRUE, echo=-1>>=
+BibOptions(sorting = "none", bib.style = "alphabetic")
+bib2 <- bib[seq_len(3)]
+bib2[2:3] <- bib[5:6]
+# Note the Sarkar et al. entry is arXiv preprint with incorrect journal field
+bib2
+# Change type, remove journal, correct arXiv information
+bib2[3] <- c(journal='', eprinttype = "arxiv", eprint = "1308.5427", 
+           eprintclass = "math.ST", pubstate = "submitted", bibtype = "Misc")
+bib2[3]
 @
 \subsection{Merging}
 The combine function, \code{c}, is available for concatenating multiple \code{BibEntry} objects, and has been inherited from the \code{bibentry} class.  Of course, this does not perform any checking for duplicate entries.  For this, there is the \code{base} package generics \code{anyDuplicated}, \code{duplicated}, and \code{unique}, which check vectors for duplicate elements.  However if \code{BibEntry} objects have been complied from a number of different sources, these functions may be too strict, declaring entries distinct even if only one field has a small difference between the two entries.  For this reason, we provide an additional operator \code{'+'} and a wrapper function \code{merge}, that compare entries only based on the fields specified by the user.  Given \code{BibEntry} objects \code{bib1} and \code{bib2}, \code{bib1 + bib2} will return \code{bib1} appended with all entries of bib2 that have been determined not be duplicates of entries already in \code{bib1} by comparing all fields in \code{.BibOptions$merge.fields.to.check}, which can include \code{bibtype} and \code{key}.  The function also checks if there are any duplicate keys in the result, and will force them to be unique if duplicates are detected using \code{make.unique}. 

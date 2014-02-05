@@ -1,4 +1,14 @@
+#' Encode in a common format
+#' 
+#' Format a BibEntry object in a pretty format.
+#' 
+#' @param x - an object of class BibEntry
+#' @param style
+#' @return character vector containing formatted BibEntry object.
 #' @importFrom utils .format_bibentry_as_R_code
+#' @method format BibEntry
+#' @keywords internal
+#' @seealso \code{\link{print.BibEntry}}, \code{\link{BibEntry}}
 format.BibEntry <- function(x, style = "text", .bibstyle = BibOptions()$bib.style, 
                              citation.bibtex.max = getOption("citation.bibtex.max", 1), sort = TRUE, 
                             .sorting = 'nty', enc = 'UTF-8', ...){

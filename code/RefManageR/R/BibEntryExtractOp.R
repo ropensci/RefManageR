@@ -2,6 +2,7 @@
 #' 
 #' Find a date in a date field of a BibEntry object 
 #' @keywords internal
+#' @importFrom lubridate is.interval year month int_end int_start
 MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
   # browser()
   if (is.null(x))
@@ -72,7 +73,7 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 #' @param ... - arguments in the form \code{bib.field = search.term}, or as \code{j} list\emph{s} or character vector\emph{s}
 #' for additional searches.  For \code{SearchBib}, can alternatively have same form as \code{i}.
 #' @param drop - ignored
-#' @value an object of class BibEntry (the results of the search/indexing)
+#' @return an object of class BibEntry (the results of the search/indexing)
 #' @details 
 #' @note The arguments to the SearchBib function that control certain search features can also be changed for the extraction
 #' operator by changing the corresponding option in the .BibOptions object; see \code{\link{BibOptions}}.

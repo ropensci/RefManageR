@@ -46,6 +46,8 @@
 #' }
 #' @note if \code{...} is missing and \code{restore.defaults = FALSE}, all options and their current values will be returned
 #' as a list.
+#' @return if a vector of option names is supplied, the current value of the requested options, or if \code{...} is missing,
+#' all current option values; otherwise, \code{NULL}.
 #' @seealso \code{\link{print.BibEntry}}, \code{\link{BibEntry}}, \code{\link{options}}
 BibOptions <- function(..., restore.defaults = FALSE){
   if (restore.defaults)
@@ -70,7 +72,8 @@ BibOptions <- function(..., restore.defaults = FALSE){
     if (any(ind) && !is.logical(unlist(opts[ind])))
       stop("One of the specified option values should be logical and is not, see ?BibOptions")
     #.BibOptions[nom] <- opts
-    invisible(mapply(assign, nom, opts, MoreArgs = list(envir=.BibOptions)))
+    mapply(assign, nom, opts, MoreArgs = list(envir=.BibOptions))
+    invisible(NULL)
   }
 }
 
