@@ -7,53 +7,25 @@
 #' are done; if \code{FALSE} entries will be converted as described in \code{\link{toBibtex.BibEntry}}.
 #' @param append - as in \code{\link{write.bib}}
 #' @param verbose - as in \code{\link{write.bib}}
+#' @return \code{bib} - invisibly
 #' @author McLean, M. W. - based on \code{write.bib} function in package \code{bibtex} by Francois, R.
-#' @seealso \code{\link{write.bib}}, \code{\link{toBibtex.BibEntry}}, \code{\link{toBiblatex}}, \code{\link{BibEntry}}
+#' @seealso \code{\link{write.bib}}, \code{\link{ReadBib}, \code{\link{toBibtex.BibEntry}}, 
+#' \code{\link{toBiblatex}}, \code{\link{BibEntry}}
 #' @keywords IO
+#' @note To write the contents of \code{bib} \dQuote{as is}, the argument \code{biblatex} should be \code{TRUE}, otherwise
+#' conversion is done as in \code{\link{toBibtex.BibEntry}}.
+#' @importFrom tools encoded_text_to_latex
+#' @author McLean, M. W. based on \code{\link{write.bib}} by Gaujoux, R. in package \code{bibtex}.
 #' @examples
 #' bib <- ReadCrossRef(query = 'carroll journal of the american statistical association', year = 2012)
+#' tfile <- tempfile(fileext = ".bib")
+#' WriteBib(bib, tfile)
+#' identical(ReadBib(tfile), bib)
+#' unlink(tfile)
 WriteBib <- function (bib, file = "references.bib", biblatex = TRUE, append = FALSE, verbose = TRUE, ...) {
-  bibs <- if (inherits(bib, "bibentry")) 
-    bib
-  else if (is.character(bib)) {
-    if (length(bib) == 0) {
-      if (verbose) 
-        message("Empty package list: nothing to be done.")
-      return(invisible())
-    }
-    pkgs <- bib
-    if (is.null(pkgs)) 
-      pkgs <- unique(installed.packages()[, 1])
-    bibs <- sapply(pkgs, function(x) try(citation(x)), simplify = FALSE)
-    n.installed <- length(bibs)
-    ok <- sapply(bibs, inherits, "bibentry")
-    pkgs <- pkgs[ok]
-    bibs <- bibs[ok]
-    n.converted <- sum(ok)
-    pkgs <- lapply(seq_along(pkgs), function(i) if (length(bibs[[i]]) > 
-                                                      1) 
-      paste(pkgs[i], 1:length(bibs[[i]]), sep = "")
-                   else pkgs[i])
-    pkgs <- do.call("c", pkgs)
-    bibs <- do.call("c", bibs)
-    as.bibkey <- function(x) {
-      i <- grep("[.]", x)
-      if (length(i) > 0) 
-        x[i] <- paste("{", x[i], "}", sep = "")
-      x
-    }
-    bibs <- mapply(function(b, k) {
-      b$key <- k
-      b
-    }, bibs, pkgs, SIMPLIFY = FALSE)
-    bibs <- do.call("c", bibs)
-    if (verbose) 
-      message("Converted ", n.converted, " of ", n.installed, 
-              " package citations to BibTeX")
-    bibs
-  }
-  else stop("Invalid argument 'entry': expected a bibentry object or a character vector of package names.")
-  if (length(bibs) == 0) {
+  if (!inherits(bib, "BibEntry"))
+    stop("Must supply and object of class BibEntry")
+  if (length(bib) == 0) {
     if (verbose) 
       message("Empty bibentry list: nothing to be done.")
     return(invisible())
@@ -69,15 +41,15 @@ WriteBib <- function (bib, file = "references.bib", biblatex = TRUE, append = FA
              else "w+")
   on.exit(if (isOpen(fh)) close(fh))
   if (verbose) 
-    message("Writing ", length(bibs), " Bibtex entries ... ", 
+    message("Writing ", length(bib), " Bibtex entries ... ", 
             appendLF = FALSE)
   if (biblatex){
-    writeLines(toBibtex(bibs, ...), fh)  
+    writeLines(toBibtex(bib, ...), fh)  
   }else{
-    writeLines(toBiblatex(bibs, ...), fh)
+    writeLines(toBiblatex(bib, ...), fh)
   }
   
   if (verbose) 
     message("OK\nResults written to file '", file, "'")
-  invisible(bibs)
+  invisible(bib)
 }

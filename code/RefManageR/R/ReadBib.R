@@ -2,11 +2,18 @@
 #' 
 #' Parser for bibliography databases in the bib format containing either BibLaTeX or BibTeX entries.
 #' @param file 
-#' @imports bibtex
-#' @author Mathew W. McLean \email{mathew.w.mclean@@gmail.com}
-ReadBib <- function (file, package = "bibtex", .Encoding = "UTF-8", 
+#' @param .Encoding - encoding
+#' @param header - header of the citation list. By default this is made from the Preamble entries found in the bib file.
+#' @param footer - footer of the citation list.
+#' @author McLean, M. W., based on code in \code{bibtex} package by Francois, R. 
+#' @imports bibtex 
+#' @seealso \code{\link{read.bib}} in package \code{bibtex}
+#' @examples 
+#' file.name <- system.file("sampleData", "RJC.bib", package="RefManageR")
+#' bib <- ReadBib(file.name)
+ReadBib <- function (file, .Encoding = "UTF-8", 
                      header = if (length(preamble)) paste(preamble, sep = "\n") else "", 
-                     footer = "", check = .BibOptions$check.entries){
+                     footer = "", check = BibOptions()$check.entries){
   oldchk <- .BibOptions$check.entries
   .BibOptions$check.entries <- check
   stopifnot(!missing(file))

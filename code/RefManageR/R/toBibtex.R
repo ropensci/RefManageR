@@ -43,9 +43,9 @@
 #' \item{SuppCollection}{to InCollection}
 #' \item{thesis}{to MastersThesis if \code{type = mathesis}, else to PhdThesis}
 #' \item{\emph{rest}}{to Misc}
-#' @seealso \code{\link{BibEntry}}, \code{\link{print.BibEntry}}
+#' @seealso \code{\link{toBibtex}, \code{\link{BibEntry}}, \code{\link{print.BibEntry}}
 #' @author McLean, M. W. \email{mathew.w.mclean@gmail.com}
-#' @value an object of class \dQuote{Bibtex} - character vectors where each element holds one line of a BibTeX or BibLaTeX file
+#' @return an object of class \dQuote{Bibtex} - character vectors where each element holds one line of a BibTeX or BibLaTeX file
 #' @importFrom tools encoded_text_to_latex parseLatex deparseLatex latexToUtf8
 toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate", "addendum"), extra.fields = NULL, ...){
   format_bibentry1 <- function(object) {

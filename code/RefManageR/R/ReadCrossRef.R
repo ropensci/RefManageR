@@ -24,6 +24,30 @@ require(RJSONIO)
 # SearchCrossRef('Ruppert Carrol statistics')
 # SearchCrossRef('Carberry, J 2008, “Toward a Unified Theory of High-Energy Metaphysics: Silly String Theory.” Journal of Psychoceramics, vol. 5, no. 11, pp. 1-3.')
 
+#' Search CrossRef for references
+#' 
+#' Interface to CrossRef API - downloads Bibtex information for references returned from a search of the CrossRef database
+#' and returns the results as a BibEntry object.
+#' @param query - string; search term
+#' @param limit - numeric; maximum number of entries to return
+#' @param sort - string; how should the results from CrossRef be returned.
+#' @param year - numeric; if specified, only results from this year will be returned.
+#' @param min.relevance - numeric; only results with a CrossRef-assigned relevance score at least this high will be returned.
+#' @param temp.file - string; file name to use for storing Bibtex information returned by CrossRef.
+#' @param delete.file - boolean; should the bib file be deleted on exit?
+#' @param verbose - boolean; if \code{TRUE}, additional messages are output regarding the results of the query.
+#' @details CrossRef assigns a score between 0 and 100 based on how relevant a reference seems to be
+#' to your query
+#' @return An object of class BibEntry.
+#' @importFrom RJSONIO fromJSON
+#' @importFrom RCurl getForm getURLContent
+#' @keywords database
+#' @seealso \code{\link{ReadNCBI}, \code{\link{BibEntry}}}
+#' @examples
+#' ReadCrossRef(query = 'rj carroll measurement error', limit = 5, sort = "relevance", 
+#'   min.relevance = 80)
+#' 
+#' ReadCrossRef(query = 'carroll journal of the american statistical association', year = 2012)
 ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.relevance = 80,
                            temp.file = tempfile(fileext = '.bib'), delete.file = TRUE, verbose = FALSE){
   if (is.na(query))
@@ -68,15 +92,16 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.
   if (good > 0)
     bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
     
-  if (good == 0 || inherits(bib.res, 'try-error')){  #shouldn't happen now
-      #browser()
-      # message('Server error, you may want to try again.')      
-      return(NA)
-  }
+#   if (good == 0 || inherits(bib.res, 'try-error')){  #shouldn't happen now
+#       #browser()
+#       # message('Server error, you may want to try again.')      
+#       return(NA)
+#   }
 
   return(bib.res)
 }
 
+#' keywords internal
 GetCrossRefBibTeX <- function(doi, tmp.file){
   temp <- try(getURLContent(url=doi,
                       .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"), followLocation=TRUE)))

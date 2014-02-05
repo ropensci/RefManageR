@@ -29,8 +29,8 @@
 #' ##   so the child entry in is expanded in the BibEntry object returned by \code{`[`} 
 #' ##   to include the fields inherited from the dropped parent
 #' identical(merge(bib1, bib2, 'all'), bib)
-#' toBiblatex(bib1[[1]])
-#' toBiblatex(bib[[1]])
+#' toBiblatex(bib1[[1L]])
+#' toBiblatex(bib[[1L]])
 #' 
 #' ## Not strict enough
 #' length(merge(bib1, bib2, c('title', 'date'))
@@ -41,7 +41,7 @@
 #' .BibOptions$merge.fields.to.check <- "title"
 #' rjc.new.pubs <- bib1 + bib2
 #' @keywords methods
-`+.BibEntry` <- function(e1, e2, fields.to.check = .BibOptions$merge.fields.to.check){
+`+.BibEntry` <- function(e1, e2, fields.to.check = .BibOptions()$merge.fields.to.check){
   awl <- "all" %in% fields.to.check
   att1 <- attributes(e1)[bibentry_list_attribute_names]
   att2 <- attributes(e2)[bibentry_list_attribute_names]

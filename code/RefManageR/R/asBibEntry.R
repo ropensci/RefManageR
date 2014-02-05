@@ -1,3 +1,37 @@
+#' Coerce to a BibEntry object
+#' 
+#' Functions to check if an object is a BibEntry, or coerce it if possible.
+#' 
+#' @param x - any \code{R} object.
+#' @details \code{as.BibEntry} is able to coerce suitably formatted character vectors, \code{\link{bibentry}} objects, lists,
+#' and data.frames to BibEntry objects.  See the examples.
+#' @note Each entry to be coerced should have a bibtype, key, and all required fields for the specified bibtype.
+#' @return an object of class BibEntry.
+#' @aliases is.BibEntry
+#' @keywords database
+#' @seealso \code{\link{BibEntry}}
+#' @examples
+#' file.name <- system.file("sampleData", "biblatexExamples.bib", package="RefManageR")
+#' bib <- suppressMessages(ReadBib(file.name))[[20:21]]
+#' identical(as.BibEntry(unlist(bib)), bib)  ## see also relist.BibEntry
+#'
+#' identical(as.BibEntry(unclass(bib)), bib)
+#' 
+#' identical(as.BibEntry(as.data.frame(bib)), bib)
+#' 
+#' bib <- c(bibtype = "article", key = "mclean2014", title = "My New Article", author = "Mathew W. McLean", 
+#'   journaltitle = "The Journal", date = "2014-01")
+#' as.BibEntry(bib) 
+#' 
+#' bib <- bibentry(bibtype = "article", key = "mclean2014", title = "My New Article", 
+#' journal = "The Journal", year = 2014, author = "Mathew W. McLean")
+#' print(bib, .bibstyle = "JSS")
+#' as.BibEntry(bib)
+#' 
+#' bib <- list(c(bibtype = "article", key = "mclean2014a", title = "My New Article", author = "Mathew W. McLean", 
+#'   journaltitle = "The Journal", date = "2014-01"), c(bibtype = "article", key = "mclean2014b", 
+#'   title = "My Newer Article", author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-02"))       
+#' as.BibEntry(bib)   
 as.BibEntry <- function(x){
   if (inherits(x, 'BibEntry')){
     class(x) <- c('BibEntry', 'bibentry')
@@ -36,7 +70,7 @@ as.BibEntry <- function(x){
       warning('rownames of data.frame not meaningful for creating keys')
 
     y <- vector('list', length(x))
-    for (i in 1L:nrow(x)){
+    for (i in seq_len(nrow(x))){
       na.ind <- which(!is.na(x[i, ]))
       y[[i]] <- as.BibEntry(c(setNames(as.character(x[i, na.ind]), .fields[na.ind]), key = keys[i]) )
     }
@@ -44,22 +78,19 @@ as.BibEntry <- function(x){
     return(y)
 
   }else if(is.list(x)){
-    if(length(x) == 1L){
-      if (!is.null(attr(x, 'bibtype'))){  # x simply unclass'ed
+    #browser()
+    if(length(x) == 1L && !is.null(attr(x, 'bibtype'))){
         class(x) <- c('BibEntry', 'bibentry')
-      }else if (!is.null(x$dateobj)){  # x has been unlist'ed
+    }else if (!is.null(x$dateobj)){  # x has been unlist'ed
         x <- relist.BibEntry(x)
-      }else{  # user supplied list
-        x <- do.call('BibEntry', x)
-      }
+    }else if (!is.null(attr(x[[1L]], 'bibtype'))){  # x simply unclass'ed
+        class(x) <- c('BibEntry', 'bibentry')
     }else{
-      if (!is.null(attr(x[[1L]], 'bibtype'))){  # x simply unclass'ed
-        class(x) <- c('BibEntry', 'bibentry')
-      }else if (!is.null(x[[1L]]$dateobj)){
-        x <- relist.BibEntry(x)
+      if (length(x[[1L]]) == 1L){
+        x <- do.call(BibEntry, x)
       }else{
-        x <- sapply(x, function(...) do.call(BibEntry, ...))
-        class(x) <- c('BibEntry', 'bibentry')            
+        x <- sapply(x, function(...) do.call(BibEntry, as.list(...)))
+        class(x) <- c("BibEntry", "bibentry")
       }
     }
   }else{
@@ -67,3 +98,16 @@ as.BibEntry <- function(x){
   }
   return(x)
 }
+
+#' Coerce to a BibEntry object
+#' 
+#' Functions to check if an object is a BibEntry, or coerce it if possible.
+#' 
+#' @param x - any \code{R} object.
+#' @aliases as.BibEntry
+#' @return \code{is.data.frame} - boolean 
+#' @note \code{is.data.frame} returns \code{TRUE} if its argument is a BibEntry object.
+is.BibEntry <- function(x){
+  inherits(x, "BibEntry")
+}
+  

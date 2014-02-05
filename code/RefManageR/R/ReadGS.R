@@ -46,11 +46,11 @@ require(stringr)
 #' ## entries with no citations do not have the cite field
 #' kat.bib['cites'] 
 ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
-                     .Encoding = 'UTF-8', check.entries = .BibOptions$check.entries){
+                     .Encoding = 'UTF-8', check.entries = BibOptions()$check.entries){
   limit <- min(limit, 100)
   ps <- ifelse(limit <= 20, 20, 100)
-  oldvio <- .BibOptions$check.entries
-  .BibOptions$check.entries <- check.entries
+  oldvio <- BibOptions()$check.entries
+  BibOptions(check.entries = check.entries)
   .params <- list(hl = 'en', user = scholar.id, oe = .Encoding, pagesize = ps,
                   view_op = 'list_works', cstart = start)
   if (sort.by.date)
@@ -69,7 +69,7 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
   out <- lapply(tmp[!is.na(tmp)], MakeBibEntry, to.person = FALSE)
   out <- MakeCitationList(out)
   
-  .BibOptions$check.entries <- oldvio
+  BibOptions(check.entries = oldvio)
   
   return(out)
 }

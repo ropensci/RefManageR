@@ -1,11 +1,58 @@
+#' Sort a BibEntry Object
+#' 
+#' Sorts a \code{BibEntry} object by specified fields.  The possible fields used for sorting and
+#' the order they are used in correspond with the options avaiable in BibLaTeX.
+#' 
+#' @param x - an object of class BibEntry
+#' @param decreasing - logical; should the sort be increasing or decreasing?
 #' @param sorting - sort method to use, see \bold{Details}.
+#' @param .bibstyle - bibliography style; used when \code{sort} is called by \code{\link{print.BibEntry}} 
 #' @param ... - internal use only
-#' @details Refer the BibLaTeX manual Sections 3.1.2.1 and 3.5 and Appendix C.2 for more information.
+#' @return the sorted BibEntry object
+#' @S3method sort BibEntry
+#' @keywords manip methods
+#' @details The possible values for argument \code{sorting} are
+#' \itemize{
+#' \item nty - sort by name, then by title, then by year
+#' \item nyt - sort by name, then by year, then title
+#' \item nyvt - sort by name, year, volume, title
+#' \item anyt - sort by alphabetic label, name, year, title
+#' \item anyvt - sort by alphabetic label, name, year, volume, title
+#' \item ynt - sort by year, name, title
+#' \item ydnt - sort by year (descending), name, title
+#' \item debug - sort by keys
+#' \item none - no sorting is performed
+#' }
+#' 
+#' All sorting methods first consider the field presort, if available.  Entries with no presort field are assigned presort 
+#' value \dQuote{mm}. Next the sortkey field is used.
+#' 
+#' When sorting by name, the sortname field is used first.  If it is not present, the author field is used, 
+#' if that is not present editor is used, and if that is not present translator is used.  All of these fields are affected
+#' by the value of \code{max.names} in .BibOptions()$max.names.
+#' 
+#' When sorting by title, first the field sorttitle is considered.  Similarly, when sorting by year, the field sortyear is 
+#' first considered.
+#' 
+#' When sorting by volume, if the field is present it is padded to four digits with leading zeros; otherwise, 
+#' the string \dQuote{0000} is used.
+#' 
+#' When sorting by alphabetic label, the labels that would be generating with the \dQuote{alphabetic} bibstyle are used.
+#' First the shorthand field is considered, then label, then shortauthor, shorteditor, author, editor, and translator.
+#' Refer to the BibLaTeX manual Sections 3.1.2.1 and 3.5 and Appendix C.2 for more information.
 #' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex Package}.
 #' \url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 #' @seealso \code{\link{BibEntry}}, \code{\link{print.BibEntry}}, \code{\link{order}}
-sort.BibEntry <- function (x, decreasing = FALSE, .bibstyle = .BibOptions$bib.style, 
-                           sorting = .BibOptions$sorting, drop = FALSE, ...){
+#' @examples
+#' file.name <- system.file("sampleData", "biblatexExamples.bib", package="RefManageR")
+#' bib <- suppressMessages(ReadBib(file)[[70:73]])
+#' BibOptions(sorting = "none")
+#' bib
+#' sort(bib, sorting = "nyt")
+#' sort(bib, sorting = "ynt")
+#' BibOptions(restore.defaults = TRUE)
+sort.BibEntry <- function (x, decreasing = FALSE, .bibstyle = BibOptions()$bib.style, 
+                           sorting = BibOptions()$sorting, ...){
   # if (sorting == 'none' && .bibstyle != "alphabetic" c("numeric", ""))
   #  return(x)
   if (sorting == 'debug' || .bibstyle == 'draft')

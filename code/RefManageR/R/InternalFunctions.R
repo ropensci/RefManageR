@@ -634,7 +634,7 @@ ProcessDates <- function(bib){
 }
 
 #' @keywords internal
-#' @importFrom lubridate new_interval
+#' @importFrom lubridate new_interval parse_date_time
 ProcessDate <- function(dat, mon, searching = FALSE){
   if (!length(dat))
     return()
@@ -643,14 +643,15 @@ ProcessDate <- function(dat, mon, searching = FALSE){
   .mon <- FALSE
   if (length(grep('^(1|2)[0-9]{3}$', dat))){
     if (!is.null(mon)){
-      res <- as.POSIXct(paste0(dat, '-', mon, '-01'))
+      res <- parse_date_time(paste0(dat, '-', mon, '-01'), c("%Y-%m-%d", "%Y-%b-%d"))
       .mon <- TRUE
     }else{
       res <- as.POSIXct(paste0(dat, '-01-01'))
     }
   }else if (length(grep('^(1|2)[0-9]{3}/$', dat))){
     if (!is.null(mon)){
-      res <- new_interval(paste0(substring(dat, 1, 4), '-', mon, '-01'), Sys.Date())
+      res <- new_interval(parse_date_time(paste0(substring(dat, 1, 4), '-', mon, '-01'), c("%Y-%m-%d", "%Y-%b-%d")), 
+                          Sys.Date())
       .mon <- TRUE
     }else{
       res <- new_interval(paste0(substring(dat, 1, 4), '-01-01'), Sys.Date())

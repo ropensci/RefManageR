@@ -250,13 +250,13 @@ in \code{field = value} form.  Below we create and print an entry of type online
 \end{kframe}
 \end{knitrout}
 
-As with \code{bibentry} objects, the operator \code{c} may be used to combine \code{BibEntry} objects.  The \code{bibentry} class supports \Bibtex{}-style crossreferencing as does the \code{Bibentry} class.  Cross references are handled specially when indexing and searching \code{BibEntry} objects and discussed in Section~\ref{searchsec}.  In a similar vain as cross-referencing, \Biblatex{} supports a entry type ``xdata'' which is never printed, but may be used to store fields that are shared by several entries.  Entries can specify a field xdata containing a comma separated list of keys belonging to Xdata entries that the child inherits from.  The following example demonstrates its use for online references available on arXiv.
+As with \code{bibentry} objects, the operator \code{c} may be used to combine \code{BibEntry} objects.  The \code{bibentry} class supports \Bibtex{}-style crossreferencing as does the \code{Bibentry} class.  Cross references are handled specially when indexing and searching \code{BibEntry} objects and discussed in Section~\ref{searchsec}.  In a similar vain as cross-referencing, \Biblatex{} supports a entry type ``XData'' which is never printed, but may be used to store fields that are shared by several entries.  Entries can specify a field xdata containing a comma separated list of keys belonging to Xdata entries that the child inherits from.  The following example demonstrates its use for online references available on arXiv.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{bib} \hlkwb{<-} \hlkwd{BibEntry}\hlstd{(}\hlkwc{bibtype}\hlstd{=}\hlstr{"Xdata"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"statME"}\hlstd{,} \hlkwc{eprinttype} \hlstd{=} \hlstr{"arxiv"}\hlstd{,}
+\hlstd{bib} \hlkwb{<-} \hlkwd{BibEntry}\hlstd{(}\hlkwc{bibtype}\hlstd{=}\hlstr{"XData"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"statME"}\hlstd{,} \hlkwc{eprinttype} \hlstd{=} \hlstr{"arxiv"}\hlstd{,}
                 \hlkwc{eprintclass} \hlstd{=} \hlstr{"stat.ME"}\hlstd{)}
-\hlstd{bib} \hlkwb{<-} \hlkwd{c}\hlstd{(bib,} \hlkwd{BibEntry}\hlstd{(}\hlkwc{bibtype}\hlstd{=}\hlstr{"Xdata"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"online2013"}\hlstd{,} \hlkwc{year} \hlstd{=} \hlstr{"2013"}\hlstd{,}
+\hlstd{bib} \hlkwb{<-} \hlkwd{c}\hlstd{(bib,} \hlkwd{BibEntry}\hlstd{(}\hlkwc{bibtype}\hlstd{=}\hlstr{"XData"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"online2013"}\hlstd{,} \hlkwc{year} \hlstd{=} \hlstr{"2013"}\hlstd{,}
                        \hlkwc{urldate} \hlstd{=} \hlstr{"2013-12-20"}\hlstd{))}
 \hlkwd{toBiblatex}\hlstd{(bib)}
 \end{alltt}
@@ -568,23 +568,23 @@ List assignment, \code{'[[<-'} is used for replacing one entry in a BibEntry obj
 \end{verbatim}
 \begin{alltt}
 \hlcom{# which entries are missing RJC?}
-\hlstd{ind} \hlkwb{<-} \hlkwd{SearchBib}\hlstd{(bib,} \hlkwc{author} \hlstd{=} \hlstr{"!Carroll"}\hlstd{,} \hlkwc{return.index} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlstd{ind} \hlkwb{<-} \hlkwd{SearchBib}\hlstd{(bib,} \hlkwc{author} \hlstd{=} \hlstr{"!Carroll"}\hlstd{,} \hlkwc{.opts} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{return.ind} \hlstd{=} \hlnum{TRUE}\hlstd{))}
 \hlstd{bib[ind]}\hlopt{$}\hlstd{author}
 \end{alltt}
 \begin{verbatim}
-## [[1]]
+## $z2010oracle
 ## [1] "J G M AR TI NE Z" "R J C AR RO LL"  
 ## 
-## [[2]]
+## $caroll2006measurement
 ## [1] "R J Caroll"      "D Ruppert"       "L A Stefanski"   "C M Crainiceanu"
 ## 
-## [[3]]
+## $ll1996measurement
 ## [1] "R J C AR RO LL"
 ## 
-## [[4]]
+## $wu1989estimation
 ## [1] "M C Wu"     "K R Bailey"
 ## 
-## [[5]]
+## $caroll1989covariance
 ## [1] "R J Caroll"
 \end{verbatim}
 \end{kframe}
@@ -610,7 +610,8 @@ We can update different fields of multiple entries using operator \code{[<-} as 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{print}\hlstd{(bib[}\hlkwd{seq_len}\hlstd{(}\hlnum{3L}\hlstd{)],} \hlkwc{sorting} \hlstd{=} \hlstr{"none"}\hlstd{,} \hlkwc{.bibstyle} \hlstd{=} \hlstr{"alphabetic"}\hlstd{)}
+\hlkwd{BibOptions}\hlstd{(}\hlkwc{sorting} \hlstd{=} \hlstr{"none"}\hlstd{,} \hlkwc{bib.style} \hlstd{=} \hlstr{"alphabetic"}\hlstd{)}
+\hlstd{bib[}\hlkwd{seq_len}\hlstd{(}\hlnum{3}\hlstd{)]}
 \end{alltt}
 \begin{verbatim}
 ## [SSC13] N. Serban, A. M. Staicu and R. J. Carroll. "Multilevel
@@ -628,12 +629,12 @@ We can update different fields of multiple entries using operator \code{[<-} as 
 ## microbiome data". In: _Bioinformatics, btt_ 608 (2013).
 \end{verbatim}
 \begin{alltt}
-\hlstd{bib[}\hlkwd{seq_len}\hlstd{(}\hlnum{3L}\hlstd{)]} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{date}\hlstd{=}\hlstr{"2013-12"}\hlstd{),} \hlcom{## add month to Serban et al.}
+\hlstd{bib[}\hlkwd{seq_len}\hlstd{(}\hlnum{3}\hlstd{)]} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{date}\hlstd{=}\hlstr{"2013-12"}\hlstd{),} \hlcom{## add month to Serban et al.}
         \hlkwd{c}\hlstd{(}\hlkwc{url}\hlstd{=}\hlstr{"http://bsb.eurasipjournals.com/content/2013/1/13"}\hlstd{,}
           \hlkwc{urldate} \hlstd{=} \hlstr{"2014-02-02"}\hlstd{),} \hlcom{## add URL and urldate to Jennings et al.}
         \hlkwd{c}\hlstd{(}\hlkwc{doi}\hlstd{=}\hlstr{"10.1093/bioinformatics/btt608"}\hlstd{,}
           \hlkwc{journal} \hlstd{=} \hlstr{"Bioinformatics"}\hlstd{))} \hlcom{## add DOI and correct journal}
-\hlkwd{print}\hlstd{(bib[}\hlkwd{seq_len}\hlstd{(}\hlnum{3L}\hlstd{)],} \hlkwc{sorting} \hlstd{=} \hlstr{"none"}\hlstd{,} \hlkwc{.bibstyle} \hlstd{=} \hlstr{"alphabetic"}\hlstd{)}
+\hlstd{bib[}\hlkwd{seq_len}\hlstd{(}\hlnum{3}\hlstd{)]}
 \end{alltt}
 \begin{verbatim}
 ## [SSC13] N. Serban, A. M. Staicu and R. J. Carroll. "Multilevel
@@ -652,6 +653,44 @@ We can update different fields of multiple entries using operator \code{[<-} as 
 ## individuals via regularization methods: application to gut
 ## microbiome data". In: _Bioinformatics_ 608 (2013). DOI:
 ## 10.1093/bioinformatics/btt608.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Alternatively, a BibEntry object may be used as the replacement value.  A field may be removed by specifying its value be
+set to the empty string \code{''}.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{bib2} \hlkwb{<-} \hlstd{bib[}\hlkwd{seq_len}\hlstd{(}\hlnum{3}\hlstd{)]}
+\hlstd{bib2[}\hlnum{2}\hlopt{:}\hlnum{3}\hlstd{]} \hlkwb{<-} \hlstd{bib[}\hlnum{5}\hlopt{:}\hlnum{6}\hlstd{]}
+\hlcom{# Note the Sarkar et al. entry is arXiv preprint with incorrect journal field}
+\hlstd{bib2}
+\end{alltt}
+\begin{verbatim}
+## [SSC13] N. Serban, A. M. Staicu and R. J. Carroll. "Multilevel
+## Cross-Dependent Binary Longitudinal Data". In: _Biometrics_ 69.4
+## (Dec. 2013), pp. 903-913.
+## 
+## [TDC13] C. D. Tekwe, A. R. Dabney and R. J. Carroll. "Application
+## of Survival Analysis Methodology to the Quantitative Analysis of
+## LC-MS Proteomics Data". In: _AMINO ACIDS_ 45.3 (2013), pp.
+## 609-609.
+## 
+## [Sar+13] A. Sarkar, D. Pati, B. K. Mallick, et al. "Adaptive
+## Posterior Convergence Rates in Bayesian Density Deconvolution with
+## Supersmooth Errors". In: _arXiv preprint arXiv:_ 1308 (2013).
+\end{verbatim}
+\begin{alltt}
+\hlcom{# Change type, remove journal, correct arXiv information}
+\hlstd{bib2[}\hlnum{3}\hlstd{]} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlkwc{journal}\hlstd{=}\hlstr{''}\hlstd{,} \hlkwc{eprinttype} \hlstd{=} \hlstr{"arxiv"}\hlstd{,} \hlkwc{eprint} \hlstd{=} \hlstr{"1308.5427"}\hlstd{,}
+           \hlkwc{eprintclass} \hlstd{=} \hlstr{"math.ST"}\hlstd{,} \hlkwc{pubstate} \hlstd{=} \hlstr{"submitted"}\hlstd{,} \hlkwc{bibtype} \hlstd{=} \hlstr{"Misc"}\hlstd{)}
+\hlstd{bib2[}\hlnum{3}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+## [Sar+13] A. Sarkar, D. Pati, B. K. Mallick, et al. _Adaptive
+## Posterior Convergence Rates in Bayesian Density Deconvolution with
+## Supersmooth Errors_. 2013. arXiv: 1308.5427 [math.ST]. Submitted.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
