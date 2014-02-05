@@ -188,12 +188,14 @@ Another advantage of \Biblatex{} is its support for UTF-8 encoding. ``bibtex is 
 \section{Creating BibEntry Objects and Importing From Files}
 Similar to the \code{bibentry} function in \pkg{utils}, \ourpkg{} provides a function \code{BibEntry} for creating a \code{BibEntry} object containing a single reference, which can be combined with other references into a single \code{BibEntry} object.  Though the ``year'' field is still supported for backwards compatibility with \Bibtex{}, the field ``date'' is preferred and allows for a number of different formats for the date, which will be discussed later.  The field ``journaltitle'' is preferred for specifying journals, though ``journal'' remains supported.  An entry is specified to the \code{BibEntry} function via an argument \code{bibtype} for the entry type, an argument \code{key} for the entry key and by specifying other arguments
 in \code{field = value} form.  Below we create and print an entry of type online with fields author, title, date, journaltitle, volume, and number.  The \code{print} function for \code{BibEntry} objects offers a number of features which will be discussed in detail later.  It's default settings are chosen to mimic the defaults of \Biblatex{}.  The \code{toBiblatex} function can be used to display the entry in its \code{.bib} file format.
-<<BibEntry1, tidy=FALSE, highlight=TRUE, cache=TRUE>>=
+<<BibEntry1, tidy=FALSE, highlight=TRUE, echo=-1>>=
+library(tools, quietly = TRUE, warn.conflicts = FALSE, verbose = FALSE)
 bib <- BibEntry(bibtype="Article", key = "barry1996", date = "1996-08", 
   title = "A Diagnostic to Assess the Fit of a Variogram to Spatial Data",
   author = "Ronald Barry", journaltitle = "Journal of Statistical Software",
                  volume = 1, number = 1)
 bib
+toBiblatex(bib)
 @
 As with \code{bibentry} objects, the operator \code{c} may be used to combine \code{BibEntry} objects.  The \code{bibentry} class supports \Bibtex{}-style crossreferencing as does the \code{Bibentry} class.  Cross references are handled specially when indexing and searching \code{BibEntry} objects and discussed in Section~\ref{searchsec}.  In a similar vain as cross-referencing, \Biblatex{} supports a entry type ``xdata'' which is never printed, but may be used to store fields that are shared by several entries.  Entries can specify a field xdata containing a comma separated list of keys belonging to Xdata entries that the child inherits from.  The following example demonstrates its use for online references available on arXiv.
 <<arxiv, tidy=FALSE, highlight=TRUE, cache=TRUE>>=

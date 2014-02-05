@@ -10,6 +10,8 @@
 #' @author McLean, M. W. - based on \code{write.bib} function in package \code{bibtex} by Francois, R.
 #' @seealso \code{\link{write.bib}}, \code{\link{toBibtex.BibEntry}}, \code{\link{toBiblatex}}, \code{\link{BibEntry}}
 #' @keywords IO
+#' @examples
+#' bib <- ReadCrossRef(query = 'carroll journal of the american statistical association', year = 2012)
 WriteBib <- function (bib, file = "references.bib", biblatex = TRUE, append = FALSE, verbose = TRUE, ...) {
   bibs <- if (inherits(bib, "bibentry")) 
     bib
