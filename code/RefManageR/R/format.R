@@ -1,7 +1,7 @@
-format.BibEntry <- function(x, style = "text", .bibstyle = .BibOptions$bib.style, 
+#' @importFrom utils .format_bibentry_as_R_code
+format.BibEntry <- function(x, style = "text", .bibstyle = BibOptions()$bib.style, 
                              citation.bibtex.max = getOption("citation.bibtex.max", 1), sort = TRUE, 
                             .sorting = 'nty', enc = 'UTF-8', ...){
-   
     style <- .BibEntry_match_format_style(style)
     ret.ind <- .BibOptions$return.ind
     .BibOptions$return.ind <- FALSE
