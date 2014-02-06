@@ -1,3 +1,4 @@
+#' @keywords internal
 ReadFirstPages <- function(doc, page.one = TRUE){
   doc <- unlist(doc)
   res <- list()
@@ -123,7 +124,7 @@ ReadFirstPages <- function(doc, page.one = TRUE){
   return(res)
 }
 
-
+#' @keywords internal
 CheckJSTOR <- function(doc1, doc2){
   ind <- grep('http://www\\.jstor\\.org/stable/([0-9]+)', doc1)[1]
   if (!is.na(ind)){
@@ -174,6 +175,7 @@ CheckJSTOR <- function(doc1, doc2){
   return(res)
 }
 
+#' @keywords internal
 GetJSTOR <- function(doc){  # take extra caution for long title, author list, or journal info
   aut.ind <- grep('Author\\(s\\): ', doc)
   if (!length(aut.ind)){  # old format for JSTOR papers. 
@@ -248,14 +250,13 @@ GetJSTOR <- function(doc){  # take extra caution for long title, author list, or
               pages = pages, year = year, publisher = publisher))
 }
 
+#' @keywords internal
 GetAuthorTitle <- function(doc, found.abstract, kw){
   abst.ind <- grep('^A[Bb][Ss][Tt][Rr][Aa][Cc][Tt]|^S[Uu][Mm][Mm][Aa][Rr][Yy]|^S[Yy][Nn][Oo][Pp][Ss][Ii][Ss][:.]?\\>', doc)
   if (length(abst.ind) && abst.ind > 2L){  # assume title/author comes before Abstract. need 2nd cond. for ind==1
     doc <- doc[1L:(abst.ind - 1L)]
     found.abstract <- TRUE
   }
-  browser()
-
 
   #   aut.ind <- regexpr(paste0("^([A-Z][a-z]*[\\.]?[ -]",  # first name, maybe hypenated or abbrev.
   #                       "([A-Z][a-z]*[\\.]?[ -])*",  # optional middle name or initial, maybe hypenated
@@ -389,7 +390,7 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
 }
 
 
-
+#' @keywords internal
 CleanAuthorTitle <- function(bib1, bib2, bibMeta, file){
   if (bib2$found.abstract && (!is.null(bib2$author) || !is.null(bib2$title))){
     if(!is.null(bibMeta))
@@ -443,6 +444,7 @@ CleanAuthorTitle <- function(bib1, bib2, bibMeta, file){
   return(bib)
 }
 
+#' @keywords internal
 SearchDOIText <- function(txt){
 #  if (length(txt) <= 1)
 #    return(NA)
@@ -465,6 +467,7 @@ SearchDOIText <- function(txt){
 #   return(c(doi = res, doc = txt))
 # }
 
+#' @keywords internal
 ProcessPDFMeta <- function(x, enc = 'UTF-8'){
   #status <- system2("pdfinfo", args = c('-enc', encoding, shQuote(normalizePath(file))), 
   #                  stdout = outfile)
@@ -560,7 +563,7 @@ ProcessPDFMeta <- function(x, enc = 'UTF-8'){
   }
 }
 
-
+#' @keywords internal
 ProcessPDFSubject <- function(subj){
   res <- list()
  # browser()
@@ -626,6 +629,7 @@ ProcessPDFSubject <- function(subj){
   return(res)
 }
 
+#' @keywords internal
 AddListToList <- function(list1, list2){
   c1 <- is.na(list1) || length(list1)==0
   c2 <- is.na(list2) || length(list2)==0
