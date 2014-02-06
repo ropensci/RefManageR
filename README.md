@@ -131,7 +131,7 @@ BUGS
 - `authoryear` still has some encoding issues - e.g. print(testb[location="München"], .bibstyle = 'authoryear')
 - (**FIXED**) `sorting = "none"` an bibstyle needs labels
 - (**FIXED**) CreateBibKey when special chars in author or title
-- Printing year followed by editor has and extra period  `(2013).. Ed by M. McLean, pp. 60-70.`
+- (**FIXED**) Printing year followed by editor for Article entries has extra period  `(2013).. Ed by M. McLean, pp. 60-70.`
 - BibOptions are not reset on error - especially bad if return.ind is made TRUE inside function. Should be fixable with try-catch blocks in `print` and `[` and `search` and `sort` and `[<-`
 
 DONE     

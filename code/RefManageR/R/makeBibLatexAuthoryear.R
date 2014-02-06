@@ -536,13 +536,13 @@ fmtBAuthor <- function(doc){
 fmtPublisher <- function(pub, loc, addr){
   if (length(loc) || length(addr)){
     res <- if (length(loc))
-               loc
-           else addr
+               plainclean(loc)
+           else plainclean(addr)
     if (length(pub))
-      res <- paste(res, pub, sep = ': ')
+      res <- paste(res, plainclean(pub), sep = ': ')
     res
   }else if (length(pub)){
-    pub
+    plainclean(pub)
   }
 }
 
@@ -560,9 +560,9 @@ fmtEventDate <- function(ed, ven){
     fDate <- try(ProcessDate(ed, NULL), TRUE)
     if (is.null(fDate) || inherits(fDate, 'try-error')){
       if (length(ven))
-        paste0('(', ven, ').')
+        paste0('(', plainclean(ven), ').')
     }else{
-      paste0('(', paste0(c(ven, DateFormatter(fDate, 'event')), collapse = ', '), ').')  
+      paste0('(', paste0(c(plainclean(ven), DateFormatter(fDate, 'event')), collapse = ', '), ').')  
     } 
   }
 }
@@ -763,19 +763,6 @@ fmtType <- function(type){
 ## Entry types: Bibliography Drivers in BibLaTeX (Sec. 4.2.3 in manual)
 #####################################################################################
 formatArticle <- function(paper){
-#  browser()
-#     collapse(c(fmtPrefix(paper), addPeriod(authorList(paper$author)), fmtJTitle(paper$title), 
-#                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
-#                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
-#         fmtVersion(paper$version), sentence(paste0(c(fmtJournal(paper), 
-#                                       paste0(c(fmtSeries(paper$series), fmtVolume(paper$volume, paper$number), 
-#                                                fmtJournDate(paper)), collapse =' '), fmtIssueTitle(paper), 
-#                                             fmtEditor(paper, suffix = NULL, prefix = '. '), 
-#                                             fmtNote(paper$note, prefix ='. ', suffix = NULL)), collapse = ''),
-#                         fmtPages(paper$pages, paper$pagination), sep = ''), fmtISSN(paper$issn), 
-#                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
-#                fmtPubstate(paper$pubstate)
-#                ))
       collapseF(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index), fmtJTitle(paper$title), 
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
@@ -809,7 +796,7 @@ formatBook <- function(paper, collection = FALSE){
                fmtLanguage(paper$language), fmtEditor(paper, !length(paper$author)),
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
-        fmtEdition(paper$edition), fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '),
+        fmtEdition(paper$edition), fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
                                             fmtNote(paper$note),  
                                         sentence(fmtPublisher(paper$publisher, paper$location, paper$address),                                
                fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), sep = ''), 
@@ -824,7 +811,7 @@ formatBook <- function(paper, collection = FALSE){
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                fmtEdition(paper$edition), fmtBVolume(paper$volume, paper$part), fmtVolumes(paper$volumes), 
-               sentence(paper$series, paper$number, sep = ' '), 
+               sentence(cleanupLatex(paper$series), paper$number, sep = ' '), 
                fmtNote(paper$note), sentence(fmtPublisher(paper$publisher, paper$location, paper$address),                                  
                fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), sep = ''), 
                fmtTotalPages(paper$pagetotal, paper$bookpagination), fmtISBN(paper$isbn), 
@@ -864,7 +851,7 @@ formatInBook <- function(paper, bookinbook = FALSE){
                fmtEditor(paper, !length(paper$author)),
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
-        fmtEdition(paper$edition), fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '),
+        fmtEdition(paper$edition), fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
                                             fmtNote(paper$note),  
                                         sentence(fmtPublisher(paper$publisher, paper$location, paper$address),                                 
                fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), sep = ''), 
@@ -888,7 +875,7 @@ formatInBook <- function(paper, bookinbook = FALSE){
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                fmtEdition(paper$edition), addPeriod(fmtBVolume(paper$volume, paper$part)), fmtVolumes(paper$volumes), 
-               sentence(paper$series, paper$number, sep = ' '), 
+               sentence(cleanupLatex(paper$series), paper$number, sep = ' '), 
                fmtNote(paper$note), sentence(fmtPublisher(paper$publisher, paper$location, paper$address),                                 
                fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), sep = ''), 
                fmtTotalPages(paper$pagetotal, paper$bookpagination), fmtISBN(paper$isbn), 
@@ -927,8 +914,8 @@ formatInCollection <- function(paper){
                 fmtEditor(paper, !length(paper$author)),
                 fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
                 fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
-                fmtEdition(paper$edition), fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '),
-                fmtNote(paper$note),  
+                fmtEdition(paper$edition), fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series), 
+                                                                          paper$number, sep = ' '), fmtNote(paper$note),  
                 sentence(fmtPublisher(paper$publisher, paper$location, paper$address),                                 
                          fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), sep = ''), 
                          fmtTotalPages(paper$pagetotal, paper$bookpagination), fmtISBN(paper$isbn), 
@@ -951,7 +938,7 @@ formatInCollection <- function(paper){
                 fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
                 fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                 fmtEdition(paper$edition), addPeriod(fmtBVolume(paper$volume, paper$part)), fmtVolumes(paper$volumes), 
-                sentence(paper$series, paper$number, sep = ' '), 
+                sentence(cleanupLatex(paper$series), paper$number, sep = ' '), 
                 fmtNote(paper$note), sentence(fmtPublisher(paper$publisher, paper$location, paper$address),                                 
                                               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), sep = ''), 
                 fmtTotalPages(paper$pagetotal, paper$bookpagination), fmtISBN(paper$isbn), 
@@ -967,7 +954,7 @@ formatManual <- function(paper){
                 fmtAddOn(paper$titleaddon), 
                fmtLanguage(paper$language), fmtEditor(paper, !length(paper$author)),
                # fmtHowPublished(paper$howpublished),
-               fmtEdition(paper$edition), sentence(paper$series, paper$number, sep = ' '),
+               fmtEdition(paper$edition), sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
                fmtType(paper$type), fmtVersion(paper$version),  
                fmtNote(paper$note), fmtOrganization(paper$organization),
                sentence(fmtPublisher(paper$publisher, paper$location, paper$address),                                
@@ -1020,7 +1007,7 @@ formatPeriodical <- function(paper){
 
   if (length(paper$issuetitle)){
     collapse(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index), fmtBTitle(paper$title, paper$subtitle),
-               paste0(c(paste0(c(paper$series, 
+               paste0(c(paste0(c(cleanupLatex(paper$series), 
                   fmtVolume(paper$volume, paper$number), fmtIssue(paper$issue)), collapse = ' '), 
                                fmtBTitle(paper$issuetitle, paper$issuesubtitle)), collapse = ': '),
                fmtLanguage(paper$language), fmtEditor(paper, !length(paper$author)),
@@ -1032,7 +1019,7 @@ formatPeriodical <- function(paper){
                ))
   }else{
     collapse(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index), fmtBTitle(paper$title, paper$subtitle), 
-               sentence(paper$series, 
+               sentence(cleanupLatex(paper$series), 
                  fmtVolume(paper$volume, paper$number), fmtIssue(paper$issue), sep = ' '),
                fmtLanguage(paper$language), fmtEditor(paper, !length(paper$author)),
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
@@ -1063,7 +1050,7 @@ formatProceedings <- function(paper){
                         fmtEditor(paper, !length(paper$author)),
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
-               fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '),
+               fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
                                            fmtOrganization(paper$organization), fmtNote(paper$note),  
                                         sentence(fmtPublisher(paper$publisher, paper$location, paper$address),                                 
                fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), sep = ''), 
@@ -1080,7 +1067,7 @@ formatProceedings <- function(paper){
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                fmtEdition(paper$edition), addPeriod(fmtBVolume(paper$volume, paper$part)), 
-               fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '), 
+               fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series), paper$number, sep = ' '), 
                fmtNote(paper$note), fmtOrganization(paper$organization), 
                sentence(fmtPublisher(paper$publisher, paper$location, paper$address),                                 
                fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), sep = ''), 
@@ -1106,7 +1093,7 @@ formatInProceedings <- function(paper){
                fmtEditor(paper, !length(paper$author)),
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
-               fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '),
+               fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
                                             fmtNote(paper$note), fmtOrganization(paper$organization),  
                                         sentence(fmtPublisher(paper$publisher, paper$location, paper$address),                                  
                fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), sep = ''), 
@@ -1131,7 +1118,7 @@ formatInProceedings <- function(paper){
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                addPeriod(fmtBVolume(paper$volume, paper$part)), 
-               fmtVolumes(paper$volumes), sentence(paper$series, paper$number, sep = ' '), 
+               fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series), paper$number, sep = ' '), 
                fmtNote(paper$note), fmtOrganization(paper$organization), 
                sentence(fmtPublisher(paper$publisher, paper$location, paper$address),                                  
                fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), sep = ''), 
