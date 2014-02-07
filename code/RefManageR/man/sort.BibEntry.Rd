@@ -1,72 +1,85 @@
 \name{sort.BibEntry}
 \alias{sort.BibEntry}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{Sort a BibEntry Object}
 \usage{
-sort.BibEntry(x, decreasing = FALSE, .bibstyle = NULL, drop = FALSE, ...)
+\method{sort}{BibEntry}(x, decreasing = FALSE,
+  .bibstyle = BibOptions()$bib.style, sorting = BibOptions()$sorting, ...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
-}
-  \item{decreasing}{
-%%     ~~Describe \code{decreasing} here~~
-}
-  \item{.bibstyle}{
-%%     ~~Describe \code{.bibstyle} here~~
-}
-  \item{drop}{
-%%     ~~Describe \code{drop} here~~
-}
-  \item{\dots}{
-%%     ~~Describe \code{\dots} here~~
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
+  \item{x}{- an object of class BibEntry}
+
+  \item{decreasing}{- logical; should the sort be
+  increasing or decreasing?}
+
+  \item{sorting}{- sort method to use, see \bold{Details}.}
+
+  \item{.bibstyle}{- bibliography style; used when
+  \code{sort} is called by \code{\link{print.BibEntry}}}
+
+  \item{...}{- internal use only}
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+the sorted BibEntry object
 }
-\references{
-%% ~put references to the literature/web site here ~
+\description{
+Sorts a \code{BibEntry} object by specified fields.  The
+possible fields used for sorting and the order they are
+used in correspond with the options avaiable in BibLaTeX.
 }
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
+\details{
+The possible values for argument \code{sorting} are
+\itemize{ \item nty - sort by name, then by title, then by
+year \item nyt - sort by name, then by year, then title
+\item nyvt - sort by name, year, volume, title \item anyt -
+sort by alphabetic label, name, year, title \item anyvt -
+sort by alphabetic label, name, year, volume, title \item
+ynt - sort by year, name, title \item ydnt - sort by year
+(descending), name, title \item debug - sort by keys \item
+none - no sorting is performed }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+All sorting methods first consider the field presort, if
+available.  Entries with no presort field are assigned
+presort value \dQuote{mm}. Next the sortkey field is used.
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+When sorting by name, the sortname field is used first.  If
+it is not present, the author field is used, if that is not
+present editor is used, and if that is not present
+translator is used.  All of these fields are affected by
+the value of \code{max.names} in .BibOptions()$max.names.
+
+When sorting by title, first the field sorttitle is
+considered.  Similarly, when sorting by year, the field
+sortyear is first considered.
+
+When sorting by volume, if the field is present it is
+padded to four digits with leading zeros; otherwise, the
+string \dQuote{0000} is used.
+
+When sorting by alphabetic label, the labels that would be
+generating with the \dQuote{alphabetic} bibstyle are used.
+First the shorthand field is considered, then label, then
+shortauthor, shorteditor, author, editor, and translator.
+Refer to the BibLaTeX manual Sections 3.1.2.1 and 3.5 and
+Appendix C.2 for more information.
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (x, decreasing = FALSE, .bibstyle = NULL, drop = FALSE, 
-    ...) 
-{
-    x[order(tools::bibstyle(.bibstyle)$sortKeys(x), decreasing = decreasing), 
-        drop = drop]
-  }
+file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
+bib <- suppressMessages(ReadBib(file.name)[[70:73]])
+BibOptions(sorting = "none")
+bib
+sort(bib, sorting = "nyt")
+sort(bib, sorting = "ynt")
+BibOptions(restore.defaults = TRUE)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\references{
+Lehman, Philipp and Kime, Philip and Boruvka, Audrey and
+Wright, J. (2013). The biblatex Package.
+\url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+}
+\seealso{
+\code{\link{BibEntry}}, \code{\link{print.BibEntry}},
+\code{\link{order}}
+}
+\keyword{manip}
+\keyword{methods}
+

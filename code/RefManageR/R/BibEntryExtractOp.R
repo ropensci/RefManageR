@@ -8,7 +8,7 @@ MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
   if (is.null(x))
     return(FALSE)
   
-  if (match.date == 'year.only'){
+  if (identical(match.date, "year.only")){
     if (is.interval(x)  && is.interval(pattern)){
       return(year(int_start(x)) >= year(int_start(pattern)) && year(int_end(x)) <= year(int_end(pattern)))
     }else if (is.interval(x)){
@@ -41,9 +41,9 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
   #regx <- FALSE
   if (is.null(nom))
     return(FALSE)
-  if (match.author == 'exact'){
+  if (identical(match.author, "exact")){
     nom <- as.character(nom)
-  }else if (match.author == 'family.with.initials'){
+  }else if (identical(match.author, 'family.with.initials')){
     nom <- sapply(nom, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''), 
                                           paste0(x$family, collapse = '')))
   }else{
@@ -65,54 +65,79 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 #' Allows for searching and indexing a BibEntry object by fields, including names and dates.  The extraction operator and 
 #' the SearchBib function simplying provide different interfaces to the same search functionality.  
 #' 
-#' @param x - an object of class BibEntry
-#' @param i - A named list or character vector of search terms with names corresponding to the field to search for the
+#' @param x an object of class BibEntry
+#' @param i A named list or character vector of search terms with names corresponding to the field to search for the
 #' search term.  Alternatively, a vector of entry key values or numeric or logical indices specifying which bibentries to exctract.
-#' @param j - A named list or character vector, as \code{i}.  Entries matching the search specified by i \emph{OR} matching
+#' @param j A named list or character vector, as \code{i}.  Entries matching the search specified by i \emph{OR} matching
 #' the query specified by \code{j} will be return
-#' @param ... - arguments in the form \code{bib.field = search.term}, or as \code{j} list\emph{s} or character vector\emph{s}
+#' @param ... arguments in the form \code{bib.field = search.term}, or as \code{j} list\emph{s} or character vector\emph{s}
 #' for additional searches.  For \code{SearchBib}, can alternatively have same form as \code{i}.
-#' @param drop - ignored
-#' @return an object of class BibEntry (the results of the search/indexing)
-#' @details 
+#' @param drop logical, should attributes besides class be dropped from result?
+#' @return an object of class BibEntry (the results of the search/indexing), \emph{or} if 
+#' \code{BibOptions()$return.ind=TRUE}, the indices in \code{x} that match the search terms.
 #' @note The arguments to the SearchBib function that control certain search features can also be changed for the extraction
 #' operator by changing the corresponding option in the .BibOptions object; see \code{\link{BibOptions}}.
-#' @seealso \code{\link{BibEntry}}
-#' @aliases SearchBib
-#' @author McLean, M.W. 
+#' @method [ BibEntry
+#' @export
+#' @aliases [.BibEntry
 #' @importFrom lubridate int_start int_end year month is.interval %within%
 #' @keywords database manip list
+#' @family operators
+#' @rdname SearchBib
 #' @examples
-#' file.name <- system.file("sampleData", "biblatexExamples.bib", package="RefManageR")
+#' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 #' bib <- suppressMessages(ReadBib(file.name))
+
+#' ## author search, default is to use family names only for matching
 #' bib[author = "aristotle"]
+#' 
+#' ## Aristotle references before 1925
 #' bib[author="aristotle", date = "/1925"]
+#' 
+#' ## Aristotle references before 1925 *OR* references with editor Westfahl
 #' bib[list(author="aristotle", date = "/1925"),list(editor = "westfahl")]
 #' 
+#' ## Change some searching and printing options and search for author
+#' old.opts <- BibOptions(bib.style = "authoryear", match.author = "exact", 
+#'   max.names = 99, first.inits = FALSE)
+#' testb[author="Mart\u00edn, Jacinto and S\u00e1nchez, Alberto"]
+#' BibOptions(old.opts)  ## reset options
+#'    
 #' ## Some works of Raymond J. Carroll's
-#' bib <- ReadBib('../sampleData/RJC.bib')
+#' file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
+#' bib <- ReadBib(file.name)
 #' length(bib)
-#' ## by key
+#'
+#' ## index by key
 #' bib[c("chen2013using", "carroll1978distributions")]
+#' 
 #' ## Papers with someone with family name Wang
 #' length(SearchBib(bib, author='Wang', match.author = "family"))
+#'
 #' ## Papers with Wang, N.
-#' length(SearchBib(bib, author='Wang, N.', match.author = "family.with.initials"))
+#' length(SearchBib(bib, author='Wang, N.', .opts = list(match.author = "family.with.initials")))
+#'
 #' ## tech reports with Ruppert
 #' length(bib[author='ruppert',bibtype="report"])
-#' Carroll and Ruppert tech reports at UNC
+#'
+#' ##Carroll and Ruppert tech reports at UNC
 #' length(bib[author='ruppert',bibtype="report",institution="north carolina"])
+#' 
 #' ## Carroll and Ruppert papers since leaving UNC
 #' length(SearchBib(bib, author='ruppert', date="1987-07/", match.date = "exact"))
+#'
 #' ## Carroll and Ruppert papers NOT in the 1990's
 #' length(SearchBib(bib, author='ruppert', date = "!1990/1999"))
 #' identical(SearchBib(bib, author='ruppert', date = "!1990/1999"), 
 #'   SearchBib(bib, author='ruppert', year = "!1990/1999"))
 #' table(unlist(SearchBib(bib, author='ruppert', date="!1990/1999")$year))
+#' 
 #' ## Carroll + Ruppert + Simpson
 #' length(bib[author="Carroll, R. J. and Simpson, D. G. and Ruppert, D."])
+#' 
 #' ## Carroll + Ruppert OR Carroll + Simpson
 #' length(bib[author=c("Carroll, R. J. and Ruppert, D.", "Carroll, R. J. and Simpson, D. G.")])
+#' 
 #' ## Carroll + Ruppert tech reports OR Carroll and Ruppert JASA papers
 #' length(bib[list(author='ruppert',bibtype="report",institution="north carolina"),
 #'   list(author="ruppert",journal="journal of the american statistical association")])
@@ -162,23 +187,28 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
     ret.ind <- .BibOptions$return.ind
     .BibOptions$return.ind <- TRUE
     #browser()  
-    ind <- suppressMessages(eval(kall))
-    if (!missing(j)){
-      #browser()
-      if (is.list(j[[1L]])){  # original call had at least two lists in ... 
-        kall$i <- j[[1L]]
-        kall$j <- j[[-1L]]
-      }else{
-        kall$i <- j
-        if (!missing(...)){
-          kall$j <- list(...)
+    tryCatch({
+      ind <- suppressMessages(eval(kall))
+      if (!missing(j)){
+        #browser()
+        if (is.list(j[[1L]])){  # original call had at least two lists in ... 
+          kall$i <- j[[1L]]
+          kall$j <- j[[-1L]]
+        }else{
+          kall$i <- j
+          if (!missing(...)){
+            kall$j <- list(...)
+          }
         }
+        ind <- unique(c(ind, suppressMessages(eval(kall))))
+      }else if (!missing(...)){
+        kall$i <- list(...)
+        ind <- unique(c(ind, suppressMessages(eval(kall))))
       }
-      ind <- unique(c(ind, suppressMessages(eval(kall))))
-    }else if (!missing(...)){
-      kall$i <- list(...)
-      ind <- unique(c(ind, suppressMessages(eval(kall))))
-    }
+    }, error = function(e){
+      .BibOptions$return.ind <- ret.ind
+      stop(e)
+    })
 #     ind <- NULL
 #     #args <- i
 #     for (j in seq_along(i)){

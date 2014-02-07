@@ -1,8 +1,0 @@
-export(bootstrap)
-export(clean)
-export(libdir)
-export(packify)
-export(restore)
-export(snapshot)
-export(status)
-importFrom(tools,pkgVignettes)

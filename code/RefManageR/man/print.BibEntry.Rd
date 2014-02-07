@@ -1,0 +1,67 @@
+\name{print.BibEntry}
+\alias{print.BibEntry}
+\title{Print BibLaTeX bibliography Entries}
+\usage{
+\method{print}{BibEntry}(x, style = "text", .opts = list(),
+  no.print.fields = NULL, ...)
+}
+\arguments{
+  \item{x}{a BibEntry object}
+
+  \item{style}{an optional character string specifying the
+  print style. If present, must be a unique abbreviation
+  (with case ignored) of the available styles, see
+  \code{\link{bibentry}}.}
+
+  \item{.opts}{a list of formatting options from
+  \code{\link{BibOptions}}.  Possible options are \itemize{
+  \item \code{bib.style} - character string specifying
+  BibLaTeX style to use for formatting references.
+  Possible values are \dQuote{numeric} (default),
+  \dQuote{authoryear}, \dQuote{authortitle},
+  \dQuote{alphabetic}, \dQuote{draft}.  See section 3.3.2
+  of the BibLaTeX manual. \item \code{sorting} - how should
+  the entries in \code{x} be sorted?  See
+  \code{\link{sort.BibEntry}}. \item \code{max.names} -
+  maximum number of names to display for name list fields
+  before truncation with \dQuote{et al.}. \item
+  \code{first.inits} - logical; if true only initials of
+  given names are printed, otherwise full names are used.
+  \item \code{dashed} - logical; for \code{.bibstyle =
+  "authoryear"} or \code{.bibstyle = "authoryear"} only, if
+  \code{TRUE} duplicate author and editor lists are
+  replaced with \dQuote{---} when printed. }}
+
+  \item{no.print.fields}{character vector; fields that
+  should not be printed, e.g., doi, url, isbn, etc.}
+
+  \item{...}{not used.}
+}
+\description{
+Prints bibliographic information stored in BibEntry objects
+in BibLaTeX style
+}
+\note{
+setting max.names to \code{value} is equivalent to setting
+\code{maxnames=value} and \code{minnames=value} in
+BibLaTeX.
+}
+\examples{
+file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
+bib <- suppressMessages(ReadBib(file.name))
+print(testb[author="aristotle"], .bibstyle = 'authoryear')
+print(bib[55:57], .bibstyle = "authortitle", first.inits = FALSE)
+print(bib[80:88], .bibstyle = "alphabetic", max.names = 1)
+print(bib[32:36], .bibstyle = "draft")
+print(bib[editor="westfahl"], .bibstyle = 'authoryear', dashed = TRUE)
+}
+\references{
+Lehman, Philipp and Kime, Philip and Boruvka, Audrey and
+Wright, J. (2013). The biblatex Package.
+\url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+}
+\seealso{
+\code{\link{BibEntry}}, \code{\link{ReadBib}},
+\code{\link{sort.BibEntry}}
+}
+

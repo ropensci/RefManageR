@@ -1,67 +1,33 @@
 \name{UpdateFieldName}
 \alias{UpdateFieldName}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{Rename a field in a BibEntry object.}
 \usage{
 UpdateFieldName(x, old.field, new.field)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
-}
-  \item{old.field}{
-%%     ~~Describe \code{old.field} here~~
-}
-  \item{new.field}{
-%%     ~~Describe \code{new.field} here~~
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
+  \item{x}{- a BibEntry object}
+
+  \item{old.field}{- string; the current name of the field
+  to be renamed}
+
+  \item{new.field}{- string; the new name to replace
+  \code{old.field}}
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+\code{x}, with the renamed field.
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\description{
+This function will rename a field, in every entry where it
+is present, in a BibEntry object.
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (x, old.field, new.field) 
-{
-    x <- unlist(x)
-    names(x)[names(x) == old.field] <- new.field
-    x <- relist.BibEntry(x)
-    x
-  }
+bib <- as.BibEntry(list(c(bibtype = "article", key = "mclean2014a", title = "My New Article",
+  author = "Mathew W. McLean", journal = "The Journal", date = "2014-01"),
+  c(bibtype = "article", key = "mclean2014b", title = "My Newer Article",
+    author = "Mathew W. McLean", journal = "The Journal", date = "2014-02")))
+bib <- UpdateFieldName(bib, "journal", "journaltitle")
+toBiblatex(bib)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{manip}
+\keyword{utilities}
+

@@ -2,27 +2,30 @@
 #' 
 #' Prints bibliographic information stored in BibEntry objects in BibLaTeX style
 #' 
-#' @param x - a BibEntry object
-#' @param style - an optional character string specifying the print style. If present, 
+#' @param x a BibEntry object
+#' @param style an optional character string specifying the print style. If present, 
 #' must be a unique abbreviation (with case ignored) of the available styles, see \code{\link{bibentry}}.
-#' @param .opts - a list of formatting options.  Possible options are
+#' @param .opts a list of formatting options from \code{\link{BibOptions}}.  Possible options are
 #' \itemize{
-#' \item bib.style - character string specifying BibLaTeX style to use for formatting references.  Possible values are
+#' \item \code{bib.style} - character string specifying BibLaTeX style to use for formatting references.  Possible values are
 #' \dQuote{numeric} (default), \dQuote{authoryear}, \dQuote{authortitle}, \dQuote{alphabetic}, \dQuote{draft}.  See
 #' section 3.3.2 of the BibLaTeX manual.
-#' \item sorting - how should the entries in \code{x} be sorted?  See \code{\link{sort.BibEntry}}.
-#' \item max.names - maximum number of names to display for name list fields before truncation with \dQuote{et al.}.
-#' \item first.inits - boolean; if true only initials of given names are printed, otherwise full names are used.
-#' \item dashed - boolean; for \code{.bibstyle = \dQuote{authoryear}} or \code{.bibstyle = \dQuote{authoryear}} only, 
-#' if TRUE duplicate author and editor lists are replaced with \dQuote{---} when printed.
-#' @param no.print.fields - character vector; fields that should not be printed, e.g., doi, url, isbn, etc.
-#' @param ... - not used.
+#' \item \code{sorting} - how should the entries in \code{x} be sorted?  See \code{\link{sort.BibEntry}}.
+#' \item \code{max.names} - maximum number of names to display for name list fields before truncation with \dQuote{et al.}.
+#' \item \code{first.inits} - logical; if true only initials of given names are printed, otherwise full names are used.
+#' \item \code{dashed} - logical; for \code{.bibstyle = "authoryear"} or \code{.bibstyle = "authoryear"} only, 
+#' if \code{TRUE} duplicate author and editor lists are replaced with \dQuote{---} when printed.
+#' }
+#' @param no.print.fields character vector; fields that should not be printed, e.g., doi, url, isbn, etc.
+#' @param ... not used.
+#' @method print BibEntry
+#' @export
+#' @importFrom tools toRd
 #' @note setting max.names to \code{value} is equivalent to setting \code{maxnames=value} and \code{minnames=value} in BibLaTeX.
-#' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex Package}.
-#' \url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+#' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex Package. \url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 #' @seealso \code{\link{BibEntry}}, \code{\link{ReadBib}}, \code{\link{sort.BibEntry}}
 #' @examples
-#' file.name <- system.file("sampleData", "biblatexExamples.bib", package="RefManageR")
+#' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 #' bib <- suppressMessages(ReadBib(file.name))
 #' print(testb[author="aristotle"], .bibstyle = 'authoryear')
 #' print(bib[55:57], .bibstyle = "authortitle", first.inits = FALSE)
@@ -34,9 +37,9 @@ print.BibEntry <- function (x, style = "text", .opts = list(), no.print.fields =
 #   sorting = .BibOptions()$sorting,  
 #   max.names = .BibOptions()$max.names, first.inits = .BibOptions()$first.inits, 
 #   dashed = .BibOptions()$dashed,
-  if(length(.opts)){
-    oldopts <- BibOptions(names(.opts))
-    BibOptions(.opts)
+  if (length(.opts)){
+    oldopts <- BibOptions(.opts)
+    on.exit(BibOptions(oldopts))
   }
   
 #   .BibOptions$max.names <- max.names
@@ -70,7 +73,5 @@ print.BibEntry <- function (x, style = "text", .opts = list(), no.print.fields =
           writeLines(paste(y, collapse = "\n\n"))
       }
   }
-  if (length(.opts))
-    BibOptions(oldopts)
   invisible(x)
 }

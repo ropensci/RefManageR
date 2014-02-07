@@ -310,7 +310,7 @@ List assignment, \code{'[[<-'} is used for replacing one entry in a BibEntry obj
 <<RJC1, tidy=TRUE, eval= -3, highlight=TRUE, cache=TRUE, echo=-1>>=
 file.name <- "C:\\Users\\Matthew\\Documents\\biblatex\\RefManageR\\code\\RefManageR\\sampleData\\RJC.bib"
 # Some selected works of Raymond J. Carroll
-file.name <- system.file("sampleData", "RJC.bib", package="RefManageR")
+file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 bib <- ReadBib(file.name)
 length(bib)
 length(bib) == length(bib[author="Carroll"])

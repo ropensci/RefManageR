@@ -4,8 +4,8 @@
 #' character vector or list of named character vectors.
 #' @param x - a BibEntry object.
 #' @param i - see \code{\link{[.BibEntry}}
-#' @param j - see \code{\link{[.BibEntry}
-#' @param ... - see \code{\link{[.BibEntry}
+#' @param j - see \code{\link{[.BibEntry}}
+#' @param ... - see \code{\link{[.BibEntry}}
 #' @param value - values to be assigned to \code{x}.  To update one entry only,
 #' should be a named character vector with names corresponding to fields.  To update
 #' multiple entries, should be a list of named character vectors.  Can also be an object of 
@@ -13,11 +13,12 @@
 #' @return an object of class BibEntry.
 #' @note Date and name list fields should be in the format expected
 #' by Biblatex (see \code{\link{BibEntry}}).
-#' @S3method [<- BibEntry
+#' @method [<- BibEntry
+#' @export
 #' @keywords methods manip
-#' @seealso \code{\link{[.BibEntry}}, \code{\link{$<-.BibEntry}}, \code{\link{[[<-.BibEntry}}
+#' @family operators
 #' @examples
-#' file.name <- system.file("sampleData", "RJC.bib", package="RefManageR")
+#' file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 #' bib <- ReadBib(file.name)
 #' print(bib[seq_len(3L)], .opts = list(sorting = "none", .bibstyle = "alphabetic"))
 #' ## add month to Serban et al., add URL and urldate to Jennings et al., and
@@ -37,12 +38,23 @@
 `[<-.BibEntry` <- function(x, i, j, ..., value){
   if (!length(value))
     return(x)
-  
+  # index into x with `[` without expanding crossref's
   ret.ind <- .BibOptions$return.ind
   .BibOptions$return.ind <- TRUE
+  on.exit(.BibOptions$return.ind <- ret.ind)
+  
   kal <- match.call(expand.dots = TRUE)
   kal$value <- NULL
   kal[[1]] <- `[.BibEntry`
+#   ind <- tryCatch(eval(kal), error = function(e){
+#     .BibOptions$return.ind <- ret.ind
+#     stop(e)
+#   })
+#   y <- tryCatch(x[[ind]], error = function(e){
+#     .BibOptions$return.ind <- ret.ind
+#     stop(e)
+#   })
+#   .BibOptions$return.ind <- ret.ind
   ind <- eval(kal)
   y <- x[[ind]]
   
@@ -88,7 +100,6 @@
 #     .fields <- names(value)
 #     if (is.null(.fields) || any(.fields == ''))
 #       stop('All values in replacement must have a name corresponding to BibTeX field.')
-  #  browser()
     for (i in seq_along(y))
       y[[i]] <- BibReplace(y[[i]], value[[ind[i]]])
    # y <- mapply(BibReplace, y, setNames(value[ind], names(value)[ind]), SIMPLIFY = FALSE)
@@ -107,7 +118,6 @@
     x[[replace.ind[k]]] <- y[[k]]
   
   class(x) <- c('BibEntry', 'bibentry')
-  .BibOptions$return.ind <- ret.ind
   return(x)
 }
 
@@ -146,7 +156,7 @@ BibReplace <- function(orig, replace.vals){
     replace.names <- names(replace.remains)
     for (i in seq_along(replace.remains)){
       if (nchar(replace.remains[i])){
-        orig[[replace.names[i]]] <- replace.remains[i]  
+        orig[[replace.names[i]]] <- replace.remains[[i]]  
       }else{
         orig[[replace.names[i]]] <- NULL
       }

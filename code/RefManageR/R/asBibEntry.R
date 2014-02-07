@@ -1,17 +1,18 @@
+setOldClass("BibEntry")
 #' Coerce to a BibEntry object
 #' 
 #' Functions to check if an object is a BibEntry, or coerce it if possible.
 #' 
-#' @param x - any \code{R} object.
+#' @param x any \code{R} object.
 #' @details \code{as.BibEntry} is able to coerce suitably formatted character vectors, \code{\link{bibentry}} objects, lists,
 #' and data.frames to BibEntry objects.  See the examples.
 #' @note Each entry to be coerced should have a bibtype, key, and all required fields for the specified bibtype.
-#' @return an object of class BibEntry.
+#' @return \code{as.BibEntry} - if successful, an object of class BibEntry.
 #' @aliases is.BibEntry
-#' @keywords database
+#' @keywords utilities
 #' @seealso \code{\link{BibEntry}}
 #' @examples
-#' file.name <- system.file("sampleData", "biblatexExamples.bib", package="RefManageR")
+#' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 #' bib <- suppressMessages(ReadBib(file.name))[[20:21]]
 #' identical(as.BibEntry(unlist(bib)), bib)  ## see also relist.BibEntry
 #'
@@ -33,6 +34,8 @@
 #'   title = "My Newer Article", author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-02"))       
 #' as.BibEntry(bib)   
 as.BibEntry <- function(x){
+  if (!length(x))
+    return(x)
   if (inherits(x, 'BibEntry')){
     class(x) <- c('BibEntry', 'bibentry')
   }else if (inherits(x, 'bibentry')){
@@ -99,15 +102,8 @@ as.BibEntry <- function(x){
   return(x)
 }
 
-#' Coerce to a BibEntry object
-#' 
-#' Functions to check if an object is a BibEntry, or coerce it if possible.
-#' 
-#' @param x - any \code{R} object.
-#' @aliases as.BibEntry
-#' @return \code{is.data.frame} - boolean 
-#' @note \code{is.data.frame} returns \code{TRUE} if its argument is a BibEntry object.
+#' @rdname as.BibEntry
+#' @return \code{is.BibEntry} - logical; \code{TRUE} if \code{x} is a BibEntry object. 
 is.BibEntry <- function(x){
   inherits(x, "BibEntry")
 }
-  

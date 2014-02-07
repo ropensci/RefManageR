@@ -8,8 +8,33 @@
 # http://www.ncbi.nlm.nih.gov/pmc/tools/id-converter-api/
 # http://ropensci.github.io/rebi/
 
-# http://www.ncbi.nlm.nih.gov/books/NBK3837/
-
+#' Search NCBI's Entrez for citation information
+#' 
+#' This function takes a query and searches an Entrez database for
+#' references using NCBI's E-Utilities, returning the results in a BibEntry object.
+#' @param query string; search term.
+#' @param database string; the Entrez database to search.
+#' @param ... additional parameters to use for the search.  
+#' See the \emph{Details}.
+#' @return an object of class BibEntry.
+#' @details Optional additional parameters to pass to the server include
+#' \itemize{
+#' \item \code{retstart} - index of the first retrieved ID that should be included in the results.
+#' \item \code{retmax} - maximum number of IDs the server will return.
+#' \item \code{field} - limits the query to search only the specified field (e.g. \dQuote{title}).
+#' \item \code{datetype} - type of date to use when limiting search by dates. E.g. \dQuote{mdat} for 
+#' modification date or \dQuote{pdat} for publication date.
+#' \item \code{reldate} - integer; only items that have (\code{datetype}) date values within \code{reldate} \emph{days}
+#' of the current date will be returned.
+#' \item \code{mindate}, \code{maxdate} - date ranges to restrict search results.  Possible formats are 
+#' \dQuote{YYYY}, \dQuote{YYYY/MM}, and \dQuote{YYYY/MM/DD}.
+#' } 
+#' @note The returned entries will have type either Article or Misc depending on whether journal information was retrieved.
+#' See the Entrez documentation listed in the \emph{References}.
+#' @references \url{http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
+#' @family pubmed
+#' @examples
+#' ReadPubMed(query = "raymond carroll measurement error", retmax = 5, mindate = 1990)
 ReadPubMed <- function(query, database = 'PubMed', ...){
   .params <- list(...)
   bad.ind <- which(!names(.params) %in% c('usehistory', 'WebEnv', 'query_key', 'retstart', 'retmax', 'field',
@@ -45,6 +70,24 @@ ReadPubMed <- function(query, database = 'PubMed', ...){
   return(res)
 }
 
+#' Retrieve citation information from NCBI's Entrez for a set of PubMed IDs
+#' 
+#' Uses NCBI's E-Utilities to retrieve bibliographic information given a vector of PubMed ID's and returns
+#' the results as a BibEntry object.
+#' @param id character vector; PubMed ID's for searching NCBI's Entrez.
+#' @param db string; Entrez database to search.
+#' @param ... additional parameters to use for the search.  
+#' See the Entrez documentation listed in the \emph{References}.
+#' @return a BibEntry object. 
+#' @note If journal information is returned for an ID, then and Article entry will be created; otherwise,
+#' a Misc entry will be created.
+#' @importFrom RCurl getForm
+#' @importFrom XML xmlParse getNodeSet
+#' @keywords database
+#' @references \url{http://www.ncbi.nlm.nih.gov/books/NBK25500/}
+#' @family pubmed
+#' @examples
+#' GetPubMedByID(c("11209037", "21245076"))
 GetPubMedByID <- function(id, db = 'pubmed', ...){
  # browser()
   parms <- list(db = db, ...)
@@ -75,27 +118,58 @@ GetPubMedByID <- function(id, db = 'pubmed', ...){
   # first.inits <- gsub('(\\w)', '\\1\\. ', first.inits, perl=TRUE)
 }
 
-GetPubMedRelated <- function(id, database = 'pubmed', return.sim.scores = FALSE, max.results = 100){
-#   .params <- list(...)
-#   bad.ind <- which(!names(.params) %in% c('usehistory', 'WebEnv', 'query_key', 'retstart', 'retmax', 'field',
-#                                           'datetype', 'reldate', 'mindate', 'maxdate'))
-#   .parms <- list(cmd = 'neighbor_history', dbfrom = 'pubmed')
-#   if(length(bad.ind)){
-#     warning('Invalid .params specified and will be ignored')
-#     .parms <- .parms[-bad.ind]
-#   }
-
+#' Retrieve related articles from PubMed using PubMed ID's
+#' 
+#' Searches PubMed for articles related to a set of PubMed ID's using NCBI's E-Utilities.
+#' @param id either a character vector of PubMed ID's or a BibEntry object, which is expected to have at least some
+#' entries with \code{eprinttype = "pubmed"} and eprint field specifying a PubMed ID.
+#' @param database string; the Entrez database to search
+#' @param batch.mode logical; if \code{TRUE}, the PubMed IDs in \code{id} are combined by Entrez when searching for linked
+#' IDs so that only one set of linked IDs is returned.  If \code{FALSE}, a set of linked IDs is obtained for each ID 
+#' in \code{id}.
+#' will be returned
+#' @param max.results numeric; the maximum number of results to return
+#' @param return.sim.scores logical; Entrez returns a similarity score with each returned citation giving a 
+#' measure of how similar the returned entry is to the ones specified by the query.  If \code{TRUE} these scores are added
+#' to the returned BibEntry object in a field called \sQuote{score}.
+#' @param return.related.ids logical; should the original PubMed ID(s) that a returned entry is related to be stored in a 
+#' field called \sQuote{PMIDrelated}.
+#' @return an object of class BibEntry.
+#' @importFrom RCurl getForm
+#' @importFrom XML xmlDoc xpathApply getNodeSet xmlParse
+#' @references \url{http://www.ncbi.nlm.nih.gov/books/NBK25500/}
+#' @family pubmed
+#' @keywords database
+#' @examples
+#' file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
+#' bib <- ReadBib(file.name)
+#' bib <- LookupPubMedID(bib[[101:102]])
+#' toBiblatex(GetPubMedRelated(bib, batch.mode = TRUE, max.results = 2, 
+#' return.sim.scores = TRUE, return.related.ids = TRUE))  
+#' GetPubMedRelated(bib, batch.mode = FALSE, max.results = c(2, 2))
+GetPubMedRelated <- function(id, database = 'pubmed', batch.mode = TRUE, max.results = 10, 
+                             return.sim.scores = FALSE, return.related.ids = FALSE){
   stopifnot(!missing(id))
   
   if (inherits(id, 'BibEntry')){
-    ind <- unlist(id$eprinttype)=='pubmed'
+    oldind <- BibOptions(return.ind = TRUE)
+    ind <- suppressMessages(id[eprinttype = "pubmed"])
+    BibOptions(oldind)
+    if (!length(ind)){
+      message('BibEntry object provided contains no PubMed Ids.')
+      return(invisible(NULL))
+    }
     id <- unlist(id$eprint[ind]) 
-    if (is.null(id))
-      stop('BibEntry object provided contains no PubMed Ids.')
   }
-  parms <- list(cmd = 'neighbor_score', dbfrom = 'pubmed', db = database, id = id)
-  if (length(id > 1))
-    parms$id <- paste0(id, collapse=',')
+  
+  if (batch.mode){
+    id <- paste0(id, collapse=',')
+    parms <- list(cmd = 'neighbor_score', dbfrom = 'pubmed', db = database, id = id)  
+  }else{
+    parms <- as.list(id)
+    names(parms) <- rep("id", length(id))
+    parms <- c(parms, cmd = "neighbor_score", dbfrom = "pubmed", db = database)
+  }
   
   base.url <- 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi'
 
@@ -105,31 +179,47 @@ GetPubMedRelated <- function(id, database = 'pubmed', return.sim.scores = FALSE,
   
   tdoc <- xmlParse(results)
  # browser()
-  temp <- getNodeSet(tdoc, '/eLinkResult/LinkSet/LinkSetDb')[[1]]
-  temp <- xmlDoc(temp)
-  ids <- unlist(xpathApply(temp, '/LinkSetDb/Link/Id', xmlValue))
-  if (is.null(id)){
-    message('No results.')
-    return()
+  max.results <- rep(max.results, l = length(id))
+  res <- vector("list", length(id))
+  ch <- getNodeSet(tdoc, '/eLinkResult/LinkSet')
+  for (i in seq_along(id)){
+    #temp <- getNodeSet(tdoc, '/LinkSetDb')
+    temp <- xmlDoc(ch[[i]])
+    if (return.related.ids)
+      related <- paste0(unlist(xpathApply(temp, '/LinkSet/IdList/Id', 
+                                          xmlValue)), collapse = ',')
+    temp <- xmlDoc(temp["//LinkSetDb"][[1L]])
+    
+    ids <- unlist(xpathApply(temp, '/LinkSetDb/Link/Id', xmlValue))
+    if (is.null(id)){
+      message('No results.')
+      return()
+    }
+    
+    ind <- seq_len(min(max.results, length(ids)))
+    if (return.sim.scores)
+      scores <- unlist(xpathApply(temp, '/LinkSetDb/Link/Score', xmlValue))[ind]
+  
+    #ids <- unlist(xpathApply(tdoc, '/eSearchResult/IdList/Id', xmlValue)) 
+  #   if (!length(ids)){
+  #     message('No Results.')
+  #     return()
+  #   }
+    
+    tres <- GetPubMedByID(id = ids[ind], db = database)
+    if (return.sim.scores)
+      tres$score <- scores  # res[] <- lapply(scores, function(x) c(score = x))
+    if (return.related.ids)
+      tres$PMIDrelated <- related[ind]
+    res[[i]] <- tres
   }
-  
-  ind <- seq_len(min(max.results, length(ids)))
-  if (return.sim.scores)
-    scores <- unlist(xpathApply(temp, '/LinkSetDb/Link/Score', xmlValue))[ind]
-
-  #ids <- unlist(xpathApply(tdoc, '/eSearchResult/IdList/Id', xmlValue)) 
-#   if (!length(ids)){
-#     message('No Results.')
-#     return()
-#   }
-  
-  res <- GetPubMedByID(id = ids[ind], db = database)
-  if (return.sim.scores)
-    res[] <- lapply(scores, function(x) c(score = x))
-  
+  res <- c(unlist(res, recursive = FALSE))
+  class(res) <- c("BibEntry", "bibentry")
   return(res)
 }
 
+#' @keywords internal
+#' @importFrom XML xpathApply xmlValue free
 ProcessPubMedResult <- function(article){
   tdoc <- xmlDoc(article)
   res <- list()
@@ -143,7 +233,7 @@ ProcessPubMedResult <- function(article){
   first.names <- unlist(xpathApply(tdoc,  
                 '//PubmedArticle/MedlineCitation/Article/AuthorList/Author/ForeName',
                          xmlValue)) 
-  res$author <- paste(first.names, last.names)
+  res$author <- as.personList(paste(first.names, last.names))
   
   res$year <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Year',
                                  xmlValue))
@@ -171,7 +261,7 @@ ProcessPubMedResult <- function(article){
   
   res$pages <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Pagination/MedlinePgn',
                             xmlValue)) 
-  res$pmid <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/PMID',
+  res$eprint <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/PMID',
                           xmlValue))
   doi <- unlist(xpathApply(tdoc, '//PubmedArticle/PubmedData/ArticleIdList/ArticleId',
                               xmlValue))
@@ -187,12 +277,31 @@ ProcessPubMedResult <- function(article){
   }else{
     attr(res, 'entry') <- 'misc'
   }
-  
   attr(res, 'key') <- CreateBibKey(res$title, res$author, res$year)
     
   return(MakeBibEntry(res, FALSE))
 }
 
+#' Retrieve PubMed ID's for a BibEntry object
+#' 
+#' Uses the NCBI E-utilities to to search for PubMed ID's for citations stored in a BibEntry object.
+#' @param bib a bibentry object
+#' @param index indices specifying which entries of \code{bib} will be searched for.  If \code{missing}, all entries
+#' are searched for.
+#' @return a BibEntry object - \code{bib} with additional eprinttype and eprint fields when the search is successful
+#' for an entry.
+#' @details For each entry a citation string is created using the fields journaltitle/journal, date/year,
+#'   volume|, pages, and author; and these strings are then used to search the NCBI database for PubMed ID's.
+#'   
+#'   If an ID is found for an entry, the entry is updated so that the eprinttype field is assigned the value 
+#'   \dQuote{pubmed} and the eprint field is assigned the ID.
+#' @family pubmed
+#' @importFrom RCurl getURL
+#' @keywords database
+#' @examples
+#' file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
+#' bib <- ReadBib(file.name)
+#' LookupPubMedID(bib[[101:102]])
 LookupPubMedID <- function(bib, index){
   stopifnot(inherits(bib, 'BibEntry'))
   if (missing(index))
@@ -211,17 +320,22 @@ LookupPubMedID <- function(bib, index){
   ind <- grep('[0-9]', res)
   if (length(ind)){
     message(paste0('Success for entries: ', paste0(ind, collapse=', ')))
-    bib[ind] <- lapply(res[ind], function(x) c(eprinttype = 'pubmed', eprint = x))
+    #vals <- lapply(res[ind], function(x) c(eprinttype = 'pubmed', eprint = x))
+    bib$eprint[ind] <- res[ind]
+    bib$eprinttype[ind] <- "pubmed"
   }else{
-    message('No PubMed ID\'s found')
+    message("No PubMed ID\'s found")
   }
   
   return(bib)
 }
 
+#' @keywords internal
+#' @importFrom lubridate year
+#' @importFrom RCurl curlEscape
 MakeCitationString <- function(bib.entry){
   first.page <- sub('-[0-9]+', '', bib.entry$pages)
-  res <- paste(bib.entry$journal, bib.entry$year, bib.entry$volume, first.page, 
+  res <- paste(bib.entry$journal, year(bib.entry$dateobj), bib.entry$volume, first.page, 
         paste0(as.character(bib.entry$author), collapse = ' '), 'KeY', sep = '|')  # unlist(bib.entry$author$family)
   res <- curlEscape(res)
   res <- gsub('%7C', '|', res)

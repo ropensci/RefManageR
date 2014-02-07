@@ -1,6 +1,6 @@
 #' Open BibEntry in PDF viewer or web browser.
 #' 
-#' @param bib object of class BibEntry.
+#' @param con BibEntry object to extract connections from.
 #' @param entry numeric index or character key of entry in \code{bib} to open.
 #' @param open.field character vector of fields to use in \code{bib} to open the BibEntry.  
 #'   Possible fields are any combination of \dQuote{file},\dQuote{url}, \dQuote{eprint}, or \dQuote{doi}.  
@@ -8,12 +8,13 @@
 #'   When multiple fields are specified, they are tried in the order they appear in the vector.
 #' @param viewer character string giving the name of the program to be used as hypertext browser. 
 #'   It should be in the PATH, or a full path specified. Alternatively, an R function to be called to invoke 
-#'   the browser.  Defaults to \code{getOptions(\dQuote{pdfviewer})} if \code{open.field = \dQuote{file}} and 
-#'   \code{getOptions(\dQuote{browser})}, otherwise.
+#'   the browser.  Defaults to \code{getOptions("pdfviewer")} if \code{open.field = "file"} and 
+#'   \code{getOptions("browser")}, otherwise.
 #' @keywords connection utilities  
 #' @seealso \code{\link{browseURL}}
 #' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
 #' @method open BibEntry
+#' @export
 #' @examples 
 #' \dontrun{
 #' testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex"))
@@ -21,9 +22,9 @@
 #' testbib$file <- file.path(paste0(R.home("doc"), '/manual/R-intro.pdf'))
 #' open(testbib)
 #' }
-open.BibEntry <- function(bib, entry = 1, open.field = c('file', 'url', 'eprint', 'doi'), viewer){
-  bib <- bib[[entry]]
-  stopifnot(length(dtb[[entry]]) == 1)
+open.BibEntry <- function(con, entry = 1, open.field = c('file', 'url', 'eprint', 'doi'), viewer, ...){
+  bib <- bib[entry]
+  stopifnot(length(bib) == 1)
   bib.fields <- unlist(fields(bib))
   opened <- FALSE
   i <- 1

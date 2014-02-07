@@ -1,9 +1,0 @@
-packrat-package	packrat
-bootstrap	bootstrap
-clean	clean
-libdir	libdir
-packify	packify
-packrat	packrat
-restore	restore
-snapshot	snapshot
-status	status

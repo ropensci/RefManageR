@@ -2,12 +2,7 @@
 #' 
 #' Prints the first or last entries of a BibEntry object (via \code{\link{message}}) and returns them \emph{invisibly} 
 #'   (via \code{\link{invisible}}).
-#' 
-#' @aliases head 
-#' @aliases tail 
-#' @aliases head.BibEntry 
-#' @aliases tail.BibEntry
-#' @method head BibEntry
+#'  
 #' @param x an object of class BibEntry.
 #' @param n a single integer. If positive, size for the resulting object: number of elements for a vector 
 #'   (including lists), rows for a matrix or data frame or lines for a function. If negative, all but the 
@@ -18,8 +13,10 @@
 #'   with some additional formatting for the \sQuote{bibtype} and \sQuote{key}, in addition to invisibling
 #'   returning the entries.
 #' @return an object of class BibEntry.  
-#' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
-#' @rdname head
+#' @importFrom utils head tail
+#' @rdname head.BibEntry
+#' @aliases tail.BibEntry
+#' @method head BibEntry
 #' @export 
 head.BibEntry <- function (x, n = 6L, suppress.messages = TRUE, ...){
     stopifnot(length(n) == 1L)
@@ -52,7 +49,7 @@ head.BibEntry <- function (x, n = 6L, suppress.messages = TRUE, ...){
     invisible(x[ind])
 }
 
-#' @rdname head
+#' @rdname head.BibEntry
 #' @method tail BibEntry
 #' @export
 tail.BibEntry <- function (x, n = 6L, suppress.messages = TRUE, ...){

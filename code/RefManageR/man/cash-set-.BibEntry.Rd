@@ -1,0 +1,45 @@
+\name{$<-.BibEntry}
+\alias{$<-.BibEntry}
+\title{Replace values for a particular field in a BibEntry object}
+\usage{
+\method{$}{BibEntry}(x, name) <- value
+}
+\arguments{
+  \item{x}{a BibEntry object}
+
+  \item{name}{string; the field to assign the new values
+  to.}
+
+  \item{value}{character vector; the replacement field
+  values to be assigned.}
+}
+\value{
+an object of class BibEntry with the updated fields.
+}
+\description{
+Used to replace the values stored for a specified field in
+a BibEntry object.
+}
+\note{
+The method expects date and name list fields to be in the
+format expected by Biblatex.  The field specified by
+\code{name} does not have to be one currently in \code{x}.
+}
+\examples{
+bib <- BibEntry(bibtype = "misc", key = "mclean", author = "Mathew W. McLean", title = "My Work", year = "2012")
+bib$year <- 2014
+bib$author <- "McLean, M. W. and Carroll, R. J."
+bib$url <- "http://example.com"
+bib
+}
+\seealso{
+Other operators: \code{\link{$.BibEntry}};
+\code{\link{+.BibEntry}}, \code{\link{+.BibEntry}},
+\code{\link{merge.BibEntry}}; \code{\link{SearchBib}},
+\code{\link{[.BibEntry}}, \code{\link{[.BibEntry}},
+\code{\link{[.BibEntry}}; \code{\link{[<-.BibEntry}};
+\code{\link{[[.BibEntry}}; \code{\link{[[<-.BibEntry}};
+\code{\link{c.BibEntry}}
+}
+\keyword{methods}
+
