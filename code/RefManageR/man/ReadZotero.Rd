@@ -1,73 +1,41 @@
 \name{ReadZotero}
 \alias{ReadZotero}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
-Get Bibliography Information From a Zotero Library.
-}
-\description{
-Queries an existing Zotero library to import bibliographic information.
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{Get Bibliography Information From a Zotero Library.}
 \usage{
-ReadZotero(user, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE)
+ReadZotero(user, .params, temp.file = tempfile(fileext = ".bib"),
+  delete.file = TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{user}{
-%%     ~~Describe \code{user} here~~
-Zotero userID for use in calls to the Zotero API.  This is not the same as your Zotero username.  The userID for accessing user-owned libraries can be found at \link{https://www.zotero.org/settings/keys}.
-}
-  \item{.params}{
-%%     ~~Describe \code{.params} here~~
-A \emph{named} list of parameters to use in requests to the Zotero API with possible values
-  \itemize{
-    \item q - Search string to use to search the library
-    \item qmode - Search mode. Default is "titleCreatorYear".  Use "everything" to include full-text content in search.
-    \item key - API key.  This must be specified to access non-public libraries.
-    \item collection - name of a specific collection within the library to search
-    \item itemType - type of entry to search for; e.g., "book" or "journalArticle"
-    \item tag - name of tag to search for in library
-    \item limit - maximum number of entries to return
-    \item start - index of first entry to return
-  }
-}
-  \item{temp.file}{
-%%     ~~Describe \code{file} here~~
-character; file name where the BibTeX data returned by Zotero will be temporarily written.
-}
-  \item{delete.file}{
-%%     ~~Describe \code{file} here~~
-boolean; should \code{temp.file} be removed on exit?
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
+  \item{user}{Zotero userID for use in calls to the Zotero
+  API.  This is not the same as your Zotero username.  The
+  userID for accessing user-owned libraries can be found at
+  \url{https://www.zotero.org/settings/keys}.}
+
+  \item{.params}{A \emph{named} list of parameters to use
+  in requests to the Zotero API with possible values
+  \itemize{ \item q - Search string to use to search the
+  library \item qmode - Search mode. Default is
+  "titleCreatorYear".  Use "everything" to include
+  full-text content in search.  \item key - API key.  This
+  must be specified to access non-public libraries.  \item
+  collection - name of a specific collection within the
+  library to search \item itemType - type of entry to
+  search for; e.g., "book" or "journalArticle" \item tag -
+  name of tag to search for in library \item limit -
+  maximum number of entries to return \item start - index
+  of first entry to return }}
+
+  \item{temp.file}{character; file name where the BibTeX
+  data returned by Zotero will be temporarily written.}
+
+  \item{delete.file}{boolean; should \code{temp.file} be
+  removed on exit?}
 }
 \value{
 An object of class BibEntry
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-McLean, M. W.
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-\code{\link{BibEntry}}, \code{WriteZotero}, \code{\link{getForm}} in package \code{RCurl}
+\description{
+Get Bibliography Information From a Zotero Library.
 }
 \examples{
 ## first two entries in library with bayesian in title
@@ -80,8 +48,13 @@ ReadZotero(user='1648676', .params=list(q='yu', key='7lhgvcwVq60CDi7E68FyE3br', 
 ## Search by tag
 ## Notice issue with how Zotero uses Techreport entry for arXiv manuscripts
 ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br', tag='Statistics - Machine Learning'))
-
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ database }
+\references{
+\url{http://www.zotero.org/support/dev/server_api/v2/read_requests}
+}
+\seealso{
+\code{\link{BibEntry}}, \code{\link{getForm}} in package
+\code{RCurl}
+}
+\keyword{database}
+

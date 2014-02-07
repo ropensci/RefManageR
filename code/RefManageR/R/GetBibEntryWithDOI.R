@@ -2,9 +2,9 @@
 #' 
 #' Uses the DOI System API to look up bibliography information given a set of DOIs.
 #' 
-#' @param doi - character vector; DOIs to use to retrieve bibliographic information.
-#' @param temp.file - string; a file to write the Bibtex data returned by the DOI System to.
-#' @param boolean; should \code{temp.file} be deleted when the function exits?
+#' @param doi character vector; DOIs to use to retrieve bibliographic information.
+#' @param temp.file string; a file to write the Bibtex data returned by the DOI System to.
+#' @param delete.file logical; should \code{temp.file} be deleted when the function exits?
 #' @return an object of class BibEntry.
 #' @details 
 #' The bibliographic information returned by the search of the \url{http://dx.doi.org} API is temporarily

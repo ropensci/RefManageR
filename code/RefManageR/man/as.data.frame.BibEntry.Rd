@@ -1,79 +1,35 @@
 \name{as.data.frame.BibEntry}
 \alias{as.data.frame.BibEntry}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{Coerce to a Data Frame}
 \usage{
-as.data.frame.BibEntry(x, ...)
+\method{as.data.frame}{BibEntry}(x, row.names = NULL, optional = FALSE, ...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
-}
-  \item{\dots}{
-%%     ~~Describe \code{\dots} here~~
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
+  \item{x}{- a BibEntry object}
+
+  \item{row.names}{- ignored}
+
+  \item{optional}{- ignored}
+
+  \item{...}{- ignored}
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+a data.frame object with row names giving the keys, and
+first column giving entry type.
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\description{
+Coerces a BibEntry object to a data.frame, with each row of
+the data frame being a field present in at least one entry
+in the BibEntry object being coerced.
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (x, ...) 
-{
-    col.names <- unique(unlist(fields(x)))
-    n.fields <- length(col.names)
-    y <- matrix(nr = length(x), nc = n.fields + 1)
-    colnames(y) <- c("bibtype", col.names)
-    rownames(y) <- names(x)
-    y[, 1] <- x["bibtype"]
-    for (i in 1:n.fields) {
-        nom <- col.names[i]
-        if (nom != "author" && nom != "editor") {
-            temp <- x[nom]
-        }
-        else {
-            temp <- sapply(setNames(x, rownames(y)), function(z) paste0(eval(parse(text = paste0("z$", 
-                nom))), collapse = ", "))
-        }
-        y[names(temp), col.names[i]] <- temp
-    }
-    y <- as.data.frame(y, stringsAsFactors = FALSE)
-    return(y)
-  }
+bib <- list(c(bibtype = "article", key = "mclean2014a", title = "My New Article", author = "Mathew W. McLean",
+  journaltitle = "The Journal", date = "2014-01"), c(bibtype = "article", key = "mclean2014b", volume = 10,
+  title = "My Newer Article", author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-02"))
+bib <- as.BibEntry(bib)
+as.data.frame(bib)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\seealso{
+\code{\link{BibEntry}}, \code{\link{as.BibEntry}}
+}
+

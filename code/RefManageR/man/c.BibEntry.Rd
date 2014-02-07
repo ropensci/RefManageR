@@ -1,0 +1,39 @@
+\name{c.BibEntry}
+\alias{c.BibEntry}
+\title{Combine BibEntry objects.}
+\usage{
+\method{c}{BibEntry}(..., recursive = FALSE)
+}
+\arguments{
+  \item{...}{- BibEntry objects to be concatenated.}
+
+  \item{recursive}{- logical; ignored.}
+}
+\value{
+a single BibEntry object.
+}
+\description{
+Combines mutliple BibEntry objects into a single one.
+}
+\note{
+\code{c} will remove all attributes besides \code{class}.
+
+No checking for duplicate entries is performed.
+}
+\examples{
+bib <- c(BibEntry(bibtype = "article", key = "mclean2014a", title = "My New Article",
+  author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-01"),
+  BibEntry(bibtype = "article", key = "mclean2014b",
+  title = "My Newer Article", author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-02"))
+}
+\seealso{
+Other operators: \code{\link{$.BibEntry}};
+\code{\link{$<-.BibEntry}}; \code{\link{+.BibEntry}},
+\code{\link{+.BibEntry}}, \code{\link{merge.BibEntry}};
+\code{\link{SearchBib}}, \code{\link{[.BibEntry}},
+\code{\link{[.BibEntry}}, \code{\link{[.BibEntry}};
+\code{\link{[<-.BibEntry}}; \code{\link{[[.BibEntry}};
+\code{\link{[[<-.BibEntry}}
+}
+\keyword{methods}
+

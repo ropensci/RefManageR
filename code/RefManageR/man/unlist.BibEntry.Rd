@@ -1,70 +1,58 @@
-\name{unlist.BibEntry}
+\name{relist.BibEntry}
+\alias{relist.BibEntry}
 \alias{unlist.BibEntry}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{Flatten and unflatten BibEntry objects}
 \usage{
-unlist.BibEntry(x, recursive = FALSE, use.names = TRUE)
+\method{relist}{BibEntry}(flesh, skeleton = NULL)
+
+\method{unlist}{BibEntry}(x, recursive = FALSE, use.names = TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
-}
-  \item{recursive}{
-%%     ~~Describe \code{recursive} here~~
-}
-  \item{use.names}{
-%%     ~~Describe \code{use.names} here~~
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
+  \item{flesh}{list; an \code{unlist}ed BibEntry object}
+
+  \item{skeleton}{currently ignored}
+
+  \item{x}{a BibEntry object to flatten}
+
+  \item{recursive}{ignored.}
+
+  \item{use.names}{ignored.}
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+\code{relist.BibEntry} - an object of class BibEntry
+
+For \code{unlist}, a list with bib entries collapsed into a
+single list.
 }
-\references{
-%% ~put references to the literature/web site here ~
+\description{
+\code{relist.BibEntry} unflattens a BibEntry object that
+has been flattened with \code{unlist}.
+
+\code{unlist} flattens a BibEntry object to a single list
+where every field (including \code{bibtype} and \code{key})
+of every entry is a separate element in the list.
 }
-\author{
-%%  ~~who you are~~
+\details{
+\code{relist.BibEntry} is only intended for use with
+\code{unlist}ed BibEntry objects.
 }
 \note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+The names of the list elements from an unlisted BibEntry
+object will not be unique.  To do this see
+\code{\link{make.unique}}.
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (x, recursive = FALSE, use.names = TRUE) 
-{
-    x <- lapply(unclass(x), function(x) {
-        x$bibtype <- attr(x, "bibtype")
-        x$key <- attr(x, "key")
-        x
-    })
-    x <- unlist(x, FALSE)
-    x
-  }
+bib <- list(c(bibtype = "article", key = "mclean2014a", title = "My New Article", author = "Mathew W. McLean",
+  journaltitle = "The Journal", date = "2014-01"), c(bibtype = "article", key = "mclean2014b",
+  title = "My Newer Article", author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-02"))
+bib <- as.BibEntry(bib)
+unlist(bib)
+relist.BibEntry(unlist(bib))
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\seealso{
+\code{\link{as.BibEntry}}
+}
+\keyword{database}
+\keyword{list}
+\keyword{manip}
+

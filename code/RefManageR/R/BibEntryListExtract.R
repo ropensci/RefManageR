@@ -2,11 +2,12 @@
 #' 
 #' Operator for extracting BibEntry objects by index.
 #' 
-#' @param x - a BibEntry object
-#' @param i - numeric indices of entries to exctract, or a character vector of keys corresponding to the entries to be
+#' @param x a BibEntry object
+#' @param i numeric indices of entries to exctract, or a character vector of keys corresponding to the entries to be
 #' extracted.
-#' @param drop - ignored.
-#' @S3method [[ BibEntry
+#' @param drop logical, should attributes besides class be dropped from result?
+#' @method [[ BibEntry
+#' @export
 #' @note This method is different than the usual operator \code{[[} for lists in that a vector of indices may be specified.
 #' 
 #' This method behaves differently than the \code{[} operator for BibEntry objects in that it does not expand
@@ -16,16 +17,16 @@
 #' This method is not affected by the value of \code{BibOptions()$return.ind}.
 #' @return an object of class BibEntry.
 #' @keywords database manip list
-#' @seealso \code{\link{[.BibEntry}} \code{\link{BibEntry}}
+#' @family operators
 #' @examples
-#' file.name <- system.file("sampleData", "biblatexExamples.bib", package="RefManageR")
+#' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 #' bib <- suppressMessages(ReadBib(file.name))
 #' bib[[20:21]]
 #' bib[c("hyman", "loh")]
 #' 
 #' ## Note this is FALSE because [[ does not inherit from the dropped parent entry while [ does.
 #' identical(bib[1], bib[[1]])
-`[[.BibEntry` <- function (x, i, drop = TRUE){
+`[[.BibEntry` <- function (x, i, drop = FALSE){
   if (!length(x)) 
     return(x)
   cl <- class(x)

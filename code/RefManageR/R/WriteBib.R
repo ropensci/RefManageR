@@ -1,15 +1,16 @@
 #' Create a BibTeX File from a BibEntry Object
 #' 
 #' Creates a Bibtex File from a BibEntry object for use with either BibTeX or BibLaTex.
-#' @param bib - a BibEntry object to be written to file
-#' @param file - character string naming a file, should; end in \dQuote{.bib}
-#' @param biblatex - boolean; if \code{TRUE}, \code{\link{toBiblatex}} is used and no conversions of the BibEntry object
+#' @param bib a BibEntry object to be written to file
+#' @param file character string naming a file, should; end in \dQuote{.bib}
+#' @param biblatex boolean; if \code{TRUE}, \code{\link{toBiblatex}} is used and no conversions of the BibEntry object
 #' are done; if \code{FALSE} entries will be converted as described in \code{\link{toBibtex.BibEntry}}.
-#' @param append - as in \code{\link{write.bib}}
-#' @param verbose - as in \code{\link{write.bib}}
+#' @param append as in \code{\link{write.bib}}
+#' @param verbose as in \code{\link{write.bib}}
+#' @param ... additional arguments passed to \code{\link{writeLines}}
 #' @return \code{bib} - invisibly
 #' @author McLean, M. W. - based on \code{write.bib} function in package \code{bibtex} by Francois, R.
-#' @seealso \code{\link{write.bib}}, \code{\link{ReadBib}, \code{\link{toBibtex.BibEntry}}, 
+#' @seealso \code{\link{write.bib}}, \code{\link{ReadBib}}, \code{\link{toBibtex.BibEntry}}, 
 #' \code{\link{toBiblatex}}, \code{\link{BibEntry}}
 #' @keywords IO
 #' @note To write the contents of \code{bib} \dQuote{as is}, the argument \code{biblatex} should be \code{TRUE}, otherwise

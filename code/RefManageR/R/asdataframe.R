@@ -6,7 +6,8 @@
 #' @param row.names - ignored
 #' @param optional - ignored
 #' @param ... - ignored
-#' @S3method as.data.frame BibEntry
+#' @method as.data.frame BibEntry
+#' @export
 #' @return a data.frame object with row names giving the keys, and first column giving entry type.
 #' @seealso \code{\link{BibEntry}}, \code{\link{as.BibEntry}}
 #' @examples 
@@ -18,7 +19,7 @@
 as.data.frame.BibEntry <- function(x, row.names = NULL, optional = FALSE, ...){
   col.names <- unique(unlist(fields(x)))
   n.fields <- length(col.names)
-  y <- matrix(nr = length(x), nc = n.fields + 1L)
+  y <- matrix(nrow = length(x), ncol = n.fields + 1L)
   colnames(y) <- c('bibtype', col.names)
   rownames(y) <- names(x)
 #   browser()

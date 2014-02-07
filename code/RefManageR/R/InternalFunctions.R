@@ -1,74 +1,3 @@
-# Mathew McLean
-# October 25, 2013
-# Make bibentry class compatible with BibLaTeX
-
-################################
-# to be imported in package: 
-# utils:::.bibentry_match_format_style(style)
-# utils:::bibentry_attribute_names # <- c("bibtype", "textVersion", "header", "footer", "key")
-# utils:::bibentry_list_attribute_names
-# utils:::citation.bibtex.max
-# utils:::.bibentry_get_key
-
-#source('~/biblatex/code/BibLaTeX_entry_field_db.R')
-library(bibtex)
-#oldbibentry <- bibentry
-# old.bibentry_Check_bibentry1 <- utils:::.bibentry_check_bibentry1
-
-# setClass('bibentry')
-# setClass('BibEntry', contains='bibentry')
-# setGeneric('table')
-# setGeneric('search')
-
-# 
-# setMethod("[",
-#           "BibEntry",
-#           function(x, ..., drop=TRUE){
-#             if(!length(x))
-#               return(x)
-#             
-#             dots <- list(...)
-#             current.fields <- unique(names(unlist(test)))
-#             ind <- 0
-#             while (ind < length(dots)){
-#               temp <- tolower(dots[[ind]])
-#               if (is.numeric(temp)){
-#                 x <- x[temp]
-#               }else if (pmatch(temp, current.fields)){
-#                 if(ind==length(dots)){ 
-#                   x <- eval(parse(text=paste0('x$', temp)))
-#                   ind <- ind + 1
-#                 }else{
-#                   pattern <- tolower(dots[[ind+1]])
-#                   
-#                   if (temp=='author' || temp=='editor'){  # need special handling for a/e and y/d
-#                     x <- MatchAuthor(x, field, pattern, author.match)
-#                   }else if (temp=='author' || temp=='date'){
-#                     x <- MatchDate(x, temp, pattern, date.match)
-#                   }else{
-#                     x <- search(x, temp, pattern, exact = FALSE)
-#                   }
-#                                                        
-#                   ind <- ind + 2
-#                 }    
-#               }else{
-#                 stop('Invalid index specified')
-#               }
-#             }
-#             x
-#           })
-
-# setMethod("table",
-#           signature(x="BibEntry"),
-#           function (x, field)){
-#             table(unlist(temp['field']))
-#           }
-# }
-
-
-#test <- ReadBib('~/biblatex/code/biblatexTestBib.bib', encoding='UTF-8')
-# test <- ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br', tag='Statistics - Machine Learning'))
-
 #' @keywords internal
 .BibEntryCheckBibEntry1 <- function (x, force = FALSE, check = .BibOptions$check.entries) {
   if (identical(check, FALSE))
@@ -160,17 +89,17 @@ library(bibtex)
     }else{
       x[pc[ok]] <- Map(ResolveBibLaTeXCrossRef, x[pc[ok]], y[pk[ok]])
     }
-    
-    status <- lapply(x[pc], function(e) tryCatch(.BibEntryCheckBibEntry1(e, 
-                                                                           TRUE), error = identity))
-    bad <- which(sapply(status, inherits, "error"))
-    if (length(bad)) {
-      for (b in bad) {
-        warning(gettextf("Dropping invalid entry %d:\n%s", 
-                         pc[b], conditionMessage(status[[b]])))
-      }
-      x[pc[bad]] <- NULL
-    }
+    status <- lapply(x[pc], .BibEntryCheckBibEntry1, force = TRUE)
+#     status <- lapply(x[pc], function(e) tryCatch(.BibEntryCheckBibEntry1(e, 
+#                                                                            TRUE), error = identity))
+#     bad <- which(sapply(status, inherits, "error"))
+#     if (length(bad)) {
+#       for (b in bad) {
+#         warning(gettextf("Dropping invalid entry %d:\n%s", 
+#                          pc[b], conditionMessage(status[[b]])))
+#       }
+#       x[pc[bad]] <- NULL
+#     }
   }
   class(x) <- c("BibEntry", "bibentry")
   #types <- unlist(x$bibtype)
@@ -430,6 +359,78 @@ MakeCitationList <- function( x, header, footer){
 #' @keywords internal
 .listify <- function (x) {
   if (inherits(x, "list")) x else list(x)
+}
+
+#' @keywords internal
+ .format_BibEntry_as_R_code <- function (x, collapse = FALSE) 
+{
+  if (!length(x)) 
+    return("bibentry()")
+  x$.index <- NULL
+  x$dateobj <- NULL
+  anames <- bibentry_attribute_names
+  manames <- c("mheader", "mfooter")
+  .blanks <- function(n) paste(rep.int(" ", n), collapse = "")
+  .format_call_RR <- function (cname, cargs){
+    cargs <- as.list(cargs)
+    n <- length(cargs)
+    lens <- sapply(cargs, length)
+    sums <- cumsum(lens)
+    starters <- c(sprintf("%s(", cname), rep.int(.blanks(nchar(cname) + 
+                                                           1L), sums[n] - 1L))
+    trailers <- c(rep.int("", sums[n] - 1L), ")")
+    trailers[sums[-n]] <- ","
+    sprintf("%s%s%s", starters, unlist(cargs), trailers)
+  }
+  .format_person_as_R_code <- function (x){
+    s <- lapply(unclass(x), function(e) {
+      e <- e[!sapply(e, is.null)]
+      cargs <- sprintf("%s = %s", names(e), sapply(e, deparse))
+      .format_call_RR("person", cargs)
+    })
+    if (length(s) > 1L) 
+      .format_call_RR("c", s)
+    else unlist(s, use.names = FALSE)
+  }
+  f <- function(e) {
+    if (inherits(e, "person")) 
+      .format_person_as_R_code(e)
+    else deparse(e)
+  }
+  g <- function(u, v) {
+    prefix <- sprintf("%s = ", u)
+    n <- length(v)
+    if (n > 1L) 
+      prefix <- c(prefix, rep.int(.blanks(nchar(prefix)), 
+                                  n - 1L))
+    sprintf("%s%s", prefix, v)
+  }
+  s <- lapply(unclass(x), function(e) {
+    a <- Filter(length, attributes(e)[anames])
+    e <- e[!sapply(e, is.null)]
+    ind <- !is.na(match(names(e), c(anames, manames, "other")))
+    if (any(ind)) {
+      other <- paste(names(e[ind]), sapply(e[ind], f), 
+                     sep = " = ")
+      other <- Map(g, names(e[ind]), sapply(e[ind], f))
+      other <- .format_call_RR("list", other)
+      e <- e[!ind]
+    }
+    else {
+      other <- NULL
+    }
+    c(Map(g, names(a), sapply(a, deparse)), Map(g, names(e), 
+                                                sapply(e, f)), if (length(other)) list(g("other", 
+                                                                                         other)))
+  })
+  if (!is.null(mheader <- attr(x, "mheader"))) 
+    s[[1L]] <- c(s[[1L]], paste("mheader = ", deparse(mheader)))
+  if (!is.null(mfooter <- attr(x, "mfooter"))) 
+    s[[1L]] <- c(s[[1L]], paste("mfooter = ", deparse(mfooter)))
+  s <- Map(.format_call_RR, "bibentry", s)
+  if (collapse && (length(s) > 1L)) 
+    paste(.format_call_RR("c", s), collapse = "\n")
+  else unlist(lapply(s, paste, collapse = "\n"), use.names = FALSE)
 }
 
 bibentry_attribute_names <- c("bibtype", "textVersion", "header", "footer", "key", "dateobj")

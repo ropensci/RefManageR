@@ -1,76 +1,40 @@
 \name{GetBibEntryWithDOI}
 \alias{GetBibEntryWithDOI}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{Lookup a Bibtex entry using a Digital Object Identifier}
 \usage{
-GetBibEntryWithDOI(doi, temp.file = "tempfile.bib", delete.file = TRUE)
+GetBibEntryWithDOI(doi, temp.file = tempfile(fileext = ".bib"),
+  delete.file = TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{doi}{
-%%     ~~Describe \code{doi} here~~
-}
-  \item{temp.file}{
-%%     ~~Describe \code{temp.file} here~~
-}
-  \item{delete.file}{
-%%     ~~Describe \code{delete.file} here~~
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
+  \item{doi}{character vector; DOIs to use to retrieve
+  bibliographic information.}
+
+  \item{temp.file}{string; a file to write the Bibtex data
+  returned by the DOI System to.}
+
+  \item{delete.file}{logical; should \code{temp.file} be
+  deleted when the function exits?}
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+an object of class BibEntry.
 }
-\references{
-%% ~put references to the literature/web site here ~
+\description{
+Uses the DOI System API to look up bibliography information
+given a set of DOIs.
 }
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\details{
+The bibliographic information returned by the search of the
+\url{http://dx.doi.org} API is temporarily written to a
+file and then read back into \code{R} and return as a
+\code{BibEntry} object.
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (doi, temp.file = "tempfile.bib", delete.file = TRUE) 
-{
-    file.create(temp.file)
-    for (i in 1:length(doi)) {
-        temp <- getURLContent(url = paste0("http://dx.doi.org/", 
-            doi), .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"), 
-            followLocation = TRUE))
-        if (is.raw(temp)) 
-            temp <- rawToChar(temp)
-        write(temp, file = temp.file, append = TRUE)
-    }
-    bib.res <- read.bib(file = temp.file, encoding = "UTF-8")
-    if (delete.file) 
-        suppressWarnings(file.remove(temp.file))
-    bib.res
-  }
+GetBibEntryWithDOI(c("10.1016/j.iheduc.2003.11.004", "10.3998/3336451.0004.203"))
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\references{
+\url{http://www.doi.org/tools.html}
+}
+\seealso{
+\code{\link{ReadCrossRef}}, \code{\link{BibEntry}}
+}
+

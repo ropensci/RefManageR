@@ -1,33 +1,8 @@
-# Mathew McLean
-# 2013-11-07
-# tools for interacting with Crossref
-# TO DO: lookupDOI add DOI to bibentry
-#        search crossref for bibtex
-#        open bibentry using DOI
-#        get bibtex using DOI
-# Note: false positives likely, false negatives unlikely
-# http://search.crossref.org/help/api
-# http://labs.crossref.org/resolving-citations-we-dont-need-no-stinkin-parser/
-
-require(RCurl)
-require(RJSONIO)
-
-# http://www.crossref.org/openurl?pid=name@someplace.com&aulast=Maas%20LRM&title= JOURNAL%20OF%20PHYSICAL%20OCEANOGRAPHY&volume=32&issue=3&spage=870&date=2002
-# 
-# # works!!
-# temp <- getURLContent(url='http://dx.doi.org/10.1126/science.169.3946.635',
-#                       .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"), verbose=TRUE, followLocation=TRUE))
-# 
-# results <- getForm("http://search.labs.crossref.org/dois", q="carroll ruppert")
-# fromj <- RJSONIO::fromJSON(results)
-# 
-# SearchCrossRef('Ruppert Carrol statistics')
-# SearchCrossRef('Carberry, J 2008, “Toward a Unified Theory of High-Energy Metaphysics: Silly String Theory.” Journal of Psychoceramics, vol. 5, no. 11, pp. 1-3.')
-
-#' Search CrossRef for references
+#' Search CrossRef for citations.
+#'
+#' Provides an interface to the CrossRef API, searching for citations given a string query.  Results are written to a
+#' bib file, read back into \code{R} using \code{\link{WriteBib}}, and returned as a BibEntry object.
 #' 
-#' Interface to CrossRef API - downloads Bibtex information for references returned from a search of the CrossRef database
-#' and returns the results as a BibEntry object.
 #' @param query - string; search term
 #' @param limit - numeric; maximum number of entries to return
 #' @param sort - string; how should the results from CrossRef be returned.
@@ -36,13 +11,16 @@ require(RJSONIO)
 #' @param temp.file - string; file name to use for storing Bibtex information returned by CrossRef.
 #' @param delete.file - boolean; should the bib file be deleted on exit?
 #' @param verbose - boolean; if \code{TRUE}, additional messages are output regarding the results of the query.
-#' @details CrossRef assigns a score between 0 and 100 based on how relevant a reference seems to be
-#' to your query
 #' @return An object of class BibEntry.
+#' @details CrossRef assigns a score between 0 and 100 based on how relevant a reference seems to be
+#' to your query.  The API documenation warns that while false negatives are unlikely, the search can be prone 
+#' to false positives.  Hence, setting \code{min.revelance} to a high value may be necessary.
 #' @importFrom RJSONIO fromJSON
 #' @importFrom RCurl getForm getURLContent
 #' @keywords database
-#' @seealso \code{\link{ReadNCBI}, \code{\link{BibEntry}}}
+#' @seealso \code{\link{ReadZotero}}, \code{\link{BibEntry}}
+#' @family pubmed
+#' @references \url{http://search.crossref.org/help/api}
 #' @examples
 #' ReadCrossRef(query = 'rj carroll measurement error', limit = 5, sort = "relevance", 
 #'   min.relevance = 80)
@@ -69,12 +47,12 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.
     
     fromj <- RJSONIO::fromJSON(results)
     num.res <- min(limit, length(fromj))
-    if(num.res == 0){
+    if(num.res == 0L){
       message(paste0('Query \"', query, '\" returned no matches'))
       return(NA)
     }
   
-    if (num.res > 0){
+    if (num.res > 0L){
       file.create(temp.file)
      # entries <- vector('character', num.res)
       relevancies <- numeric(num.res)
@@ -89,19 +67,16 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.
       }
     }
   }  # end else for not DOI query case
-  if (good > 0)
-    bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
-    
-#   if (good == 0 || inherits(bib.res, 'try-error')){  #shouldn't happen now
-#       #browser()
-#       # message('Server error, you may want to try again.')      
-#       return(NA)
-#   }
+  if (good == 0L){
+    message('No results')
+    return()
+  }
+  bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
 
   return(bib.res)
 }
 
-#' keywords internal
+#' @keywords internal
 GetCrossRefBibTeX <- function(doi, tmp.file){
   temp <- try(getURLContent(url=doi,
                       .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"), followLocation=TRUE)))
@@ -111,52 +86,8 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
   if (inherits(temp, 'try-error') || temp[1] == "<h1>Internal Server Error</h1>"){
     message(paste0('Server error for doi ', doi, ', you may want to try again.'))
     return(0L)
-    #browser()
   }
   temp <- gsub('&amp;', '&', temp)
   write(temp, file = tmp.file, append=TRUE)
   return(1L)
 }
-
-# LookupDOI
-# 
-# GetBibEntryWithDOI('10.1198/106186002853')
-
-
-
-# also works
-# searchCrossRef <- function(email, author, title, date, multihit=FALSE){
-#   form <- getForm('http://www.crossref.org/openurl', pid=email, aulast=author, title=title,
-#                   date=date, multihit=multihit, .opts=list(verbose=TRUE))
-#   browser()
-# }
-# 
-# searchCrossRef('mathew.w.mclean@gmail.com', author='ruppert', title='semiparametric regression', date='2002',
-#                multihit=TRUE)
-# 
-# searchCrossRef('mathew.w.mclean@gmail.com', author='carroll', 
-#                title='generalized partially linear single-index models', date='1997')
-# searchCrossRef('mmclean@stat.tamu.edu', author='carroll', 
-#                title='journal of the american statistical association', date='1997')
-# 
-# getURL('http://www.crossref.org/openurl?pid=name@someplace.com&aulast=Maas%20LRM&title=&date=1997')
-# 
-# "Accept: application/vnd.citationstyles.csl+json, application/rdf+xml" http://dx.doi.org/10.1126/science.169.3946.635
-# 
-# getURLContent(url='http://dx.doi.org/10.5555/12345678?pid=mmclean@stat.tamu.edu', header=TRUE,
-#               httpheader = c(Accept = "application/x-bibtex"), verbose=TRUE)
-# 
-# h <- basicTextGatherer()
-# curlPerform(url = "http://dx.doi.org/10.1080/01621459.2013.838568", writefunction = h$update, 
-#             httpheader = c(Accept = "application/vnd.crossref.unixref+xml;q=1, application/rdf+xml;q=0.5"))
-# h$value()
-# #curlPerform(getCurlHandle(url='http://dx.doi.org/10.1080/01621459.2013.838568',
-# #              .opts = list(httpheader = c(Accept = "application/x-bibtex"), verbose=TRUE)))
-# temp <- getURLContent(url='http://dx.doi.org/10.1126/science.169.3946.635',
-#        .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"), verbose=TRUE, followLocation=TRUE))
-# read.delim(textConnection(temp))
-# getURLContent(url='http://dx.doi.org/10.1126/science.169.3946.635',
-#               .opts=list(httpheader = c('Accept' = "application/x-bibtex", 'Content-Type' = "application/x-bibtex"), verbose=TRUE))
-# getURLContent(url='http://dx.doi.org/10.1126/science.169.3946.635',
-#               httpheader=c('Accept' ='text/bibliography; style=bibtex'), verbose=TRUE)
-# getURLContent(url='http://dx.doi.org/10.1126/science.169.3946.635')

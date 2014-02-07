@@ -9,9 +9,10 @@
 #' @details
 #' This function will replace the specified entry in \code{x} with the entry given
 #' by \code{value}.  To replace multiple entries see \code{\link{[<-.BibEntry}}.
-#' @S3method [[<- BibEntry
+#' @method [[<- BibEntry
+#' @export
 #' @keywords methods
-#' @seealso \code{\link{[<-.BibEntry}}, \code{\link{BibEntry}}
+#' @family operators
 `[[<-.BibEntry` <- function(x, i, value){
   value <- as.BibEntry(value)
   if (!inherits(value, 'BibEntry') || length(value) != 1 || length(i) != 1)

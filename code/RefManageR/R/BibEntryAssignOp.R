@@ -1,13 +1,15 @@
 #' Replace values for a particular field in a BibEntry object
 #' 
-#' Field replacement for for BibEntry objects.
-#' @param x - a BibEntry object
-#' @param name - string; the field to assign the new values to.
-#' @param value - character vector; the replacement field values to be assigned.
-#' @return an object of class BibEntry.
+#' Used to replace the values stored for a specified field in a BibEntry object.
+#' @param x a BibEntry object
+#' @param name string; the field to assign the new values to.
+#' @param value character vector; the replacement field values to be assigned.
+#' @return an object of class BibEntry with the updated fields.
 #' @note The method expects date and name list fields to be in the format expected by Biblatex.  The 
 #' field specified by \code{name} does not have to be one currently in \code{x}.
-#' @S3method $<- BibEntry
+#' @method $<- BibEntry
+#' @export
+#' @family operators
 #' @keywords methods
 #' @examples
 #' bib <- BibEntry(bibtype = "misc", key = "mclean", author = "Mathew W. McLean", title = "My Work", year = "2012")
