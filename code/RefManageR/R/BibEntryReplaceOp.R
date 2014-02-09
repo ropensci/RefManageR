@@ -11,8 +11,10 @@
 #' multiple entries, should be a list of named character vectors.  Can also be an object of 
 #' class BibEntry.
 #' @return an object of class BibEntry.
-#' @note Date and name list fields should be in the format expected
+#' @details Date and name list fields should be in the format expected
 #' by Biblatex (see \code{\link{BibEntry}}).
+#' 
+#' To clear a field \sQuote{field_name} from an entry use \code{field_name = ""}.
 #' @method [<- BibEntry
 #' @export
 #' @keywords methods manip
@@ -20,7 +22,7 @@
 #' @examples
 #' file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 #' bib <- ReadBib(file.name)
-#' print(bib[seq_len(3L)], .opts = list(sorting = "none", .bibstyle = "alphabetic"))
+#' print(bib[seq_len(3L)], .opts = list(sorting = "none", bib.style = "alphabetic"))
 #' ## add month to Serban et al., add URL and urldate to Jennings et al., and
 #' ##   add DOI and correct journal to Garcia et al.
 #' bib[seq_len(3L)] <- list(c(date="2013-12"), 
@@ -32,8 +34,8 @@
 #' bib2 <- bib[seq_len(3L)]
 #' bib2[2:3] <- bib[5:6]
 #' bib2
-#' bib2[3] <- c(journal='', eprinttype = "arxiv", eprint = "1308.5427", eprintclass = "math.ST",
-#'                            pubstate = "submitted", bibtype = "misc")
+#' bib2[3] <- c(journal='', eprinttype = "arxiv", eprint = "1308.5427", 
+#'   eprintclass = "math.ST", pubstate = "submitted", bibtype = "misc")
 #' bib2                            
 `[<-.BibEntry` <- function(x, i, j, ..., value){
   if (!length(value))

@@ -140,9 +140,9 @@ for building and manipulating a database of references.
 }
 \examples{
 BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title", author = "Mathew W. McLean",
-  journaltitle = "The Journal Title", date = "2014-02-06")
+  journaltitle = "The Journal Title", date = "2014-02-06", pubstate = "forthcoming")
 bib <- BibEntry(bibtype = "XData", key = "arxiv_data", eprinttype = "arxiv", eprintclass = "stat.ME",
-year = 2013, urldate = "2014-02-01")
+year = 2013, urldate = "2014-02-01", pubstate = "submitted")
 bib <- c(bib, BibEntry(bibtype = "Misc", key = "mclean2014b", title = "Something On the {arXiv}",
   author = "Mathew W. McLean", eprint = "1312.9999", xdata = "arxiv_data", url = "http://arxiv.org/abs/1310.5811"))
 bib

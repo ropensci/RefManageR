@@ -8,6 +8,7 @@
 #' @seealso \code{\link{as.BibEntry}}
 #' @return \code{relist.BibEntry} - an object of class BibEntry
 #' @rdname unlist.BibEntry
+#' @export
 #' @keywords database list manip
 relist.BibEntry <- function(flesh, skeleton = NULL){
   key.ind <- which(names(flesh) == 'key')

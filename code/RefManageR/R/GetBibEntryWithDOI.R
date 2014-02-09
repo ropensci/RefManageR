@@ -6,6 +6,7 @@
 #' @param temp.file string; a file to write the Bibtex data returned by the DOI System to.
 #' @param delete.file logical; should \code{temp.file} be deleted when the function exits?
 #' @return an object of class BibEntry.
+#' @export
 #' @details 
 #' The bibliographic information returned by the search of the \url{http://dx.doi.org} API is temporarily
 #' written to a file and then read back into \code{R} and return as a \code{BibEntry} object.

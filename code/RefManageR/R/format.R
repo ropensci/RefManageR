@@ -5,18 +5,18 @@
 #' @param x - an object of class BibEntry
 #' @param style
 #' @return character vector containing formatted BibEntry object.
-#' @importFrom tools Rd2txt_options
+#' @importFrom tools Rd2txt_options Rd2txt Rd2HTML Rd2latex
 #' @S3method format BibEntry
 #' @keywords internal
 #' @seealso \code{\link{print.BibEntry}}, \code{\link{BibEntry}}
 format.BibEntry <- function(x, style = "text", .bibstyle = BibOptions()$bib.style, 
-                             citation.bibtex.max = getOption("citation.bibtex.max", 1), sort = TRUE, 
+                             citation.bibtex.max = getOption("citation.bibtex.max", 1), .sort = TRUE, 
                             .sorting = 'nty', enc = 'UTF-8', ...){
     style <- .BibEntry_match_format_style(style)
     ret.ind <- .BibOptions$return.ind
     .BibOptions$return.ind <- FALSE
-    if (sort && !style %in% c('html', 'text', 'latex')) 
-      x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.ind = TRUE)
+    if (.sort && !style %in% c('html', 'text', 'latex')) 
+      x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.labs = TRUE)
 
     .format_bibentry_via_Rd <- function(f){
         out <- file()
@@ -26,11 +26,11 @@ format.BibEntry <- function(x, style = "text", .bibstyle = BibOptions()$bib.styl
             close(out)
         })
         x <- .BibEntry_expand_crossrefs(x)
-        if (sort) 
-          x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.ind = TRUE)
+        if (.sort) 
+          x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.labs = TRUE)
         sapply(x, function(y) {
 
-            rd <- toRd.BibEntry(y, style = .bibstyle, .sorting = 'none')
+            rd <- toRd.BibEntry(y, .style = .bibstyle, .sorting = 'none')
             con <- textConnection(rd)
             on.exit(close(con))
             f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8', ...)

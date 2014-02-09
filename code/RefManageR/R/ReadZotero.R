@@ -31,20 +31,24 @@
 #' @param temp.file character; file name where the BibTeX data returned by Zotero will be temporarily written.
 #' @param delete.file boolean; should \code{temp.file} be removed on exit?
 #' @return An object of class BibEntry
+#' @export
 #' @seealso \code{\link{BibEntry}}, \code{\link{getForm}} in package \code{RCurl}
 #' @references \url{http://www.zotero.org/support/dev/server_api/v2/read_requests}
 #' @importFrom RCurl getForm curlOptions
 #' @examples
 #' ## first two entries in library with bayesian in title
-#' ReadZotero(user='1648676', .params=list(q='bayesian', key='7lhgvcwVq60CDi7E68FyE3br', limit=2))
+#' ReadZotero(user='1648676', .params=list(q='bayesian', key='7lhgvcwVq60CDi7E68FyE3br', 
+#'   limit=2))
 #'
 #' ## Search specific collection
 #' ## collection key can be found by reading uri when collection is selected in Zotero
-#' ReadZotero(user='1648676', .params=list(q='yu', key='7lhgvcwVq60CDi7E68FyE3br', collection='3STEQRNU'))
+#' ReadZotero(user='1648676', .params=list(q='yu', key='7lhgvcwVq60CDi7E68FyE3br', 
+#'   collection='3STEQRNU'))
 #'
 #' ## Search by tag
 #' ## Notice issue with how Zotero uses Techreport entry for arXiv manuscripts
-#' ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br', tag='Statistics - Machine Learning'))
+#' ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br', 
+#'   tag='Statistics - Machine Learning'))
 #' @keywords database
 ReadZotero <- function(user, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE){
   if (delete.file)

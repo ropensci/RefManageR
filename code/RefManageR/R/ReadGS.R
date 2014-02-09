@@ -16,6 +16,7 @@
 #' @importFrom XML xpathApply htmlParse
 #' @importFrom stringr str_length str_sub
 #' @keywords database
+#' @export
 #' @details This function creates \sQuote{Article} or \sQuote{Book} BibTeX entries from an author's Google Scholar page.  
 #' If the function finds numbers corresponding to volume/number/pages of a journal article, an \sQuote{Article} entry 
 #' is created; otherwise, a \sQuote{Book} entry is created.
@@ -36,11 +37,10 @@
 #' ReadGS(scholar.id = "CJOHNoQAAAAJ", limit = 10, sort.by.date = TRUE)
 #'
 #' ## Matthias Katzfu\ss
-#' kat.bib <- ReadGS(scholar.id = 'vqW0UqUAAAAJ')
+#' kat.bib <- ReadGS(scholar.id = "vqW0UqUAAAAJ")
 #'
 #' ## retrieve GS citation counts stored in field 'cites'
-#' ## entries with no citations do not have the cite field
-#' kat.bib['cites'] 
+#' kat.bib["cites"] 
 ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
                      .Encoding = 'UTF-8', check.entries = BibOptions()$check.entries){
   limit <- min(limit, 100)

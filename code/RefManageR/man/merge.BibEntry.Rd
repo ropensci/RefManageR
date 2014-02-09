@@ -5,7 +5,7 @@
 \usage{
 \method{+}{BibEntry}(e1, e2)
 
-\method{merge}{BibEntry}(e1, e2,
+\method{merge}{BibEntry}(x, y,
   fields.to.check = BibOptions()$merge.fields.to.check, ...)
 }
 \arguments{
@@ -19,6 +19,10 @@
   type and \code{"key"} to check entry keys. Specifying
   \code{"all"} checks all fields using
   \code{\link{duplicated}}.}
+
+  \item{x}{BibEntry object}
+
+  \item{y}{BibEntry object}
 
   \item{...}{ignored}
 }
@@ -57,8 +61,9 @@ invisible(merge(bib1, bib2, c('title', 'date')))
 ## New publications of R.J. Carroll from Google Scholar and Crossref
 bib1 <- ReadGS(scholar.id = "CJOHNoQAAAAJ", limit = '10', sort.by.date = TRUE)
 bib2 <- ReadCrossRef(query = "rj carroll", limit = 10, sort = "relevance", min.relevance = 80)
-.BibOptions$merge.fields.to.check <- "title"
+oldopt <- BibOptions(merge.fields.to.check = "title")
 rjc.new.pubs <- bib1 + bib2
+BibOptions(oldopt)
 }
 \author{
 McLean, M. W. \email{mathew.w.mclean@gmail.com}

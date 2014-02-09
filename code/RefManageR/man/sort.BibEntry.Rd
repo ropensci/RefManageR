@@ -3,20 +3,20 @@
 \title{Sort a BibEntry Object}
 \usage{
 \method{sort}{BibEntry}(x, decreasing = FALSE,
-  .bibstyle = BibOptions()$bib.style, sorting = BibOptions()$sorting, ...)
+  sorting = BibOptions()$sorting, .bibstyle = BibOptions()$bib.style, ...)
 }
 \arguments{
-  \item{x}{- an object of class BibEntry}
+  \item{x}{an object of class BibEntry}
 
-  \item{decreasing}{- logical; should the sort be
-  increasing or decreasing?}
+  \item{decreasing}{logical; should the sort be increasing
+  or decreasing?}
 
-  \item{sorting}{- sort method to use, see \bold{Details}.}
+  \item{sorting}{sort method to use, see \bold{Details}.}
 
-  \item{.bibstyle}{- bibliography style; used when
+  \item{.bibstyle}{bibliography style; used when
   \code{sort} is called by \code{\link{print.BibEntry}}}
 
-  \item{...}{- internal use only}
+  \item{...}{internal use only}
 }
 \value{
 the sorted BibEntry object

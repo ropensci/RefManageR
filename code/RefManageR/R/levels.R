@@ -24,6 +24,7 @@ levels.BibEntry <- function(x){
 }
 
 #' @rdname levels.BibEntry
+#' @export
 fields <- function(x){
   return(lapply(unclass(x), names))
 }

@@ -12,7 +12,7 @@
 #' @import bibtex 
 #' @importFrom stringr str_trim
 #' @seealso \code{\link{read.bib}} in package \code{bibtex}
-#' @useDynLib bibtex
+#' @export
 #' @examples 
 #' file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 #' bib <- ReadBib(file.name)
@@ -28,7 +28,7 @@ ReadBib <- function (file, .Encoding = "UTF-8",
   srcfile <- switch(.Encoding, unknown = srcfile(file), srcfile(file, 
                                                                encoding = .Encoding))
   out <- .External("do_read_bib", file = file, encoding = .Encoding, 
-                   srcfile = srcfile)
+                   srcfile = srcfile, PACKAGE = "bibtex")
   
   at <- attributes(out)
   if ((typeof(out) != "integer") || (getRversion() < "3.0.0")) 

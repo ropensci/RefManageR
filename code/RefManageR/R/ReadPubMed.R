@@ -17,6 +17,7 @@
 #' @param ... additional parameters to use for the search.  
 #' See the \emph{Details}.
 #' @return an object of class BibEntry.
+#' @export
 #' @details Optional additional parameters to pass to the server include
 #' \itemize{
 #' \item \code{retstart} - index of the first retrieved ID that should be included in the results.
@@ -84,6 +85,7 @@ ReadPubMed <- function(query, database = 'PubMed', ...){
 #' @importFrom RCurl getForm
 #' @importFrom XML xmlParse getNodeSet
 #' @keywords database
+#' @export
 #' @references \url{http://www.ncbi.nlm.nih.gov/books/NBK25500/}
 #' @family pubmed
 #' @examples
@@ -140,6 +142,7 @@ GetPubMedByID <- function(id, db = 'pubmed', ...){
 #' @references \url{http://www.ncbi.nlm.nih.gov/books/NBK25500/}
 #' @family pubmed
 #' @keywords database
+#' @export
 #' @examples
 #' file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 #' bib <- ReadBib(file.name)
@@ -298,6 +301,7 @@ ProcessPubMedResult <- function(article){
 #' @family pubmed
 #' @importFrom RCurl getURL
 #' @keywords database
+#' @export
 #' @examples
 #' file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 #' bib <- ReadBib(file.name)

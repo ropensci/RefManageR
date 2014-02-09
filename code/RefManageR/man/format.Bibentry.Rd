@@ -4,7 +4,7 @@
 \usage{
 \method{format}{BibEntry}(x, style = "text",
   .bibstyle = BibOptions()$bib.style,
-  citation.bibtex.max = getOption("citation.bibtex.max", 1), sort = TRUE,
+  citation.bibtex.max = getOption("citation.bibtex.max", 1), .sort = TRUE,
   .sorting = "nty", enc = "UTF-8", ...)
 }
 \arguments{

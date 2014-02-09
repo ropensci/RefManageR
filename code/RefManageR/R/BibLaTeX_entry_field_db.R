@@ -2,10 +2,10 @@ BibLaTeX_entry_field_db <- list()  # tools:::BibTeX_entry_field_db
 
 BibLaTeX_entry_field_db$Article <- c('author', 'title', 'journaltitle|journal', 'year|date')
 
-BibLaTeX_entry_field_db$Book <- c('author', 'title', 'year|date')
+BibLaTeX_entry_field_db$Book <- c('author|editor|translator', 'title', 'year|date')
 
 # multivolume book
-BibLaTeX_entry_field_db$MVBook <- c('author', 'title', 'year|date')  
+BibLaTeX_entry_field_db$MVBook <- c('author|editor|translator', 'title', 'year|date')  
 
 # different from BibTeX
 BibLaTeX_entry_field_db$InBook <- c('author', 'title', 'booktitle|maintitle', 'year|date')  
@@ -119,3 +119,20 @@ BibLaTeX_entry_field_db$Review <- character(0)
 BibLaTeX_entry_field_db$Software <- character(0)
 BibLaTeX_entry_field_db$Standard <- character(0)
 BibLaTeX_entry_field_db$Video <- character(0)
+
+
+# BibTeX
+BibTeX_entry_field_db <- list(
+Article = c("author", "title", "journal", "year"),   
+Book = c("author|editor", "title", "publisher", "year"),         
+Booklet = "title",
+InBook = c("author|editor", "title", "chapter", "publisher",  "year"),         
+InCollection = c("author", "title", "booktitle", "publisher", "year"),     
+InProceedings = c("author", "title", "booktitle", "year"),     
+Manual = "title",
+MastersThesis = c("author", "title", "school", "year"),  
+Misc = character(0),
+PhdThesis = c("author", "title",  "school", "year"),  
+Proceedings =  c("title", "year"), 
+TechReport = c("author", "title", "institution", "year"),       
+Unpublished = c("author", "title",  "note"))

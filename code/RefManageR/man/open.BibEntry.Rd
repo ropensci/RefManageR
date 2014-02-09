@@ -26,9 +26,13 @@
   function to be called to invoke the browser.  Defaults to
   \code{getOptions("pdfviewer")} if \code{open.field =
   "file"} and \code{getOptions("browser")}, otherwise.}
+
+  \item{...}{not used.}
 }
 \description{
-Open BibEntry in PDF viewer or web browser.
+Attempts to open a connection to an entry in a BibEntry
+object using fields such as \sQuote{file}, \sQuote{DOI},
+\sQuote{eprint} + \sQuote{eprinttype}, and \sQuote{URL}.
 }
 \examples{
 \dontrun{

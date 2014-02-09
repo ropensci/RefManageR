@@ -17,8 +17,10 @@
 #' conversion is done as in \code{\link{toBibtex.BibEntry}}.
 #' @importFrom tools encoded_text_to_latex
 #' @author McLean, M. W. based on \code{\link{write.bib}} by Gaujoux, R. in package \code{bibtex}.
+#' @export
 #' @examples
-#' bib <- ReadCrossRef(query = 'carroll journal of the american statistical association', year = 2012)
+#' bib <- ReadCrossRef(query = 'carroll journal of the american statistical association', 
+#'   year = 2012)
 #' tfile <- tempfile(fileext = ".bib")
 #' WriteBib(bib, tfile)
 #' identical(ReadBib(tfile), bib)

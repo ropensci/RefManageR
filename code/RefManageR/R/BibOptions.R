@@ -6,6 +6,7 @@
 #' a named list or vector of option values or options specified in name=value pairs.
 #' @param restore.defaults - logical; if TRUE, \code{...}'s are ignored and all package options are restored to their
 #' defaults.
+#' @export
 #' @details The following are valid package options \enumerate{
 #' \item match.author - string; for \code{\link{SearchBib}} and the operators \code{\link{[.BibEntry}} and 
 #' \code{\link{[<-.BibEntry}}, controls how name list fields (author, editor, translator, etc.) are matched 
@@ -28,7 +29,7 @@
 #' \code{\link{print.BibEntry}}.
 #' \item first.inits - logical; if \code{TRUE}, only given name initials are displayed when printing; otherwise, full names
 #' are used.
-#' \item dashed - logical; if \code{TRUE} and \code{bib.style = \dQuote{authoryear}} or \code{bib.style = \dQuote{authortitle}},
+#' \item dashed - logical; if \code{TRUE} and \code{bib.style = "authoryear"} or \code{bib.style = "authortitle"},
 #' recurring author and editor names are replaced with \dQuote{---} when printing.
 #' \item sorting - string; controls how BibEntry objects are sorted.  Possible values are \dQuote{nty}, \dQuote{nyt}, 
 #' \dQuote{nyvt}, \dQuote{anyt}, \dQuote{anyvt}, \dQuote{ynt}, \dQuote{ydnt}, \dQuote{none}, \dQuote{debug};  see 
@@ -51,6 +52,15 @@
 #' all current option values; otherwise, when setting options the old values of the changed options are (invisibly) 
 #' returned as a list.
 #' @seealso \code{\link{print.BibEntry}}, \code{\link{BibEntry}}, \code{\link{options}}
+#' @examples
+#' BibOptions()
+#' BibOptions("first.inits", "bib.style")
+#' 
+#' oldopts <- BibOptions(first.inits = FALSE, bib.style = "authoryear")
+#' oldopts
+#' BibOptions(oldopts)
+#' 
+#' BibOptions(restore.defaults = TRUE)
 BibOptions <- function(..., restore.defaults = FALSE){
   if (restore.defaults)
     return(invisible(mapply(assign, .BibOptNames, .Defaults, MoreArgs = list(envir=.BibOptions))))

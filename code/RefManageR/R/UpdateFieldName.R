@@ -7,6 +7,7 @@
 #' @param new.field - string; the new name to replace \code{old.field}
 #' @return \code{x}, with the renamed field.
 #' @keywords manip utilities
+#' @export
 #' @examples
 #' bib <- as.BibEntry(list(c(bibtype = "article", key = "mclean2014a", title = "My New Article", 
 #'   author = "Mathew W. McLean", journal = "The Journal", date = "2014-01"), 

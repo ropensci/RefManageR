@@ -15,9 +15,17 @@
 #' @param mheader string; optional \dQuote{outer} header text
 #' @param mfooter string; optional \dQuote{outer} footer text 
 #' @return an object of class BibEntry
+#' @export
 #' @seealso \code{\link{bibentry}}
 #' @keywords database
+#' @import methods
 #' @importFrom utils bibentry
+#' @include zzz.R
+#' @include BibOptions.R
+#' @include InternalFunctions.R
+#' @include makeBibLatex.R
+#' @include makeBibLatexAuthoryear.R
+#' @include sort.R
 #' @section Entry Types: 
 #'   bibentry creates "bibentry" objects, which are modeled after BibLaTeX and BibTeX entries. The entry should 
 #'   be a valid BibLaTeX or BibTeX entry type.  For a list of valid BibTeX entry types, see 
@@ -82,12 +90,14 @@
 #'   as with \code{bibentry}, but many additional methods are defined for building and manipulating a database
 #'   of references.
 #' @examples
-#' BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title", author = "Mathew W. McLean",
-#'   journaltitle = "The Journal Title", date = "2014-02-06")
-#' bib <- BibEntry(bibtype = "XData", key = "arxiv_data", eprinttype = "arxiv", eprintclass = "stat.ME", 
-#' year = 2013, urldate = "2014-02-01") 
-#' bib <- c(bib, BibEntry(bibtype = "Misc", key = "mclean2014b", title = "Something On the {arXiv}", 
-#'   author = "Mathew W. McLean", eprint = "1312.9999", xdata = "arxiv_data", url = "http://arxiv.org/abs/1310.5811"))
+#' BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title", 
+#'   author = "Mathew W. McLean", journaltitle = "The Journal Title", 
+#'   date = "2014-02-06", pubstate = "forthcoming")
+#' bib <- BibEntry(bibtype = "XData", key = "arxiv_data", eprinttype = "arxiv", 
+#' eprintclass = "stat.ME", year = 2013, urldate = "2014-02-01", pubstate = "submitted") 
+#' bib <- c(bib, BibEntry(bibtype = "Misc", key = "mclean2014b", 
+#'   title = "Something On the {arXiv}", author = "Mathew W. McLean", eprint = "1312.9999", 
+#'   xdata = "arxiv_data", url = "http://arxiv.org/abs/1310.5811"))
 #' bib
 #' toBiblatex(bib)   
 BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL, 

@@ -15,7 +15,8 @@
 #' bib <- c(BibEntry(bibtype = "article", key = "mclean2014a", title = "My New Article", 
 #'   author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-01"), 
 #'   BibEntry(bibtype = "article", key = "mclean2014b", 
-#'   title = "My Newer Article", author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-02"))       
+#'   title = "My Newer Article", author = "Mathew W. McLean", journaltitle = "The Journal", 
+#'   date = "2014-02"))       
 c.BibEntry <- function (..., recursive = FALSE){
     args <- list(...)
     if (!all(sapply(args, inherits, "bibentry"))) 

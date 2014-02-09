@@ -67,11 +67,10 @@ this violates their Terms of Service.
 ReadGS(scholar.id = "CJOHNoQAAAAJ", limit = 10, sort.by.date = TRUE)
 
 ## Matthias Katzfu\\ss
-kat.bib <- ReadGS(scholar.id = 'vqW0UqUAAAAJ')
+kat.bib <- ReadGS(scholar.id = "vqW0UqUAAAAJ")
 
 ## retrieve GS citation counts stored in field 'cites'
-## entries with no citations do not have the cite field
-kat.bib['cites']
+kat.bib["cites"]
 }
 \seealso{
 \code{\link{BibEntry}}, \code{\link{BibEntry}},

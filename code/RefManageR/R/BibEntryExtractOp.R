@@ -100,7 +100,7 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 #' ## Change some searching and printing options and search for author
 #' old.opts <- BibOptions(bib.style = "authoryear", match.author = "exact", 
 #'   max.names = 99, first.inits = FALSE)
-#' testb[author="Mart\u00edn, Jacinto and S\u00e1nchez, Alberto"]
+#' bib[author="Mart\u00edn, Jacinto and S\u00e1nchez, Alberto"]
 #' BibOptions(old.opts)  ## reset options
 #'    
 #' ## Some works of Raymond J. Carroll's

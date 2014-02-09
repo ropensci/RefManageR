@@ -1,8 +1,9 @@
 #' @rdname toBiblatex
 #' @method toBibtex BibEntry
+#' @importFrom utils toBibtex
 #' @export
 toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate", "addendum"), extra.fields = NULL, ...){
-  format_bibentry1 <- function(object) {
+  format_bibentry1 <- function(object){
     object <- unclass(object)[[1L]]
     bibtype <- tolower(attr(object, "bibtype"))
     obj.names <- names(object)
@@ -82,7 +83,7 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
       bibtype <- ifelse(is.null(object$type) || !object$type == "mathesis", "PhdThesis", "MastersThesis")
     }
     
-    pos <- match(bibtype, tolower(names(tools:::BibTeX_entry_field_db)))
+    pos <- match(bibtype, tolower(names(BibTeX_entry_field_db)))
     if (is.na(pos)){
       bibtype <- switch(bibtype, "mvbook" = "Book", "bookinbook" = "InBook", "suppbook" = "InBook",
                                         "collection" = "Book", "mvcollection" = "Book", "suppcollection" = "InCollection",
@@ -90,7 +91,7 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
                                         "report" = "TechReport", "proceedings" = "Book", "mvproceedings" = "Book",
                                   "periodical" = "Book", "suppperiodical" = "InBook", "patent" = "TechReport", "Misc")
     }else{
-      bibtype <- names(tools:::BibTeX_entry_field_db)[pos]
+      bibtype <- names(BibTeX_entry_field_db)[pos]
     }
     
     rval <- paste0("@", bibtype, "{", attr(object, "key"), ",")
