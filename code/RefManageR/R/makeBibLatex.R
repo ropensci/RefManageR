@@ -1,4 +1,5 @@
-tools::bibstyle('BibLaTeX', default = TRUE, envir = local({
+#' @keywords internal
+MakeBibLaTeX <- function() local({
 
 ##################################################################
 ## Formatting functions
@@ -1181,7 +1182,7 @@ formatUnpublished <- function(paper){
 }
 
 environment()
-}))
+})
 
 #' Convert BibEntry object to a fragment of Rd code.
 #' 
@@ -1195,22 +1196,26 @@ environment()
 #' @return Returns a character vector containing a fragment of Rd code that could be parsed and rendered.
 #' @keywords internal
 #' @seealso \code{\link{print.BibEntry}}, \code{\link{sort.BibEntry}}, \code{\link{BibEntry}}, \code{\link{bibstyle}}
-#' @importFrom tools getBibstyle bibstyle
-toRd.BibEntry <- function(obj, style = .BibOptions$bib.style, .sorting ='nty', ...) { 
-  curstyle <- .BibOptions$bib.style 
+#' @importFrom tools getBibstyle bibstyle toRd
+toRd.BibEntry <- function(obj, ...) { 
+  .style <- .BibOptions$bib.style 
   
-  if (is.null(style)){
-    style <- .BibOptions$bib.style <- 'BibLaTeX'
-  }else if (style %in% tools::getBibstyle(TRUE)){
-    .BibOptions$bib.style <- style
-  }else if (style %in% c('authortitle', 'alphabetic', 'numeric', 'draft')){
-    .BibOptions$bib.style <- style
-    style <- 'BibLaTeX'
+  if (is.null(.style)){
+    .style <- .BibOptions$bib.style <- 'numeric'
+    style <- MakeBibLaTeX()
+  }else if (.style %in% tools::getBibstyle(TRUE)){
+    .BibOptions$bib.style <- .style
+    style.env <- tools::bibstyle(.style)
+  }else if (.style == "authoryear"){
+    style.env <- MakeAuthorYear()
+  }else if (.style %in% c('authortitle', 'alphabetic', 'numeric', 'draft')){
+    #.style <- 'BibLaTeX'
+    style.env <- MakeBibLaTeX()
   }
   if (FALSE)  # toRd.BibEntry will be internal function only called by format.BibEntry with sorting already done
-    obj <- sort(obj, .bibstyle=.BibOptions$bib.style, sorting = .sorting, return.ind = FALSE)
-  style <- tools::bibstyle(style)
-  env <- new.env(hash = FALSE, parent = style)
+    obj <- sort(obj, .bibstyle=.BibOptions$bib.style, sorting = .sorting, return.labs = FALSE)
+  # style <- tools::bibstyle(.style)
+  env <- new.env(hash = FALSE, parent = style.env)
  
 #   if ((.BibOptions$bib.style == 'authoryear' || .BibOptions$bib.style == 'authortitle') && .BibOptions$dashed){
 #     ## dups <- duplicated(style$sortKeys(get('X', parent.frame(3))))  # assumes called from function inside format.BibEntry
@@ -1220,11 +1225,11 @@ toRd.BibEntry <- function(obj, style = .BibOptions$bib.style, .sorting ='nty', .
 #     dashed <- FALSE
 #     obj$.duplicated <- FALSE
 #   }
-  if (!(.BibOptions$bib.style == 'authoryear' || .BibOptions$bib.style == 'authortitle') || !.BibOptions$dashed ||
+  if (!(.style == 'authoryear' || .style == 'authortitle') || !.BibOptions$dashed ||
         is.null(obj$.duplicated))
     obj$.duplicated <- FALSE
-  assign('bibstyle', .BibOptions$bib.style, style)
-  assign('max.n', .BibOptions$max.names, style)
+  assign('bibstyle', .style, style.env)
+  assign('max.n', .BibOptions$max.names, style.env)
   bib <- unclass(obj)
   result <- character(length(bib))
   #browser()
@@ -1271,6 +1276,5 @@ toRd.BibEntry <- function(obj, style = .BibOptions$bib.style, .sorting ='nty', .
         Conference = formatInProceedings(paper),       
   	    paste("bibtype", attr(paper, "bibtype"), "not implemented") ))
   }
-  .BibOptions$bib.style <- curstyle
   result
 }

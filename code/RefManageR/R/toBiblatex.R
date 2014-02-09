@@ -11,6 +11,7 @@
 #' in the result return by the toBibtex function.  
 #' Any fields specified in extra.fields will \emph{not} be dropped if present in an entry.
 #' @param ... ignored
+#' @export
 #' @return an object of class \dQuote{Bibtex} - character vectors where each element holds one line of a BibTeX or BibLaTeX file
 #' @details toBiblatex converts the BibEntry object to a vector containing the corresponding BibLaTeX file, it ensures the name
 #' list fields (e.g. author and editor) are formatted properly to be read by bibtex and biber and otherwise prints all fields

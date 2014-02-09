@@ -3,7 +3,7 @@
 \alias{unlist.BibEntry}
 \title{Flatten and unflatten BibEntry objects}
 \usage{
-\method{relist}{BibEntry}(flesh, skeleton = NULL)
+relist.BibEntry(flesh, skeleton = NULL)
 
 \method{unlist}{BibEntry}(x, recursive = FALSE, use.names = TRUE)
 }

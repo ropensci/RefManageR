@@ -14,6 +14,7 @@
 #' @param use.crossref logical; should an attempt be made to download bibliographic information from CrossRef if 
 #' any Document Object Identifiers (DOIs) are found?
 #' @param use.metadata logical; should the PDF metadata also be used to help create entries?
+#' @export
 #' @details This function requires that the \code{pdfinfo} utility from Poppler PDF 
 #' \url{http://poppler.freedesktop.org/} be installed.
 #' 

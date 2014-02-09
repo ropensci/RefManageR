@@ -22,16 +22,22 @@
 #' @export
 #' @importFrom tools toRd
 #' @note setting max.names to \code{value} is equivalent to setting \code{maxnames=value} and \code{minnames=value} in BibLaTeX.
+#' 
+#' Custom BibLaTeX styles may be defined using the function \code{\link{bibstyle}}.  To fully support BibLaTeX, the created
+#' environment must have functions for formatting each of the entry types decribed in \code{\link{BibEntry}}.
 #' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex Package. \url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 #' @seealso \code{\link{BibEntry}}, \code{\link{ReadBib}}, \code{\link{sort.BibEntry}}
 #' @examples
 #' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 #' bib <- suppressMessages(ReadBib(file.name))
-#' print(testb[author="aristotle"], .bibstyle = 'authoryear')
-#' print(bib[55:57], .bibstyle = "authortitle", first.inits = FALSE)
-#' print(bib[80:88], .bibstyle = "alphabetic", max.names = 1)
-#' print(bib[32:36], .bibstyle = "draft")
-#' print(bib[editor="westfahl"], .bibstyle = 'authoryear', dashed = TRUE)
+#' print(bib[author="aristotle"], .opts = list(bib.style = "numeric"))
+#' print(bib[55:57], .opts = list(bib.style = "authortitle", first.inits = FALSE))
+#' print(bib[80:88], .opts = list(bib.style = "alphabetic", max.names = 1), 
+#'   no.print.fields = "issn")
+#' print(bib[32:36], .opts = list(bib.style = "draft"))
+#' oldopts <- BibOptions(bib.style = "authoryear", dashed = TRUE, sorting = "ydnt")
+#' bib[editor = "westfahl"]
+#' BibOptions(oldopts)
 print.BibEntry <- function (x, style = "text", .opts = list(), no.print.fields = NULL, ...){
 #   .bibstyle = .BibOptions()$bib.style, 
 #   sorting = .BibOptions()$sorting,  
@@ -59,7 +65,7 @@ print.BibEntry <- function (x, style = "text", .opts = list(), no.print.fields =
       writeLines(format(x, "R", collapse = TRUE, ...))
   }
   else if (length(x)) {
-      y <- format(x, style, .BibOptions$bib.style, .sorting = sorting, ...)
+      y <- format(x, style, .BibOptions$bib.style, .sorting = sorting, .sort = TRUE, ...)
       if (style == "citation") {
           n <- length(y)
           if (nzchar(header <- y[1L])) 

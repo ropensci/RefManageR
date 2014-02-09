@@ -2,8 +2,7 @@
 \alias{toRd.BibEntry}
 \title{Convert BibEntry object to a fragment of Rd code.}
 \usage{
-\method{toRd}{BibEntry}(obj, style = .BibOptions$bib.style,
-  .sorting = "nty", ...)
+\method{toRd}{BibEntry}(obj, ...)
 }
 \arguments{
   \item{obj}{- An object of class BibEntry}

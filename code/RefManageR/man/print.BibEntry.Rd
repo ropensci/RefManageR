@@ -45,15 +45,22 @@ in BibLaTeX style
 setting max.names to \code{value} is equivalent to setting
 \code{maxnames=value} and \code{minnames=value} in
 BibLaTeX.
+
+Custom BibLaTeX styles may be defined using the function
+\code{\link{bibstyle}}.  To fully support BibLaTeX, the
+created environment must have functions for formatting each
+of the entry types decribed in \code{\link{BibEntry}}.
 }
 \examples{
 file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 bib <- suppressMessages(ReadBib(file.name))
-print(testb[author="aristotle"], .bibstyle = 'authoryear')
-print(bib[55:57], .bibstyle = "authortitle", first.inits = FALSE)
-print(bib[80:88], .bibstyle = "alphabetic", max.names = 1)
-print(bib[32:36], .bibstyle = "draft")
-print(bib[editor="westfahl"], .bibstyle = 'authoryear', dashed = TRUE)
+print(bib[author="aristotle"], .opts = list(bib.style = "numeric"))
+print(bib[55:57], .opts = list(bib.style = "authortitle", first.inits = FALSE))
+print(bib[80:88], .opts = list(bib.style = "alphabetic", max.names = 1), no.print.fields = "issn")
+print(bib[32:36], .opts = list(bib.style = "draft"))
+oldopts <- BibOptions(bib.style = "authoryear", dashed = TRUE, sorting = "ydnt")
+bib[editor = "westfahl"]
+BibOptions(oldopts)
 }
 \references{
 Lehman, Philipp and Kime, Philip and Boruvka, Audrey and

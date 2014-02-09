@@ -17,6 +17,7 @@
 #' to false positives.  Hence, setting \code{min.revelance} to a high value may be necessary.
 #' @importFrom RJSONIO fromJSON
 #' @importFrom RCurl getForm getURLContent
+#' @export
 #' @keywords database
 #' @seealso \code{\link{ReadZotero}}, \code{\link{BibEntry}}
 #' @family pubmed

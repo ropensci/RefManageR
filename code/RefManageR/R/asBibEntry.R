@@ -1,4 +1,3 @@
-setOldClass("BibEntry")
 #' Coerce to a BibEntry object
 #' 
 #' Functions to check if an object is a BibEntry, or coerce it if possible.
@@ -10,6 +9,7 @@ setOldClass("BibEntry")
 #' @return \code{as.BibEntry} - if successful, an object of class BibEntry.
 #' @aliases is.BibEntry
 #' @keywords utilities
+#' @export
 #' @seealso \code{\link{BibEntry}}
 #' @examples
 #' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
@@ -20,8 +20,8 @@ setOldClass("BibEntry")
 #' 
 #' identical(as.BibEntry(as.data.frame(bib)), bib)
 #' 
-#' bib <- c(bibtype = "article", key = "mclean2014", title = "My New Article", author = "Mathew W. McLean", 
-#'   journaltitle = "The Journal", date = "2014-01")
+#' bib <- c(bibtype = "article", key = "mclean2014", title = "My New Article", 
+#'   author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-01")
 #' as.BibEntry(bib) 
 #' 
 #' bib <- bibentry(bibtype = "article", key = "mclean2014", title = "My New Article", 
@@ -29,9 +29,10 @@ setOldClass("BibEntry")
 #' print(bib, .bibstyle = "JSS")
 #' as.BibEntry(bib)
 #' 
-#' bib <- list(c(bibtype = "article", key = "mclean2014a", title = "My New Article", author = "Mathew W. McLean", 
-#'   journaltitle = "The Journal", date = "2014-01"), c(bibtype = "article", key = "mclean2014b", 
-#'   title = "My Newer Article", author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-02"))       
+#' bib <- list(c(bibtype = "article", key = "mclean2014a", title = "My New Article", 
+#'   author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-01"), 
+#'   c(bibtype = "article", key = "mclean2014b", title = "Newer Article",
+#'   author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-02"))       
 #' as.BibEntry(bib)   
 as.BibEntry <- function(x){
   if (!length(x))
@@ -104,6 +105,7 @@ as.BibEntry <- function(x){
 
 #' @rdname as.BibEntry
 #' @return \code{is.BibEntry} - logical; \code{TRUE} if \code{x} is a BibEntry object. 
+#' @export
 is.BibEntry <- function(x){
   inherits(x, "BibEntry")
 }

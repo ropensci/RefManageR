@@ -12,6 +12,7 @@
 #' object is returned
 #' }
 #' @aliases [.BibEntry
+#' @export
 #' @rdname SearchBib
 SearchBib <- function(x, .opts = list(), ...){
   if (length(.opts)){

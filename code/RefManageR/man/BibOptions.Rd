@@ -63,13 +63,13 @@ see \code{\link{print.BibEntry}}. \item first.inits -
 logical; if \code{TRUE}, only given name initials are
 displayed when printing; otherwise, full names are used.
 \item dashed - logical; if \code{TRUE} and \code{bib.style
-= \dQuote{authoryear}} or \code{bib.style =
-\dQuote{authortitle}}, recurring author and editor names
-are replaced with \dQuote{---} when printing. \item sorting
-- string; controls how BibEntry objects are sorted.
-Possible values are \dQuote{nty}, \dQuote{nyt},
-\dQuote{nyvt}, \dQuote{anyt}, \dQuote{anyvt}, \dQuote{ynt},
-\dQuote{ydnt}, \dQuote{none}, \dQuote{debug}; see
+= "authoryear"} or \code{bib.style = "authortitle"},
+recurring author and editor names are replaced with
+\dQuote{---} when printing. \item sorting - string;
+controls how BibEntry objects are sorted.  Possible values
+are \dQuote{nty}, \dQuote{nyt}, \dQuote{nyvt},
+\dQuote{anyt}, \dQuote{anyvt}, \dQuote{ynt}, \dQuote{ydnt},
+\dQuote{none}, \dQuote{debug}; see
 \code{\link{sort.BibEntry}} \item check.entries - string or
 \code{FALSE}; if \code{FALSE} entries are not checked it
 ensure that they have all the required fields for the type

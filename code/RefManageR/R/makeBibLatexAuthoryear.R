@@ -1,21 +1,8 @@
-tools::bibstyle('authoryear', default = FALSE, envir = local({
+#' @keywords internal
+MakeAuthorYear <- function() local({
 
 ##################################################################
 ## Formatting functions
-
-fmtPrefix <- function(paper){
-  switch(.BibOptions$bib.style, numeric = paste0("[", paper$.index, "]"),
-         alphabetic = fmtAlpha(paper),
-         draft = paper$key,
-         NULL)
-#   if (.BibOptions$bib.style == 'numeric'){
-#     paste0("[", paper$.index, "]")
-#   }else if()
-#   
-#   }else{
-#     NULL
-#   }
-}
 
 # cleanupLatex <- function (x){
 #     if (!length(x)) 
@@ -1182,4 +1169,4 @@ formatUnpublished <- function(paper){
 }
 
 environment()
-}))
+})

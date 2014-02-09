@@ -29,7 +29,8 @@
 #' toBiblatex(bib1[[1L]])
 #' toBiblatex(bib[[1L]])
 #'
-#' ## Alternatively, the operator \code{[[} for BibEntry objects does not expand cross references
+#' ## Alternatively, the operator \code{[[} for BibEntry objects does not expand 
+#' ##   cross references
 #' bib1 <- bib[[seq_len(44)]]
 #' bib2 <- bib[[45:length(bib)]]
 #' identical(merge(bib1, bib2, 'all'), bib)
@@ -39,9 +40,11 @@
 #' 
 #' ## New publications of R.J. Carroll from Google Scholar and Crossref 
 #' bib1 <- ReadGS(scholar.id = "CJOHNoQAAAAJ", limit = '10', sort.by.date = TRUE)
-#' bib2 <- ReadCrossRef(query = "rj carroll", limit = 10, sort = "relevance", min.relevance = 80)
-#' .BibOptions$merge.fields.to.check <- "title"
+#' bib2 <- ReadCrossRef(query = "rj carroll", limit = 10, sort = "relevance", 
+#'   min.relevance = 80)
+#' oldopt <- BibOptions(merge.fields.to.check = "title")
 #' rjc.new.pubs <- bib1 + bib2
+#' BibOptions(oldopt)
 #' @keywords methods
 `+.BibEntry` <- function(e1, e2){
   fields.to.check = .BibOptions$merge.fields.to.check
@@ -107,14 +110,16 @@
   return(x)
 }
 
+#' @param x BibEntry object
+#' @param y BibEntry object
 #' @param ... ignored
 #' @aliases +.BibEntry
 #' @method merge BibEntry
 #' @export
 #' @rdname merge.BibEntry
-merge.BibEntry <- function(e1, e2, fields.to.check = BibOptions()$merge.fields.to.check, ...){
+merge.BibEntry <- function(x, y, fields.to.check = BibOptions()$merge.fields.to.check, ...){
   oldfields <- BibOptions(merge.fields.to.check = fields.to.check)
   on.exit(BibOptions(oldfields))
-  `+.BibEntry`(e1, e2)
+  `+.BibEntry`(x, y)
 }
   
