@@ -56,15 +56,20 @@ format.BibEntry <- function(x, style = "text", .bibstyle = BibOptions()$bib.styl
     out <- switch(style, text = .format_bibentry_via_Rd(tools::Rd2txt), 
         html = .format_bibentry_via_Rd(tools::Rd2HTML), latex = .format_bibentry_via_Rd(tools::Rd2latex), 
         Bibtex = {
+           x$.duplicated <- NULL
            unlist(lapply(x, function(y) paste(toBiblatex(y), collapse = "\n")))
         }, Bibtex = {
+            x$.duplicated <- NULL
             unlist(lapply(x, function(y) paste(toBibtex(y), collapse = "\n")))
         }, textVersion = {
             out <- lapply(unclass(x), attr, "textVersion")
             out[!sapply(out, length)] <- ""
             unlist(out)
-        }, citation = .format_bibentry_as_citation(x), R = .format_BibEntry_as_R_code(x, 
-            ...))
+        }, citation = .format_bibentry_as_citation(x), R = {
+          x$.duplicated <- NULL
+          .format_BibEntry_as_R_code(x, 
+            ...)
+          })
     .BibOptions$return.ind <- ret.ind
     as.character(out)
 }

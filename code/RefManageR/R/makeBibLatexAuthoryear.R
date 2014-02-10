@@ -377,8 +377,9 @@ sortKeysV <- function(bib){
 # }
 
  fmtDate <- function(dat, ind = ''){
-   if (length(dat))
+   if (length(dat)){
      paste0('(', DateFormatter(dat), ind, ').')
+   }
  }
 
 # fmtDOI <- function(s){
@@ -480,6 +481,8 @@ fmtBAuthor <- function(doc){
     res <- doc$author
   }else if (length(doc$editor)){
     res <- doc$editor
+  }else if (length(doc$translator)){
+    res <- doc$translator
   }
   nnames <- length(res)
   if (nnames){

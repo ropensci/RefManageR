@@ -1,4 +1,4 @@
-\begin{thebibliography}{5}
+\begin{thebibliography}{6}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -34,6 +34,13 @@ Lang DT (2013).
   Notation}.
 \newblock R package version 1.0-3,
   \urlprefix\url{http://CRAN.R-project.org/package=RJSONIO}.
+
+\bibitem[{Lehman \emph{et~al.}(2013)Lehman, Kime, Boruvka, and
+  Wright}]{biblatex}
+Lehman P, Kime P, Boruvka A, Wright J (2013).
+\newblock \emph{The {biblatex} Package}.
+\newblock
+  \urlprefix\url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 
 \bibitem[{Patashnik(1988)}]{bibtex}
 Patashnik O (1988).

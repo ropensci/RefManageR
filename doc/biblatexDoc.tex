@@ -218,6 +218,7 @@ One advantage of \Biblatex{} over \Bibtex{} is that it does use \bst{} files for
 
 Another advantage of \Biblatex{} is its support for UTF-8 encoding. ``bibtex is an 8bit engine so it processes every file in 8-bit pieces. In utf8 non-ascii chars are longer than 8 bit so they are splitted by bibtex. This means that bibtex has problems to sort references with non-ascii chars correctly. It can also happen that bibtex inserts a line break in the middle of an utf8-char and then you will get errors.''  A list of the supported encodings on your system can be viewed in \proglang{R} using \code{iconvlist()}.  By default, ReadBib will read in a .bib file using UTF-8.  UTF-8 is  
 \section{Creating BibEntry Objects and Importing From Files}
+\subsection{The BibEntry Function}
 Similar to the \code{bibentry} function in \pkg{utils}, \ourpkg{} provides a function \code{BibEntry} for creating a \code{BibEntry} object containing a single reference, which can be combined with other references into a single \code{BibEntry} object.  Though the ``year'' field is still supported for backwards compatibility with \Bibtex{}, the field ``date'' is preferred and allows for a number of different formats for the date, which will be discussed later.  The field ``journaltitle'' is preferred for specifying journals, though ``journal'' remains supported.  An entry is specified to the \code{BibEntry} function via an argument \code{bibtype} for the entry type, an argument \code{key} for the entry key and by specifying other arguments
 in \code{field = value} form.  Below we create and print an entry of type online with fields author, title, date, journaltitle, volume, and number.  The \code{print} function for \code{BibEntry} objects offers a number of features which will be discussed in detail later.  It's default settings are chosen to mimic the defaults of \Biblatex{}.  The \code{toBiblatex} function can be used to display the entry in its \code{.bib} file format.
 \begin{knitrout}
@@ -304,7 +305,36 @@ As with \code{bibentry} objects, the operator \code{c} may be used to combine \c
 \end{kframe}
 \end{knitrout}
 
+
+\ourpkg{} recognizes some, but not all, localization keys defined by default in \Biblatex{}.  A localization key is a special value that \Biblatex{} recognizes for certain fields and replaces with predefined text called the `localization string` when printing the bibliography.  In the example below we use localization keys to specify the roles of editors using the `editortype` field and refer to portions of a text using the `bookpagination` field.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{BibEntry}\hlstd{(}\hlkwc{bibtype}\hlstd{=}\hlstr{"Collection"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"jaffe"}\hlstd{,} \hlkwc{editor} \hlstd{=} \hlstr{"Phillip Jaff\textbackslash{}u00eb"}\hlstd{,}
+  \hlkwc{title} \hlstd{=} \hlstr{"Regesta Pontificum Romanorum ab condita ecclesia ad annum post
+  Christum natum \{MCXCVIII\}"}\hlstd{,} \hlkwc{date} \hlstd{=} \hlstr{"1885/1888"}\hlstd{,}
+  \hlkwc{editora} \hlstd{=} \hlstr{"S. Loewenfeld and F. Kaltenbrunner and P. Ewald"}\hlstd{,}
+  \hlkwc{editoratype} \hlstd{=} \hlstr{"redactor"}\hlstd{,} \hlkwc{totalpages} \hlstd{=} \hlstr{"10"}\hlstd{,} \hlkwc{bookpagination} \hlstd{=} \hlstr{"section"}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] P. Jaffë, ed. _Regesta Pontificum Romanorum ab condita
+## ecclesia ad annum post Christum natum MCXCVIII_. Red. by S.
+## Loewenfeld, F. Kaltenbrunner and P. Ewald. 1885-1888.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Creating Citations From PDFs}
+Using the function \code{ReadPDFs} and the freely available software Poppler, it is possible to create references from PDFs stored on a user's machine.  The user specifies a directory containing PDFs (or a single PDF file) which are then read by Poppler and converted to \code{.txt} files which are read into \R{}, parsed into citations, and output as a BibEntry object.  
+
+The function will first search the text for a Document Object Identifier (DOI), and if one is found, the citation information will be downloaded from CrossRef using their API.  This feature will be discussed in more detail in the next section.  The function also works especially well with PDFs downloaded from \url{jstor.org} by recognizing the format of the cover page that JSTOR generates.  This allows for detailed and accurate citations to be obtained.  The function also recognizes papers downloaded from \url{http://arXiv.org} and parses the arXiv identifier in its current and pre-March 2007 format.
+
+If there is no DOI available and the document does not have a JSTOR cover page, it is considerably more difficult to obtain an accurate citation.  The function is often able to recover the title, author, and date information.  It can parse journal title, volume, and issue information if it is present in an obvious format.  Articles with complicated formatting and missing the features discussed in the previous paragraph are not likely to be parsed correctly and the user will have to manual edit the entries, which will be covered in a later section.
+\subsection{Setting Package Options}
+
 \section{Importing Citations From the Web}
+\subsection{NCBI's Entrez}
+The National Center for Biotechnology Information's Entrez Global Query Cross-Database Search provides access to a large number of databases related to health sciences. \ourpkg{} provides an interface to Entrez which allows for searching for references and parsing them to BibEntry objects.  Additionally, users may look up references given a set of PubMed ID's, search for ID's for references already stored in a BibEntry object, and search for related works to references already in \R{}.
 \subsection{Zotero}
 \code{Zotero} is free, open source software for collecting and sharing bibliographic information.  \code{Zotero} can automatically retrieve bibliographic metadata that has been embedded in webpages using \code{ContextObjects in Spans} (\code{COinS}), and is thus a very convenient way to collect bibliographic information when browsing, for example, journal websites.  The \ourpkg{} package contains functions for querying existing \code{Zotero} libraries and converting the results to a BibEntry object and also for uploaded an existing BibEntry object to a Zotero library.  To use the Zotero API, a Zotero account, their userID and an API key for the library one wishes to access.  The userID and API key for personal libraries may be found by logging in and visiting the page \url{https://www.zotero.org/settings/keys}.  The following example, the following call to ReadZotero returns the first two entries in the library specified by the \code{``key''} that contain the word ``Bayesian'' in the title.
 \begin{knitrout}
@@ -461,14 +491,78 @@ The function \code{ReadCrossRef} uses the CrossRef Metadata Search API to import
 \end{knitrout}
 
 
-Although false negatives are rare, the CrossRef Metadata Search can be prone to false positives.  For this reason, it is important to specify the \code{min.relevance} argument.  Each reference returned by CrossRef comes with a relevancy score which is CrossRef's determination of how likely the reference is to be a match for the supplied query.  The maximum possible value is 100, so for the most strict possible matching, we can specify \code{min.relevance = 100}.  If the argument \code{verbose} is \code{TRUE}, then a message is printed with the relevency score and full citation for each reference with a relevancy score greater than \code{min.reference} in addition to returning the references in a \code{BibEntry} object.
+Although false negatives are rare, the CrossRef Metadata Search can be prone to false positives.  For this reason, it is important to specify the \code{min.relevance} argument.  Each reference returned by CrossRef comes with a relevancy score which is CrossRef's determination of how likely the reference is to be a match for the supplied query.  The maximum possible value is 100, so for the most strict possible matching, we can specify \code{min.relevance = 100}.  If the argument \code{verbose} is \code{TRUE}, then a message is printed with the relevancy score and full citation for each reference with a relevancy score greater than \code{min.reference} in addition to returning the references in a \code{BibEntry} object.
 % # <<ReadCR2, tidy=TRUE, highlight=TRUE>>=
 % # bib <- ReadCrossRef(query = 'rj carroll data', limit = 3, sort = "relevance", 
 % #              min.relevance = 50, verbose = TRUE)
 % # @
-\section{Manipulating BibEntry Objects}
+\section{Sorting, Printing, Opening, and Outputting to File}
+\subsection{Printing}
+A number of \Biblatex{} bibliography styles are available in \ourpkg{} for formatting and displaying citations.  The styles currently implemented are ``numeric'' (the default), ``authortitle'', ``authoryear'', ``alphabetic'', and ``draft''.  The ``authoryear'' style always begins with the family name of the first author and follows the list of authors with the year of publication in parentheses.  The other four styles all use the same format, differing only in the label they print before each entry.  Style ``numeric'' prints the numeric index of each entry in the bibliography, style ``authortitle'' uses no label, style ``alphabetic'' creates a label using the family names of the authors and the last two digits of the publication year, and style ``draft'' uses the entry key as the label.
+
+Entries may be printed as plain text, HTML, \Bibtex{} format, Biblatex{} format, as \R{} code, or as a mixture of \Bibtex and plain text commonly used for citations.  For an example of the ``authoryear style''
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{file.name} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"Bib"}\hlstd{,} \hlstr{"biblatexExamples.bib"}\hlstd{,} \hlkwc{package} \hlstd{=} \hlstr{"RefManageR"}\hlstd{)}
+\hlstd{bib} \hlkwb{<-} \hlkwd{ReadBib}\hlstd{(file.name,} \hlkwc{check} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlkwd{print}\hlstd{(bib[}\hlkwc{author} \hlstd{=} \hlstr{"Nietzsche"}\hlstd{],} \hlkwc{.opts} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{bib.style} \hlstd{=} \hlstr{"authoryear"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## Nietzsche, F. (1988a). _Sämtliche Werke. Kritische
+## Studienausgabe_. Ed. by G. Colli and M. Montinari. 2nd ed. Vol.
+## 15. 15 vols. München and Berlin and New York: Deutscher
+## Taschenbuch-Verlag and Walter de Gruyter.
+## 
+## —–— (1988b). _Sämtliche Werke. Kritische Studienausgabe_. Vol. 1.:
+## _Die Geburt der Tragödie. Unzeitgemäße Betrachtungen I-IV.
+## Nachgelassene Schriften 1870-1973_. Ed. by G. Colli and M.
+## Montinari. 2nd ed. München and Berlin and New York: Deutscher
+## Taschenbuch-Verlag and Walter de Gruyter.
+## 
+## —–— (1988c). "Unzeitgemässe Betrachtungen. Zweites Stück. Vom
+## Nutzen und Nachtheil der Historie für das Leben". In: F.
+## Nietzsche.  _Sämtliche Werke. Kritische Studienausgabe_. Vol. 1.:
+## _Die Geburt der Tragödie. Unzeitgemäße Betrachtungen I-IV.
+## Nachgelassene Schriften 1870-1973_. Ed. by G. Colli and M.
+## Montinari. München and Berlin and New York: Deutscher
+## Taschenbuch-Verlag and Walter de Gruyter, pp. 243-334.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+The package has a number of options similar to those available in \Biblatex{}, including \code{dashed} to control the use of dashes for duplicate authors as in the above example, \code{max.names} to control the number of names in name list fields that will be printed before they are truncated with ``et al.'', and \code{first.inits} to control the whether given names are truncated to first initials or full names are used.  These options can be set using the \code{BibOptions} function or passed as options to the \code{.opts} argument of the \code{print} method. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{old.opts} \hlkwb{<-} \hlkwd{BibOptions}\hlstd{(}\hlkwc{bib.style} \hlstd{=} \hlstr{"alphabetic"}\hlstd{,} \hlkwc{max.names} \hlstd{=} \hlnum{2}\hlstd{,}
+                       \hlkwc{first.inits} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlstd{bib[}\hlkwc{bibtype}\hlstd{=}\hlstr{"report"}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+## [CC78] Willy W. Chiu and We Min Chow. _A Hybrid Hierarchical Model
+## of a Multiple Virtual Storage (MVS) Operating System_. Research
+## rep. RC-6947. IBM, 1978.
+## 
+## [PFT99] Jitendra Padhye, Victor Firoiu, et al. _A Stochastic Model
+## of TCP Reno Congestion Avoidance and Control_. Tech. rep. 99-02.
+## Amherst, Mass.: University of Massachusetts, 1999.
+\end{verbatim}
+\begin{alltt}
+\hlkwd{BibOptions}\hlstd{(old.opts)}  \hlcom{# reset to original values}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Sorting}
+Nine different methods are available for sorting citations stored in a BibEntry object, corresponding to the ones predefined in \Biblatex{}.  Depending on the \code{bib.style} option, the default sorting method is \code{``nty''} to sort by name (`n'), then title (`t'), then year/date (`y').  Other possibilities are ``debug'' to sort by keys, ``none'' for no sorting, ``nyt'', ``nyvt'', ``anyt'', ``anyvt'', ``ynt'', and ``ydnt''; where the `a' stands for sorting by alphabetic label, `v' stands for sorting by volume, and `yd' for sorting by year/date in descending order.
+
+All sorting methods first consider the field `presort', if available. Entries with no presort field are assigned presort value ``mm''. Next the `sortkey' field is used.  When sorting by name, the sortname field is used first. If it is not present, the author field is used, if that is not present editor is used, and if that is not present translator is used.  When sorting by title, first the field sorttitle is considered. Similarly, when sorting by year, the field sortyear is first considered.  When sorting by volume, if the field is present it is padded to four digits with leading zeros; otherwise, the string ``0000'' is used.  When sorting by alphabetic label, first the shorthand field is considered, then label, then shortauthor, shorteditor, author, editor, and translator. Refer to \citet[Sections~3.1.2.1 and 3.5 and Appendix~C.2][]{biblatex} for further details.
+\section{Searching and Manipulating BibEntry Objects}
 \subsection{Extraction Operators - Searching and Indexing}\label{searchsec}
-The extraction operator \code{'['}, has been redefined for BibEntry objects to allow for easily searching a database of references saved in a BibEntry object.  A different interface providing the same functionality is the function \code{SearchBib}.  Search options can be changed by set variables in the .BibOptions object or alternatively specified directly as arguments to the function \code{SearchBib}.  BibLaTeX date fields (\code{date,year,origdate,urldate,eventdate}) and name lists (author, editor, editora, editorb, editorc, translator, commentator, annotator, introduction, foreword, afterword, bookauthor, and holder) are handled specially as outlined below.  Other fields can be searched using either exact string matching or regular expressions, with or without ignoring case.
+The extraction operator \code{'['}, has been defined for BibEntry objects to allow for easily searching a database of references saved in a BibEntry object.  A different interface providing the same functionality is the function \code{SearchBib}.  Search options can be changed by set variables in the BibOptions object or alternatively specified directly as arguments to the function \code{SearchBib}.  BibLaTeX date fields (\code{date,year,origdate,urldate,eventdate}) and name lists (author, editor, editora, editorb, editorc, translator, commentator, annotator, introduction, foreword, afterword, bookauthor, and holder) are handled specially as outlined below.  Other fields can be searched using either exact string matching or regular expressions, with or without ignoring case.
 
 Indices and search terms can be specified in a number of ways.  Similar to the default extraction operator for list objects, a vector of numeric indices or logical values can be given.  Additionally, a character vector of key values can be specified.  To search by field, a query can be specified with comma delimited \code{field=search.term} pairs, with \code{search.term} potentially being a vector with length greater than one to match multiple terms for \code{field} (think ``OR'').  Each \code{field=search.term} pair will have to match to declare a match for that entry (think ``AND'').  Multiple queries (``OR'') can be handled (involving different fields) by enclosing each separater query preferably a \code{list} or alternatively \code{c}.  For example, $\text{list}(field_{11} = \mathbf{search.term}_{11},field_{12}=\mathbf{search.term_{12}}),\text{list}(field_{21}=\mathbf{search.term_{21}})$.  If \code{c} is used instead of \code{list}, then the search terms \emph{must} have length one.  Examples will be provided shortly after discussing the special handling of date and name fields.  
 
@@ -481,7 +575,8 @@ Entries containing valid \code{crossref} and \code{xdata} fields are expanded pr
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{bib} \hlkwb{<-} \hlkwd{ReadBib}\hlstd{(}\hlstr{"biblatexExamples.bib"}\hlstd{,} \hlkwc{check} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlstd{file.name} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"Bib"}\hlstd{,} \hlstr{"biblatexExamples.bib"}\hlstd{,} \hlkwc{package} \hlstd{=} \hlstr{"RefManageR"}\hlstd{)}
+\hlstd{bib} \hlkwb{<-} \hlkwd{ReadBib}\hlstd{(file.name,} \hlkwc{check} \hlstd{=} \hlnum{FALSE}\hlstd{)}
 \hlcom{# by default match.author = 'family.only' and ignore.case = TRUE inbook}
 \hlcom{# entry inheriting editor field from parent}
 \hlstd{bib[}\hlkwc{editor} \hlstd{=} \hlstr{"westfahl"}\hlstd{]}
@@ -552,15 +647,9 @@ List assignment, \code{'[[<-'} is used for replacing one entry in a BibEntry obj
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{# Some selected works of Raymond J. Carroll}
-\hlcom{## file.name <- system.file("sampleData", "RJC.bib", package = "RefManageR")}
+\hlstd{file.name} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"Bib"}\hlstd{,} \hlstr{"RJC.bib"}\hlstd{,} \hlkwc{package} \hlstd{=} \hlstr{"RefManageR"}\hlstd{)}
 \hlstd{bib} \hlkwb{<-} \hlkwd{ReadBib}\hlstd{(file.name)}
-\hlkwd{length}\hlstd{(bib)}
-\end{alltt}
-\begin{verbatim}
-## [1] 494
-\end{verbatim}
-\begin{alltt}
+\hlcom{## length(bib)}
 \hlkwd{length}\hlstd{(bib)} \hlopt{==} \hlkwd{length}\hlstd{(bib[}\hlkwc{author} \hlstd{=} \hlstr{"Carroll"}\hlstd{])}
 \end{alltt}
 \begin{verbatim}
