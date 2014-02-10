@@ -97,11 +97,14 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
       x$.duplicated <- duplicated(aut)
       if (.bibstyle == "authoryear"){
         tmp <- MakeAuthorYear()$GetLastNames(x)
-        if (sorting == "none"){
-          yr <- MakeBibLaTeX()$sortKeysY(x)      
-        }else{
-          yr <- yr[ord]
-        }
+#         if (sorting == "none"){
+#           yr <- MakeBibLaTeX()$sortKeysY(x)      
+#         }else{
+#           yr <- yr[ord]
+#         }
+        # sortyear could mess things up, so can't reuse yr
+        yr <- sapply(unclass(x), function(dat) 
+          tryCatch(year(attr(dat, "dateobj")), error = function(e) ""))
         tmp <- paste0(tmp, yr)
         alabs <- unlist(lapply(rle(tmp[rank(tmp, ties.method = 'min')])$len, 
                                function(x){

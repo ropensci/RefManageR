@@ -404,7 +404,8 @@ MakeCitationList <- function( x, header, footer){
 }
 
 bibentry_attribute_names <- c("bibtype", "textVersion", "header", "footer", "key", "dateobj")
-bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "textVersion", "R")
+bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "textVersion", 
+                            "R", "Biblatex")
 
 #' from utils:::toBibtex, good for matching by given name initials only
 #' @keywords internal
