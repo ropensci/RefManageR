@@ -190,7 +190,7 @@ URL: \url{http://stat.tamu.edu/~mmclean}
 
 The \code{person} and \code{bibentry} classes available in the base-priority \pkg{utils} package in \R{} provide very useful functionality for citing not only \R{} packages, but also any entry type supported in \Bibtex.  \Bibtex{} \citep{bibtex} is the most popular tool for producing bibliographies with the typesetting software \proglang{\TeX}.  An introduction to these classes is available in \citet{hornik2012who}.
 
-Mention \pkg{bibtex}, \pkg{CITAN}, \pkg{scholar}, \pkg{tm}, ROpenSCi, \pkg{knitcitations}, \pkg{RMendeley}.
+%Mention \pkg{bibtex}, \pkg{CITAN}, \pkg{scholar}, \pkg{tm}, ROpenSCi, \pkg{knitcitations}, \pkg{RMendeley}.
 
 The amount of extra features offered by \Biblatex{} and \biber{} compared to \natbib{} and \Bibtex{} is staggering; the user manual for \Biblatex{} is 253 pages while the one for \natbib{} is 26.  \Biblatex{} expands the number of automatically recognized entry types and fields offered by \Bibtex{} considerably while maintaining compatibility with \Bibtex{}.  For one example, there is greatly expanded support for electronic publications with fields for eprint, eprinttype, eprintclass, urldate, and pubstate.  For example, the below entry is used to shamelessly cite a submitted manuscript of the first author's available on \texttt{arXiv}. 
 
@@ -301,6 +301,27 @@ As with \code{bibentry} objects, the operator \code{c} may be used to combine \c
 ## Generalized Additive Models for Sparsely Observed Covariates_.
 ## 2013. arXiv: 1305.3585 [stat.ME]. <URL:
 ## http://arxiv.org/abs/1305.3585> (visited on 12/20/2013).
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+The cross-referencing system in \Biblatex{} and \ourpkg{} is more sophisticated than the symmetric field mapping system used in \Bibtex{}, allowing for less cluttering and duplication of fields.  In \Biblatex{}, the ``InBook'' entry type is used for a self-contained work with its own title within a book, as opposed to simply referring to an untitled part of a book as in \Bibtex{}. In the following example, involving an `InBook' entry inheriting from a `Book' entry, there is no need to create a `booktitle' field duplicating the `title' field in the parent entry to pass on to the child entry, and there is also no need to create an empty `subtitle' field in the child entry to ensure it does not incorrectly inherit the `subtitle` of the parent.  
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{c}\hlstd{(}\hlkwd{BibEntry}\hlstd{(}\hlstr{"book"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"parent"}\hlstd{,} \hlkwc{title} \hlstd{=} \hlstr{"The Book Title"}\hlstd{,} \hlkwc{year} \hlstd{=} \hlnum{2012}\hlstd{,}
+           \hlkwc{subtitle} \hlstd{=} \hlstr{"The Book Subtitle"}\hlstd{,} \hlkwc{author} \hlstd{=} \hlstr{"Book Author"}\hlstd{,}
+           \hlkwc{publisher} \hlstd{=} \hlstr{"A publisher"}\hlstd{),} \hlkwd{BibEntry}\hlstd{(}\hlstr{"inbook"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"child"}\hlstd{,}
+           \hlkwc{crossref} \hlstd{=} \hlstr{"parent"}\hlstd{,} \hlkwc{title} \hlstd{=} \hlstr{"The Title of the In Book Entry"}\hlstd{,}
+           \hlkwc{author} \hlstd{=} \hlstr{"In Book Author"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## [1] B. Author. _The Book Title. The Book Subtitle_. A publisher,
+## 2012.
+## 
+## [2] I. B. Author. "The Title of the In Book Entry". In: B. Author.
+## _The Book Title. The Book Subtitle_. A publisher, 2012.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -532,14 +553,13 @@ Entries may be printed as plain text, HTML, \Bibtex{} format, Biblatex{} format,
 \end{knitrout}
 
 
-The package has a number of options similar to those available in \Biblatex{}, including \code{dashed} to control the use of dashes for duplicate authors as in the above example, \code{max.names} to control the number of names in name list fields that will be printed before they are truncated with ``et al.'', and \code{first.inits} to control the whether given names are truncated to first initials or full names are used.  These options can be set using the \code{BibOptions} function or passed as options to the \code{.opts} argument of the \code{print} method. 
-
+The package has a number of options similar to those available in \Biblatex{}, including \code{dashed} to control the use of dashes for duplicate authors as in the above example, \code{max.names} to control the number of names in name list fields that will be printed before they are truncated with ``et al.'', and \code{first.inits} to control the whether given names are truncated to first initials or full names are used.  These options can be set using the \code{BibOptions} function or passed as options to the \code{.opts} argument of the \code{print} method. The \code{print} method also contains an option for supressing the printing of certain fields.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{old.opts} \hlkwb{<-} \hlkwd{BibOptions}\hlstd{(}\hlkwc{bib.style} \hlstd{=} \hlstr{"alphabetic"}\hlstd{,} \hlkwc{max.names} \hlstd{=} \hlnum{2}\hlstd{,}
                        \hlkwc{first.inits} \hlstd{=} \hlnum{FALSE}\hlstd{)}
-\hlstd{bib[}\hlkwc{bibtype}\hlstd{=}\hlstr{"report"}\hlstd{]}
+\hlstd{bib[}\hlkwc{bibtype} \hlstd{=} \hlstr{"report"}\hlstd{]}
 \end{alltt}
 \begin{verbatim}
 ## [CC78] Willy W. Chiu and We Min Chow. _A Hybrid Hierarchical Model
@@ -552,10 +572,30 @@ The package has a number of options similar to those available in \Biblatex{}, i
 \end{verbatim}
 \begin{alltt}
 \hlkwd{BibOptions}\hlstd{(old.opts)}  \hlcom{# reset to original values}
+\hlkwd{print}\hlstd{(bib[[}\hlnum{18}\hlopt{:}\hlnum{19}\hlstd{]],} \hlkwc{style} \hlstd{=} \hlstr{"html"}\hlstd{,} \hlkwc{no.print.fields} \hlstd{=} \hlstr{"url"}\hlstd{,}
+      \hlkwc{.opts} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{bib.style} \hlstd{=} \hlstr{"authortitle"}\hlstd{))}
 \end{alltt}
+\begin{verbatim}
+## <p>Sigfridsson, E. and U. Ryde.
+## &ldquo;Comparison of methods for deriving atomic charges from the
+## electrostatic potential and moments&rdquo;.
+## In: <EM>Journal of Computational Chemistry</EM> 19.4 (1998), pp. 377-395.
+## DOI: 10.1002/(SICI)1096-987X(199803)19:4&lt;377::AID-JCC1&gt;3.0.CO;2-P.
+## 
+## <p>Spiegelberg, H.
+## &ldquo;&ldquo;Intention&rdquo; und &ldquo;Intentionalität&rdquo; in
+## der Scholastik, bei Brentano und Husserl&rdquo;.
+## In: <EM>Studia Philosophica</EM> 29 (1969), pp. 189-216.
+\end{verbatim}
 \end{kframe}
 \end{knitrout}
 
+
+The user can create a custom \Biblatex{} or \Bibtex{} bibliography style using the \code{bibstyle} fuction in the \code{tools} package.  To do this involves creating an environment containing functions for formatting entries of each type with signatures such as `formatArticle(paper)` and `formatBook(paper)`.
+
+A downside of \Biblatex{} is that the majority of academic journals do not support its use, having long ago written a custom \code{bst} file for generating citations which can only be used by \Bibtex{}.  For this reason \ourpkg{} provides functions for conversion of entries written in \Biblatex{} to \Bibtex{}.  Entries of a type that are not supported by \Bibtex{} will be converted to a type that is, e.g., entries of type ``report'' are converted to type ``techreport''.  Other conversions include replacing the date field with a properly formatted year field (if year is not already present) and converting the ``journaltitle'' field to ``journal''.  Since the cross-referencing system in \Bibtex{} is more limited than the one supported by \Biblatex{}, an attempt is made to ensure the cross-referencing will still work as expected in \Bibtex{}.
+
+The function \code{WriteBib}, based on the function \code{write.bib} in the package \pkg{bibtex} \citep{Rbibtex}, is provided for writing a \code{BibEntry} object to a \code{bib} file in \Biblatex{} or \Bibtex{} format.
 \subsection{Sorting}
 Nine different methods are available for sorting citations stored in a BibEntry object, corresponding to the ones predefined in \Biblatex{}.  Depending on the \code{bib.style} option, the default sorting method is \code{``nty''} to sort by name (`n'), then title (`t'), then year/date (`y').  Other possibilities are ``debug'' to sort by keys, ``none'' for no sorting, ``nyt'', ``nyvt'', ``anyt'', ``anyvt'', ``ynt'', and ``ydnt''; where the `a' stands for sorting by alphabetic label, `v' stands for sorting by volume, and `yd' for sorting by year/date in descending order.
 

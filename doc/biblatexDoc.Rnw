@@ -140,7 +140,7 @@ URL: \url{http://stat.tamu.edu/~mmclean}
 
 The \code{person} and \code{bibentry} classes available in the base-priority \pkg{utils} package in \R{} provide very useful functionality for citing not only \R{} packages, but also any entry type supported in \Bibtex.  \Bibtex{} \citep{bibtex} is the most popular tool for producing bibliographies with the typesetting software \proglang{\TeX}.  An introduction to these classes is available in \citet{hornik2012who}.
 
-Mention \pkg{bibtex}, \pkg{CITAN}, \pkg{scholar}, \pkg{tm}, ROpenSCi, \pkg{knitcitations}, \pkg{RMendeley}.
+%Mention \pkg{bibtex}, \pkg{CITAN}, \pkg{scholar}, \pkg{tm}, ROpenSCi, \pkg{knitcitations}, \pkg{RMendeley}.
 
 The amount of extra features offered by \Biblatex{} and \biber{} compared to \natbib{} and \Bibtex{} is staggering; the user manual for \Biblatex{} is 253 pages while the one for \natbib{} is 26.  \Biblatex{} expands the number of automatically recognized entry types and fields offered by \Bibtex{} considerably while maintaining compatibility with \Bibtex{}.  For one example, there is greatly expanded support for electronic publications with fields for eprint, eprinttype, eprintclass, urldate, and pubstate.  For example, the below entry is used to shamelessly cite a submitted manuscript of the first author's available on \texttt{arXiv}. 
 
@@ -221,7 +221,16 @@ bib <- c(bib, BibEntry(bibtype="Online", key="mclean2013bayesian",
 bib
 @
 
-\ourpkg{} recognizes some, but not all, localization keys defined by default in \Biblatex{}.  A localization key is a special value that \Biblatex{} recognizes for certain fields and replaces with predefined text called the `localization string` when printing the bibliography.  In the example below we use localization keys to specify the roles of editors using the `editortype` field and refer to portions of a text using the `bookpagination` field.
+The cross-referencing system in \Biblatex{} and \ourpkg{} is more sophisticated than the symmetric field mapping system used in \Bibtex{}, allowing for less cluttering and duplication of fields.  In \Biblatex{}, the ``InBook'' entry type is used for a self-contained work with its own title within a book, as opposed to simply referring to an untitled part of a book as in \Bibtex{}. In the following example, involving an `InBook' entry inheriting from a `Book' entry, there is no need to create a `booktitle' field duplicating the `title' field in the parent entry to pass on to the child entry, and there is also no need to create an empty `subtitle' field in the child entry to ensure it does not incorrectly inherit the `subtitle` of the parent.  
+<<CrossrefEx, tidy=FALSE, highlight=TRUE, cache=TRUE>>=
+c(BibEntry("book", key = "parent", title = "The Book Title", year = 2012, 
+           subtitle = "The Book Subtitle", author = "Book Author", 
+           publisher = "A publisher"), BibEntry("inbook", key = "child", 
+           crossref = "parent", title = "The Title of the In Book Entry", 
+           author = "In Book Author"))
+@
+
+\ourpkg{} recognizes some, but not all, localization keys defined by default in \Biblatex{}.  A localization key is a special value that \Biblatex{} parses for certain fields and replaces with predefined text called the `localization string` when printing the bibliography.  In the example below we use localization keys to specify the roles of editors using the `editortype` field and refer to portions of a text using the `bookpagination` field.
  <<Book, tidy=FALSE, highlight=TRUE, cache=TRUE>>=
  BibEntry(bibtype="Collection", key = "jaffe", editor = "Phillip Jaff\u00eb", 
    title = "Regesta Pontificum Romanorum ab condita ecclesia ad annum post
@@ -303,14 +312,21 @@ bib <- ReadBib(file.name, check = FALSE)
 print(bib[author = "Nietzsche"], .opts = list(bib.style = "authoryear"))
 @
 
-The package has a number of options similar to those available in \Biblatex{}, including \code{dashed} to control the use of dashes for duplicate authors as in the above example, \code{max.names} to control the number of names in name list fields that will be printed before they are truncated with ``et al.'', and \code{first.inits} to control the whether given names are truncated to first initials or full names are used.  These options can be set using the \code{BibOptions} function or passed as options to the \code{.opts} argument of the \code{print} method. 
-
+The package has a number of options similar to those available in \Biblatex{}, including \code{dashed} to control the use of dashes for duplicate authors as in the above example, \code{max.names} to control the number of names in name list fields that will be printed before they are truncated with ``et al.'', and \code{first.inits} to control the whether given names are truncated to first initials or full names are used.  These options can be set using the \code{BibOptions} function or passed as options to the \code{.opts} argument of the \code{print} method. The \code{print} method also contains an option for supressing the printing of certain fields.
 <<Print2, tidy=FALSE, highlight=TRUE, cache=TRUE, dependson="Print1">>=
 old.opts <- BibOptions(bib.style = "alphabetic", max.names = 2, 
                        first.inits = FALSE)
 bib[bibtype = "report"]
 BibOptions(old.opts)  # reset to original values
+print(bib[[18:19]], style = "html", no.print.fields = "url", 
+      .opts = list(bib.style = "authortitle"))
 @
+
+The user can create a custom \Biblatex{} or \Bibtex{} bibliography style using the \code{bibstyle} fuction in the \code{tools} package.  To do this involves creating an environment containing functions for formatting entries of each type with signatures such as `formatArticle(paper)` and `formatBook(paper)`.
+
+A downside of \Biblatex{} is that the majority of academic journals do not support its use, having long ago written a custom \code{bst} file for generating citations which can only be used by \Bibtex{}.  For this reason \ourpkg{} provides functions for conversion of entries written in \Biblatex{} to \Bibtex{}.  Entries of a type that are not supported by \Bibtex{} will be converted to a type that is, e.g., entries of type ``report'' are converted to type ``techreport''.  Other conversions include replacing the date field with a properly formatted year field (if year is not already present) and converting the ``journaltitle'' field to ``journal''.  Since the cross-referencing system in \Bibtex{} is more limited than the one supported by \Biblatex{}, an attempt is made to ensure the cross-referencing will still work as expected in \Bibtex{}.
+
+The function \code{WriteBib}, based on the function \code{write.bib} in the package \pkg{bibtex} \citep{Rbibtex}, is provided for writing a \code{BibEntry} object to a \code{bib} file in \Biblatex{} or \Bibtex{} format.
 \subsection{Sorting}
 Nine different methods are available for sorting citations stored in a BibEntry object, corresponding to the ones predefined in \Biblatex{}.  Depending on the \code{bib.style} option, the default sorting method is \code{``nty''} to sort by name (`n'), then title (`t'), then year/date (`y').  Other possibilities are ``debug'' to sort by keys, ``none'' for no sorting, ``nyt'', ``nyvt'', ``anyt'', ``anyvt'', ``ynt'', and ``ydnt''; where the `a' stands for sorting by alphabetic label, `v' stands for sorting by volume, and `yd' for sorting by year/date in descending order.
 
