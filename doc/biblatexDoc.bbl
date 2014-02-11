@@ -1,4 +1,4 @@
-\begin{thebibliography}{6}
+\begin{thebibliography}{7}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -8,6 +8,12 @@
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 \providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{Francois(2013)}]{Rbibtex}
+Francois R (2013).
+\newblock \emph{bibtex: bibtex parser}.
+\newblock R package version 0.3-6,
+  \urlprefix\url{http://CRAN.R-project.org/package=bibtex}.
 
 \bibitem[{Grolemund and Wickham(2011)}]{lubridate}
 Grolemund G, Wickham H (2011).

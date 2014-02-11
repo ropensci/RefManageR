@@ -14,6 +14,10 @@ To Do:
 Important
 -------------------
 098. no printing, sorting, searching, etc. errors when check = FALSE and bib missing fields
+76. In JSS paper need to document
+  - toBibtex and toBiblatex examples
+  - conversion with as.BibEntry, as.data.frame
+  - ReadPubMed functions
 6. `[[<-` with length > 1 `BibEntry` objects
 98. toBibtex - UTF-8 to latex option
 87. merge should handle year and date specially
