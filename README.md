@@ -18,6 +18,9 @@ Important
   - toBibtex and toBiblatex examples
   - conversion with as.BibEntry, as.data.frame
   - ReadPubMed functions
+  - check.entries options
+  - return.ind option
+  - expanded crossreferences
 6. `[[<-` with length > 1 `BibEntry` objects
 98. toBibtex - UTF-8 to latex option
 87. merge should handle year and date specially

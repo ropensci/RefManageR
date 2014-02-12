@@ -83,7 +83,7 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
               ynt = order(ps, yr, aut, ttl, decreasing = decreasing),
               ydnt = order(ps, rev(yr), aut, ttl, decreasing = decreasing),
               order(ps, aut, ttl, yr, decreasing = decreasing))  # DEFAULT = nty
-    x <- x[ord]
+    suppressWarnings(x <- x[ord])
     aut <- aut[ord]
     if (.bibstyle == "alphabetic")
       alabs <- alabs[ord]
@@ -91,10 +91,14 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
   # create labels if needed
   if (hasArg(return.labs)){  
     if (.bibstyle %in% c("authoryear", "authortitle")){
-    #  browser()
+      #browser()
       if (sorting == "none")
         aut <- MakeBibLaTeX()$sortKeys(x)
-      x$.duplicated <- duplicated(aut)
+      suppressWarnings({
+        ind <- nchar(aut) == 0L & !x$bibtype %in% c("XData", "Set")
+        aut[ind] <- x$title[ind]
+        x$.duplicated <- duplicated(aut)
+      })
       if (.bibstyle == "authoryear"){
         tmp <- MakeAuthorYear()$GetLastNames(x)
 #         if (sorting == "none"){
@@ -114,12 +118,12 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
                                })) 
       }
     }
-    x$.index <- switch(.bibstyle, numeric = {
+    suppressWarnings(x$.index <- switch(.bibstyle, numeric = {
       ind <- which(!unlist(x$bibtype) %in% c('Set', 'XData'))
       index <- numeric(length(x))
       index[ind] <- seq_along(ind)
       index
-      }, alphabetic = alabs, authoryear = alabs, NULL)  
+      }, alphabetic = alabs, authoryear = alabs, NULL))  
   }
   x
 }
