@@ -329,6 +329,10 @@ GetLastNames <- function(bib){
       authors <- paste0(bib[[i]]$author$family, collapse = '')
       if (authors == '')
         authors <- paste0(bib[[i]]$editor$family, collapse = '')
+      if (authors == '')
+        authors <- paste0(bib[[i]]$translator$family, collapse = '')
+      if (authors == '')
+        authors <- paste0(bib[[i]]$title, collapse = '')
       result[i] <- authors
     }
     result
@@ -483,6 +487,8 @@ fmtBAuthor <- function(doc){
     res <- doc$editor
   }else if (length(doc$translator)){
     res <- doc$translator
+  }else{
+    return(cleanupLatex(doc$title))
   }
   nnames <- length(res)
   if (nnames){

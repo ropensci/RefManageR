@@ -518,6 +518,8 @@ fmtBAuthor <- function(doc){
     res <- doc$editor
   }else if (length(doc$translator)){
     res <- doc$translator
+  }else{
+    return()
   }
   nnames <- length(res)
   if (nnames){
