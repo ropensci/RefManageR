@@ -244,6 +244,34 @@ Using the function \code{ReadPDFs} and the freely available software Poppler, it
 The function will first search the text for a Document Object Identifier (DOI), and if one is found, the citation information will be downloaded from CrossRef using their API.  This feature will be discussed in more detail in the next section.  The function also works especially well with PDFs downloaded from \url{jstor.org} by recognizing the format of the cover page that JSTOR generates.  This allows for detailed and accurate citations to be obtained.  The function also recognizes papers downloaded from \url{http://arXiv.org} and parses the arXiv identifier in its current and pre-March 2007 format.
 
 If there is no DOI available and the document does not have a JSTOR cover page, it is considerably more difficult to obtain an accurate citation.  The function is often able to recover the title, author, and date information.  It can parse journal title, volume, and issue information if it is present in an obvious format.  Articles with complicated formatting and missing the features discussed in the previous paragraph are not likely to be parsed correctly and the user will have to manual edit the entries, which will be covered in a later section.
+With the following code, we can download Windows binaries of Poppler and download some PDFs
+to test out.
+<<Poppler1, cache = TRUE, warning=FALSE, message=FALSE, tidy = FALSE, eval = FALSE>>=
+tmpdir <- tempdir()
+tmpfile <- tempfile(".zip", tmpdir)
+download.file("http://dl.dropbox.com/u/3291828/Poppler/poppler.0.22.0_win32.zip", 
+              tmpfile)
+unzip(tmpfile, exdir = tmpdir)
+curdir <- getwd()
+setwd(file.path(tmpdir, "bin", fsep = "\\"))
+download.file("http://www.jstatsoft.org/v56/i11/paper", "jss.pdf", 
+                mode = "wb")
+download.file("http://arxiv.org/pdf/math/0703791", 
+              destfile = "FIZaop.pdf", mode = "wb")
+download.file("http://arxiv.org/pdf/math/0703858", 
+              destfile = "PBHTaos.pdf", mode = "wb") 
+download.file("http://biomet.oxfordjournals.org/content/83/4/715.full.pdf", 
+  destfile = "ADVb.pdf", mode = "wb") 
+download.file("http://www.jstor.org/stable/pdfplus/25645718.pdf",
+              destfile = "jstor.pdf", mode = "wb")
+@
+
+<<Poppler2, cache = TRUE, tidy = FALSE, echo = -1, eval = 1:3>>=
+setwd("C:/Users/Matthew/Documents/biblatex/RefManageR/doc/ReadPDFex2/bin")
+bib <- ReadPDFs(".")
+bib
+@
+We then clean up using \code{setwd(curdir)} and \code{unlink(tmpdir)}.
 \subsection{Setting Package Options}
 
 \section{Importing Citations From the Web}

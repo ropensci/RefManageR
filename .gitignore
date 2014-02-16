@@ -15,3 +15,5 @@ framed.sty
 *\-concordance.tex
 *.blg
 pkg/
+ReadPDFex/
+ReadPDFex2/

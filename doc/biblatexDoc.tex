@@ -327,7 +327,7 @@ The cross-referencing system in \Biblatex{} and \ourpkg{} is more sophisticated 
 \end{knitrout}
 
 
-\ourpkg{} recognizes some, but not all, localization keys defined by default in \Biblatex{}.  A localization key is a special value that \Biblatex{} recognizes for certain fields and replaces with predefined text called the `localization string` when printing the bibliography.  In the example below we use localization keys to specify the roles of editors using the `editortype` field and refer to portions of a text using the `bookpagination` field.
+\ourpkg{} recognizes some, but not all, localization keys defined by default in \Biblatex{}.  A localization key is a special value that \Biblatex{} parses for certain fields and replaces with predefined text called the `localization string` when printing the bibliography.  In the example below we use localization keys to specify the roles of editors using the `editortype` field and refer to portions of a text using the `bookpagination` field.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -351,6 +351,70 @@ Using the function \code{ReadPDFs} and the freely available software Poppler, it
 The function will first search the text for a Document Object Identifier (DOI), and if one is found, the citation information will be downloaded from CrossRef using their API.  This feature will be discussed in more detail in the next section.  The function also works especially well with PDFs downloaded from \url{jstor.org} by recognizing the format of the cover page that JSTOR generates.  This allows for detailed and accurate citations to be obtained.  The function also recognizes papers downloaded from \url{http://arXiv.org} and parses the arXiv identifier in its current and pre-March 2007 format.
 
 If there is no DOI available and the document does not have a JSTOR cover page, it is considerably more difficult to obtain an accurate citation.  The function is often able to recover the title, author, and date information.  It can parse journal title, volume, and issue information if it is present in an obvious format.  Articles with complicated formatting and missing the features discussed in the previous paragraph are not likely to be parsed correctly and the user will have to manual edit the entries, which will be covered in a later section.
+With the following code, we can download Windows binaries of Poppler and download some PDFs
+to test out.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{tmpdir} \hlkwb{<-} \hlkwd{tempdir}\hlstd{()}
+\hlstd{tmpfile} \hlkwb{<-} \hlkwd{tempfile}\hlstd{(}\hlstr{".zip"}\hlstd{, tmpdir)}
+\hlkwd{download.file}\hlstd{(}\hlstr{"http://dl.dropbox.com/u/3291828/Poppler/poppler.0.22.0_win32.zip"}\hlstd{,}
+              \hlstd{tmpfile)}
+\hlkwd{unzip}\hlstd{(tmpfile,} \hlkwc{exdir} \hlstd{= tmpdir)}
+\hlstd{curdir} \hlkwb{<-} \hlkwd{getwd}\hlstd{()}
+\hlkwd{setwd}\hlstd{(}\hlkwd{file.path}\hlstd{(tmpdir,} \hlstr{"bin"}\hlstd{,} \hlkwc{fsep} \hlstd{=} \hlstr{"\textbackslash{}\textbackslash{}"}\hlstd{))}
+\hlkwd{download.file}\hlstd{(}\hlstr{"http://www.jstatsoft.org/v56/i11/paper"}\hlstd{,} \hlstr{"jss.pdf"}\hlstd{,}
+                \hlkwc{mode} \hlstd{=} \hlstr{"wb"}\hlstd{)}
+\hlkwd{download.file}\hlstd{(}\hlstr{"http://arxiv.org/pdf/math/0703791"}\hlstd{,}
+              \hlkwc{destfile} \hlstd{=} \hlstr{"FIZaop.pdf"}\hlstd{,} \hlkwc{mode} \hlstd{=} \hlstr{"wb"}\hlstd{)}
+\hlkwd{download.file}\hlstd{(}\hlstr{"http://arxiv.org/pdf/math/0703858"}\hlstd{,}
+              \hlkwc{destfile} \hlstd{=} \hlstr{"PBHTaos.pdf"}\hlstd{,} \hlkwc{mode} \hlstd{=} \hlstr{"wb"}\hlstd{)}
+\hlkwd{download.file}\hlstd{(}\hlstr{"http://biomet.oxfordjournals.org/content/83/4/715.full.pdf"}\hlstd{,}
+  \hlkwc{destfile} \hlstd{=} \hlstr{"ADVb.pdf"}\hlstd{,} \hlkwc{mode} \hlstd{=} \hlstr{"wb"}\hlstd{)}
+\hlkwd{download.file}\hlstd{(}\hlstr{"http://www.jstor.org/stable/pdfplus/25645718.pdf"}\hlstd{,}
+              \hlkwc{destfile} \hlstd{=} \hlstr{"jstor.pdf"}\hlstd{,} \hlkwc{mode} \hlstd{=} \hlstr{"wb"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{bib} \hlkwb{<-} \hlkwd{ReadPDFs}\hlstd{(}\hlstr{"."}\hlstd{)}
+\end{alltt}
+\begin{lstlisting}
+## Getting Metadata for 5 pdfs...
+## Getting 1 BibTeX entries from CrossRef...
+## Done
+\end{lstlisting}\begin{alltt}
+\hlstd{bib}
+\end{alltt}
+\begin{verbatim}
+## [1] A. AZZALINI and A. D. VALLE. "The Multivariate Skew-normal
+## Distribution". In: _Biometrika_ (1996), pp. 715-726.
+## 
+## [2] R. Chepesiuk. "JSTOR and Electronic Archiving". In: _American
+## Libraries_ 31.11 (2000), pp. 46-48. JSTOR: 25645718. <URL:
+## http://www.jstor.org/stable/25645718>.
+## 
+## [3] S. Fang, P. Imkeller and T. Zhang. "Global flows for
+## stochastic differential equations without global Lipschitz
+## conditions". In: _The Annals of Probability_ 35.1 (Jan. 2007), pp.
+## 180-205. DOI: 10.1214/009117906000000412. <URL:
+## http://dx.doi.org/10.1214/009117906000000412>.
+## 
+## [4] S. Luo, Y. Chen, X. Su, et al. _Meta-analysis_. 2014.
+## 
+## [5] D. Paul, E. Bair, T. Hastie, et al. _“Pre-conditioning” For
+## Feature Selection And Regression In High-dimensional Problems_.
+## Apr. 16, 2013. arXiv: math/0703858v1. <URL:
+## http://arxiv.org/abs/math/0703858v1>.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+We then clean up using \code{setwd(curdir)} and \code{unlink(tmpdir)}.
 \subsection{Setting Package Options}
 
 \section{Importing Citations From the Web}

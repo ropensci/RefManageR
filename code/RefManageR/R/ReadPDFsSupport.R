@@ -52,10 +52,18 @@ ReadFirstPages <- function(doc, page.one = TRUE){
       m <- regexec('([Nn]o\\.|Number|Issue)[[:space:]]([0-9]{1,3})', doc)
       if (length(m[[1]]) != 1)
         res$number <- unlist(regmatches(doc, m))[3]
+      # pages -pdftotext has trouble with "-"
+
+      m <- regexec('([0-9]{1,4}) ?[-\u1390\u2212\ufe58\ufe63\uff0d\u2012-\u2015] ?([0-9]{1,4})[[:punct:]]?$',
+                   doc)
+      tmatch <- unlist(regmatches(doc, m))
+      if (length(tmatch))
+        res$pages <- paste0(tmatch[-1], collapse='-')
+      
       
       # make lame, conservative attempt to get journal
-      journ.ind <- regexec('^([[:alpha:] -]{2,})[,\\.;]?[[:print:]]*\\(?\\<(19|20)[0-9]{2}\\>', doc[1])  # [[:upper:]][[:alpha:]]+ 
-      if (length(journ.ind[[1]]) != 1){      
+      journ.ind <- regexec('^([[:alpha:] -]{2,})[,\\.;]?[[:print:]]*\\(?\\<((19|20)[0-9]{2})\\>', doc[1])  # [[:upper:]][[:alpha:]]+ 
+      if (length(journ.ind[[1]]) != 1){
         temp <- regmatches(doc[1], journ.ind)[[1]]
         res$journal <- gsub(' $', '', temp[2])
         res$year <- temp[3]
@@ -76,14 +84,7 @@ ReadFirstPages <- function(doc, page.one = TRUE){
         m <- regexpr('\\<(19|20)[0-9]{2}\\>', doc)
         if (any(m != -1L))
           res$year <- regmatches(doc, m)[1L]
-      }
-      
-      # pages -pdftotext has trouble with "-"
-      m <- regexec('([0-9]{1,4}) ?[-\u1390\u2212\ufe58\ufe63\uff0d\u2012-\u2015] ?([0-9]{1,4})[[:punct:]]?$',
-                   doc)
-      tmatch <- unlist(regmatches(doc, m))
-      if (length(tmatch))
-        res$pages <- paste0(tmatch[-1], collapse='-')
+      }      
     }
     
     # browser()
@@ -311,6 +312,7 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
     aut.match <- gsub("[^[:alpha:] ,'-]", '', aut.match)  # remove punct at end of last name
     # aut.match <- gsub("^A[Uu][Tt][Hh][Oo][Rr]( |: )|^B[Yy]( |: )", '', aut.match)  # remove author or by at start
     aut.match <- gsub("^((B[Yy]|A[Uu][Tt][Hh][Oo][Rr][Ss]?|and):?[[:space:]])?", '', aut.match)  # remove author or by at start
+    aut.match <- gsub("\\<AND\\>", "and", aut.match)
 #     aut.match <- regmatches(aut.match, regexpr(paste0("^((?!", BAD.WORDS, ").)*$"), aut.match, perl=TRUE,
 #                                                ignore.case = TRUE))
 # remove bad words. can't get negative look-ahead working :(
@@ -414,6 +416,10 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
 #' @keywords internal
 CleanAuthorTitle <- function(bib1, bib2, bibMeta, file){
   # browser()
+  if (!is.null(bibMeta)){ # Don't let Metadata date overwrite year from pdf text
+    if (!is.null(bib1$year) || !is.null(bib2$year))
+      bibMeta$date <- NULL
+  }
   if (bib2$found.abstract && (!is.null(bib2$author) || !is.null(bib2$title))){
     if(!is.null(bibMeta))
       bib1 <- AddListToList(bib1, bibMeta)
