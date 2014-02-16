@@ -667,10 +667,12 @@ ProcessDate <- function(dat, mon, searching = FALSE){
 CreateBibKey <- function(ti, au, yr){
   m <- regexpr("\\w{4,}", ti)
   key.title <- tolower(regmatches(ti, m))  # will be character(0) if no matches or if ti is NULL
-  if (inherits(au, 'person'))
+  if (inherits(au, 'person')){
     au <- gsub('[^a-z]', '', tolower(au[1L]$family[1L]))
-
-  res <- paste0(au, yr, key.title)
+    res <- paste0(au, yr, key.title)
+  }else{
+    res <- paste0(key.title, yr)
+  }
   if (!length(res))
     return()
   

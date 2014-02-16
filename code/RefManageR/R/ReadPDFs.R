@@ -1,3 +1,14 @@
+# things to test: 
+# DOI found - crossref doesn't work
+# use.crossref = FALSE, use.metadata = TRUE
+# vice versa
+# use.crossref = TRUE and no DOIs found
+# no results
+# only DOI res no others
+# both FALSE
+# error downloading fro
+
+
 #' Create bibliographic information from PDF Metadata.
 #'
 #' This function creates bibliographic information by reading the Metadata and text of PDFs stored in a user 
@@ -85,7 +96,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
   file.remove(tfile1)
   
   # check first page for JSTOR, if yes grab info from both pages, else NA
-  resJSTOR <- mapply(CheckJSTOR, txt.files1, txt.files2)
+  resJSTOR <- mapply(CheckJSTOR, txt.files1, txt.files2, files)
   JSTOR.ind <- !is.na(resJSTOR)
   done.inds <- which(JSTOR.ind)
   if(any(JSTOR.ind)){
@@ -111,7 +122,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
   comb.doi <- c(dois[!JSTOR.ind & doi.meta.ind], more.dois[!is.na(more.dois)])
   
   # get bib info from CrossRef
-  resCR <- NULL
+  resCR <- CR.ind <- badCR.ind <- NULL
   if (use.crossref && length(doi.ind)){
     message(paste0('Getting ', length(comb.doi), ' BibTeX entries from CrossRef...'))
     flush.console()
@@ -128,11 +139,11 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
 #       }, tmpfile = tmpbib, .progress = progress_text(char = "."))
     #file.remove(tmpbib)  
     message('Done')
-    CR.ind <- !is.na(resCR)      # on very rare instances CrossRef doesn't have record for particular DOI
+    CR.ind <- !sapply(resCR, is.null)  # is.na(resCR)      # on very rare instances CrossRef doesn't have record for particular DOI
     badCR.ind <- doi.ind[!CR.ind]
     if(any(CR.ind)){
-#       for (i in which(CR.ind))
-#         resCR[[i]]$file <- files[doi.ind[i]]
+       for (i in which(CR.ind))
+         resCR[[i]]$file <- files[doi.ind[i]]
       not.done <- not.done[!not.done %in% doi.ind[CR.ind]]
     }
     
@@ -162,9 +173,10 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
    #res2 <- lapply(res2, MakeBibEntry, GS = TRUE)
    #res2 <- MakeCitationList(res2)
    #res2 <- c(res2, res3)
-   res <- mapply(CleanAuthorTitle, res, res2, resMeta, files[not.done])
+   res <- mapply(CleanAuthorTitle, res, res2, resMeta, files[not.done], SIMPLIFY = FALSE)
   }else{
-   res <- mapply(CleanAuthorTitle, res, res2, files[not.done], MoreArgs = list(resMeta=NULL)) 
+   res <- mapply(CleanAuthorTitle, res, res2, files[not.done], 
+                 MoreArgs = list(resMeta=NULL), SIMPLIFY = FALSE) 
   }
   #               JSTOR        ReadPDF+Meta           CrossRef
   done.inds <- c(done.inds, not.done[!is.na(res)], doi.ind[CR.ind])
@@ -172,21 +184,32 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
   res <- res[!is.na(res)]  # remove entries with no author or title info - done in MakeCitationList
 
   res <- c(resJSTOR, res)
-  res <- lapply(res, MakeBibEntry, GS = TRUE)
-  res <- MakeCitationList(res)
+  if (length(res)){
+    res <- withCallingHandlers( lapply(res, MakeBibEntry, to.person = FALSE), warning = function(w){
+      if( any( grepl("recycled", w$message) ) ) 
+        invokeRestart( "muffleWarning" ) 
+      })
+    res <- MakeCitationList(res)
+  }
   
-  if (use.crossref)
-    res <- c(res, resCR)
+  if (length(resCR))
+    res <- suppressWarnings(c(resCR, res))  # suppressWarnings in case res NULL
 
   
   # add file names and dois as fields (if doi not done already)
   if (length(not.done) < length(out)){
-    res$files <- files[done.inds]
-   # browser()
+    # res$file[done.inds] <- files[done.inds]
+    # browser()
     if (!use.crossref && length(doi.ind)){
-      res[done.inds %in% doi.ind]$doi <- comb.doi[doi.ind %in% done.inds]
+      ind <- which(done.inds %in% doi.ind)
+      ind2 <- which(doi.ind %in% done.inds)
+      for (i in seq_along(ind))
+        res[[ind[i]]]$doi <- comb.doi[ind2[i]]
     }else if (use.crossref && length(badCR.ind)){  # DOI's missed by CrossRef may be fixed up later
-      res[done.inds %in% badCR.ind]$doi <- comb.doi[doi.ind %in% badCR.ind]
+      ind <- which(done.inds %in% badCR.ind)
+      ind2 <- which(doi.ind %in% badCR.ind)
+      for (i in seq_along(ind))
+        res[[ind[i]]]$doi <- comb.doi[ind2[i]]
     }
   }
   
