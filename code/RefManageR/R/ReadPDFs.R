@@ -25,6 +25,7 @@
 #' @param use.crossref logical; should an attempt be made to download bibliographic information from CrossRef if 
 #' any Document Object Identifiers (DOIs) are found?
 #' @param use.metadata logical; should the PDF metadata also be used to help create entries?
+#' @param progress logical; should progress bar be generated when fetching from CrossRef?
 #' @export
 #' @details This function requires that the \code{pdfinfo} utility from Poppler PDF 
 #' \url{http://poppler.freedesktop.org/} be installed.
@@ -42,7 +43,8 @@
 #' @keywords utilities
 #' @seealso \code{\link{ReadCrossRef}}, \code{\link{BibEntry}}, \code{\link{open.BibEntry}}
 #' @importFrom plyr llply progress_text
-ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRUE, use.metadata = TRUE) {
+ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRUE, 
+                      use.metadata = TRUE, progress = FALSE) {
   #outfile <- tempfile("pdfinfo")
   # browser()
 #   if (delete.file)
@@ -130,9 +132,15 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
 #     resCR <- vector('list', length(doi.ind))
 #      for (i in 1:length(doi.ind))
 #        resCR[[i]] <- unclass(ReadCrossRef(comb.doi[i], temp.file = tmpbib, delete.file = FALSE))
+     if (progress){
+       progress <- progress_text(char = ".")
+     }else{
+       progress <- "none"
+     }
+       
      tmpbib <- tempfile(fileext = ".bib", tmpdir=getwd())
      resCR <- llply(as.list(comb.doi), ReadCrossRef, temp.file = tmpbib, delete.file = TRUE,
-                    .progress = progress_text(char = "."))
+                    .progress = progress)
 #     resCR <- llply(as.list(comb.doi), .fun = function(x, tmpfile){
 #       rcrres <- ReadCrossRef(x, temp.file=tmpfile, delete.file=FALSE)
 #       return(unclass(rcrres))

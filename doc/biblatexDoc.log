@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.8.12)  11 FEB 2014 02:02
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.8.12)  16 FEB 2014 16:04
 entering extended mode
 **biblatexDoc.tex
 (C:\Users\Matthew\Documents\biblatex\RefManageR\doc\biblatexDoc.tex
@@ -1152,8 +1152,12 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [4]
 Package color Info: Redefining color shadecolor on input line 332.
+Package color Info: Redefining color shadecolor on input line 357.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Overfull \hbox (20.1193pt too wide) in paragraph at lines 361--361
+[][]\T1/lmtt/b/n/10.95 download.file[][]\T1/lmtt/m/n/10.95 ([][]"http://dl.drop
+box.com/u/3291828/Poppler/poppler.0.22.0_win32.zip"[][],[][] 
+ []
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -1161,8 +1165,19 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [5]
-Package color Info: Redefining color shadecolor on input line 362.
-LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 364
+Package color Info: Redefining color shadecolor on input line 382.
+
+pdfTeX warning (font expansion): font should be expanded before its first use
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\utf8.def"
+File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+)
+Overfull \hbox (5.47499pt too wide) has occurred while \output is active
+\T1/lmr/m/n/10.95 6 []
+ []
+
+[6]
+Package color Info: Redefining color shadecolor on input line 426.
+LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 428
 .
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lm\ts1lmtt.fd"
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1174,160 +1189,158 @@ Package microtype Info: Loading generic settings for font family
 Package microtype Info: Character `texttrademark ' is missing
 (microtype)             in font `TS1/lmtt/m/n/10.95'.
 (microtype)             Ignoring protrusion settings for this character.
-Package color Info: Redefining color shadecolor on input line 387.
-
-Overfull \hbox (5.47499pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 6 []
- []
-
-[6]
-Package microtype Info: Character `texttrademark ' is missing
-(microtype)             in font `TS1/lmtt/m/it/10.95'.
-(microtype)             Ignoring protrusion settings for this character.
-Package color Info: Redefining color shadecolor on input line 416.
+Package color Info: Redefining color shadecolor on input line 451.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 7
  []
 
 [7]
-Package color Info: Redefining color shadecolor on input line 452.
+Package microtype Info: Character `texttrademark ' is missing
+(microtype)             in font `TS1/lmtt/m/it/10.95'.
+(microtype)             Ignoring protrusion settings for this character.
+Package color Info: Redefining color shadecolor on input line 480.
 
-pdfTeX warning (font expansion): font should be expanded before its first use
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\utf8.def"
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-)
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\utf8.def"
-File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
-)
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 8 []
  []
 
 [8]
-Package color Info: Redefining color shadecolor on input line 490.
-
+Package color Info: Redefining color shadecolor on input line 516.
+ ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\utf8.def"
+File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\utf8.def"
+File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+)
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 9
  []
 
 [9]
-Package color Info: Redefining color shadecolor on input line 526.
-
-Overfull \hbox (10.34645pt too wide) in paragraph at lines 528--528
-[][]\T1/lmtt/m/n/10.95 file.name[] []\T1/lmtt/b/n/10.95 <-[] []system.file[][]\
-T1/lmtt/m/n/10.95 ([][]"Bib"[][],[] []"biblatexExamples.bib"[][],[] []\T1/lmtt/
-b/n/10.95 package[] []\T1/lmtt/m/n/10.95 =[] []"RefManageR"[][])[][] 
- []
-
-Package color Info: Redefining color shadecolor on input line 558.
+Package color Info: Redefining color shadecolor on input line 554.
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 10 []
  []
 
 [10]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 11
- []
+Package color Info: Redefining color shadecolor on input line 590.
 
-[11]
-pdfTeX warning (font expansion): font should be expanded before its first use
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 12 []
- []
-
-[12]
-Package color Info: Redefining color shadecolor on input line 616.
-
-Overfull \hbox (10.34645pt too wide) in paragraph at lines 618--618
+Overfull \hbox (10.34645pt too wide) in paragraph at lines 592--592
 [][]\T1/lmtt/m/n/10.95 file.name[] []\T1/lmtt/b/n/10.95 <-[] []system.file[][]\
 T1/lmtt/m/n/10.95 ([][]"Bib"[][],[] []"biblatexExamples.bib"[][],[] []\T1/lmtt/
 b/n/10.95 package[] []\T1/lmtt/m/n/10.95 =[] []"RefManageR"[][])[][] 
  []
 
-Package color Info: Redefining color shadecolor on input line 648.
+Package color Info: Redefining color shadecolor on input line 622.
+
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+[] \T1/lmr/m/n/10.95 11
+ []
+
+[11]
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+\T1/lmr/m/n/10.95 12 []
+ []
+
+[12]
+pdfTeX warning (font expansion): font should be expanded before its first use
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 13
  []
 
 [13]
-Package color Info: Redefining color shadecolor on input line 688.
+Package color Info: Redefining color shadecolor on input line 680.
 
-Overfull \hbox (5.74747pt too wide) in paragraph at lines 718--718
-[]\T1/lmtt/m/n/10.95 ## [1] "R J Caroll"      "D Ruppert"       "L A Stefanski"
-   "C M Crainiceanu"[] 
+Overfull \hbox (10.34645pt too wide) in paragraph at lines 682--682
+[][]\T1/lmtt/m/n/10.95 file.name[] []\T1/lmtt/b/n/10.95 <-[] []system.file[][]\
+T1/lmtt/m/n/10.95 ([][]"Bib"[][],[] []"biblatexExamples.bib"[][],[] []\T1/lmtt/
+b/n/10.95 package[] []\T1/lmtt/m/n/10.95 =[] []"RefManageR"[][])[][] 
  []
 
+Package color Info: Redefining color shadecolor on input line 712.
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 14 []
  []
 
 [14]
-Package color Info: Redefining color shadecolor on input line 724.
+Package color Info: Redefining color shadecolor on input line 752.
 
-Overfull \hbox (2.8731pt too wide) in paragraph at lines 728--728
-[] []\T1/lmtt/m/n/10.95 "Carroll, R. J. and Ruppert, D. and Stefanski, L. A. an
-d Crainiceanu, C. M."[][],[][] 
+Overfull \hbox (5.74747pt too wide) in paragraph at lines 782--782
+[]\T1/lmtt/m/n/10.95 ## [1] "R J Caroll"      "D Ruppert"       "L A Stefanski"
+   "C M Crainiceanu"[] 
  []
 
-Package color Info: Redefining color shadecolor on input line 740.
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 15
  []
 
 [15]
-Package color Info: Redefining color shadecolor on input line 792.
+Package color Info: Redefining color shadecolor on input line 788.
 
-Overfull \hbox (1.89978pt too wide) in paragraph at lines 796--796
+Overfull \hbox (2.8731pt too wide) in paragraph at lines 792--792
+[] []\T1/lmtt/m/n/10.95 "Carroll, R. J. and Ruppert, D. and Stefanski, L. A. an
+d Crainiceanu, C. M."[][],[][] 
+ []
+
+Package color Info: Redefining color shadecolor on input line 804.
+
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+\T1/lmr/m/n/10.95 16 []
+ []
+
+[16]
+Package color Info: Redefining color shadecolor on input line 856.
+
+Overfull \hbox (1.89978pt too wide) in paragraph at lines 860--860
 [][]\T1/lmtt/m/it/10.95 # Note the Sarkar et al. entry is arXiv preprint with i
 ncorrect journal field[][] 
  []
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 16 []
+[] \T1/lmr/m/n/10.95 17
  []
 
-[16] (C:\Users\Matthew\Documents\biblatex\RefManageR\doc\biblatexDoc.bbl)
+[17] (C:\Users\Matthew\Documents\biblatex\RefManageR\doc\biblatexDoc.bbl)
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 834.
+(Font)              Font shape `T1/pzc/mb/it' tried instead on input line 898.
 Package microtype Info: Loading generic settings for font family
 (microtype)             `pzc' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 834.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 898.
 
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-[] \T1/lmr/m/n/10.95 17
- []
-
-[17]
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 18 []
  []
 
 [18]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 834.
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+[] \T1/lmr/m/n/10.95 19
+ []
+
+[19]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 898.
  (C:\Users\Matthew\Documents\biblatex\RefManageR\doc\biblatexDoc.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 834.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 834.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 898.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 898.
 Package rerunfilecheck Info: File `biblatexDoc.out' has not changed.
 (rerunfilecheck)             Checksum: 39E8B62881396AA98E046B188274D435;2292.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 834.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 898.
  ) 
 Here is how much of TeX's memory you used:
- 12875 strings out of 493921
- 185715 string characters out of 3144870
+ 12882 strings out of 493921
+ 185891 string characters out of 3144870
  324508 words of memory out of 3000000
  15720 multiletter control sequences out of 15000+200000
  150037 words of font info for 167 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 36i,9n,35p,1310b,989s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,10n,35p,1310b,995s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program F
 iles (x86)/MiKTeX 2.9/fonts/enc/dvips/lm/lm-rm.enc}{C:/Program Files (x86)/MiKT
 eX 2.9/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Program Files (x86)/MiKTeX 2.9/font
@@ -1348,9 +1361,9 @@ ss10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmtk10.pfb><C
 :/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Program F
 iles (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmtti10.pfb><C:/Program Files (x86)
 /MiKTeX 2.9/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on biblatexDoc.pdf (18 pages, 508411 bytes).
+Output written on biblatexDoc.pdf (19 pages, 512647 bytes).
 PDF statistics:
- 313 PDF objects out of 1000 (max. 8388607)
- 64 named destinations out of 1000 (max. 500000)
+ 323 PDF objects out of 1000 (max. 8388607)
+ 69 named destinations out of 1000 (max. 500000)
  23694 words of extra memory for PDF output out of 24883 (max. 10000000)
 
