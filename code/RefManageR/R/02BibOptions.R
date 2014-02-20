@@ -106,7 +106,12 @@ BibOptions <- function(..., restore.defaults = FALSE){
 
 .Defaults <- list(match.author='family.name', match.date='year.only', return.ind=FALSE, 
               merge.fields.to.check = 'key', bib.style = 'numeric', first.inits = TRUE, 
-              dashed = TRUE, sorting = NULL, check.entries = 'error', use.regex = TRUE, ignore.case = TRUE, max.names = 3)  
+              dashed = TRUE, sorting = NULL, check.entries = 'error', use.regex = TRUE, 
+              ignore.case = TRUE, max.names = 3, cite.style = "authoryear",
+              longnamesfirst = TRUE)  
 .BibOptions <- list2env(.Defaults)
 .BibOptNames <- names(.Defaults)
-.LogicalBibOptNames <- c("return.ind", "first.inits", "dashed", "use.regex", "ignore.case")
+.LogicalBibOptNames <- c("return.ind", "first.inits", "dashed", "use.regex", "ignore.case", 
+                         "longnamesfirst")
+.cites <- new.env()
+assign("indices", character(0), .cites)

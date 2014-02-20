@@ -95,6 +95,16 @@ if \code{...} is missing and \code{restore.defaults =
 FALSE}, all options and their current values will be
 returned as a list.
 }
+\examples{
+BibOptions()
+BibOptions("first.inits", "bib.style")
+
+oldopts <- BibOptions(first.inits = FALSE, bib.style = "authoryear")
+oldopts
+BibOptions(oldopts)
+
+BibOptions(restore.defaults = TRUE)
+}
 \seealso{
 \code{\link{print.BibEntry}}, \code{\link{BibEntry}},
 \code{\link{options}}

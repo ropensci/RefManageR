@@ -50,7 +50,8 @@ identical(merge(bib1, bib2, 'all'), bib)
 toBiblatex(bib1[[1L]])
 toBiblatex(bib[[1L]])
 
-## Alternatively, the operator \\code{[[} for BibEntry objects does not expand cross references
+## Alternatively, the operator \\code{[[} for BibEntry objects does not expand
+##   cross references
 bib1 <- bib[[seq_len(44)]]
 bib2 <- bib[[45:length(bib)]]
 identical(merge(bib1, bib2, 'all'), bib)
@@ -60,7 +61,8 @@ invisible(merge(bib1, bib2, c('title', 'date')))
 
 ## New publications of R.J. Carroll from Google Scholar and Crossref
 bib1 <- ReadGS(scholar.id = "CJOHNoQAAAAJ", limit = '10', sort.by.date = TRUE)
-bib2 <- ReadCrossRef(query = "rj carroll", limit = 10, sort = "relevance", min.relevance = 80)
+bib2 <- ReadCrossRef(query = "rj carroll", limit = 10, sort = "relevance",
+  min.relevance = 80)
 oldopt <- BibOptions(merge.fields.to.check = "title")
 rjc.new.pubs <- bib1 + bib2
 BibOptions(oldopt)

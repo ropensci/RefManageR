@@ -3,7 +3,7 @@
 \title{Create bibliographic information from PDF Metadata.}
 \usage{
 ReadPDFs(path, .enc = "UTF-8", recursive = TRUE, use.crossref = TRUE,
-  use.metadata = TRUE)
+  use.metadata = TRUE, progress = FALSE)
 }
 \arguments{
   \item{path}{character; path to directory containing pdfs
@@ -26,6 +26,9 @@ ReadPDFs(path, .enc = "UTF-8", recursive = TRUE, use.crossref = TRUE,
 
   \item{use.metadata}{logical; should the PDF metadata also
   be used to help create entries?}
+
+  \item{progress}{logical; should progress bar be generated
+  when fetching from CrossRef?}
 }
 \value{
 An object of class BibEntry.
