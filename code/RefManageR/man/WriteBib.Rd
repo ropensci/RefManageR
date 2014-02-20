@@ -37,7 +37,8 @@ argument \code{biblatex} should be \code{TRUE}, otherwise
 conversion is done as in \code{\link{toBibtex.BibEntry}}.
 }
 \examples{
-bib <- ReadCrossRef(query = 'carroll journal of the american statistical association', year = 2012)
+bib <- ReadCrossRef(query = 'carroll journal of the american statistical association',
+  year = 2012)
 tfile <- tempfile(fileext = ".bib")
 WriteBib(bib, tfile)
 identical(ReadBib(tfile), bib)

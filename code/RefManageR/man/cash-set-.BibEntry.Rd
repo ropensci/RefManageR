@@ -26,7 +26,8 @@ format expected by Biblatex.  The field specified by
 \code{name} does not have to be one currently in \code{x}.
 }
 \examples{
-bib <- BibEntry(bibtype = "misc", key = "mclean", author = "Mathew W. McLean", title = "My Work", year = "2012")
+bib <- BibEntry(bibtype = "misc", key = "mclean", author = "Mathew W. McLean",
+  title = "My Work", year = "2012")
 bib$year <- 2014
 bib$author <- "McLean, M. W. and Carroll, R. J."
 bib$url <- "http://example.com"

@@ -38,7 +38,7 @@ object using fields such as \sQuote{file}, \sQuote{DOI},
 \dontrun{
 testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex"))
 open(testbib)
-testbib$file <- file.path(paste0(R.home("doc"), '/manual/R-intro.pdf'))
+testbib$file <- file.path(R.home("doc/manual"), "R-intro.pdf")
 open(testbib)
 }
 }

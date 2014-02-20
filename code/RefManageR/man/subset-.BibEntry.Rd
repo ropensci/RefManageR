@@ -49,8 +49,8 @@ print(bib[seq_len(3L)], .opts = list(sorting = "none", bib.style = "alphabetic")
 bib2 <- bib[seq_len(3L)]
 bib2[2:3] <- bib[5:6]
 bib2
-bib2[3] <- c(journal='', eprinttype = "arxiv", eprint = "1308.5427", eprintclass = "math.ST",
-                           pubstate = "submitted", bibtype = "misc")
+bib2[3] <- c(journal='', eprinttype = "arxiv", eprint = "1308.5427",
+  eprintclass = "math.ST", pubstate = "submitted", bibtype = "misc")
 bib2
 }
 \seealso{

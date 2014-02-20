@@ -54,6 +54,8 @@
 #' BibOptions(restore.defaults = TRUE)
 sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting, 
                           .bibstyle = BibOptions()$bib.style, ...){
+  if (is.null(sorting))
+    sorting <- "nty"
   if (sorting == 'debug' || .bibstyle == 'draft')
     return(x[order(names(x))])
   #if (tolower(.bibstyle) %in% c('biblatex', 'alphabetic', 'numeric', 'authoryear', 'authortitle')){    

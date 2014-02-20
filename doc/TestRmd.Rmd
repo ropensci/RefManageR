@@ -1,0 +1,32 @@
+Add Cites to RMarkdown
+========================================================
+
+```{r setup, include = FALSE, cache = FALSE}
+library(RefManageR)
+#library(bibtex)
+setwd("C:/Users/Matthew/Documents/biblatex/RefManager/code/RefManageR/R")
+# source("rmdCite.R")
+#lapply(list.files(pattern = ".R$", full = TRUE), source)
+bib <- ReadBib(system.file("Bib", "biblatexExamples.bib", 
+                           package = "RefManageR"), check = FALSE)
+bib2 <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))
+```
+  This is an R Markdown document. This is an example of a citation in the text `r Citep(bib, "loh")`. Now we cite in parentheses `r AutoCite(bib, 1)`.
+
+These are reports `r Citet(bib, 1, cite.style = "super")`.
+You can also embed plots, for example: 
+  
+```{r fig.width=7, fig.height=6}
+plot(cars)
+```
+Add a reference to TeX without citing`r NoCite(bib, "title = CTAN")`.  Add a reference from another bibliography `r TextCite(bib2, "author = Wang")`
+**References**
+```{r results = "asis", echo = FALSE}
+PrintBibliography(bib)
+```
+
+**More References**
+```{r results = "asis", echo = FALSE}
+PrintBibliography(bib2)
+```
+,

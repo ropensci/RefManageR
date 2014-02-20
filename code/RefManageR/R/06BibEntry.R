@@ -20,12 +20,6 @@
 #' @keywords database
 #' @import methods
 #' @importFrom utils bibentry
-#' @include zzz.R
-#' @include BibOptions.R
-#' @include InternalFunctions.R
-#' @include makeBibLatex.R
-#' @include makeBibLatexAuthoryear.R
-#' @include sort.R
 #' @section Entry Types: 
 #'   bibentry creates "bibentry" objects, which are modeled after BibLaTeX and BibTeX entries. The entry should 
 #'   be a valid BibLaTeX or BibTeX entry type.  For a list of valid BibTeX entry types, see 
