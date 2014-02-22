@@ -181,38 +181,56 @@ hljs.initHighlightingOnLoad();
 <body>
 <h1>Add Cites to RMarkdown</h1>
 
-<p>This is an R Markdown document. (Loh, 1992) Markdown is a simple formatting syntax for authoring web pages (click the <strong>Help</strong> toolbar button for more details on using R Markdown).</p>
+<p>This is an R Markdown document<a name="headin"></a>. This is an example of a citation in the text Loh (1992). Now we cite in parentheses (Baez and Lauda, 2004).</p>
 
-<p>When you click the <strong>Knit HTML</strong> button a web page will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+<p>These are reports Chiu and Chow (1978); Padhye, Firoiu, and Towsley (1999).
+You can also embed plots, for example: </p>
 
-<p>You can also embed plots Aristotle (1907, 1929), for example: (Westfahl, 2000)</p>
-
-<pre><code class="r">  plot(cars)
+<pre><code class="r">plot(cars)
 </code></pre>
 
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAGwCAMAAABy/YdMAAAAbFBMVEX9/v0AAAAAADkAAGUAOTkAOWUAOY8AZrU5AAA5ADk5AGU5OY85j9plAABlADllAGVlOQBlZjlltf2POQCPOTmPOWWPjzmPtY+P2/21ZgC1/rW1/v3ajzna24/a/v39tWX924/9/rX9/tr9/v0hhXJqAAAAJHRSTlP//////////////////////////////////////////////wBYLA0NAAAACXBIWXMAAAsSAAALEgHS3X78AAAJjElEQVR4nO3di3LbuBlA4bW7jd2snLTyXqSNGl38/u9YkVbqRKIVUsRPAjjnm061bSYIN8ckCF2gX16E9MvcB6B5GB7K8FCGhzI8lOGhDA9leCjDQxkeyvBQhocyPJThoQwPZXgow0MZHsrwUIaHMjyU4aEMD2V4KMNDGR7K8FCGhzI8lOGhDA9leCjDQxkeyvBQhocyPJThoQwPZXgow0MZHsrwUIaHMjyU4aEMD2V4KMNDGR7K8FCGhzI8lOGhDA9leCjDQxkeakz4O+UsMPyI36too8PvHtufn398GTq0ZjU2/OF52T5uP3wdOLRmNTb8/vOXHx77D61ZecZDjZ7j90/O8SXyrh7K8FAplnP3K2/uMvPTJ2iS3NwdnheGz8rdy0//+tMs59YP34Xv+aSg4kwQ/rSc2/z60TM+HxOEPy7nFs3D5nI9Z/j5xM/xtw+tWRkeyvBQhocavZx7Oq3dvLkry+gzvnn25qahNavxl/r9p9VNQ2tWzvFQhocyPJThoQwPZXgow0MZHsrwUIaHMjyU4aEMD2V4KMNDGR7K8FCGhzI8lOGhDA9leCjDQxkeyvBQhocyPJThody2HMpNjKHcthzKMx7KbcuhvKuHMjyUyzkob+6gApZzblteAs94KJdzUN7VQxkeyvBQhody23Ioty2HcttyKOd4KMNDGR7K8FCGr5JfMco0xZcK3zy04vR4O4Tha+QZD+UZD+UZT+Vdvd5heCjDQxkeyvBQhocyPJThoQwPZXgow0MZHsrwEOcv2xie4eKFWsNPZOatYQw/kx5vjZj2zzf8NOYO7xw/k9nDnzP8RHLb/s3wUG5pCuUGh1B+QwWUZzyUW5pel9vNeDLe1V+V3fI7mYDwNW1bbvh3HZdzD5tqL/WGf8/h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" alt="plot of chunk unnamed-chunk-1"/> </p>
 
-<p>[1] Aristotle. <em>De Anima</em>. Ed. by R. D. Hicks. Cambridge:
+<p>Add a reference to CTAN without citing .  Add a reference from another bibliography [WC99].  Look at all my Aristotle: Aristotle [Ari07]; Aristotle [Ari29]; Aristotle [Ari68]; Aristotle [Ari77].  <a href="#headin">Test a link</a></p>
+
+<p><strong>References</strong></p>
+
+<p>[Ari07] Aristotle. <em>De Anima</em>. Ed. by R. D. Hicks. Cambridge:
 Cambridge University Press, 1907.</p>
 
-<p>[2] Aristotle. <em>Physics</em>. Trans.  by P. H. Wicksteed and F. M.
+<p>[Ari29] Aristotle. <em>Physics</em>. Trans.  by P. H. Wicksteed and F. M.
 Cornford. New York: G. P. Putnam, 1929.</p>
 
-<p>[3] Aristotle. <em>Poetics</em>. Ed. by D. W. Lucas. Clarendon Aristotle.
-Oxford: Clarendon Press, 1968.</p>
+<p>[Ari68] Aristotle. <em>Poetics</em>. Ed. by D. W. Lucas. Clarendon
+Aristotle. Oxford: Clarendon Press, 1968.</p>
 
-<p>[4] Aristotle. <em>The Rhetoric of Aristotle with a commentary by the
-late Edward Meredith Cope</em>. Ed. by E. M. Cope. With a comment. by
-E. M. Cope. Vol. 3. 3 vols. Cambridge University Press, 1877.</p>
+<p>[Ari77] Aristotle. <em>The Rhetoric of Aristotle with a commentary by
+the late Edward Meredith Cope</em>. Ed. by E. M. Cope. With a comment.
+by E. M. Cope. Vol. 3. 3 vols. Cambridge University Press, 1877.</p>
 
-<p>[5] N. C. Loh. &ldquo;High-Resolution Micromachined Interferometric
+<p>[BL04] J. C. Baez and A. D. Lauda. <em>Higher-Dimensional Algebra V:
+2-Groups</em>. Oct. 27, 2004. arXiv: math/0307200v3.</p>
+
+<p>[CTAN06] <em>CTAN. The Comprehensive TeX Archive Network</em>. 2006.
+<URL: http://www.ctan.org> (visited on 10/01/2006).</p>
+
+<p>[CC78] W. W. Chiu and W. M. Chow. <em>A Hybrid Hierarchical Model of
+a Multiple Virtual Storage (MVS) Operating System</em>. Research rep.
+RC-6947. IBM, 1978.</p>
+
+<p>[PFT99] J. Padhye, V. Firoiu and D. Towsley. <em>A Stochastic Model
+of TCP Reno Congestion Avoidance and Control</em>. Tech. rep. 99-02.
+Amherst, Mass.: University of Massachusetts, 1999.</p>
+
+<p>[Loh92] N. C. Loh. &ldquo;High-Resolution Micromachined Interferometric
 Accelerometer&rdquo;. MA Thesis. Cambridge, Mass.: Massachusetts
 Institute of Technology, 1992.</p>
 
-<p>[6] G. Westfahl. &ldquo;The True Frontier. Confronting and Avoiding the
-Realities of Space in American Science Fiction Films&rdquo;. In: <em>Space
-and Beyond. The Frontier Theme in Science Fiction</em>. Ed. by G.
-Westfahl. Westport, Conn. and London: Greenwood, 2000, pp. 55-65.</p>
+<p><strong>More References</strong></p>
+
+<p>[WC99] S. Wang and R. J. Carroll. &ldquo;High-order accurate methods for
+retrospective sampling problems&rdquo;. In: <em>Biometrika</em> 86.4 (1999),
+pp. 881-897.</p>
 
 <p>,</p>
 
