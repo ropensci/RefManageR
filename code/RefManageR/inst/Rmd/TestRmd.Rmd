@@ -14,7 +14,7 @@ BibOptions(bib.style = "alphabetic", check.entries = FALSE)
 bib <- sort(bib, return.labs = TRUE, sorting = "none")
 bib2 <- sort(bib2, return.labs = TRUE, sorting = "none")
 ```
-  This is an R Markdown document<a name="headin"></a>. This is an example of a citation in the text `r Citet(bib, "loh")`. Now we cite in parentheses `r AutoCite(bib, "baez/online")`.
+  This is an R Markdown document. This is an example of a citation in the text `r Citet(bib, "loh")`. Now we cite in parentheses `r AutoCite(bib, "baez/online")`.
 
 These are reports `r Citet(bib, bibtype = "Report", cite.style = "authortitle")`.
 You can also embed plots, for example: 
@@ -22,7 +22,7 @@ You can also embed plots, for example:
 ```{r fig.width=7, fig.height=6}
 plot(cars)
 ```
-Add a reference to CTAN without citing `r NoCite(bib = bib, title = "CTAN")`.  Add a reference from another bibliography `r AutoCite(bib2, title = "retrospective sampling problems", cite.style = "alphabetic")`.  Look at all my Aristotle: `r TextCite(bib, author = "Aristotle", cite.style = "numeric")`.  [Test a link](#headin)
+Add a reference to CTAN without citing `r NoCite(bib = bib, title = "CTAN")`.  Add a reference from another bibliography `r AutoCite(bib2, title = "retrospective sampling problems", cite.style = "alphabetic")`.  Look at all my Aristotle: `r TextCite(bib, author = "Aristotle", cite.style = "numeric")`.
 
 **References**
 

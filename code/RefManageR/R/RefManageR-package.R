@@ -3,7 +3,8 @@
 #' RefManageR provides tools for importing and working with bibliographic references.  It greatly enhances the 
 #' \code{bibentry} class by providing a class BibEntry which stores BibTeX and BibLaTeX references, supports UTF-8, 
 #' and can be easily searched, combined, printed in a number of styles, and exported.  Interfaces to NCBI's Entrez, CrossRef,
-#' and Zotero are provided for importing references and references can be created from locally stored PDFs using Poppler.
+#' and Zotero are provided for importing references and references can be created from locally stored PDFs using Poppler.  
+#' Citations can be generated and a list of references printed for inclusion in e.g. RMarkdown documents.
 #' @name RefManageR-package
 #' @aliases RefManageR refmanager
 #' @docType package
@@ -31,6 +32,9 @@
 #' BibTeX.  \code{\link{toBiblatex}} converts the BibEntry object to a character vector containing lines of 
 #' the corresponding BibLaTeX file.  The results can be written to a file using \code{\link{WriteBib}}.
 #' 
+#' Citations can be gerenated in a number of styles using one of the available functions for 
+#' citations.  A list of references can be printed based on the works the user has cited thus far
+#' in their document.  See \code{\link{Cite}}.
 #' \bold{Additional features}
 #' 
 #' All sorting methods for bibliographies available in the BibLaTeX LaTeX package have been implemented see 

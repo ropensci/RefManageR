@@ -115,3 +115,4 @@ BibOptions <- function(..., restore.defaults = FALSE){
                          "longnamesfirst")
 .cites <- new.env()
 assign("indices", character(0), .cites)
+assign("has.labs", FALSE, .cites)
