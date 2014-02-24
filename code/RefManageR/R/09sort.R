@@ -91,7 +91,7 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
       alabs <- alabs[ord]
   }
   # create labels if needed
-  if (hasArg(return.labs) && !length(unlist(x$index))){  
+  if (hasArg(return.labs) && !length(unlist(x$.index))){  
     if (.bibstyle %in% c("authoryear", "authortitle")){
       #browser()
       if (sorting == "none")
@@ -108,16 +108,25 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
 #         }else{
 #           yr <- yr[ord]
 #         }
+
         # sortyear could mess things up, so can't reuse yr
         yr <- sapply(unclass(x), function(dat) 
           tryCatch(year(attr(dat, "dateobj")), error = function(e) ""))
         tmp <- paste0(tmp, yr)
-        alabs <- unlist(lapply(rle(tmp[rank(tmp, ties.method = 'min')])$len, 
-                               function(x){
-                                 if (x == 1)
-                                   ''
-                                 else letters[seq_len(x)]
-                               })) 
+#         alabs <- unlist(lapply(rle(tmp[rank(tmp, ties.method = 'min')])$len, 
+#                                function(x){
+#                                  if (x == 1)
+#                                    ''
+#                                  else letters[seq_len(x)]
+#                                })) 
+          lab.ord <- order(tmp)
+          alabs <- character(length(x))
+          alabs[lab.ord] <- unlist(lapply(rle(tmp[lab.ord])$len, 
+                                                       function(x){
+                                                         if (x == 1)
+                                                           ''
+                                                         else letters[seq_len(x)]
+                                                       }))
       }
     }
     suppressWarnings(x$.index <- switch(.bibstyle, numeric = {

@@ -1,4 +1,4 @@
-\name{NoCite}
+\name{Cite}
 \alias{AutoCite}
 \alias{Cite}
 \alias{Citep}
@@ -8,50 +8,32 @@
 \alias{TextCite}
 \title{Cite a BibEntry object in text and print all citations}
 \usage{
-NoCite(bib, ...)
-
 Cite(bib, ..., textual = FALSE, before = NULL, after = NULL,
-  cite.style = BibOptions()$cite.style, super = FALSE,
-  max.names = BibOptions()$max.names,
-  longnamesfirst = BibOptions()$longnamesfirst, bibpunct = c("(", ")", "[",
-  "]", ";", ","))
+  .opts = list())
 
-PrintBibliography(bib, style = "text", .opts = list(),
-  no.print.fields = NULL)
+PrintBibliography(bib, .opts = list())
 
-Citep(bib, ..., before = NULL, after = NULL,
-  cite.style = BibOptions()$cite.style, super = FALSE,
-  max.names = BibOptions()$max.names,
-  longnamesfirst = BibOptions()$longnamesfirst, bibpunct = c("(", ")", "[",
-  "]", ";", ","))
+Citep(bib, ..., before = NULL, after = NULL, .opts = list())
 
-AutoCite(bib, ..., before = NULL, after = NULL,
-  cite.style = BibOptions()$cite.style, super = FALSE,
-  max.names = BibOptions()$max.names,
-  longnamesfirst = BibOptions()$longnamesfirst, bibpunct = c("(", ")", "[",
-  "]", ";", ","))
+AutoCite(bib, ..., before = NULL, after = NULL, .opts = list())
 
-Citet(bib, ..., before = NULL, after = NULL,
-  cite.style = BibOptions()$cite.style, super = FALSE,
-  max.names = BibOptions()$max.names,
-  longnamesfirst = BibOptions()$longnamesfirst, bibpunct = c("(", ")", "[",
-  "]", ";", ","))
+Citet(bib, ..., before = NULL, after = NULL, .opts = list())
 
-TextCite(bib, ..., before = NULL, after = NULL,
-  cite.style = BibOptions()$cite.style, super = FALSE,
-  max.names = BibOptions()$max.names,
-  longnamesfirst = BibOptions()$longnamesfirst, bibpunct = c("(", ")", "[",
-  "]", ";", ","))
+TextCite(bib, ..., before = NULL, after = NULL, .opts = list())
+
+NoCite(bib, ..., .opts = list())
 }
 \arguments{
   \item{bib}{a BibEntry object}
 
-  \item{...}{passed to SearchBib for indexing into bib.  A
-  character vector of keys would be the usual choice.}
+  \item{...}{passed to \code{\link{SearchBib}} for indexing
+  into bib.  A character vector of keys, for example.}
 
-  \item{textual}{logical, if TRUE, a \dQuote{textual}
-  citation is produce, i.e. what is produced by \\citet in
-  \code{natbib} and \\textcite in \code{BibLaTeX}.}
+  \item{textual}{logical; if TRUE, a \dQuote{textual}
+  citation is produced, i.e. what is produced by \\citet in
+  \code{natbib} and \\textcite in \code{BibLaTeX};
+  otherwise, a parenthetical citation as \\citep and
+  \\autocite.}
 
   \item{before}{string; optional text to display before the
   citation.}
@@ -59,39 +41,17 @@ TextCite(bib, ..., before = NULL, after = NULL,
   \item{after}{string; optional text to display after the
   citation.}
 
-  \item{cite.style}{character string; bibliography style to
-  use to generate citations. See \code{\link{BibOptions}}.}
-
-  \item{super}{logical; should superscripts be used for
-  numeric citations?  Ignored if \code{cite.style !=
-  "numeric"}.}
-
-  \item{max.names}{numeric; maximum number of last names to
-  print before truncating.}
-
-  \item{longnamesfirst}{logical; should the first time a
-  citation appears in the text not be truncated at
-  \code{max.names}?}
-
-  \item{bibpunct}{character vector; punctuation to use in
-  the citation. See the Details.}
-
-  \item{style}{character; see
-  \code{\link{print.BibEntry}}.}
-
-  \item{.opts}{list of formatting options; see
-  \code{\link{print.BibEntry}}.}
-
-  \item{no.print.fields}{character vector; fields that
-  should not be printed, e.g., doi, url, isbn, etc.}
+  \item{.opts}{list; See the relevant section in
+  \code{\link{BibOptions}} for a description of all valid
+  options for these functions.}
 }
 \value{
-NoCite: no return value; invoked for its side-effect.
-
 For the cite functions: a character string containing the
 citation
 
 PrintBibliography: The formatted list of references.
+
+NoCite: no return value; invoked for its side-effect.
 }
 \description{
 The \code{Cite} functions allow for citing a
@@ -103,15 +63,7 @@ including a citation.  These functions are most useful when
 used in, e.g., a RMarkdown or RHTML document.
 }
 \details{
-The entries in \code{bibpunct} are as follows \enumerate{
-\item The left delimiter for non-alphabetic and non-numeric
-citation styles \item The right delimiter for
-non-alphabetic and non-numeric citation styles \item The
-left delimiter for alphabetic and numeric citation styles
-\item The right delimiter for alphabetic and numeric
-citation styles \item The separator between references in a
-citation. \item Punctuation to go between the author and
-year. }
+Read and execute the files in the examples.
 
 If \code{bib.style = "alphabetic"} or \code{bib.style =
 "numeric"}, then sorting needs to be done at the start of
@@ -127,9 +79,33 @@ If the \code{...} argument to NoCite is identical to
 the bibliography without citations.
 }
 \examples{
+file <- system.file("Bib", "biblatexExamples.bib", package = "RefManageR")
+BibOptions(check.entries = FALSE)
+bib <- ReadBib(file)
+Citet(bib, 12)
+Citep(bib, "loh", .opts = list(cite.style = "numeric"), before = "see ")
+Citet(bib, "loh", .opts = list(cite.style = "numeric", super = TRUE))
+AutoCite(bib, eprinttype = "arxiv", .opts = list(cite.style = "authoryear"))
+Citep(bib, author = "kant")
+# shorthand field in both entries gets used for numeric and alphabetic labels
+TextCite(bib, author = "kant", .opts = list(cite.style = "alphabetic"))
+TextCite(bib, author = "kant", .opts = list(cite.style = "numeric"))
+TextCite(bib, author = "kant", .opts = list(cite.style = "alphabetic", style = "html"))
+punct <- unlist(BibOptions("bibpunct"))
+punct[3:4] <- c("(", ")")
+TextCite(bib, 33, .opts = list(bibpunct = punct, cite.style = "alphabetic"))
+
+BibOptions(restore.defaults = TRUE)
 \dontrun{
 library(knitr)
+## See also TestNumeric.Rmd and TestAlphabetic.Rmd for more examples
 doc <- system.file("Rmd", "rmdExample.Rmd", package = "RefManageR")
+file.show(doc)
+tmpfile <- tempfile(fileext = ".html")
+knit(doc, tmpfile)
+browseURL(tmpfile)
+unlink(tmpfile)
+doc <- system.file("Rhtml", "TestAuthorYear.Rhtml", package = "RefManageR")
 file.show(doc)
 tmpfile <- tempfile(fileext = ".html")
 knit(doc, tmpfile)
@@ -138,7 +114,9 @@ unlink(tmpfile)
 }
 }
 \seealso{
-\code{\link{print.BibEntry}},
+\code{\link{print.BibEntry}}, \code{\link{BibOptions}},
 \code{\link[utils]{citeNatbib}}
 }
+\keyword{methods}
+\keyword{print}
 

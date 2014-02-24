@@ -57,6 +57,9 @@ Citations can be gerenated in a number of styles using one
 of the available functions for citations.  A list of
 references can be printed based on the works the user has
 cited thus far in their document.  See \code{\link{Cite}}.
+The citations and bibliography can be printed including
+hyperlinks using either the R Markdown or R HTML formats.
+
 \bold{Additional features}
 
 All sorting methods for bibliographies available in the
@@ -65,6 +68,12 @@ BibLaTeX LaTeX package have been implemented see
 
 Using \code{\link{open.BibEntry}} electronic copies of
 references can be opened in a PDF viewer or web browser.
+
+The convenience function \code{\link{BibOptions}} is
+provided for setting defaults for commonly used functions
+such as \code{\link{print.BibEntry}},
+\code{\link{[.BibEntry}}, and \code{\link{Cite}}.  Its
+interface is similar to \code{\link{options}}.
 }
 \author{
 McLean, M. W. \email{mathew.w.mclean@gmail.com}

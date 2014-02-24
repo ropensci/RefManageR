@@ -326,13 +326,15 @@ ProcessNamesLA <- function(nam){
 GetLastNames <- function(bib){
     result <- character(length(bib))
     for (i in seq_along(bib)) {
-      authors <- paste0(bib[[i]]$author$family, collapse = '')
-      if (authors == '')
-        authors <- paste0(bib[[i]]$editor$family, collapse = '')
-      if (authors == '')
-        authors <- paste0(bib[[i]]$translator$family, collapse = '')
-      if (authors == '')
-        authors <- paste0(bib[[i]]$title, collapse = '')
+      authors <- paste0(unlist(bib[[i]]$author$family), collapse = '')
+      if (authors == "")
+        authors <- paste0(unlist(bib[[i]]$editor$family), collapse = '')
+      if (authors == "")
+        authors <- paste0(unlist(bib[[i]]$translator$family), collapse = '')
+      if (authors == "")
+        authors <- cleanupLatex(bib[[i]]$title)
+      if (!length(authors))
+        authors <- ""
       result[i] <- authors
     }
     result

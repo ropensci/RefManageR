@@ -1,20 +1,3 @@
-
-# ```{r setup, include = FALSE}
-# knit_hooks$set(inline = function(x){
-#     if (is.numeric(x)) 
-#       x = round(x, getOption("digits"))
-#     
-#     x <- paste(as.character(x), collapse = ", ")
-#     if (grep("^<=[0-9]", x)){
-#       m <- regexec("^<=([0-9]+)> (.+)$", x)
-#       res <- unlist(regmatches(x, m))
-#       AddCite(res[2L])
-#       x <- res[3L]
-#     }
-#         
-#     x  
-# })
-
 #' @keywords internal
 AddCite <- function(index, use.hyper = TRUE){
   new.ind <- logical(length(index))
@@ -26,23 +9,6 @@ AddCite <- function(index, use.hyper = TRUE){
   .cites$indices <- tmp[!duplicated(names(tmp))]
 }
 
-#' @rdname Cite
-#' @aliases NoCite
-#' @export
-#' @return NoCite: no return value; invoked for its side-effect.
-NoCite <- function(bib, ...){
-  if (identical(c(...), "*")){
-    papers <- bib
-  }else{
-    papers <- suppressMessages(do.call(`[.BibEntry`, list(x = bib, ...)))  
-  }
-  
-  if (!length(papers))
-    return()
-  keys <- unlist(papers$key)
-  AddCite(keys, !identical(.BibOptions$hyperlink, FALSE))
-}
-
 #' Cite a BibEntry object in text and print all citations
 #' 
 #' The \code{Cite} functions allow for citing a \code{BibEntry} object in text.  The 
@@ -52,38 +18,48 @@ NoCite <- function(bib, ...){
 #' e.g., a RMarkdown or RHTML document.
 #' 
 #' @param bib a BibEntry object
-#' @param ... passed to SearchBib for indexing into bib.  A character vector of keys
-#' would be the usual choice.
-#' @param textual logical, if TRUE, a \dQuote{textual} citation is produce, i.e.
-#' what is produced by \\citet in \code{natbib} and \\textcite in \code{BibLaTeX}.
+#' @param ... passed to \code{\link{SearchBib}} for indexing into bib.  A character vector of 
+#' keys, for example.
+#' @param textual logical; if TRUE, a \dQuote{textual} citation is produced, i.e.
+#' what is produced by \\citet in \code{natbib} and \\textcite in \code{BibLaTeX}; otherwise,
+#' a parenthetical citation as \\citep and \\autocite.
 #' @param before string; optional text to display before the citation.
 #' @param after string; optional text to display after the citation.
-#' @param cite.style character string; bibliography style to use to generate citations.  
-#' See \code{\link{BibOptions}}.
-#' @param super logical; should superscripts be used for numeric citations?  Ignored if
-#'  \code{cite.style != "numeric"}.
-#' @param max.names numeric; maximum number of last names to print before truncating.
-#' @param longnamesfirst logical; should the first time a citation appears in the text
-#' not be truncated at \code{max.names}?
-#' @param bibpunct character vector; punctuation to use in the citation.  
-#' See the Details.
-#' @details The entries in \code{bibpunct} are as follows
-#' \enumerate{
-#' \item The left delimiter for non-alphabetic and non-numeric citation styles
-#' \item The right delimiter for non-alphabetic and non-numeric citation styles
-#' \item The left delimiter for alphabetic and numeric citation styles
-#' \item The right delimiter for alphabetic and numeric citation styles 
-#' \item The separator between references in a citation.
-#' \item Punctuation to go between the author and year.
-#' }
+#' @param .opts list; See the relevant section in \code{\link{BibOptions}} for a description
+#' of all valid options for these functions.
+#' @details   Read and execute the files in the examples.
 #' @return For the cite functions: a character string containing the citation
 #' @rdname Cite
-#' @seealso \code{\link{print.BibEntry}}, \code{\link[utils]{citeNatbib}}
 #' @export
 #' @aliases PrintBibliography
-#' @examples \dontrun{
+#' @examples 
+#' file <- system.file("Bib", "biblatexExamples.bib", package = "RefManageR")
+#' BibOptions(check.entries = FALSE)
+#' bib <- ReadBib(file)
+#' Citet(bib, 12)
+#' Citep(bib, "loh", .opts = list(cite.style = "numeric"), before = "see ")
+#' Citet(bib, "loh", .opts = list(cite.style = "numeric", super = TRUE))
+#' AutoCite(bib, eprinttype = "arxiv", .opts = list(cite.style = "authoryear"))
+#' Citep(bib, author = "kant")
+#' # shorthand field in both entries gets used for numeric and alphabetic labels
+#' TextCite(bib, author = "kant", .opts = list(cite.style = "alphabetic"))
+#' TextCite(bib, author = "kant", .opts = list(cite.style = "numeric"))
+#' TextCite(bib, author = "kant", .opts = list(cite.style = "alphabetic", style = "html"))
+#' punct <- unlist(BibOptions("bibpunct"))
+#' punct[3:4] <- c("(", ")")
+#' TextCite(bib, 33, .opts = list(bibpunct = punct, cite.style = "alphabetic"))
+#' 
+#' BibOptions(restore.defaults = TRUE)
+#' \dontrun{
 #' library(knitr)
+#' ## See also TestNumeric.Rmd and TestAlphabetic.Rmd for more examples
 #' doc <- system.file("Rmd", "rmdExample.Rmd", package = "RefManageR")
+#' file.show(doc)
+#' tmpfile <- tempfile(fileext = ".html")
+#' knit(doc, tmpfile)
+#' browseURL(tmpfile)
+#' unlink(tmpfile)
+#' doc <- system.file("Rhtml", "TestAuthorYear.Rhtml", package = "RefManageR")
 #' file.show(doc)
 #' tmpfile <- tempfile(fileext = ".html")
 #' knit(doc, tmpfile)
@@ -118,47 +94,78 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
           names <- sapply(paper$translator, shortName)
         names
       } 
+
   #     if (!missing(previous)) 
   #         cited <<- previous
   #     if (!missing(mode)) 
   #         mode <- match.arg(mode)
       numeric <- "numeric" %in% cite.style
       alphabetic <- "alphabetic" %in% cite.style
-      cited <- names(.cites$indices)
-      if (!length(cited) && length(unlist(papers$.index)))
-        .cites$has.labs <- TRUE
-      
-      if (numeric || alphabetic){ 
-        if (!.cites$has.labs || !any(names(bib) %in% cited)){  # 2nd condition for when another 
-          if (!length(sorting))                                    # BibEntry object is introduced
-            sorting <- switch(cite.style, authoryear = 'nyt', alphabetic = 'anyt', draft = 'debug', 'nty')
-          papers <- sort(papers, sorting = sorting, .bibstyle = cite.style, return.labs = TRUE)      
-        }
-      }
+#       if (!length(cited) && length(unlist(papers$.index)))
+#         .cites$has.labs <- TRUE
+#       
+#       if (numeric || alphabetic){ 
+#         if (!.cites$has.labs || !any(names(bib) %in% cited)){  # 2nd condition for when another 
+#           if (!length(sorting))                                    # BibEntry object is introduced
+#             sorting <- switch(cite.style, authoryear = 'nyt', alphabetic = 'anyt', draft = 'debug', 'nty')
+#           papers <- sort(papers, sorting = sorting, .bibstyle = cite.style, return.labs = TRUE)      
+#         }
+#       }
   #     keys <- unlist(strsplit(keys, " *, *"))
   #     if (!length(keys)) 
   #         return("")
+      if (cite.style != .cites$sty)
+        ClearLabs(cite.style)
       keys <- unlist(papers$key)
       n <- length(keys)
+      cited <- names(.cites$indices)
       first <- !(keys %in% cited)
+      if (cite.style != "numeric"){
+        if (any(!names(bib) %in% names(.cites$labs))){ 
+          # some entries in bib have note been seen before
+          # note we use bib here instead of papers (the subset) in case
+          # a possible "duplicate" in bib is cited in the future. we want to disambiguate this
+          # By duplicate, I mean we want to distinguish Smith 2008a and Smith 2008b
+          bibstyle <- switch(cite.style, authortitle = "authoryear", cite.style)
+          bib <- sort(bib, sorting = "none", .bibstyle = bibstyle, return.labs = TRUE)      
+          newinds <- bib$.index
+          .labs <- newinds[keys]
+          .cites$labs <- c(.cites$labs, newinds)
+        }else{  # all entries in bib have been seen before, get the label from .cites env.
+          .labs <- .cites$labs[keys]  
+        }
+      }else{
+        first.ind <- which(first)
+        if (length(first.ind)){
+          shorthands <- unlist(papers$shorthand)
+          max.ind <- suppressWarnings(sum(!is.na(as.numeric(.cites$labs))))
+          newinds <- seq.int(max.ind+1L, length.out = length(first.ind))
+          names(newinds) <- keys[first]
+          if (length(shorthands))
+            newinds[names(shorthands)] <- shorthands
+          .cites$labs <- c(.cites$labs, newinds)
+        }
+        .labs <- .cites$labs[keys]
+      }
+      
       AddCite(keys, !identical(hyperlink, FALSE))
       year <- match(keys, names(.cites$indices))
-      if (alphabetic || (numeric && .cites$has.labs)) 
-        year <- structure(papers$.index, names = NULL)
+      if (alphabetic || numeric){ 
+        year <- structure(.labs, names = NULL)
+      }else{
+        year <- structure(unlist(sapply(papers$dateobj, 
+                                        MakeAuthorYear()$DateFormatter)), names = NULL)
+
+        if (any(.labs %in% letters)) # make sure labels are authoryear labels
+          year <- paste0(year, .labs)
+      }
   #     bibkeys <- unlist(bib$key)
   #     year <- match(keys, bibkeys)
   #     papers <- bib[year]
   
       if (textual || (!numeric && !alphabetic)){
           auth <- character(n)
-          if (!numeric && !alphabetic){ browser()
-            year <- structure(unlist(sapply(papers$dateobj, 
-                                            MakeAuthorYear()$DateFormatter)), names = NULL)
-            if (identical(cite.style, "authoryear") && .cites$has.labs){
-              if (any(unlist(papers$.index) %in% letters)) # make sure labels are authoryear labels
-                year <- paste(year, papers$.index)
-            } 
-          }
+          
           authorLists <- lapply(papers, authorList)
           lastAuthors <- NULL
           for (i in seq_along(keys)) {
@@ -207,7 +214,7 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
         }else{
           result <- paste0(bibpunct[1L], before, year, after, bibpunct[2L])  
         }
-        if (super && numeric && !make.hyper) 
+        if (super && numeric && (!style %in% c("markdown", "html") || !make.hyper)) 
             result <- paste0(auth, "^{", result, "}")
         else if (!super || !numeric) result <- paste0(auth, " ", result)
        #   result <- paste(result, collapse = paste0(bibpunct[5L], 
@@ -230,7 +237,7 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
       if (make.hyper){
         url = switch(hyperlink, to.bib = paste0("#bib-", gsub("[^_a-zA-Z0-9-]", "", keys)),
                      to.doc = sapply(papers, GetURL, 
-                                     flds = c("url", "eprint", "doi", "file"),
+                                     flds = c("url", "eprint", "doi"),
                                      to.bib = TRUE),
                      hyperlink)
         if (style == "html"){
@@ -266,8 +273,6 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
     result
 }
 
-#' @param style character; see \code{\link{print.BibEntry}}.
-#' @param .opts list of formatting options; see \code{\link{print.BibEntry}}.
 #' @return PrintBibliography: The formatted list of references.
 #' @export
 #' @aliases TextCite AutoCite Citep Citet
@@ -279,7 +284,7 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
 #' 
 #' If the \code{...} argument to NoCite is identical to \dQuote{*}, then all references
 #' in \code{bib} are added to the bibliography without citations.
-#' @seealso \code{\link{print.BibEntry}}, \code{\link{BibOptions}}
+#' @seealso \code{\link{print.BibEntry}}, \code{\link{BibOptions}}, \code{\link[utils]{citeNatbib}}
 #' @rdname Cite
 PrintBibliography <- function(bib, .opts = list()){
   if (!length(bib))
@@ -291,15 +296,32 @@ PrintBibliography <- function(bib, .opts = list()){
     return()
   }
   
-  .opts$bib.style <- if (length(.opts$bib.style))
+  bibstyle <- if (length(.opts$bib.style))
                 .opts$bib.style
               else .BibOptions$bib.style
-  if (.opts$bib.style %in% c("alphabetic", "numeric"))
-    .opts$sorting  <- "none"
-  old.opts <- BibOptions(.opts)
-  on.exit(BibOptions(old.opts))
+  citestyle <- if (length(.opts$cite.style))
+    .opts$cite.style
+  else .BibOptions$cite.style
+#   if (.opts$bib.style %in% c("alphabetic", "numeric"))
+#     .opts$sorting  <- "none"
+
+  
   bib <- bib[ind]
-  bib$.index <- .cites$labs[keys]
+  # if bibstyle and citation style match, use citation labels, otherwise recompute them
+  if (bibstyle == citestyle){
+    if (bibstyle == "numeric"){
+      if (length(bib) == length(.cites$labs)){
+        bib <- bib[names(.cites$labs)]
+        .opts$sorting <- "none"  
+        bib$.index <- .cites$labs[keys[ind]]
+      }
+    }else bib$.index <- .cites$labs[keys[ind]]
+  }
+
+  if (length(.opts)){
+    old.opts <- BibOptions(.opts)
+    on.exit(BibOptions(old.opts))
+  }
   print(bib)
 #   env <- switch(.opts$bib.style, authoryear = MakeAuthorYear(), MakeBibLaTeX())
 #   if (identical(tolower(BibOptions()$doc.type), "rhtml")){
@@ -372,6 +394,62 @@ TextCite <- function(bib, ..., before = NULL, after = NULL,
   kall[[1L]] <- as.name("Cite")
   kall$textual <- TRUE
   eval(kall)
+}
+
+#' @keywords internal
+ClearLabs <- function(sty){
+  .cites$labs <- character(0)
+  .cites$indices <- logical(0)
+  .cites$sty <- sty
+}
+
+#' @rdname Cite
+#' @aliases NoCite
+#' @export
+#' @keywords print methods
+#' @return NoCite: no return value; invoked for its side-effect.
+NoCite <- function(bib, ..., .opts = list()){
+  if (length(.opts)){
+    old.opts <- BibOptions(.opts)
+    on.exit(BibOptions(old.opts))
+  }
+  if (identical(c(...), "*")){
+    papers <- bib
+  }else{
+    papers <- suppressMessages(do.call(`[.BibEntry`, list(x = bib, ...)))  
+  }
+  
+  if (!length(papers))
+    return()
+  keys <- unlist(papers$key)
+  # n <- length(keys)
+  # first <- !(keys %in% cited)
+  if (.BibOptions$cite.style != "numeric"){
+    if (!all(names(bib) %in% names(.cites$labs))){ 
+      # some entries in bib have note been seen before
+      # note we use bib here instead of papers (the subset) in case
+      # a possible "duplicate" in bib is cited in the future. we want to disambiguate this
+      # By duplicate, I mean we want to distinguish Smith 2008a and Smith 2008b
+      bibstyle <- switch(.BibOptions$cite.style, authortitle = "authoryear", .BibOptions$cite.style)
+      bib <- sort(bib, sorting = "none", .bibstyle = bibstyle, return.labs = TRUE)      
+      .cites$labs <- c(.cites$labs, bib$.index)
+    }
+  }else{
+    cited <- names(.cites$indices)
+    first <- !(keys %in% cited)
+    first.ind <- which(first)
+    if (length(first.ind)){
+      shorthands <- unlist(papers$shorthand)
+      max.ind <- suppressWarnings(sum(!is.na(as.numeric(.cites$labs))))
+      newinds <- seq.int(max.ind+1L, length.out = length(first.ind))
+      names(newinds) <- keys[first]
+      if (length(shorthands))
+        newinds[names(shorthands)] <- shorthands
+      .cites$labs <- c(.cites$labs, newinds)
+    }
+    .labs <- .cites$labs[keys]
+  }
+  AddCite(keys, !identical(.BibOptions$hyperlink, FALSE))
 }
 
 

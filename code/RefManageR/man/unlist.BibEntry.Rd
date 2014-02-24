@@ -5,7 +5,7 @@
 \usage{
 \method{unlist}{BibEntry}(x, recursive = FALSE, use.names = TRUE)
 
-\method{relist}{BibEntry}(flesh, skeleton = NULL)
+relist.BibEntry(flesh, skeleton = NULL)
 }
 \arguments{
   \item{flesh}{list; an \code{unlist}ed BibEntry object}

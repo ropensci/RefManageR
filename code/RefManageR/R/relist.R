@@ -6,6 +6,7 @@
 #' @param skeleton currently ignored
 #' @details \code{relist.BibEntry} is only intended for use with \code{unlist}ed BibEntry objects.
 #' @seealso \code{\link{as.BibEntry}}
+#' @importFrom utils relist
 #' @return \code{relist.BibEntry} - an object of class BibEntry
 #' @rdname unlist.BibEntry
 #' @export
