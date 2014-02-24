@@ -41,6 +41,10 @@
 #' \code{\link{sort.BibEntry}} and the references.
 #' 
 #' Using \code{\link{open.BibEntry}} electronic copies of references can be opened in a PDF viewer or web browser.
+#' 
+#' The convenience function \code{\link{BibOptions}} is provided for setting defaults for commonly used
+#' functions such as \code{\link{print.BibEntry}}, \code{\link{[.BibEntry}}, and 
+#' \code{\link{Cite}}.  Its interface is similar to \code{\link{options}}.
 #' @keywords package
 #' @references McLean, M.W. and R.J. Carroll (2014). Biblatex Bibliography Managament in R Using the RefManager Package.
 #' \url{http://stat.tamu.edu/~mmclean}.

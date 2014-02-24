@@ -108,11 +108,13 @@ BibOptions <- function(..., restore.defaults = FALSE){
               merge.fields.to.check = 'key', bib.style = 'numeric', first.inits = TRUE, 
               dashed = TRUE, sorting = NULL, check.entries = 'error', use.regex = TRUE, 
               ignore.case = TRUE, max.names = 3, cite.style = "authoryear",
-              longnamesfirst = TRUE)  
+              longnamesfirst = TRUE, hyperlink = "to.doc", style = "text",
+              super = FALSE, bibpunct = c("(", ")", "[", "]",  ";", ","),
+              no.print.fields = character(0))  
 .BibOptions <- list2env(.Defaults)
 .BibOptNames <- names(.Defaults)
 .LogicalBibOptNames <- c("return.ind", "first.inits", "dashed", "use.regex", "ignore.case", 
-                         "longnamesfirst")
+                         "longnamesfirst", "super")
 .cites <- new.env()
-assign("indices", character(0), .cites)
+assign("indices", logical(0), .cites)
 assign("has.labs", FALSE, .cites)

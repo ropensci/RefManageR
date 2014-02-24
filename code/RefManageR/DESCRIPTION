@@ -1,5 +1,5 @@
 Package: RefManageR
-Version: 0.6.1
+Version: 0.7.1
 Date: 2014-02-06
 Title: Import and Manage BibTeX and BibLaTeX references with RefManager
 Authors@R: person(c("Mathew", "W."), "McLean", role = c("aut", "cre"),
@@ -13,7 +13,7 @@ Description: RefManageR provides tools for importing and working with
     number of styles, and exported.  Interfaces to NCBI's Entrez, CrossRef, and
     Zotero are provided for importing references and references can be created
     from locally stored PDFs using Poppler.
-License: GPL (>= 2)
+License: BSD_3_clause + file LICENSE
 Imports:
     XML,
     RCurl,
@@ -25,4 +25,5 @@ Imports:
     lubridate,
     stringr,
     methods
+Suggests: knitr
 Encoding: UTF-8

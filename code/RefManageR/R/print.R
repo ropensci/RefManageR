@@ -7,6 +7,13 @@
 #' must be a unique abbreviation (with case ignored) of the available styles, see \code{\link{bibentry}}.
 #' @param .opts a list of formatting options from \code{\link{BibOptions}}.  Possible options are
 #' \itemize{
+#' \item \code{style} - character string naming the printing style.  Possible values are 
+#' plain text (style \dQuote{text}), BibTeX (\dQuote{Bibtex}), BibLaTeX (\dQuote{Biblatex}),
+#' a mixture of plain text and BibTeX as 
+#' traditionally used for citations (\dQuote{citation}), HTML (\dQuote{html}), 
+#' LaTeX (\dQuote{latex}), \dQuote{markdown}, 
+#' R code (\dQuote{R}), and a simple copy of the textVersion elements 
+#' (style \dQuote{textVersion}, see \code{\link{BibEntry}})
 #' \item \code{bib.style} - character string specifying BibLaTeX style to use for formatting references.  Possible values are
 #' \dQuote{numeric} (default), \dQuote{authoryear}, \dQuote{authortitle}, \dQuote{alphabetic}, \dQuote{draft}.  See
 #' section 3.3.2 of the BibLaTeX manual.
@@ -15,8 +22,8 @@
 #' \item \code{first.inits} - logical; if true only initials of given names are printed, otherwise full names are used.
 #' \item \code{dashed} - logical; for \code{.bibstyle = "authoryear"} or \code{.bibstyle = "authoryear"} only, 
 #' if \code{TRUE} duplicate author and editor lists are replaced with \dQuote{---} when printed.
+#' \item \code{no.print.fields} character vector; fields that should not be printed, e.g., doi, url, isbn, etc.
 #' }
-#' @param no.print.fields character vector; fields that should not be printed, e.g., doi, url, isbn, etc.
 #' @param ... not used.
 #' @method print BibEntry
 #' @export
@@ -38,7 +45,7 @@
 #' oldopts <- BibOptions(bib.style = "authoryear", dashed = TRUE, sorting = "ydnt")
 #' bib[editor = "westfahl"]
 #' BibOptions(oldopts)
-print.BibEntry <- function (x, style = "text", .opts = list(), no.print.fields = NULL, ...){
+print.BibEntry <- function (x, .opts = list(), no.print.fields = NULL, ...){
 #   .bibstyle = .BibOptions()$bib.style, 
 #   sorting = .BibOptions()$sorting,  
 #   max.names = .BibOptions()$max.names, first.inits = .BibOptions()$first.inits, 
@@ -47,6 +54,7 @@ print.BibEntry <- function (x, style = "text", .opts = list(), no.print.fields =
     oldopts <- BibOptions(.opts)
     on.exit(BibOptions(oldopts))
   }
+  style <- .BibOptions$style
   
 #   .BibOptions$max.names <- max.names
 #   .BibOptions$first.inits <- first.inits
@@ -65,7 +73,7 @@ print.BibEntry <- function (x, style = "text", .opts = list(), no.print.fields =
       writeLines(format(x, "R", collapse = TRUE, ...))
   }
   else if (length(x)) {
-      y <- format(x, style, .BibOptions$bib.style, .sorting = sorting, .sort = TRUE, ...)
+      y <- format(x, style = style, .BibOptions$bib.style, .sorting = sorting, .sort = TRUE, ...)
       if (style == "citation") {
           n <- length(y)
           if (nzchar(header <- y[1L])) 
