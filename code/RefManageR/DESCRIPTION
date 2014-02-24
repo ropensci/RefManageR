@@ -25,5 +25,6 @@ Imports:
     lubridate,
     stringr,
     methods
-Suggests: knitr
+Suggests:
+    knitr
 Encoding: UTF-8

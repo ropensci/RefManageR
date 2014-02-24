@@ -65,7 +65,7 @@ open.BibEntry <- function(con, entry = 1, open.field = c("file", "url", "eprint"
 #     }
 #     i <- i + 1
 #   }
-  if (!length(opened))
+  if (!length(url))
     message('Could not open the specified entry.')
   else browseURL(url, viewer)
 }

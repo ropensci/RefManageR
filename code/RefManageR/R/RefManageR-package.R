@@ -34,7 +34,9 @@
 #' 
 #' Citations can be gerenated in a number of styles using one of the available functions for 
 #' citations.  A list of references can be printed based on the works the user has cited thus far
-#' in their document.  See \code{\link{Cite}}.
+#' in their document.  See \code{\link{Cite}}.  The citations and bibliography can be printed 
+#' including hyperlinks using either the R Markdown or R HTML formats.
+#' 
 #' \bold{Additional features}
 #' 
 #' All sorting methods for bibliographies available in the BibLaTeX LaTeX package have been implemented see 

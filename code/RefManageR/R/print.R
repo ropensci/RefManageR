@@ -3,8 +3,6 @@
 #' Prints bibliographic information stored in BibEntry objects in BibLaTeX style
 #' 
 #' @param x a BibEntry object
-#' @param style an optional character string specifying the print style. If present, 
-#' must be a unique abbreviation (with case ignored) of the available styles, see \code{\link{bibentry}}.
 #' @param .opts a list of formatting options from \code{\link{BibOptions}}.  Possible options are
 #' \itemize{
 #' \item \code{style} - character string naming the printing style.  Possible values are 
@@ -39,13 +37,12 @@
 #' bib <- suppressMessages(ReadBib(file.name))
 #' print(bib[author="aristotle"], .opts = list(bib.style = "numeric"))
 #' print(bib[55:57], .opts = list(bib.style = "authortitle", first.inits = FALSE))
-#' print(bib[80:88], .opts = list(bib.style = "alphabetic", max.names = 1), 
-#'   no.print.fields = "issn")
+#' print(bib[80:88], .opts = list(bib.style = "alphabetic", max.names = 1, no.print.fields = "issn"))
 #' print(bib[32:36], .opts = list(bib.style = "draft"))
 #' oldopts <- BibOptions(bib.style = "authoryear", dashed = TRUE, sorting = "ydnt")
 #' bib[editor = "westfahl"]
 #' BibOptions(oldopts)
-print.BibEntry <- function (x, .opts = list(), no.print.fields = NULL, ...){
+print.BibEntry <- function (x, .opts = list(), ...){
 #   .bibstyle = .BibOptions()$bib.style, 
 #   sorting = .BibOptions()$sorting,  
 #   max.names = .BibOptions()$max.names, first.inits = .BibOptions()$first.inits, 
@@ -65,9 +62,10 @@ print.BibEntry <- function (x, .opts = list(), no.print.fields = NULL, ...){
   else .BibOptions$sorting
   
   style <- .BibEntry_match_format_style(style)
-  if (length(x) && length(no.print.fields)){
-    for (i in seq_along(no.print.fields))
-      x <- do.call(`$<-`, list(x = x, name = tolower(no.print.fields[i]), value = NULL))
+  no.print <- .BibOptions$no.print.fields
+  if (length(x) && length(no.print)){
+    for (i in seq_along(no.print))
+      x <- do.call(`$<-`, list(x = x, name = tolower(no.print[i]), value = NULL))
   }
   if (style == "R") {
       writeLines(format(x, "R", collapse = TRUE, ...))

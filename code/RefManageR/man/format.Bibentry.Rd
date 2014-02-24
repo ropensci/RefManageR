@@ -2,8 +2,8 @@
 \alias{format.BibEntry}
 \title{Encode in a common format}
 \usage{
-\method{format}{BibEntry}(x, style = "text",
-  .bibstyle = BibOptions()$bib.style,
+\method{format}{BibEntry}(x, style = .BibOptions$style,
+  .bibstyle = .BibOptions$bib.style,
   citation.bibtex.max = getOption("citation.bibtex.max", 1), .sort = TRUE,
   .sorting = "nty", enc = "UTF-8", ...)
 }
