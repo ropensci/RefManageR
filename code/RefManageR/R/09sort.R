@@ -68,9 +68,9 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
       vol <- MakeBibLaTeX()$sortKeysV(x)
   }
   if (.bibstyle == 'alphabetic' || sorting == 'anyt' || sorting == 'anyvt'){
-    #browser()
     alabs <- MakeBibLaTeX()$sortKeysLA(x, yr)
-    alabs <- paste0(alabs, unlist(lapply(rle(alabs[rank(alabs, ties.method = 'min')])$len, 
+    lab.ord <- order(alabs)
+    alabs[lab.ord] <- paste0(alabs[lab.ord], unlist(lapply(rle(alabs[lab.ord])$len, 
                      function(x){
                        if (x == 1)
                          ''
@@ -91,7 +91,7 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
       alabs <- alabs[ord]
   }
   # create labels if needed
-  if (hasArg(return.labs)){  
+  if (hasArg(return.labs) && !length(unlist(x$index))){  
     if (.bibstyle %in% c("authoryear", "authortitle")){
       #browser()
       if (sorting == "none")

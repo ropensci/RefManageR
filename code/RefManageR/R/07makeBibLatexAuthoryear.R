@@ -1,6 +1,6 @@
 #' @keywords internal
-MakeAuthorYear <- function() local({
-
+MakeAuthorYear <- function(docstyle = "text") local({
+  docstyle <- get("docstyle", parent.frame(2))
 ##################################################################
 ## Formatting functions
 
@@ -476,9 +476,33 @@ fmtBVolume <- function(vol, num){
 
 fmtVolumes <- label(suffix = ' vols.')
 
+
 fmtBAuthor <- function(doc){
+  res <- fmtBAuthorSimple(doc)
+  if (length(res)){
+    if (docstyle == "html"){
+      key <- attr(doc, "key")
+      ind <- .cites$indices[key]
+      key <- gsub("[^_a-zA-Z0-9-]", "", key)
+      res <- if (!is.na(ind) && ind)
+        paste0("\\code{", key, "}\\href{#cite-", key, "}{", res, "}")
+      else res    
+    }else if (docstyle == "markdown"){
+      key <- attr(doc, "key")
+      ind <- .cites$indices[key]
+      key <- gsub("[^_a-zA-Z0-9-]", "", key)
+      res <- if (!is.na(ind) && ind){
+        paste0("<a name=bib-", key, "></a>[", res, "](#cite-", key, ")")
+      }else res    
+    }  
+  }
+  res
+}
+
+fmtBAuthorSimple <- function(doc){
   if (doc$.duplicated)
-    return("\u2014\u2013\u2014")  # \u2500\u200a\u2500\u2009\u2500
+    return(switch(docstyle, html = "---", markdown = "\\-\\-\\-",
+                  "\u2014\u2013\u2014"))
   #browser()
   out <- NULL
   if (length(doc$author)){
@@ -523,6 +547,15 @@ fmtBAuthor <- function(doc){
                    'collaborator' = ', collab.', doc$editortype))
     }
   }
+#   if (for.doc.bib && .cites$indices[attr(doc, 'key')]){
+#     if (doctype == "Rmd"){
+#       out <- paste0("<a name=#", attr(doc, 'key'), ">[", out, "](#cite-", 
+#                     attr(doc, 'key'), ")")
+#     }else if(doctype == "RHTML"){
+#       out <- paste0("<a href=#", attr(doc, 'key'), "><a href=#cite-", 
+#                     attr(doc, 'key'), ">", out, "</a>")
+#     }
+#   }
 #   else{
 #     out <- addPeriod(out)
 #   }
@@ -547,7 +580,18 @@ fmtChapter <- label(prefix = '. Chap. ')
 fmtISSN <- label(prefix = 'ISSN: ', suffix = '.')
 fmtISBN <- label(prefix = 'ISBN: ', suffix = '.')
 fmtISRN <- label(prefix = 'ISRN: ', suffix = '.')
-fmtDOI <- label(prefix = 'DOI: ', suffix = '.')
+#fmtDOI <- label(prefix = 'DOI: ', suffix = '.')
+fmtDOI <- switch(docstyle, html = function(doi){
+  if (length(doi)){
+    paste0("DOI: \\href{http://dx.doi.org/", 
+           doi, "}{", doi, "}.")
+  }
+}, markdown = function(doi){
+  if (length(doi)){
+    paste0("DOI: [href=http://dx.doi.org/", doi, "](", doi, ").")
+  }
+}, label(prefix = 'DOI: ', suffix = '.'))
+
 
 fmtEventTitle <- cleanap
 
@@ -565,21 +609,97 @@ fmtEventDate <- function(ed, ven){
   
 fmtURL <- function(paper){
   if (length(paper$url)){
-    res <- paste0('\\url{', paper$url, '}')
+    res <- paper$url
+    res <- switch(docstyle, html = paste0("URL: \\url{", res, "}"),
+                  markdown = paste0("URL: [", res, "](", res, ")"),
+                  paste0('\\url{', res, '}'))
     if (length(paper$urldate)){
-      fDate <- try(ProcessDate(paper$urldate, NULL))
+      fDate <- try(ProcessDate(paper$urldate, NULL), TRUE)
       if (!is.null(fDate) && !inherits(fDate, 'try-error'))
-        res <- paste0(res, ' (visited on ', DateFormatter(fDate, 'url'), ')')
+        res <- paste0(res, ' (visited on ', DateFormatter(fDate, TRUE), ')')
     }
     addPeriod(res)
   }
 }
 
-fmtEprint <- function(paper){
+fmtEprint <- switch(docstyle, html = function(paper){
+  if (length(paper$eprint)){
+    if (length(paper$eprinttype)){
+      eprinttype <- tolower(paper$eprinttype)
+      res <- paste0(switch(eprinttype, 'arxiv'='arXiv', 'pubmed' = 'PMID', 
+                           'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype), 
+                    ': ')
+      
+      if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
+        base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
+                           arxiv = "http://arxiv.org/abs/", 
+                           pubmed = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=",
+                           "")
+        res <- paste0(res, "\\href{", base.url, paper$eprint, "}{", 
+                      paper$eprint)
+        if (eprinttype == "arxiv"){
+          if(length(paper$eprintclass)){
+            res <- paste0(res, " [", paper$eprintclass, ']')
+          }else if (length(paper$primaryclass)){
+            res <- paste0(res, " [", paper$primaryclass, ']')
+          }
+        }
+        res <- paste0(res, "}")
+      }else{
+        res <- paste0(res, paper$eprinttype)
+      }
+    }else if (length(paper$archiveprefix)){
+      if (length(paper$eprintclass)){
+        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
+      }else if(length(paper$primaryclass)){
+        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
+      }
+    }else{
+      res <- paste0('eprint: ', paper$eprint)
+    }
+    addPeriod(res)
+  }
+}, markdown = function(paper){
+  if (length(paper$eprint)){
+    if (length(paper$eprinttype)){
+      eprinttype <- tolower(paper$eprinttype)
+      res <- paste0(switch(eprinttype, 'arxiv'='arXiv', 'pubmed' = 'PMID', 
+                           'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype), 
+                    ': ')
+      
+      if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
+        base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
+                           arxiv = "http://arxiv.org/abs/", 
+                           pubmed = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=",
+                           "")
+        res <- paste0(res, "[", paper$eprint)
+        if (eprinttype == "arxiv"){
+          if(length(paper$eprintclass)){
+            res <- paste0(res, " [", paper$eprintclass, ']')
+          }else if (length(paper$primaryclass)){
+            res <- paste0(res, " [", paper$primaryclass, ']')
+          }
+        }
+        res <- paste0(res, "](", base.url, paper$eprint, ")")
+      }else{
+        res <- paste0(res, paper$eprinttype)
+      }
+    }else if (length(paper$archiveprefix)){
+      if (length(paper$eprintclass)){
+        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
+      }else if(length(paper$primaryclass)){
+        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
+      }
+    }else{
+      res <- paste0('eprint: ', paper$eprint)
+    }
+    addPeriod(res)
+  }
+}, function(paper){
   if (length(paper$eprint)){
     if (length(paper$eprinttype)){
       res <- paste0(switch(tolower(paper$eprinttype), 'arxiv'='arXiv', 'pubmed' = 'PMID', 
-                    'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype), 
+                           'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype), 
                     ': ', paper$eprint)
       if (tolower(paper$eprinttype) == 'arxiv'){
         if (length(paper$eprintclass)){
@@ -599,7 +719,7 @@ fmtEprint <- function(paper){
     }
     addPeriod(res)
   }
-}
+})
 
 fmtEditor <- function(doc, editor.used.already = FALSE, prefix = NULL, suffix = '.'){
   res <- NULL

@@ -1,22 +1,84 @@
 #' @keywords internal
-MakeBibLaTeX <- function() local({
-
+MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) local({
+docstyle <- get("docstyle", parent.frame(2))
 ##################################################################
 ## Formatting functions
 
-fmtPrefix <- function(paper){
-  switch(.BibOptions$bib.style, numeric = paste0("[", fmtNumPre(paper), "]"),
-         alphabetic = paste0("[", paper$.index, "]"),
-         draft = paste0('\\bold{', attr(paper, 'key'), '}'),
-         NULL)
-#   if (.BibOptions$bib.style == 'numeric'){
-#     paste0("[", paper$.index, "]")
-#   }else if()
-#   
-#   }else{
-#     NULL
+# fmtPrefix <- switch(html = function(paper){
+#   switch(.BibOptions$bib.style, numeric = paste0("[", fmtNumPre(paper), "]"),
+#          alphabetic = paste0("[", paper$.index, "]"),
+#          draft = paste0('\\bold{', attr(paper, 'key'), '}'),
+#          NULL)
+# }, markdown = function(paper){
+#   res <- switch(.BibOptions$bib.style, numeric = paste0("[", fmtNumPre(paper), "]"),
+#          alphabetic = paste0("[", paper$.index, "]"),
+#          draft = paste0('\\bold{', attr(paper, 'key'), '}'),
+#          NULL)
+#   if (length(res)){
+#     key <- attr(paper, "key")
+#     ind <- .cites$indices[key]
+#     if (!is.na(ind) && ind){
+#       key <- gsub("[^_a-zA-Z0-9-]", "", key)
+#       res <- paste0("<a name=", key, "></a>[", res, "](#cite-", key, ")"
+#     }else entry
 #   }
-}
+#   res
+# }, function(paper){
+#   switch(.BibOptions$bib.style, numeric = paste0("[", fmtNumPre(paper), "]"),
+#          alphabetic = paste0("[", paper$.index, "]"),
+#          draft = paste0('\\bold{', attr(paper, 'key'), '}'),
+#          NULL)
+# #   if (length(out) && for.doc.bib && .cites$indices[attr(paper, 'key')]){
+# #     if (doctype == "Rmd"){
+# #       out <- paste0("<a name=#", attr(paper, 'key'), ">[", out, "](#cite-", 
+# #                     attr(paper, 'key'), ")")  
+# #     }else if (doctype == "RHTML"){
+# #       out <- paste0("<a href=#", attr(paper, 'key'), "><a href=#cite-", 
+# #                     attr(paper, 'key'), ">", out, "</a>")
+# #     }
+# #   }
+# #   out
+# #   if (.BibOptions$bib.style == 'numeric'){
+# #     paste0("[", paper$.index, "]")
+# #   }else if()
+# #   
+# #   }else{
+# #     NULL
+# #   }
+# }
+
+fmtPrefixSimple <- function(paper) switch(.BibOptions$bib.style, numeric = paste0("[", fmtNumPre(paper), "]"),
+                                          alphabetic = paste0("[", paper$.index, "]"),
+                                          draft = paste0('\\bold{', attr(paper, 'key'), '}'),
+                                          NULL)
+
+fmtPrefix <- switch(docstyle, html = function(paper){
+  res <- fmtPrefixSimple(paper)
+  if (length(res)){
+    key <- attr(paper, "key")
+    ind <- .cites$indices[key]
+    key <- gsub("[^_a-zA-Z0-9-]", "", key)
+    res <- if (!is.na(ind) && ind){
+      #paste0("\\code{<a id='bib-", key, "'></a><a href='#cite-", key, "'>", res, "</a>}")
+      #paste0("\\link{LINK<a id='bib-", key, "'</a>}\\href{#cite-", key, "}{", res, "}")
+      paste0("\\code{", key, "}\\href{#cite-", key, "}{", res, "}")
+    }else res    
+  }
+  res
+}, markdown = function(paper){
+  res <- fmtPrefixSimple(paper)
+  if (length(res)){
+    key <- attr(paper, "key")
+    ind <- .cites$indices[key]
+    key <- gsub("[^_a-zA-Z0-9-]", "", key)
+    res <- if (!is.na(ind) && ind)
+      paste0("<a name=bib-", key, "></a>[", res, "](#cite-", key, ")")
+    else res    
+  }
+  res  
+}, fmtPrefixSimple)
+
+
 
 fmtNumPre <- function(doc){
   res <- doc$shorthand
@@ -507,8 +569,34 @@ fmtOrganization <- label(suffix = '.')
 # }
 
 fmtBAuthor <- function(doc){
+  res <- fmtBAuthorSimple(doc)
+  if (length(res) && authortitle){
+    if (docstyle == "html"){
+      key <- attr(doc, "key")
+      ind <- .cites$indices[key]
+      key <- gsub("[^_a-zA-Z0-9-]", "", key)
+      res <- if (!is.na(ind) && ind){
+        paste0("\\code{", key, "}\\href{#cite-", key, "}{", res, "}")
+        #paste0("<a id=bib-'", key, "'></a><a href='#cite-", key, "'>", res, "</a>")
+        #paste0("\\code{LINK<a id='bib-", key, "'></a>}\\href{#cite-", key, "}{", res, "}")
+      }else res    
+    }else if (docstyle == "markdown"){
+      key <- attr(doc, "key")
+      ind <- .cites$indices[key]
+      key <- gsub("[^_a-zA-Z0-9-]", "", key)
+      res <- if (!is.na(ind) && ind){
+        paste0("<a name=bib-", key, "></a>[", res, "](#cite-", key, ")")
+      }else res    
+    }  
+  }
+  res
+}
+
+
+fmtBAuthorSimple <- function(doc){
   if (doc$.duplicated)
-    return("\u2014\u2013\u2014")
+    return(switch(docstyle, html = "---", markdown = "\\-\\-\\-",
+                  "\u2014\u2013\u2014"))
     #return('\u00b7\u00b7\u00b7\u00b7\u00b7')
   #browser()
   out <- NULL
@@ -560,6 +648,15 @@ fmtBAuthor <- function(doc){
   }else{
     out <- addPeriod(out)
   }
+#   if (for.doc.bib && bibstyle == "authortitle" && .cites$indices[attr(doc, 'key')]){
+#     if (doctype == "Rmd"){
+#       out <- paste0("<a name=#", attr(doc, 'key'), ">[", out, "](#cite-", 
+#                   attr(doc, 'key'), ")")
+#     }else if(doctype == "RHTML"){
+#       out <- paste0("<a href=#", attr(doc, 'key'), "><a href=#cite-", 
+#                     attr(doc, 'key'), ">", out, "</a>")
+#     }
+#   }
   out
 }
 
@@ -581,11 +678,23 @@ fmtChapter <- label(prefix = '. Chap. ')
 fmtISSN <- label(prefix = 'ISSN: ', suffix = '.')
 fmtISBN <- label(prefix = 'ISBN: ', suffix = '.')
 fmtISRN <- label(prefix = 'ISRN: ', suffix = '.')
-fmtDOI <- label(prefix = 'DOI: ', suffix = '.')
+fmtDOI <- switch(docstyle, html = function(doi){
+                        if (length(doi)){
+                          paste0("DOI: \\href{http://dx.doi.org/", 
+                                 doi, "}{", doi, "}.")
+                        }
+                      }, markdown = function(doi){
+                          if (length(doi)){
+                            paste0("DOI: [href=http://dx.doi.org/", doi, "](", doi, ").")
+                          }
+                        }, label(prefix = 'DOI: ', suffix = '.'))
   
 fmtURL <- function(paper){
   if (length(paper$url)){
-    res <- paste0('\\url{', paper$url, '}')
+    res <- paper$url
+    res <- switch(docstyle, html = paste0("URL: \\url{", res, "}"),
+                  markdown = paste0("URL: [", res, "](", res, ")"),
+                  paste0('\\url{', res, '}'))
     if (length(paper$urldate)){
       fDate <- try(ProcessDate(paper$urldate, NULL), TRUE)
       if (!is.null(fDate) && !inherits(fDate, 'try-error'))
@@ -595,11 +704,84 @@ fmtURL <- function(paper){
   }
 }
 
-fmtEprint <- function(paper){
+fmtEprint <- switch(docstyle, html = function(paper){
+  if (length(paper$eprint)){
+    if (length(paper$eprinttype)){
+      eprinttype <- tolower(paper$eprinttype)
+      res <- paste0(switch(eprinttype, 'arxiv'='arXiv', 'pubmed' = 'PMID', 
+                           'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype), 
+                    ': ')
+
+      if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
+        base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
+                           arxiv = "http://arxiv.org/abs/", 
+                           pubmed = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=",
+                           "")
+        res <- paste0(res, "\\href{", base.url, paper$eprint, "}{", 
+                      paper$eprint)
+        if (eprinttype == "arxiv"){
+          if(length(paper$eprintclass)){
+            res <- paste0(res, " [", paper$eprintclass, ']')
+          }else if (length(paper$primaryclass)){
+            res <- paste0(res, " [", paper$primaryclass, ']')
+          }
+        }
+        res <- paste0(res, "}")
+      }else{
+        res <- paste0(res, paper$eprinttype)
+      }
+    }else if (length(paper$archiveprefix)){
+      if (length(paper$eprintclass)){
+        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
+      }else if(length(paper$primaryclass)){
+        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
+      }
+    }else{
+      res <- paste0('eprint: ', paper$eprint)
+    }
+    addPeriod(res)
+  }
+}, markdown = function(paper){
+  if (length(paper$eprint)){
+    if (length(paper$eprinttype)){
+      eprinttype <- tolower(paper$eprinttype)
+      res <- paste0(switch(eprinttype, 'arxiv'='arXiv', 'pubmed' = 'PMID', 
+                           'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype), 
+                    ': ')
+      
+      if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
+        base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
+                           arxiv = "http://arxiv.org/abs/", 
+                           pubmed = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=",
+                           "")
+        res <- paste0(res, "[", paper$eprint)
+        if (eprinttype == "arxiv"){
+          if(length(paper$eprintclass)){
+            res <- paste0(res, " [", paper$eprintclass, ']')
+          }else if (length(paper$primaryclass)){
+            res <- paste0(res, " [", paper$primaryclass, ']')
+          }
+        }
+        res <- paste0(res, "](", base.url, paper$eprint, ")")
+      }else{
+        res <- paste0(res, paper$eprinttype)
+      }
+    }else if (length(paper$archiveprefix)){
+      if (length(paper$eprintclass)){
+        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
+      }else if(length(paper$primaryclass)){
+        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
+      }
+    }else{
+      res <- paste0('eprint: ', paper$eprint)
+    }
+    addPeriod(res)
+  }
+}, function(paper){
   if (length(paper$eprint)){
     if (length(paper$eprinttype)){
       res <- paste0(switch(tolower(paper$eprinttype), 'arxiv'='arXiv', 'pubmed' = 'PMID', 
-                    'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype), 
+                           'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype), 
                     ': ', paper$eprint)
       if (tolower(paper$eprinttype) == 'arxiv'){
         if (length(paper$eprintclass)){
@@ -619,7 +801,7 @@ fmtEprint <- function(paper){
     }
     addPeriod(res)
   }
-}
+})
 
 fmtEditor <- function(doc, editor.used.already = FALSE, prefix = NULL, suffix = '.'){
   #browser()
@@ -1203,18 +1385,19 @@ environment()
 #' @importFrom tools getBibstyle bibstyle toRd
 toRd.BibEntry <- function(obj, ...) { 
   .style <- .BibOptions$bib.style 
+  doc.style <- .BibOptions$style
   
   if (is.null(.style)){
     .style <- .BibOptions$bib.style <- 'numeric'
-    style <- MakeBibLaTeX()
+    style <- MakeBibLaTeX(docstyle = doc.style)
   }else if (.style %in% tools::getBibstyle(TRUE)){
     .BibOptions$bib.style <- .style
     style.env <- tools::bibstyle(.style)
   }else if (.style == "authoryear"){
-    style.env <- MakeAuthorYear()
+    style.env <- MakeAuthorYear(docstyle = doc.style)
   }else if (.style %in% c('authortitle', 'alphabetic', 'numeric', 'draft')){
     #.style <- 'BibLaTeX'
-    style.env <- MakeBibLaTeX()
+    style.env <- MakeBibLaTeX(docstyle = doc.style, .style == "authortitle")
   }
   if (FALSE)  # toRd.BibEntry will be internal function only called by format.BibEntry with sorting already done
     obj <- sort(obj, .bibstyle=.BibOptions$bib.style, sorting = .sorting, return.labs = FALSE)
@@ -1232,8 +1415,11 @@ toRd.BibEntry <- function(obj, ...) {
   if (!(.style == 'authoryear' || .style == 'authortitle') || !.BibOptions$dashed ||
         is.null(obj$.duplicated))
     obj$.duplicated <- FALSE
-  assign('bibstyle', .style, style.env)
-  assign('max.n', .BibOptions$max.names, style.env)
+  assign("bibstyle", .style, style.env)
+  assign("max.n", .BibOptions$max.names, style.env)
+#   assign("for.doc.bib", hasArg(for.doc.bib), style.env)
+#   assign("max.n", .BibOptions$max.names, style.env)
+#   assign("doctype", .BibOptions$doc.type, style.env)
   bib <- unclass(obj)
   result <- character(length(bib))
   #browser()
