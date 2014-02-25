@@ -82,7 +82,7 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
               anyt = order(ps, alabs, aut, yr, ttl, decreasing = decreasing),   
               anyvt = order(ps, alabs, aut, yr, vol, ttl, decreasing = decreasing),    
               ynt = order(ps, yr, aut, ttl, decreasing = decreasing),
-              ydnt = order(ps, rev(yr), aut, ttl, decreasing = decreasing),
+              ydnt = order(ps, -as.numeric(yr), aut, ttl, decreasing = decreasing),
               order(ps, aut, ttl, yr, decreasing = decreasing))  # DEFAULT = nty
     suppressWarnings(x <- x[ord])
     aut <- aut[ord]
