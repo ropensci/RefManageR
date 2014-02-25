@@ -37,7 +37,7 @@ AddCite <- function(index, use.hyper = TRUE){
 #' BibOptions(check.entries = FALSE)
 #' bib <- ReadBib(file)
 #' Citet(bib, 12)
-#' Citep(bib, "loh", .opts = list(cite.style = "numeric"), before = "see ")
+#' Citep(bib, c("loh", "geer"), .opts = list(cite.style = "numeric"), before = "see e.g., ")
 #' Citet(bib, "loh", .opts = list(cite.style = "numeric", super = TRUE))
 #' AutoCite(bib, eprinttype = "arxiv", .opts = list(cite.style = "authoryear"))
 #' Citep(bib, author = "kant")
@@ -53,18 +53,20 @@ AddCite <- function(index, use.hyper = TRUE){
 #' \dontrun{
 #' library(knitr)
 #' ## See also TestNumeric.Rmd and TestAlphabetic.Rmd for more examples
+#' old.dir <- setwd(tdir <- tempdir())
 #' doc <- system.file("Rmd", "rmdExample.Rmd", package = "RefManageR")
 #' file.show(doc)
-#' tmpfile <- tempfile(fileext = ".html")
+#' tmpfile <- tempfile(fileext = ".html", tmpdir = tdir)
 #' knit(doc, tmpfile)
 #' browseURL(tmpfile)
-#' unlink(tmpfile)
+#' 
 #' doc <- system.file("Rhtml", "TestAuthorYear.Rhtml", package = "RefManageR")
 #' file.show(doc)
-#' tmpfile <- tempfile(fileext = ".html")
+#' tmpfile <- tempfile(fileext = ".html", tmpdir = tdir)
 #' knit(doc, tmpfile)
 #' browseURL(tmpfile)
-#' unlink(tmpfile)
+#' setwd(old.dir)
+#' unlink(tdir)
 #' }
 Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL, 
                  .opts = list()){
@@ -255,14 +257,17 @@ PrintBibliography <- function(bib, .opts = list()){
     .opts$cite.style
   else .BibOptions$cite.style
   
-  bib <- bib[ind]
+  bib <- bib[[ind]]
   # if bibstyle and citation style match, use citation labels, otherwise recompute them
   if (bibstyle == citestyle){
     if (bibstyle == "numeric"){
       if (length(bib) == length(.cites$labs)){
-        bib <- bib[names(.cites$labs)]
+        bib <- bib[[names(.cites$labs)]]
         .opts$sorting <- "none"  
-        bib$.index <- .cites$labs[keys[ind]]
+#         labs <- .cites$labs
+#         bib.labs <- labs[order(match(keys, names(labs)))]
+#         bib <- bib[names(bib.labs)] # sort
+        bib$.index <- structure(.cites$labs, names = NULL)
       }
     }else bib$.index <- .cites$labs[keys[ind]]
   }
@@ -317,7 +322,6 @@ TextCite <- function(bib, ..., before = NULL, after = NULL,
 #' @keywords internal
 ClearLabs <- function(sty){
   .cites$labs <- character(0)
-  .cites$indices <- logical(0)
   .cites$sty <- sty
 }
 
