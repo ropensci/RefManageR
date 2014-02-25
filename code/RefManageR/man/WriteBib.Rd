@@ -40,7 +40,7 @@ conversion is done as in \code{\link{toBibtex.BibEntry}}.
 bib <- ReadCrossRef(query = 'carroll journal of the american statistical association',
   year = 2012)
 tfile <- tempfile(fileext = ".bib")
-WriteBib(bib, tfile)
+WriteBib(bib, tfile, biblatex = TRUE)
 identical(ReadBib(tfile), bib)
 unlink(tfile)
 }

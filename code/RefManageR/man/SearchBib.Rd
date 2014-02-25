@@ -69,6 +69,7 @@ the .BibOptions object; see \code{\link{BibOptions}}.
 \examples{
 file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 bib <- suppressMessages(ReadBib(file.name))
+
 ## author search, default is to use family names only for matching
 bib[author = "aristotle"]
 

@@ -4,49 +4,6 @@ docstyle <- get("docstyle", parent.frame(2))
 ##################################################################
 ## Formatting functions
 
-# fmtPrefix <- switch(html = function(paper){
-#   switch(.BibOptions$bib.style, numeric = paste0("[", fmtNumPre(paper), "]"),
-#          alphabetic = paste0("[", paper$.index, "]"),
-#          draft = paste0('\\bold{', attr(paper, 'key'), '}'),
-#          NULL)
-# }, markdown = function(paper){
-#   res <- switch(.BibOptions$bib.style, numeric = paste0("[", fmtNumPre(paper), "]"),
-#          alphabetic = paste0("[", paper$.index, "]"),
-#          draft = paste0('\\bold{', attr(paper, 'key'), '}'),
-#          NULL)
-#   if (length(res)){
-#     key <- attr(paper, "key")
-#     ind <- .cites$indices[key]
-#     if (!is.na(ind) && ind){
-#       key <- gsub("[^_a-zA-Z0-9-]", "", key)
-#       res <- paste0("<a name=", key, "></a>[", res, "](#cite-", key, ")"
-#     }else entry
-#   }
-#   res
-# }, function(paper){
-#   switch(.BibOptions$bib.style, numeric = paste0("[", fmtNumPre(paper), "]"),
-#          alphabetic = paste0("[", paper$.index, "]"),
-#          draft = paste0('\\bold{', attr(paper, 'key'), '}'),
-#          NULL)
-# #   if (length(out) && for.doc.bib && .cites$indices[attr(paper, 'key')]){
-# #     if (doctype == "Rmd"){
-# #       out <- paste0("<a name=#", attr(paper, 'key'), ">[", out, "](#cite-", 
-# #                     attr(paper, 'key'), ")")  
-# #     }else if (doctype == "RHTML"){
-# #       out <- paste0("<a href=#", attr(paper, 'key'), "><a href=#cite-", 
-# #                     attr(paper, 'key'), ">", out, "</a>")
-# #     }
-# #   }
-# #   out
-# #   if (.BibOptions$bib.style == 'numeric'){
-# #     paste0("[", paper$.index, "]")
-# #   }else if()
-# #   
-# #   }else{
-# #     NULL
-# #   }
-# }
-
 fmtPrefixSimple <- function(paper) switch(.BibOptions$bib.style, numeric = paste0("[", fmtNumPre(paper), "]"),
                                           alphabetic = paste0("[", paper$.index, "]"),
                                           draft = paste0('\\bold{', attr(paper, 'key'), '}'),
@@ -58,11 +15,9 @@ fmtPrefix <- switch(docstyle, html = function(paper){
     key <- attr(paper, "key")
     ind <- .cites$indices[key]
     key <- gsub("[^_a-zA-Z0-9-]", "", key)
-    res <- if (!is.na(ind) && ind){
-      #paste0("\\code{<a id='bib-", key, "'></a><a href='#cite-", key, "'>", res, "</a>}")
-      #paste0("\\link{LINK<a id='bib-", key, "'</a>}\\href{#cite-", key, "}{", res, "}")
+    res <- if (!is.na(ind) && ind)
       paste0("\\code{", key, "}\\href{#cite-", key, "}{", res, "}")
-    }else res    
+    else res    
   }
   res
 }, markdown = function(paper){
@@ -195,21 +150,7 @@ addPeriod <- function (string){
   sub("([^.?!])$", "\\1.", string)
 }
 
-# addPeriodTitle <- function (string){ 
-#   sub("([^.?!])$", "\\dQuote{\\1.}", string)
-# }
-
-# authorList <- function(paper){
-#     names <- sapply(paper$author, shortName)
-#     if (length(names) > 1) 
-#         result <- paste(paste(names[-length(names)], collapse = ", "), 
-#             "and", names[length(names)])
-#     else result <- names
-#     result
-# }
-
 authorList <- function(aut){
- # browser()
     names <- sapply(aut, shortName)
     if (length(names) > 1L){ 
         result <- paste(paste(names[-length(names)], collapse = ", "), 
@@ -295,7 +236,6 @@ DateFormatter <- function(dat, other = FALSE){
 }
 
 sortKeys <- function(bib){
-#  browser()
     result <- character(length(bib))
     for (i in seq_along(bib)) {
       authors <- bib[[i]]$sortname
@@ -305,8 +245,6 @@ sortKeys <- function(bib){
         authors <- paste0(sapply(bib[[i]]$editor, shortNameLF), collapse = '')
         if (authors == '')
           authors <- paste0(sapply(bib[[i]]$translator, shortNameLF), collapse = '')
-#         if (!length(authors)) 
-#           authors <- ""
       }
       result[i] <- authors
     }
@@ -376,7 +314,6 @@ ProcessNamesLA <- function(nam, mn = .BibOptions$max.names){
   if (nam.len){
     if (!inherits(nam, 'person'))
       nam <- ArrangeAuthors(nam)
-    # nam <- sapply(nam$family, as.character)
     if (nam.len == 1){
       res <- paste0(nam$family, collapse = '')
       res <- regmatches(res, regexpr('[[:upper:]][[:punct:]]?[[:alpha:]][[:punct:]]?[[:alpha:]]', res))
@@ -390,9 +327,6 @@ ProcessNamesLA <- function(nam, mn = .BibOptions$max.names){
       res <- gsub('[[:punct:]]', '', res)
       res <- paste0(res, '+')
     }
-#     res <- substr(nam, start = 1L, stop = 1L)
-#     switch(as.character(length(res)), '0'= NULL, '1' = substr(nam, 1L, 3L), '2' = paste0(res[seq_len(2L)], collapse =''),
-#            paste0(res[seq_len(3L)], collapse =''))
     res
   }
 }
@@ -448,16 +382,6 @@ fmtDate <- function(dat){
   if (length(dat))
     DateFormatter(dat)
 }
-
-# fmtDOI <- function(s){
-#   if (length(s) && .BibOptions$print.doi)
-#     paste0('DOI: ', s)
-# }
-
-#fmtPages <- label(prefix = ', pp. ')
-
-# pagination.strings <- cbind(c(' p.' ' col.', ' v.', ' l.', ' \u00a7.', ' par.'),
-#                             c(' pp.' ' cols.', ' vv.', ' ll.', ' \u00a7\u00a7.', ' par.'))
 
 fmtPages <- function(pgs, pref){
   if (length(pgs)){
@@ -537,37 +461,6 @@ fmtBVolume <- function(vol, num){
 fmtVolumes <- label(suffix = ' vols.')
 fmtOrganization <- label(suffix = '.')
 
-# fmtBAuthor <- function(doc){
-#   if (dup)
-#     return('\u2500\u2500\u2500')
-#   #browser()
-#   res <- NULL
-#   if (length(doc$author)){
-#     res <- doc$author
-#   }else if (length(doc$editor)){
-#     res <- doc$editor
-#   }
-#   if (length(res) > 1){ 
-#     res <- paste(paste(sapply(res[-length(res)], shortNameLF), collapse = ", "), 
-#         "and", shortName(res[length(res)]))
-#   }else{
-#     res <- shortNameLF(res)
-#   }
-#   if (!length(doc$author) && length(doc$editor)){
-#     if (!length(doc$editortype)){
-#       res <- paste0(res, ', ed.')
-#     }else{
-#       res <- paste0(res, switch(tolower(doc$editortype), 'compiler' = ', comp.', 'editor' = ', ed.', 
-#                                 'founder' = ', found.', 'continuator' = ', cont.', 
-#                                 'redactor' = ', red.', 'reviser' = ', rev.',
-#                    'collaborator' = ', collab.', doc$editortype))
-#     }
-#   }else{
-#     res <- addPeriod(res)
-#   }
-#   res
-# }
-
 fmtBAuthor <- function(doc){
   res <- fmtBAuthorSimple(doc)
   if (length(res) && authortitle){
@@ -575,18 +468,16 @@ fmtBAuthor <- function(doc){
       key <- attr(doc, "key")
       ind <- .cites$indices[key]
       key <- gsub("[^_a-zA-Z0-9-]", "", key)
-      res <- if (!is.na(ind) && ind){
-        paste0("\\code{", key, "}\\href{#cite-", key, "}{", res, "}")
-        #paste0("<a id=bib-'", key, "'></a><a href='#cite-", key, "'>", res, "</a>")
-        #paste0("\\code{LINK<a id='bib-", key, "'></a>}\\href{#cite-", key, "}{", res, "}")
-      }else res    
+      res <- if (!is.na(ind) && ind)
+               paste0("\\code{", key, "}\\href{#cite-", key, "}{", res, "}")
+             else res    
     }else if (docstyle == "markdown"){
       key <- attr(doc, "key")
       ind <- .cites$indices[key]
       key <- gsub("[^_a-zA-Z0-9-]", "", key)
-      res <- if (!is.na(ind) && ind){
-        paste0("<a name=bib-", key, "></a>[", res, "](#cite-", key, ")")
-      }else res    
+      res <- if (!is.na(ind) && ind)
+               paste0("<a name=bib-", key, "></a>[", res, "](#cite-", key, ")")
+             else res    
     }  
   }
   res
@@ -597,8 +488,6 @@ fmtBAuthorSimple <- function(doc){
   if (doc$.duplicated)
     return(switch(docstyle, html = "---", markdown = "\\-\\-\\-",
                   "\u2014\u2013\u2014"))
-    #return('\u00b7\u00b7\u00b7\u00b7\u00b7')
-  #browser()
   out <- NULL
   if (length(doc$author)){
     res <- doc$author
@@ -648,15 +537,6 @@ fmtBAuthorSimple <- function(doc){
   }else{
     out <- addPeriod(out)
   }
-#   if (for.doc.bib && bibstyle == "authortitle" && .cites$indices[attr(doc, 'key')]){
-#     if (doctype == "Rmd"){
-#       out <- paste0("<a name=#", attr(doc, 'key'), ">[", out, "](#cite-", 
-#                   attr(doc, 'key'), ")")
-#     }else if(doctype == "RHTML"){
-#       out <- paste0("<a href=#", attr(doc, 'key'), "><a href=#cite-", 
-#                     attr(doc, 'key'), ">", out, "</a>")
-#     }
-#   }
   out
 }
 
@@ -804,7 +684,6 @@ fmtEprint <- switch(docstyle, html = function(paper){
 })
 
 fmtEditor <- function(doc, editor.used.already = FALSE, prefix = NULL, suffix = '.'){
-  #browser()
   res <- NULL
   if (length(doc$editor)  && !editor.used.already){
     res <- c(res, fmtSingleEditor(authorList(doc$editor), doc$editortype, prefix, suffix))
@@ -822,13 +701,9 @@ fmtEditor <- function(doc, editor.used.already = FALSE, prefix = NULL, suffix = 
 }
 
 fmtJTitle <- function(title){
-  if (length(grep('[.?!]$', title))){
-    # paste0("\"", collapse(cleanupLatex(title)), "\\")
+  if (length(grep('[.?!]$', title)))
     paste0("\\dQuote{", collapse(cleanupLatex(title)), "}")
-  }else{
-    paste0("\\dQuote{", collapse(cleanupLatex(title)), "}.")
-    # paste0("\"", collapse(cleanupLatex(title)), "\".")
-  }
+  else paste0("\\dQuote{", collapse(cleanupLatex(title)), "}.")
 }
 
 fmtVenue <- function(venue){
@@ -841,9 +716,9 @@ fmtVenue <- function(venue){
 fmtEventTitle <- cleanap
 
 fmtIBTitle <- function(tl, stl, bib){
-  if (bib){
+  if (bib)
     fmtBTitle(tl, stl)
-  }else{
+  else{
     if (!is.null(stl)){
       fmtJTitle(paste0(c(addPeriod(tl), stl), collapse =' '))
     }else{
@@ -864,16 +739,6 @@ fmtBTitle <- function(tl, stl){
   }
 }
 
-# fmtBtitle <- function (s){
-#   if (length(s)) 
-#     addPeriod(paste0("\\emph{", cleanupLatex(s), "}"))
-# }
-
-# fmtAnnotator <- function(annot){
-#   if (length(annot)){
-#     paste0('With annots. by ', authorList(annot), '.')
-#   }
-# }
 fmtAnnotator <- labelPersons(prefix = 'With annots. by ', suffix = '.')
 fmtCommentator <- labelPersons(prefix = 'With a comment. by ', suffix = '.')
 fmtIntroduction <- labelPersons(prefix = 'With an intro. by ', suffix = '.')
@@ -881,12 +746,6 @@ fmtForeword <- labelPersons(prefix = 'With a forew. by ', suffix = '.')
 fmtAfterword <- labelPersons(prefix = 'With an afterw. by ', suffix = '.')
 fmtHolder <- labelPersons(suffix = '.')
 fmtIBAuthor <- labelPersons(suffix ='.')
-
-# fmtCommentator <- function(comm){
-#   if (length(comm)){
-#     paste0('With a comment. by ', authorList(comm), '.')
-#   }
-# }
 
 fmtVersion <- label(prefix = 'Version ', suffix = '.')
 
@@ -952,13 +811,6 @@ fmtType <- function(type){
     }
   }
 }
-# fmtType <- cleanap
-
-# fmtOtherField <- function(field){
-#   if (length(field)){
-#     addPeriod(cleanupLatex(field))
-#   }
-# }
 
 #####################################################################################
 ## Entry types: Bibliography Drivers in BibLaTeX (Sec. 4.2.3 in manual)
@@ -982,13 +834,7 @@ formatArticle <- function(paper){
 formatBook <- function(paper, collection = FALSE){
   if (collection && length(paper$author))
     paper$author <- NULL
-#   if (mv){
-#     if (length(paper$maintitle))
-#       paper$maintitle <- NULL
-#     if (length(paper[['volume']]))
-#       paper$volume <- NULL
-#   }
-
+  
   if (length(paper$maintitle)){
     collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$maintitle, paper$mainsubtitle), 
                fmtAddOn(paper$maintitleaddon), 
@@ -1027,7 +873,6 @@ formatInBook <- function(paper, bookinbook = FALSE){
   if (length(paper$booktitle) && length(paper$maintitle)){
     collapse(c(fmtPrefix(paper), fmtBAuthor(paper), 
                fmtIBTitle(paper$title, paper$subtitle, bookinbook),
-               #fmtJTitle(paste0(c(addPeriod(paper$title), paper$subtitle), collapse =' ')),
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),  
                paste0(c('In: ', fmtIBAuthor(paper$bookauthor), fmtBTitle(paper$maintitle, paper$mainsubtitle))), 
                fmtAddOn(paper$maintitleaddon), 
@@ -1053,7 +898,6 @@ formatInBook <- function(paper, bookinbook = FALSE){
     }
     collapse(c(fmtPrefix(paper), fmtBAuthor(paper), 
                fmtIBTitle(paper$title, paper$subtitle, bookinbook),
-               #fmtJTitle(paste0(c(addPeriod(paper$title), paper$subtitle), collapse =' ')), 
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language), 
                paste0(c('In: ', fmtIBAuthor(paper$bookauthor), fmtBTitle(paper$booktitle, paper$booksubtitle))), 
                fmtAddOn(paper$booktitleaddon), fmtEditor(paper, !length(paper$author)),
@@ -1091,7 +935,6 @@ formatInCollection <- function(paper){
   if (length(paper$booktitle) && length(paper$maintitle)){
     collapse(c(fmtPrefix(paper), fmtBAuthor(paper), 
                fmtIBTitle(paper$title, paper$subtitle, FALSE),
-               #fmtJTitle(paste0(c(addPeriod(paper$title), paper$subtitle), collapse =' ')),
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),  
                paste0(c('In: ', fmtBTitle(paper$maintitle, paper$mainsubtitle))), 
                fmtAddOn(paper$maintitleaddon), 
@@ -1117,7 +960,6 @@ formatInCollection <- function(paper){
     }
     collapse(c(fmtPrefix(paper), fmtBAuthor(paper), 
                fmtIBTitle(paper$title, paper$subtitle, FALSE),
-               #fmtJTitle(paste0(c(addPeriod(paper$title), paper$subtitle), collapse =' ')), 
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language), 
                paste0(c('In: ', fmtBTitle(paper$booktitle, paper$booksubtitle))), 
                fmtAddOn(paper$booktitleaddon), fmtEditor(paper, !length(paper$author)),
@@ -1186,12 +1028,6 @@ formatPatent <- function(paper){
 formatPeriodical <- function(paper){
   if (length(paper$author))
     paper$author <- NULL
-#   if (mv){
-#     if (length(paper$maintitle))
-#       paper$maintitle <- NULL
-#     if (length(paper[['volume']]))
-#       paper$volume <- NULL
-#   }
 
   if (length(paper$issuetitle)){
     collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$title, paper$subtitle), 
@@ -1221,12 +1057,6 @@ formatPeriodical <- function(paper){
 formatProceedings <- function(paper){
   if (length(paper$author))
     paper$author <- NULL
-#   if (mv){
-#     if (length(paper$maintitle))
-#       paper$maintitle <- NULL
-#     if (length(paper[['volume']]))
-#       paper$volume <- NULL
-#   }
 
   if (length(paper$maintitle)){
     collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$maintitle, paper$mainsubtitle), 
@@ -1269,7 +1099,6 @@ formatInProceedings <- function(paper){
   if (length(paper$booktitle) && length(paper$maintitle)){
     collapse(c(fmtPrefix(paper), fmtBAuthor(paper), 
                fmtIBTitle(paper$title, paper$subtitle, FALSE),
-               #fmtJTitle(paste0(c(addPeriod(paper$title), paper$subtitle), collapse =' ')),
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),  
                paste0(c('In: ', fmtBTitle(paper$maintitle, paper$mainsubtitle))), 
                fmtAddOn(paper$maintitleaddon), 
@@ -1297,7 +1126,6 @@ formatInProceedings <- function(paper){
     }
     collapse(c(fmtPrefix(paper), fmtBAuthor(paper), 
                fmtIBTitle(paper$title, paper$subtitle, FALSE),
-               #fmtJTitle(paste0(c(addPeriod(paper$title), paper$subtitle), collapse =' ')), 
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language), 
                paste0(c('In: ', fmtBTitle(paper$booktitle, paper$booksubtitle))), 
                fmtAddOn(paper$booktitleaddon), fmtEventTitle(paper$eventtitle),
@@ -1399,34 +1227,21 @@ toRd.BibEntry <- function(obj, ...) {
     #.style <- 'BibLaTeX'
     style.env <- MakeBibLaTeX(docstyle = doc.style, .style == "authortitle")
   }
-  if (FALSE)  # toRd.BibEntry will be internal function only called by format.BibEntry with sorting already done
-    obj <- sort(obj, .bibstyle=.BibOptions$bib.style, sorting = .sorting, return.labs = FALSE)
-  # style <- tools::bibstyle(.style)
+
   env <- new.env(hash = FALSE, parent = style.env)
  
-#   if ((.BibOptions$bib.style == 'authoryear' || .BibOptions$bib.style == 'authortitle') && .BibOptions$dashed){
-#     ## dups <- duplicated(style$sortKeys(get('X', parent.frame(3))))  # assumes called from function inside format.BibEntry
-#     if (is.null(obj$.duplicated))
-#       obj$duplicated <- FALSE
-#   }else{
-#     dashed <- FALSE
-#     obj$.duplicated <- FALSE
-#   }
   if (!(.style == 'authoryear' || .style == 'authortitle') || !.BibOptions$dashed ||
         is.null(obj$.duplicated))
     obj$.duplicated <- FALSE
   assign("bibstyle", .style, style.env)
   assign("max.n", .BibOptions$max.names, style.env)
-#   assign("for.doc.bib", hasArg(for.doc.bib), style.env)
-#   assign("max.n", .BibOptions$max.names, style.env)
-#   assign("doctype", .BibOptions$doc.type, style.env)
+  
   bib <- unclass(obj)
   result <- character(length(bib))
   #browser()
   for (i in seq_along(bib)) {
     assign('paper', bib[[i]], env)
-#     if (dashed)
-#       assign('dup', dups[i], env)
+    
   	result[i] <- with(env,
   	  switch(attr(paper, "bibtype"),
   	    Article = formatArticle(paper),  

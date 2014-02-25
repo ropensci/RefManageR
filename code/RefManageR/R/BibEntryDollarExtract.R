@@ -21,10 +21,7 @@
   if (is_attribute){ 
     res <- lapply(unclass(x), attr, name)
   }else if (pmatch(name, "journaltitle", 0L)){
-    #browser()
     res <- lapply(unclass(x), "[[", name = "journal", exact = FALSE)
-    #nulls <- sapply(res, is.null)
-    #res[nulls] <- lapply(unclass(x)[nulls], "[[", "journal")
   }else{
     res <- lapply(unclass(x), "[[", name)
   }

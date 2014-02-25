@@ -4,20 +4,6 @@ MakeAuthorYear <- function(docstyle = "text") local({
 ##################################################################
 ## Formatting functions
 
-# cleanupLatex <- function (x){
-#     if (!length(x)) 
-#         return(x)
-#     x <- gsub('mkbibquote', 'dQuote', x)
-#     x <- gsub('\\\\hyphen', '-', x)
-#     latex <- try(tools::parseLatex(x), silent = TRUE)
-#     if (inherits(latex, "try-error")) {
-#         x
-#     }
-#     else {
-#         tools::deparseLatex(tools::latexToUtf8(latex), dropBraces = TRUE)
-#     }
-# }
-
 cleanupLatex <- function (x){
   if (!length(x)) 
     return(x)
@@ -121,17 +107,7 @@ addPeriodTitle <- function (string){
   sub("([^.?!])$", "\\dQuote{\\1.}", string)
 }
 
-# authorList <- function(paper){
-#     names <- sapply(paper$author, shortName)
-#     if (length(names) > 1) 
-#         result <- paste(paste(names[-length(names)], collapse = ", "), 
-#             "and", names[length(names)])
-#     else result <- names
-#     result
-# }
-
 authorList <- function(aut){
- # browser()
     names <- sapply(aut, shortName)
     if (length(names) > 1L){ 
         result <- paste(paste(names[-length(names)], collapse = ", "), 
@@ -154,24 +130,6 @@ fmtSingleEditor <- function(nom, job, prefix = NULL, suffix = '.'){
     paste0(prefix, res, suffix)
   }
 }
-
-# shortNameLF <- function(pers){
-#     if (length(pers$family)) {
-#         res <- cleanupLatex(pers$family)
-#         if (length(pers$given)){ 
-#           if (.BibOptions$first.inits){
-#             paste0(paste(res, paste(substr(sapply(pers$given, cleanupLatex), 
-#                 start = 1L, stop = 1L), collapse = ". "), sep=', '), '.')
-#           }else{
-#             paste(res, paste(sapply(pers$given, cleanupLatex), collapse = ' '), sep = ', ')
-#           }
-#         }else{
-#           res
-#         }
-#     }else{
-#       paste(cleanupLatex(pers$given), collapse = " ")
-#     }
-# }
 
 shortNameLF <- function(pers){
   fam <- pers$family
@@ -237,7 +195,6 @@ DateFormatter <- function(dat, field = 'date'){
 }
 
 sortKeys <- function(bib){
-#  browser()
     result <- character(length(bib))
     for (i in seq_along(bib)) {
       authors <- bib[[i]]$sortname
@@ -247,8 +204,6 @@ sortKeys <- function(bib){
         authors <- paste0(sapply(bib[[i]]$editor, shortNameLF), collapse = '')
         if (authors == '')
           authors <- paste0(sapply(bib[[i]]$translator, shortNameLF), collapse = '')
-#         if (!length(authors)) 
-#           authors <- ""
       }
       result[i] <- authors
     }
@@ -377,26 +332,12 @@ sortKeysV <- function(bib){
 #####################################################################################
 ## FIELDS: 
 #####################################################################################
-# fmtJournDate <- function(s){
-#   res <- DateFormatter(attr(s, 'dateobj'))
-#   paste0("(", paste0(c(s$issue, res), collapse = ' '), ")")
-# }
 
- fmtDate <- function(dat, ind = ''){
-   if (length(dat)){
-     paste0('(', DateFormatter(dat), ind, ').')
-   }
+fmtDate <- function(dat, ind = ''){
+ if (length(dat)){
+   paste0('(', DateFormatter(dat), ind, ').')
  }
-
-# fmtDOI <- function(s){
-#   if (length(s) && .BibOptions$print.doi)
-#     paste0('DOI: ', s)
-# }
-
-#fmtPages <- label(prefix = ', pp. ')
-
-# pagination.strings <- cbind(c(' p.' ' col.', ' v.', ' l.', ' \u00a7.', ' par.'),
-#                             c(' pp.' ' cols.', ' vv.', ' ll.', ' \u00a7\u00a7.', ' par.'))
+}
 
 fmtPages <- function(pgs, pref){
   if (length(pgs)){
@@ -441,7 +382,6 @@ fmtTotalPages <- function(pgs, pref){
 fmtIssue <- label(prefix = '(', suffix =')')
 fmtOrganization <- label(suffix = '.')
 
-#fmtNote <- labelclean(suffix = '.')
 fmtNote <- function(note, prefix = NULL, suffix = '.'){
   if (length(note))
     paste0(prefix, cleanupLatex(note), suffix)
@@ -505,7 +445,6 @@ fmtBAuthorSimple <- function(doc){
   if (doc$.duplicated)
     return(switch(docstyle, html = "---", markdown = "\\-\\-\\-",
                   "\u2014\u2013\u2014"))
-  #browser()
   out <- NULL
   if (length(doc$author)){
     res <- doc$author
@@ -549,18 +488,6 @@ fmtBAuthorSimple <- function(doc){
                    'collaborator' = ', collab.', doc$editortype))
     }
   }
-#   if (for.doc.bib && .cites$indices[attr(doc, 'key')]){
-#     if (doctype == "Rmd"){
-#       out <- paste0("<a name=#", attr(doc, 'key'), ">[", out, "](#cite-", 
-#                     attr(doc, 'key'), ")")
-#     }else if(doctype == "RHTML"){
-#       out <- paste0("<a href=#", attr(doc, 'key'), "><a href=#cite-", 
-#                     attr(doc, 'key'), ">", out, "</a>")
-#     }
-#   }
-#   else{
-#     out <- addPeriod(out)
-#   }
   out
 }
 
@@ -582,7 +509,6 @@ fmtChapter <- label(prefix = '. Chap. ')
 fmtISSN <- label(prefix = 'ISSN: ', suffix = '.')
 fmtISBN <- label(prefix = 'ISBN: ', suffix = '.')
 fmtISRN <- label(prefix = 'ISRN: ', suffix = '.')
-#fmtDOI <- label(prefix = 'DOI: ', suffix = '.')
 fmtDOI <- switch(docstyle, html = function(doi){
   if (length(doi)){
     paste0("DOI: \\href{http://dx.doi.org/", 
@@ -593,7 +519,6 @@ fmtDOI <- switch(docstyle, html = function(doi){
     paste0("DOI: [href=http://dx.doi.org/", doi, "](", doi, ").")
   }
 }, label(prefix = 'DOI: ', suffix = '.'))
-
 
 fmtEventTitle <- cleanap
 
@@ -748,15 +673,6 @@ fmtJTitle <- function(title){
   }
 }
 
-#fmtBTitle <- emphcleanap
-# fmtBTitle <- function(tl, stl){
-#   if (is.null(stl)){
-#     emph(addPeriod(cleanupLatex(tl)))
-#   }else{
-#     emph(addPeriod(cleanupLatex(paste0(c(addPeriod(tl), stl), collapse =' '))))
-#   }
-# }
-
 fmtBTitle <- function(tl, stl){
   if (!is.null(stl))
     tl <- paste0(c(addPeriod(tl), stl), collapse =' ') 
@@ -786,16 +702,6 @@ fmtVenue <- function(venue){
   }
 }
 
-# fmtBtitle <- function (s){
-#   if (length(s)) 
-#     addPeriod(paste0("\\emph{", cleanupLatex(s), "}"))
-# }
-
-# fmtAnnotator <- function(annot){
-#   if (length(annot)){
-#     paste0('With annots. by ', authorList(annot), '.')
-#   }
-# }
 fmtAnnotator <- labelPersons(prefix = 'With annots. by ', suffix = '.')
 fmtCommentator <- labelPersons(prefix = 'With a comment. by ', suffix = '.')
 fmtIntroduction <- labelPersons(prefix = 'With an intro. by ', suffix = '.')
@@ -803,12 +709,6 @@ fmtForeword <- labelPersons(prefix = 'With a forew. by ', suffix = '.')
 fmtAfterword <- labelPersons(prefix = 'With an afterw. by ', suffix = '.')
 fmtHolder <- labelPersons(suffix = '.')
 fmtIBAuthor <- labelPersons(suffix ='. ')
-
-# fmtCommentator <- function(comm){
-#   if (length(comm)){
-#     paste0('With a comment. by ', authorList(comm), '.')
-#   }
-# }
 
 fmtVersion <- label(prefix = 'Version ', suffix = '.')
 
@@ -869,13 +769,6 @@ fmtType <- function(type){
     }
   }
 }
-# fmtType <- cleanap
-# 
-# fmtOtherField <- function(field){
-#   if (length(field)){
-#     addPeriod(cleanupLatex(field))
-#   }
-# }
 
 #####################################################################################
 ## Entry types: Bibliography Drivers in BibLaTeX (Sec. 4.2.3 in manual)
@@ -899,13 +792,7 @@ formatArticle <- function(paper){
 formatBook <- function(paper, collection = FALSE){
   if (collection && length(paper$author))
     paper$author <- NULL
-#   if (mv){
-#     if (length(paper$maintitle))
-#       paper$maintitle <- NULL
-#     if (length(paper[['volume']]))
-#       paper$volume <- NULL
-#   }
- # browser()
+
   if (length(paper$maintitle)){
     collapseF(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index),  fmtBTitle(paper$maintitle, 
                                                     paper$mainsubtitle), fmtAddOn(paper$maintitleaddon), 
@@ -939,28 +826,10 @@ formatBook <- function(paper, collection = FALSE){
   }
 }
 
-# formatMvBook <- function(paper){
-#     collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$title), 
-#                fmtBTitle(paper$subtitle), fmtAddOn(paper$titleaddon), 
-#                fmtLanguage(paper$language), fmtEditor(paper, !length(paper$author)),
-#                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
-#                fmtIntroduction(paper$introduction), fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
-#                fmtEdition(paper$edition), fmtVolumes(paper$volumes), 
-#                sentence(paper$series, paper$number, sep = ' '), 
-#                fmtNote(paper$note), sentence(fmtPublisher(paper$publisher, paper$location, paper$address),
-#                                                      fmtDate(attr(paper, 'dateobj')),                                  
-#                fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), sep = ''), 
-#                fmtTotalPages(paper$pagetotal), fmtISSN(paper$issn), 
-#                fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
-#                fmtPubstate(paper$pubstate)
-#                ))
-# }
-
 formatInBook <- function(paper, bookinbook = FALSE){
   if (length(paper$booktitle) && length(paper$maintitle)){
     collapseF(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index),  
                fmtIBTitle(paper$title, paper$subtitle, bookinbook),
-               #fmtJTitle(paste0(c(addPeriod(paper$title), paper$subtitle), collapse =' ')),
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),  
                paste0(c('In: ', fmtIBAuthor(paper$bookauthor), fmtBTitle(paper$maintitle, paper$mainsubtitle))), 
                fmtAddOn(paper$maintitleaddon), 
@@ -985,7 +854,6 @@ formatInBook <- function(paper, bookinbook = FALSE){
     }
     collapseF(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index),  
                fmtIBTitle(paper$title, paper$subtitle, bookinbook),
-               #fmtJTitle(paste0(c(addPeriod(paper$title), paper$subtitle), collapse =' ')), 
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language), 
                paste0(c('In: ', fmtIBAuthor(paper$bookauthor), fmtBTitle(paper$booktitle, paper$booksubtitle))), 
                fmtAddOn(paper$booktitleaddon), 
@@ -1023,7 +891,6 @@ formatInCollection <- function(paper){
   if (length(paper$booktitle) && length(paper$maintitle)){
     collapseF(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index),  
                 fmtIBTitle(paper$title, paper$subtitle, FALSE),
-                #fmtJTitle(paste0(c(addPeriod(paper$title), paper$subtitle), collapse =' ')),
                 fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),  
                 paste0(c('In: ', fmtBTitle(paper$maintitle, paper$mainsubtitle))), 
                 fmtAddOn(paper$maintitleaddon), 
@@ -1071,7 +938,6 @@ formatManual <- function(paper){
     collapseF(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index), fmtBTitle(paper$title, paper$subtitle), 
                 fmtAddOn(paper$titleaddon), 
                fmtLanguage(paper$language), fmtEditor(paper, !length(paper$author)),
-               # fmtHowPublished(paper$howpublished),
                fmtEdition(paper$edition), sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
                fmtType(paper$type), fmtVersion(paper$version),  
                fmtNote(paper$note), fmtOrganization(paper$organization),
@@ -1116,12 +982,6 @@ formatPatent <- function(paper){
 formatPeriodical <- function(paper){
   if (length(paper$author))
     paper$author <- NULL
-#   if (mv){
-#     if (length(paper$maintitle))
-#       paper$maintitle <- NULL
-#     if (length(paper[['volume']]))
-#       paper$volume <- NULL
-#   }
 
   if (length(paper$issuetitle)){
     collapse(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index), fmtBTitle(paper$title, paper$subtitle),
@@ -1152,12 +1012,6 @@ formatPeriodical <- function(paper){
 formatProceedings <- function(paper){
   if (length(paper$author))
     paper$author <- NULL
-#   if (mv){
-#     if (length(paper$maintitle))
-#       paper$maintitle <- NULL
-#     if (length(paper[['volume']]))
-#       paper$volume <- NULL
-#   }
 
   if (length(paper$maintitle)){
     collapse(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index), 
@@ -1200,7 +1054,6 @@ formatInProceedings <- function(paper){
   if (length(paper$booktitle) && length(paper$maintitle)){
     collapse(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index), 
                fmtIBTitle(paper$title, paper$subtitle, FALSE),
-               #fmtJTitle(paste0(c(addPeriod(paper$title), paper$subtitle), collapse =' ')),
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),  
                paste0(c('In: ', fmtBTitle(paper$maintitle, paper$mainsubtitle))), 
                fmtAddOn(paper$maintitleaddon), 
@@ -1227,7 +1080,6 @@ formatInProceedings <- function(paper){
     }
     collapse(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index),
                fmtIBTitle(paper$title, paper$subtitle, FALSE),
-               #fmtJTitle(paste0(c(addPeriod(paper$title), paper$subtitle), collapse =' ')), 
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language), 
                paste0(c('In: ', fmtBTitle(paper$booktitle, paper$booksubtitle))), fmtAddOn(paper$booktitleaddon), 
                fmtEventTitle(paper$eventtitle), 

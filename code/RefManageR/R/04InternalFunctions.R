@@ -90,20 +90,8 @@
       x[pc[ok]] <- Map(ResolveBibLaTeXCrossRef, x[pc[ok]], y[pk[ok]])
     }
     status <- lapply(x[pc], .BibEntryCheckBibEntry1, force = TRUE)
-#     status <- lapply(x[pc], function(e) tryCatch(.BibEntryCheckBibEntry1(e, 
-#                                                                            TRUE), error = identity))
-#     bad <- which(sapply(status, inherits, "error"))
-#     if (length(bad)) {
-#       for (b in bad) {
-#         warning(gettextf("Dropping invalid entry %d:\n%s", 
-#                          pc[b], conditionMessage(status[[b]])))
-#       }
-#       x[pc[bad]] <- NULL
-#     }
   }
   class(x) <- c("BibEntry", "bibentry")
-  #types <- unlist(x$bibtype)
-  #x[!types %in% c('Set', 'XData')]
   x
 }
 
@@ -197,14 +185,10 @@ ArrangeSingleAuthor <- function(y){
     if (!inherits(tmp, 'try-error'))
       y <- deparseLatex(latexToUtf8(tmp))
   }
-  #   if( grepl( ",", y) ) {
-  #     y <- sub( "^([^,]+)[[:space:]]*,[[:space:]]*(.*?)$", "\\2 \\1", y , perl = TRUE )
-  #   }
   parts <- unlist(strsplit(y, ','))
   len.parts <- length(parts)
   if (len.parts == 1L){
-    #     parts <- "{Barnes} {and} {Noble,} {Inc.}"
-    
+    #     parts <- "{Barnes} {and} {Noble,} {Inc.}"    
     if (grepl('[}]$', parts)){
       s <- unlist(strsplit(parts, ''))
       i <- length(s) - 1L

@@ -58,7 +58,6 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
     sorting <- "nty"
   if (sorting == 'debug' || .bibstyle == 'draft')
     return(x[order(names(x))])
-  #if (tolower(.bibstyle) %in% c('biblatex', 'alphabetic', 'numeric', 'authoryear', 'authortitle')){    
   if (sorting != "none"  || .bibstyle == "alphabetic"){
     aut <- MakeBibLaTeX()$sortKeys(x)
     yr <- MakeBibLaTeX()$sortKeysY(x)    
@@ -93,7 +92,6 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
   # create labels if needed
   if (hasArg(return.labs) && !length(unlist(x$.index))){  
     if (.bibstyle %in% c("authoryear", "authortitle")){
-      #browser()
       if (sorting == "none")
         aut <- MakeBibLaTeX()$sortKeys(x)
       suppressWarnings({
@@ -103,30 +101,20 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
       })
       if (.bibstyle == "authoryear"){
         tmp <- MakeAuthorYear()$GetLastNames(x)
-#         if (sorting == "none"){
-#           yr <- MakeBibLaTeX()$sortKeysY(x)      
-#         }else{
-#           yr <- yr[ord]
-#         }
 
         # sortyear could mess things up, so can't reuse yr
         yr <- sapply(unclass(x), function(dat) 
           tryCatch(year(attr(dat, "dateobj")), error = function(e) ""))
         tmp <- paste0(tmp, yr)
-#         alabs <- unlist(lapply(rle(tmp[rank(tmp, ties.method = 'min')])$len, 
-#                                function(x){
-#                                  if (x == 1)
-#                                    ''
-#                                  else letters[seq_len(x)]
-#                                })) 
-          lab.ord <- order(tmp)
-          alabs <- character(length(x))
-          alabs[lab.ord] <- unlist(lapply(rle(tmp[lab.ord])$len, 
-                                                       function(x){
-                                                         if (x == 1)
-                                                           ''
-                                                         else letters[seq_len(x)]
-                                                       }))
+
+        lab.ord <- order(tmp)
+        alabs <- character(length(x))
+        alabs[lab.ord] <- unlist(lapply(rle(tmp[lab.ord])$len, 
+                                                     function(x){
+                                                       if (x == 1)
+                                                         ''
+                                                       else letters[seq_len(x)]
+                                                     }))
       }
     }
     suppressWarnings(x$.index <- switch(.bibstyle, numeric = {

@@ -22,7 +22,7 @@
 #' bib <- ReadCrossRef(query = 'carroll journal of the american statistical association', 
 #'   year = 2012)
 #' tfile <- tempfile(fileext = ".bib")
-#' WriteBib(bib, tfile)
+#' WriteBib(bib, tfile, biblatex = TRUE)
 #' identical(ReadBib(tfile), bib)
 #' unlink(tfile)
 WriteBib <- function (bib, file = "references.bib", biblatex = TRUE, append = FALSE, verbose = TRUE, ...) {

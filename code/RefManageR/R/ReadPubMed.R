@@ -57,7 +57,7 @@ ReadPubMed <- function(query, database = 'PubMed', ...){
     return(NA)
   
   tdoc <- xmlParse(results)
-  #browser()
+
   webenv <- unlist(xpathApply(tdoc, '/eSearchResult/WebEnv', xmlValue))
   query.key <- unlist(xpathApply(tdoc, '/eSearchResult/QueryKey', xmlValue))
   ids <- unlist(xpathApply(tdoc, '/eSearchResult/IdList/Id', xmlValue)) 
@@ -91,9 +91,8 @@ ReadPubMed <- function(query, database = 'PubMed', ...){
 #' @examples
 #' GetPubMedByID(c("11209037", "21245076"))
 GetPubMedByID <- function(id, db = 'pubmed', ...){
- # browser()
+
   parms <- list(db = db, ...)
-  #parms[[1]] <- NULL
   if (!missing(id))
     parms$id <- paste0(id, collapse=',')
   
@@ -103,7 +102,7 @@ GetPubMedByID <- function(id, db = 'pubmed', ...){
   base.url <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?"
   temp <- getForm(base.url, .params = parms)
   tdoc <- xmlParse(temp)
-  #    browser()
+  
   # Note: directly using xpathApply on tdoc won't work if some results are missing certain fields    
   results <- getNodeSet(tdoc, '//PubmedArticleSet/PubmedArticle')      
 
@@ -117,7 +116,6 @@ GetPubMedByID <- function(id, db = 'pubmed', ...){
   res <- MakeCitationList(results)
   
   return(res)
-  # first.inits <- gsub('(\\w)', '\\1\\. ', first.inits, perl=TRUE)
 }
 
 #' Retrieve related articles from PubMed using PubMed ID's
@@ -181,12 +179,10 @@ GetPubMedRelated <- function(id, database = 'pubmed', batch.mode = TRUE, max.res
     return(NA)
   
   tdoc <- xmlParse(results)
- # browser()
   max.results <- rep(max.results, l = length(id))
   res <- vector("list", length(id))
   ch <- getNodeSet(tdoc, '/eLinkResult/LinkSet')
   for (i in seq_along(id)){
-    #temp <- getNodeSet(tdoc, '/LinkSetDb')
     temp <- xmlDoc(ch[[i]])
     if (return.related.ids)
       related <- paste0(unlist(xpathApply(temp, '/LinkSet/IdList/Id', 
@@ -203,15 +199,9 @@ GetPubMedRelated <- function(id, database = 'pubmed', batch.mode = TRUE, max.res
     if (return.sim.scores)
       scores <- unlist(xpathApply(temp, '/LinkSetDb/Link/Score', xmlValue))[ind]
   
-    #ids <- unlist(xpathApply(tdoc, '/eSearchResult/IdList/Id', xmlValue)) 
-  #   if (!length(ids)){
-  #     message('No Results.')
-  #     return()
-  #   }
-    
     tres <- GetPubMedByID(id = ids[ind], db = database)
     if (return.sim.scores)
-      tres$score <- scores  # res[] <- lapply(scores, function(x) c(score = x))
+      tres$score <- scores 
     if (return.related.ids)
       tres$PMIDrelated <- related[ind]
     res[[i]] <- tres
@@ -246,12 +236,6 @@ ProcessPubMedResult <- function(article){
     if (is.null(res$year))
       res$year <- unlist(xpathApply(tdoc, '//PubmedArticle/PubmedData/History/PubMedPubDate/Year',
                                  xmlValue))[1]
-#   month <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Month',
-#                                  xmlValue))
-#   day <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Month',
-#                                  xmlValue))  
-#   browser()
-#   date <- paste(year, month, day, sep='/')
   
   res$journal <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/Title',
                               xmlValue))
@@ -272,8 +256,6 @@ ProcessPubMedResult <- function(article){
   
   free(tdoc)
   res$eprinttype <- 'pubmed'
-  # res <- list(title = title, author = author, year = year, journal = journal, volume = volume, 
-  #            number = number, pages = pages, eprint = pmid, doi = doi, eprinttype = 'pubmed')
   
   if (!is.null(res$journal)){
     attr(res, 'entry') <- 'article'
@@ -324,7 +306,6 @@ LookupPubMedID <- function(bib, index){
   ind <- grep('[0-9]', res)
   if (length(ind)){
     message(paste0('Success for entries: ', paste0(ind, collapse=', ')))
-    #vals <- lapply(res[ind], function(x) c(eprinttype = 'pubmed', eprint = x))
     bib$eprint[ind] <- res[ind]
     bib$eprinttype[ind] <- "pubmed"
   }else{
@@ -340,7 +321,7 @@ LookupPubMedID <- function(bib, index){
 MakeCitationString <- function(bib.entry){
   first.page <- sub('-[0-9]+', '', bib.entry$pages)
   res <- paste(bib.entry$journal, year(bib.entry$dateobj), bib.entry$volume, first.page, 
-        paste0(as.character(bib.entry$author), collapse = ' '), 'KeY', sep = '|')  # unlist(bib.entry$author$family)
+        paste0(as.character(bib.entry$author), collapse = ' '), 'KeY', sep = '|') 
   res <- curlEscape(res)
   res <- gsub('%7C', '|', res)
   res <- gsub('%26', 'and', res)

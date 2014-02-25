@@ -43,20 +43,12 @@
 #' bib[editor = "westfahl"]
 #' BibOptions(oldopts)
 print.BibEntry <- function (x, .opts = list(), ...){
-#   .bibstyle = .BibOptions()$bib.style, 
-#   sorting = .BibOptions()$sorting,  
-#   max.names = .BibOptions()$max.names, first.inits = .BibOptions()$first.inits, 
-#   dashed = .BibOptions()$dashed,
   if (length(.opts)){
     oldopts <- BibOptions(.opts)
     on.exit(BibOptions(oldopts))
   }
   style <- .BibOptions$style
   
-#   .BibOptions$max.names <- max.names
-#   .BibOptions$first.inits <- first.inits
-#   .BibOptions$dashed <- dashed
-#   .BibOptions$return.ind <- FALSE
   sorting <- if (!length(.BibOptions$sorting))
     sorting <- switch(.BibOptions$bib.style, authoryear = 'nyt', alphabetic = 'anyt', draft = 'debug', 'nty')
   else .BibOptions$sorting
