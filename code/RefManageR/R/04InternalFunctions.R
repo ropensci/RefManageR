@@ -172,7 +172,7 @@ ResolveBibLaTeXCrossRef <- function(chi, par){
 #' @keywords internal
 ArrangeAuthors <- function (x){
   rx <- "[[:space:]]+and[[:space:]]+"
-  x <- gsub('[[:space:]]{2,}', ' ', x)
+  x <- gsub('[[:space:]]{2,}', ' ', x, useBytes = TRUE)
   authors <- lapply(strsplit(x, rx)[[1]], ArrangeSingleAuthor)
   as.personList(authors)
 }
@@ -204,7 +204,7 @@ ArrangeSingleAuthor <- function(y){
       last <- paste0(s[(i+2):(length(s)-1)], collapse = '')
       first <- NULL
       if (i > 0)
-        first <- paste0(s[1:(i-1)], collapse = '')
+        first <- paste0(s[seq_len(i-1)], collapse = '')
       person(UnlistSplitClean(first), cleanupLatex(last))  # Mathew {McLean IX}
     }else{
       vonrx <- "(^|[[:space:]])([[:lower:]+[:space:]?]+)[[:space:]]"
@@ -220,10 +220,10 @@ ArrangeSingleAuthor <- function(y){
       }else{  # George Bernard Shaw
         name <- UnlistSplitClean(parts)
         len.name <- length(name)
-        if (len.name == 1){
+        if (len.name <= 1L){
           person(family = name)
         }else{
-          person(given = name[1L:(len.name - 1L)], family = name[len.name])
+          person(given = name[seq_len(len.name - 1L)], family = name[len.name])
         }
       }
     }
