@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
 <title>RefManageR R HTML</title>
 <link rel="stylesheet" type="text/css" href="../../CRAN_web.css"/>
@@ -16,7 +16,7 @@ bib2 <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[[seq_len(
 BibOptions(check.entries = FALSE, style = "html")
 end.rcode-->
 <p>
-  This is an R HTML document. This is an example of a citation in the text <!--rinline Citet(bib, "loh") -->. Now we cite in parentheses <!--rinline AutoCite(bib, "baez/online", after = ", Ch. 2") -->.  You can change the default options in a setup chunk at the start of the document or at any other point using the <code>BibOptions</code> function or by specifying options as a list in the <code>.opts</code> argument to the cite functions.  For demonstration purposes, we switch back and forth between citation styles here just to show the possibilities.
+This is an R HTML document. This is an example of a citation in the text <!--rinline Citet(bib, "loh") -->. Now we cite in parentheses <!--rinline AutoCite(bib, "baez/online", after = ", Ch. 2") -->.  You can change the default options in a setup chunk at the start of the document or at any other point using the <code>BibOptions</code> function or by specifying options as a list in the <code>.opts</code> argument to the cite functions.  For demonstration purposes, we switch back and forth between citation styles here just to show the possibilities.
 </p>
 <p>
 These are reports <!--rinline Citet(bib, bibtype = "Report", .opts = list(cite.style = "numeric", super = TRUE, hyperlink = "to.bib")) -->.  Their hyperlinks go to their entry in the bibliography.
@@ -46,3 +46,4 @@ end.rcode-->
 PrintBibliography(bib2)
 end.rcode-->
 </body>
+</html>
