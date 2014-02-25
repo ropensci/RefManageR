@@ -4,7 +4,6 @@
 #' @keywords internal
 #' @importFrom lubridate is.interval year month int_end int_start
 MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
-  # browser()
   if (is.null(x))
     return(FALSE)
   
@@ -38,7 +37,6 @@ MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
 #' @keywords internal
 MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.case = .BibOptions$ignore.case,
                       regx = .BibOptions$use.regex){
-  #regx <- FALSE
   if (is.null(nom))
     return(FALSE)
   if (identical(match.author, "exact")){
@@ -49,13 +47,10 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
   }else{
     nom <- sapply(nom$family, paste0, collapse = '')
   }
-  # nom <- cleanupLatex(nom)
-  #browser()
+  
   if (!regx && ign.case){
-    # return(length(grep(pattern, tolower(nom), fixed = TRUE)))
     return(all(pattern %in% tolower(nom)))
   }else{
-    #return(length(grep(pattern, nom, fixed = !regx, ignore.case = ign.case)))  
     return(all(sapply(pattern, function(pat) any(grepl(pat, x = nom, fixed = !regx, ignore.case = ign.case)))))  
   }
 }
@@ -87,7 +82,7 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 #' @examples
 #' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 #' bib <- suppressMessages(ReadBib(file.name))
-
+#'
 #' ## author search, default is to use family names only for matching
 #' bib[author = "aristotle"]
 #' 
@@ -142,12 +137,6 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 #' length(bib[list(author='ruppert',bibtype="report",institution="north carolina"),
 #'   list(author="ruppert",journal="journal of the american statistical association")])
 `[.BibEntry` <- function(x, i, j, ..., drop = FALSE){
-  # i is character vector
-  # i is numeric
-  # i is logical
-  # i is list
-  # i is missing 
-  #browser()
   
   if (!length(x) || (missing(i) && missing(...))) 
     return(x)
@@ -168,29 +157,22 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
   }else if (is.list(i)  && missing(j) && missing(...)){
     dots <- i
   }else if (is.list(i) || is.character(i)){
-    # i <- as.list(i)
     kall <- match.call(expand.dots = FALSE)
     if (!missing(j)){
-      # i <- c(i ,as.list(j))
       kall$j <- NULL
     }
     if (!missing(...)){
-      # i <- c(i, as.list(...))
       kall$`...` <- NULL
     }
     if (is.list(i[[1L]])){
-      #browser()
       kall$i <- i[[1L]]
       kall$j <- i[[-1L]]
     }
-   # browser()
     ret.ind <- .BibOptions$return.ind
     .BibOptions$return.ind <- TRUE
-    #browser()  
     tryCatch({
       ind <- suppressMessages(eval(kall))
       if (!missing(j)){
-        #browser()
         if (is.list(j[[1L]])){  # original call had at least two lists in ... 
           kall$i <- j[[1L]]
           kall$j <- j[[-1L]]
@@ -209,27 +191,13 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
       .BibOptions$return.ind <- ret.ind
       stop(e)
     })
-#     ind <- NULL
-#     #args <- i
-#     for (j in seq_along(i)){
-#       kall$i <- unlist(i[j])
-#       ind <- c(ind, suppressMessages(eval(kall)))
-#       if (!length(ind))  # {
-#         break
-# #       }  # else{
-# #         kall$x <- x[[ind]]  
-# #       }
-#     }
-#     ind <- unique(ind)
     .BibOptions$return.ind <- ret.ind
-    # ind <- add(lapply(i, SearchBib, x = x, return.index = TRUE))  # x[FindBibEntry(x, dots[[i]], fields[i])]
   }else{
     stop("Invalid index.")
   }
   if (exists("dots", inherits = FALSE)){
     add <- function(x) suppressMessages(Reduce("|", x))
     y <- .BibEntry_expand_crossrefs(x)
-    #keys <- names(y)  
     fields <- names(dots)
     ind <- seq_along(x)
     for (i in seq_along(dots)){
@@ -241,16 +209,12 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
           }else{
             FindBibEntry(bib, trm, fld)  
           }
-        }, 
-                            bib = y[[ind]], fld = fields[i]))]  # x[FindBibEntry(x, dots[[i]], fields[i])]
+        }, bib = y[[ind]], fld = fields[i]))]
       if (!length(ind))
         break
     }
-    
-    #ind <- which(ind)
   }
 
-  # class(x) <- c("BibEntry", "bibentry")
   if (.BibOptions$return.ind)
     return(ind) 
   if (!length(ind)){
@@ -262,7 +226,6 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
     attributes(y) <- attributes(x)[bibentry_list_attribute_names]
   class(y) <- c('BibEntry', 'bibentry')
   return(y)      
-  # current.fields <- c(unique(names(unlist(x))), 'bibtype', 'key')    
 }
 
 #' Find a search term in the specified field of a BibEntry object
@@ -303,7 +266,6 @@ FindBibEntry <- function(bib, term, field){
       res <- sapply(vals, pmatch, table = term, nomatch = FALSE)
     }else{  
       if (d.yr){
-        # vals <- do.call('$', list(x = bib, name = 'dateobj'))
         match.dat <- ifelse(field == 'year', 'year.only', .BibOptions$match.date)
       }else{  # eventdate, origdate, urldate
         vals <- lapply(vals, function(x){
@@ -342,112 +304,3 @@ FindBibEntry <- function(bib, term, field){
   }
   res
 }
-
-
-#       
-#   if (!missing(j) && !missing(...)){
-#     dots <- list(i, j, ...)
-#   }else if (!missing(j)){
-#     dots <- list(i, j)
-#   }else{
-#     if (!is.list(i))
-#       dots <- list(i)
-#   }
-#       
-#   return.ind <- .BibOptions$return.ind 
-# 
-#   current.fields <- c(unique(names(unlist(x))), 'bibtype', 'key')
-#      # browser()
-#   if(length(dots)==1){
-#     dot.arg <- dots[[1]]
-# 
-#     if(is.numeric(dot.arg) || is.logical(dot.arg)){  # simple subsetting
-#       return(x[[dot.arg]])
-#     }else if (is.list(dot.arg)){  # call "[" again with unlisted args
-#       args <- as.list(sapply(1:length(dot.arg), function(i) c(names(dot.arg)[i], dot.arg[[i]])))
-#       args$x <- x
-#       return(do.call('[.BibEntry', args))
-#     }else if (is.character(dot.arg)){  
-#       dot.arg <- tolower(dot.arg)
-#       #browser()
-#       if (dot.arg %in% current.fields){
-#         res <- do.call("$", list(x = x, name = dot.arg))
-#         if (dot.arg == 'author' || dot.arg == 'editor'){
-#           rnames <- names(x)
-#           y <- NULL
-#           for (i in seq_along(res)){
-#             temp <- as.character(res[[i]])
-#             names(temp) <- paste0(rnames[i], 1L:length(temp))
-#             y <- c(y, temp)
-#           }
-#           return(setNames(as.person(y), names(y)))
-#         }else{
-#           names(res) <- names(x)
-#           return(unlist(res))
-#         }
-#           res <- sapply(setNames)
-#         res <- unlist(res)
-#         return(res)
-#       }else{  # assumed to be keys
-#         res <- x[[names(x) %in% dot.arg]]
-#         if (length(res)==0)
-#           message('No results.')
-#         return(res)
-#       }
-#     }else{
-#       stop('Invalid argument')
-#     }
-#   }
-#   # dots$x <- NULL
-#   # browser()
-#   temp <- dots[[1]]
-# #   if (is.numeric(temp)){ # simple subset use bibentry's "["
-# #     print('WOW YOU FOUND ME!!!')
-# #     class(x) <- 'bibentry'
-# #     dots <- dots[-1]
-# #     dots$x <- x[temp]
-# #     class(dots$x) <- c('BibEntry', 'bibentry')
-# #   }else 
-#   if (pmatch(temp <- tolower(temp), current.fields, nomatch=0)){
-# #     if(length(dots)==1){ 
-# #       print('WOW YOU FOUND THE OTHER ME!!!')
-# #       dots$x <- eval(parse(text=paste0('x$', temp)))
-# #     }else{
-#       pattern <- dots[[2]]
-#       
-#       if (temp=='author' || temp=='editor'){  # need special handling for a/e and y/d
-#         match.pos <- MatchAuthor(x, field = temp, pattern = pattern)
-#       }else if (temp == 'year' || temp == 'date'){
-#         match.pos <- MatchDate(x, pattern = pattern)
-#       #  }else if (temp == 'bibtype'){
-#       #  if(length(pattern) > 1)
-#       #    stop('Search term for bibtype must be length one since each entry can have only one type')
-#       #  dots$x <- x[as.logical(mapply(function(x, table) match(tolower(attr(unclass(x)[[1]], 'bibtype')), 
-#       #                                            pattern, nomatch=FALSE ), x=x, table=pattern))]
-#       }else{
-#         match.pos <- SearchField(x, field=temp, pattern=pattern)
-#       }
-#       dots <- dots[-c(1, 2)]
-# #    }    
-#   }else{
-#     stop('Invalid argument')
-#   }
-#   
-#   if(sum(match.pos)==0){
-#     message('No matches')
-#     return()
-#   }
-#   
-#   if (length(dots) > 1){ # perform recursion
-#     dots$x <- x[match.pos]
-#     dots$x <- do.call("[.BibEntry", dots) 
-#   }
-#   if(return.ind){
-#     return(which(match.pos))
-#   }else{
-#     x <- x[match.pos]
-#     class(x) <- c('BibEntry', 'bibentry')
-#     return(x)  
-#   }
-#   
-# }

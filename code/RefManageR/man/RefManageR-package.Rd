@@ -9,13 +9,13 @@ RefManageR provides tools for importing and working with
 bibliographic references.  It greatly enhances the
 \code{bibentry} class by providing a class BibEntry which
 stores BibTeX and BibLaTeX references, supports UTF-8, and
-can be easily searched, combined, printed in a number of
-styles, and exported.  Interfaces to NCBI's Entrez,
-CrossRef, and Zotero are provided for importing references
-and references can be created from locally stored PDFs
-using Poppler. Citations can be generated and a list of
-references printed for inclusion in e.g. RMarkdown
-documents.
+can be easily searched, updated, combined, printed in a
+number of styles, and exported.  Interfaces to NCBI's
+Entrez, CrossRef, and Zotero are provided for importing
+references and references can be created from locally
+stored PDFs using Poppler. Citations can be generated and a
+list of references printed with hyperlinks for inclusion in
+R Markdown and R HTML documents.
 }
 \details{
 \bold{Importing and Creating References}

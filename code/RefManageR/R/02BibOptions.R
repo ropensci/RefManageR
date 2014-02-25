@@ -112,20 +112,12 @@ BibOptions <- function(..., restore.defaults = FALSE){
     
   if (missing(...))
     return(mget(.BibOptNames, envir = .BibOptions))
-    #return(sapply(.BibOptNames, get, envir = .BibOptions, simplify = FALSE, USE.NAMES = TRUE))
- # browser()
   opts <- list(...)
   nom <- names(opts)
   
   if (is.null(nom)  && !is.list(opts[[1L]])){
     opts <- unlist(opts)
     return(mget(opts[opts %in% .BibOptNames], envir = .BibOptions))
-    #return(.BibOptions[unlist(opts)])
-#     return(setNames(lapply(opts, function(x){
-#                                     if (!x %in% .BibOptNames)
-#                                       return(NULL)
-#                                     get(x, envir = .BibOptions)
-#                                              }), unlist(opts)))
   }else{
     if (is.list(opts[[1L]])){
       opts <- opts[[1L]]
@@ -142,7 +134,6 @@ BibOptions <- function(..., restore.defaults = FALSE){
       names(opts[ind]) <- nom[ind]
     }
       
-    #.BibOptions[nom] <- opts
     oldopts <- mget(nom, envir=.BibOptions)
     mapply(assign, nom, opts, MoreArgs = list(envir=.BibOptions))
     invisible(oldopts)

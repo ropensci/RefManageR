@@ -23,11 +23,6 @@ as.data.frame.BibEntry <- function(x, row.names = NULL, optional = FALSE, ...){
   y <- matrix(nrow = length(x), ncol = n.fields + 1L)
   colnames(y) <- c('bibtype', col.names)
   rownames(y) <- names(x)
-#   browser()
-#   authors <- x$author
-#   names(authors) <- names(x)
-#   authors <- sapply(authors, paste0, collapse =', ')
-  #authors <- setNames(sapply(x, function(z) paste0(z$author, collapse = ', '), USE.NAMES = TRUE), rownames(y))
        
   y[, 1L] <- unlist(x$bibtype)
   for (i in seq_len(n.fields)){
@@ -40,12 +35,7 @@ as.data.frame.BibEntry <- function(x, row.names = NULL, optional = FALSE, ...){
     }else{
       temp <- unlist(temp)
     }
-#     if (nom != .BibEntryNameList){
-#       temp <- x[nom]
-#     }else{
-#       temp <- do.call(`$`, list(x = x, name = nom))  # eval(parse(text=paste0('x$', nom)))
-#       temp <- sapply(setNames(temp, rownames(y)), function(z) paste0(z, collapse = ', '))
-#     }
+
     y[noms, nom] <- temp
   }
   

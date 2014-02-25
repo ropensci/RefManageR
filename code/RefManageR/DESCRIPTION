@@ -9,10 +9,12 @@ Maintainer: Mathew W. McLean <mathew.w.mclean@gmail.com>
 Description: RefManageR provides tools for importing and working with
     bibliographic references.  It greatly enhances the bibentry class by
     providing a class BibEntry which stores BibTeX and BibLaTeX references,
-    supports UTF-8 encoding, and can be easily searched, combined, printed in a
-    number of styles, and exported.  Interfaces to NCBI's Entrez, CrossRef, and
-    Zotero are provided for importing references and references can be created
-    from locally stored PDFs using Poppler.
+    supports UTF-8 encoding, and can be easily searched, updated, combined,
+    printed in a number of styles, and exported.  Interfaces to NCBI's Entrez,
+    CrossRef, and Zotero are provided for importing references and references
+    can be created from locally stored PDFs using Poppler.  Includes functions
+    for citing and generating a bibliography with hyperlinks for documents
+    prepared with R Markdown or R HTML.
 License: BSD_3_clause + file LICENSE
 Imports:
     XML,

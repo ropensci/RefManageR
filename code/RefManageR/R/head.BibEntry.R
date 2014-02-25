@@ -24,22 +24,11 @@ head.BibEntry <- function (x, n = 6L, suppress.messages = TRUE, ...){
     n <- if (n < 0L) 
         max(length(x) + n, 0L)
     else min(n, length(x))
-    
 
-   # for (i in seq_len(n))
-#     bibtype <- x['bibtype']
-#     key <- x['key']
-#     ind <- seq_len(n)
-#     for (i in ind){
-#       if (i != 1)
-#         
-#       writeLines(paste0('\n[[', i, ']] ', bibtype[i], ': ', key[i]))
-#       print(x[[i]])
-#     }
     ind <- seq_len(n)
     bibtype <- unlist(x$bibtype)
     key <- unlist(x$key)
-   # browser()
+
     if (!suppress.messages)
     message(paste0(sapply(ind, function(i){
                     paste(paste0('[[', i, ']] ', bibtype[i], ': ', key[i]),

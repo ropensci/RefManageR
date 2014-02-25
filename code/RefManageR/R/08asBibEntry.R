@@ -82,7 +82,6 @@ as.BibEntry <- function(x){
     return(y)
 
   }else if(is.list(x)){
-    #browser()
     if(length(x) == 1L && !is.null(attr(x, 'bibtype'))){
         class(x) <- c('BibEntry', 'bibentry')
     }else if (!is.null(x$dateobj)){  # x has been unlist'ed

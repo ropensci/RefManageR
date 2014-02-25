@@ -7,21 +7,11 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
     object <- unclass(object)[[1L]]
     bibtype <- tolower(attr(object, "bibtype"))
     obj.names <- names(object)
-#     nl.ind <- which(obj.names %in% .BibEntryNameList)
-#     for (i in nl.ind)
-#       object[i] <- format_author(object[[i]])
     if ("author" %in% obj.names)
       object$author <- encoded_text_to_latex(format_author(object$author), "UTF-8")
     if ("editor" %in% obj.names)
       object$editor <- encoded_text_to_latex(format_author(object$editor), "UTF-8")
     # see 2.3 Usage Notes p. 28
-    # DONE don't need to format non-author/editor Name lists
-    # map entry types
-    # map extra field to empty note or annote
-    # handle crossref
-    # does bibtex automatically parent title to child booktitle?
-    # electronic and www entries?
-    # drop extra fields
     
     if (bibtype == "article" && 'journaltitle' %in% obj.names  && is.null(object$journal))
       object$journal <- object$journaltitle
