@@ -4,8 +4,6 @@ Date: 2014-02-06
 Title: Import and Manage BibTeX and BibLaTeX references with RefManager
 Authors@R: person(c("Mathew", "W."), "McLean", role = c("aut", "cre"),
     email = "mathew.w.mclean@gmail.com")
-Author: McLean, M. W.
-Maintainer: Mathew W. McLean <mathew.w.mclean@gmail.com>
 Description: RefManageR provides tools for importing and working with
     bibliographic references.  It greatly enhances the bibentry class by
     providing a class BibEntry which stores BibTeX and BibLaTeX references,

@@ -33,7 +33,7 @@ all required fields for the specified bibtype.
 \examples{
 file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 bib <- suppressMessages(ReadBib(file.name))[[20:21]]
-identical(as.BibEntry(unlist(bib)), bib)  ## see also relist.BibEntry
+identical(as.BibEntry(unlist(bib)), bib)  ## see also RelistBibEntry
 
 identical(as.BibEntry(unclass(bib)), bib)
 

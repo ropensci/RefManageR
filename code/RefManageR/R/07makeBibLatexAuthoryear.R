@@ -420,7 +420,7 @@ fmtVolumes <- label(suffix = ' vols.')
 
 
 fmtBAuthor <- function(doc){
-  res <- fmtBAuthorSimple(doc)
+  res <- fmtBAuthorSimple(doc, .BibOptions$max.names)
   if (length(res)){
     if (docstyle == "html"){
       key <- attr(doc, "key")
@@ -441,7 +441,7 @@ fmtBAuthor <- function(doc){
   res
 }
 
-fmtBAuthorSimple <- function(doc){
+fmtBAuthorSimple <- function(doc, max.n){
   if (doc$.duplicated)
     return(switch(docstyle, html = "---", markdown = "\\-\\-\\-",
                   "\u2014\u2013\u2014"))

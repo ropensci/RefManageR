@@ -462,7 +462,7 @@ fmtVolumes <- label(suffix = ' vols.')
 fmtOrganization <- label(suffix = '.')
 
 fmtBAuthor <- function(doc){
-  res <- fmtBAuthorSimple(doc)
+  res <- fmtBAuthorSimple(doc, .BibOptions$max.names)
   if (length(res) && authortitle){
     if (docstyle == "html"){
       key <- attr(doc, "key")
@@ -484,7 +484,7 @@ fmtBAuthor <- function(doc){
 }
 
 
-fmtBAuthorSimple <- function(doc){
+fmtBAuthorSimple <- function(doc, max.n){
   if (doc$.duplicated)
     return(switch(docstyle, html = "---", markdown = "\\-\\-\\-",
                   "\u2014\u2013\u2014"))
@@ -1234,7 +1234,8 @@ toRd.BibEntry <- function(obj, ...) {
         is.null(obj$.duplicated))
     obj$.duplicated <- FALSE
   assign("bibstyle", .style, style.env)
-  assign("max.n", .BibOptions$max.names, style.env)
+#   maxnames <- .BibOptions$max.names  # for R CMD Check
+#   assign("max.n", maxnames, style.env)
   
   bib <- unclass(obj)
   result <- character(length(bib))

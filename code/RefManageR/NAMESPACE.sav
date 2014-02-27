@@ -1,7 +1,0 @@
-exportPattern("^[[:alpha:]]+")
-exportClasses(
-    "BibOptions"
-)
-
-importFrom(lubridate, year)
-importFrom(

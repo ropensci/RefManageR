@@ -1,4 +1,0 @@
-exportPattern("^[[:alpha:]]+")
-exportClasses(
-    "BibOptions" 
-)

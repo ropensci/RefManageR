@@ -1,17 +1,16 @@
 #' Flatten and unflatten BibEntry objects
 #' 
-#' \code{relist.BibEntry} unflattens a BibEntry object that has been flattened with \code{unlist}.
+#' \code{RelistBibEntry} unflattens a BibEntry object that has been flattened with \code{unlist}.
 #' 
 #' @param flesh list; an \code{unlist}ed BibEntry object
 #' @param skeleton currently ignored
-#' @details \code{relist.BibEntry} is only intended for use with \code{unlist}ed BibEntry objects.
+#' @details \code{RelistBibEntry} is only intended for use with \code{unlist}ed BibEntry objects.
 #' @seealso \code{\link{as.BibEntry}}
-#' @importFrom utils relist
-#' @return \code{relist.BibEntry} - an object of class BibEntry
+#' @return \code{RelistBibEntry} - an object of class BibEntry
 #' @rdname unlist.BibEntry
 #' @export
 #' @keywords database list manip
-relist.BibEntry <- function(flesh, skeleton = NULL){
+RelistBibEntry <- function(flesh, skeleton = NULL){
   key.ind <- which(names(flesh) == 'key')
   type.ind <- which(names(flesh) == 'bibtype')
   N <- length(key.ind)
