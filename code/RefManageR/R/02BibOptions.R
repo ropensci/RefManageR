@@ -155,3 +155,4 @@ BibOptions <- function(..., restore.defaults = FALSE){
 assign("indices", logical(0), .cites)
 assign("labs", character(0), .cites)
 assign("sty", "authoryear", .cites)
+globalVariables("return.labs")
