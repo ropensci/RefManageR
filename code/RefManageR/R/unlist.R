@@ -7,7 +7,7 @@
 #' @export
 #' @return For \code{unlist}, a list with bib entries collapsed into a single list.
 #' @note The names of the list elements from an unlisted BibEntry object will not be unique.  To do this see \code{\link{make.unique}}.
-#' @aliases relist.BibEntry
+#' @aliases RelistBibEntry
 #' @rdname unlist.BibEntry
 #' @examples 
 #' bib <- list(c(bibtype = "article", key = "mclean2014a", title = "My New Article", 
@@ -16,7 +16,7 @@
 #'   author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-02"))       
 #' bib <- as.BibEntry(bib)
 #' unlist(bib)
-#' relist.BibEntry(unlist(bib))
+#' RelistBibEntry(unlist(bib))
 unlist.BibEntry <- function(x, recursive = FALSE, use.names = TRUE){
   x <- lapply(unclass(x), function(x){
     x$bibtype <- attr(x, 'bibtype')

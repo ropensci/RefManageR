@@ -23,10 +23,11 @@
 #' @family pubmed
 #' @references \url{http://search.crossref.org/help/api}
 #' @examples
-#' ReadCrossRef(query = 'rj carroll measurement error', limit = 5, sort = "relevance", 
+#' ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance", 
 #'   min.relevance = 80)
 #' 
-#' ReadCrossRef(query = 'carroll journal of the american statistical association', year = 2012)
+#' ReadCrossRef(query = 'carroll journal of the american statistical association',
+#'   year = 2012, limit = 2)
 ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.relevance = 80,
                            temp.file = tempfile(fileext = '.bib'), delete.file = TRUE, verbose = FALSE){
   if (is.na(query))

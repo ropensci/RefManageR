@@ -21,5 +21,5 @@ UpdateFieldName <- function(x, old.field, new.field){
   # stopifnot(length(new.field) == 1L)
   x <- unlist(x)
   names(x)[names(x) %in% old.field] <- new.field
-  relist.BibEntry(x)
+  RelistBibEntry(x)
 }

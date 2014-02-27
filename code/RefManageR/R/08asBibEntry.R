@@ -14,7 +14,7 @@
 #' @examples
 #' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 #' bib <- suppressMessages(ReadBib(file.name))[[20:21]]
-#' identical(as.BibEntry(unlist(bib)), bib)  ## see also relist.BibEntry
+#' identical(as.BibEntry(unlist(bib)), bib)  ## see also RelistBibEntry
 #'
 #' identical(as.BibEntry(unclass(bib)), bib)
 #' 
@@ -70,7 +70,7 @@ as.BibEntry <- function(x){
     if (is.null(x$bibtype))
       stop("data.frame must have column for 'bibtype'.")
     keys <- rownames(x)
-    if (keys[1] == '1')
+    if (keys[1L] == '1')
       warning('rownames of data.frame not meaningful for creating keys')
 
     y <- vector('list', length(x))
@@ -85,7 +85,7 @@ as.BibEntry <- function(x){
     if(length(x) == 1L && !is.null(attr(x, 'bibtype'))){
         class(x) <- c('BibEntry', 'bibentry')
     }else if (!is.null(x$dateobj)){  # x has been unlist'ed
-        x <- relist.BibEntry(x)
+        x <- RelistBibEntry(x)
     }else if (!is.null(attr(x[[1L]], 'bibtype'))){  # x simply unclass'ed
         class(x) <- c('BibEntry', 'bibentry')
     }else{

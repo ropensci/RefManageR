@@ -36,8 +36,14 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
           f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8', ...)
           paste(readLines(out, encoding = 'UTF-8'), collapse = "\n")
         })
-        if (style == "html")  
+        if (style == "html"){  
           res <- sub("<code>([[:print:]]*)</code>", "<a id='bib-\\1'></a>", res)
+          res <- if (.bibstyle == "alphabetic" || .bibstyle == "numeric")
+            sub("^<p>([[:print:]]*\\])", "<p>\\1<cite>", res)
+          else if (.bibstyle == "draft") sub("^<p>([[:print:]]*</B>)", "<p>\\1<cite>", res)
+          else sub("^<p>", "<p><cite>", res)
+          res <- paste0(res, "</cite></p>")
+        }
         res
     }
     .format_bibentry_as_citation <- function(x) {
