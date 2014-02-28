@@ -105,6 +105,7 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
       n <- length(keys)
       cited <- names(.cites$indices)
       first <- !(keys %in% cited)
+      
       if (cite.style != "numeric"){
         if (any(!names(bib) %in% names(.cites$labs))){ 
           # some entries in bib have note been seen before
@@ -120,12 +121,14 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
           .labs <- .cites$labs[keys]  
         }
       }else{
-        first.ind <- which(first)
+        first.ind <- if (!length(.cites$labs))  # cite.style has changed, labs have been reset
+                       seq_along(papers)
+                     else which(first | !keys %in% names(.cites$labs))
         if (length(first.ind)){
           shorthands <- unlist(papers$shorthand)
           max.ind <- suppressWarnings(sum(!is.na(as.numeric(.cites$labs))))
           newinds <- seq.int(max.ind+1L, length.out = length(first.ind))
-          names(newinds) <- keys[first]
+          names(newinds) <- keys[first.ind]
           if (length(shorthands))
             newinds[names(shorthands)] <- shorthands
           .cites$labs <- c(.cites$labs, newinds)
