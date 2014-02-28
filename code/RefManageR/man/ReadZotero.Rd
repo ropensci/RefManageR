@@ -38,6 +38,7 @@ An object of class BibEntry
 Get Bibliography Information From a Zotero Library.
 }
 \examples{
+\dontrun{
 ## first two entries in library with bayesian in title
 ReadZotero(user='1648676', .params=list(q='bayesian', key='7lhgvcwVq60CDi7E68FyE3br',
   limit=2))
@@ -48,9 +49,16 @@ ReadZotero(user='1648676', .params=list(q='yu', key='7lhgvcwVq60CDi7E68FyE3br',
   collection='3STEQRNU'))
 
 ## Search by tag
-## Notice issue with how Zotero uses Techreport entry for arXiv manuscripts
+## Notice the issue with how Zotero uses a TechReport entry for arXiv manuscripts
+## This is one instance where the added fields of BibLaTeX are useful
 ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br',
   tag='Statistics - Machine Learning'))
+
+## To read these in you must set check.entries to FALSE or "warn"
+BibOptions(check.entries = FALSE)
+ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br',
+  tag='Statistics - Machine Learning'))
+}
 }
 \references{
 \url{http://www.zotero.org/support/dev/server_api/v2/read_requests}

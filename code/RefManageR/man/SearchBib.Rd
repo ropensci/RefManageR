@@ -94,7 +94,7 @@ length(bib)
 bib[c("chen2013using", "carroll1978distributions")]
 
 ## Papers with someone with family name Wang
-length(SearchBib(bib, author='Wang', match.author = "family"))
+length(SearchBib(bib, author='Wang', .opts = list(match.author = "family")))
 
 ## Papers with Wang, N.
 length(SearchBib(bib, author='Wang, N.', .opts = list(match.author = "family.with.initials")))
@@ -106,7 +106,8 @@ length(bib[author='ruppert',bibtype="report"])
 length(bib[author='ruppert',bibtype="report",institution="north carolina"])
 
 ## Carroll and Ruppert papers since leaving UNC
-length(SearchBib(bib, author='ruppert', date="1987-07/", match.date = "exact"))
+length(SearchBib(bib, author='ruppert', date="1987-07/",
+   .opts = list(match.date = "exact")))
 
 ## Carroll and Ruppert papers NOT in the 1990's
 length(SearchBib(bib, author='ruppert', date = "!1990/1999"))
@@ -120,7 +121,7 @@ length(bib[author="Carroll, R. J. and Simpson, D. G. and Ruppert, D."])
 ## Carroll + Ruppert OR Carroll + Simpson
 length(bib[author=c("Carroll, R. J. and Ruppert, D.", "Carroll, R. J. and Simpson, D. G.")])
 
-## Carroll + Ruppert tech reports OR Carroll and Ruppert JASA papers
+## Carroll + Ruppert tech reports at UNC "OR" Carroll and Ruppert JASA papers
 length(bib[list(author='ruppert',bibtype="report",institution="north carolina"),
   list(author="ruppert",journal="journal of the american statistical association")])
 }

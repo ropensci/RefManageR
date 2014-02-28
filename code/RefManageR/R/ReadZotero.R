@@ -33,6 +33,7 @@
 #' @references \url{http://www.zotero.org/support/dev/server_api/v2/read_requests}
 #' @importFrom RCurl getForm curlOptions
 #' @examples
+#' \dontrun{
 #' ## first two entries in library with bayesian in title
 #' ReadZotero(user='1648676', .params=list(q='bayesian', key='7lhgvcwVq60CDi7E68FyE3br', 
 #'   limit=2))
@@ -43,9 +44,16 @@
 #'   collection='3STEQRNU'))
 #'
 #' ## Search by tag
-#' ## Notice issue with how Zotero uses Techreport entry for arXiv manuscripts
+#' ## Notice the issue with how Zotero uses a TechReport entry for arXiv manuscripts
+#' ## This is one instance where the added fields of BibLaTeX are useful
 #' ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br', 
 #'   tag='Statistics - Machine Learning'))
+#'
+#' ## To read these in you must set check.entries to FALSE or "warn"   
+#' BibOptions(check.entries = FALSE)
+#' ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br', 
+#'   tag='Statistics - Machine Learning'))
+#' }
 #' @keywords database
 ReadZotero <- function(user, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE){
   if (delete.file)
@@ -59,7 +67,7 @@ ReadZotero <- function(user, .params, temp.file = tempfile(fileext = '.bib'), de
   }
   .parms$format <- 'bibtex'
   if(is.null(.parms$limit))
-    .parms$limit <- 99
+    .parms$limit <- 99L
   
   if(is.null(.params$collection)){
     .parms$uri <- paste('https://api.zotero.org/users/', user, '/items', sep='')

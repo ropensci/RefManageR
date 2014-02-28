@@ -1148,7 +1148,8 @@ formatInProceedings <- function(paper){
 }
 
 formatReport <- function(paper, type = NULL){
-  if (!is.null(type))
+  # check if got bibtex techreport with no type
+  if (length(type))
     paper$type <- type
   if (!is.null(paper$school) && is.null(paper$institution))
     paper$institution <- paper$school
@@ -1166,7 +1167,7 @@ formatReport <- function(paper, type = NULL){
 }
 
 formatThesis <- function(paper, type = NULL){
-  if (!is.null(type))
+  if (length(type))
     paper$type <- type
   if (!is.null(paper$school) && is.null(paper$institution))
     paper$institution <- paper$school
@@ -1274,9 +1275,24 @@ toRd.BibEntry <- function(obj, ...) {
         Set = paste0('Set: ', attr(paper, 'key')),
         XData = paste0('XData: ', attr(paper, 'key')),     
 # Aliases                 
-        TechReport = formatReport(paper, ifelse(is.null(paper$type), 'techreport', NULL)),          
-        PhdThesis = formatThesis(paper, ifelse(is.null(paper$type), 'phdthesis', NULL)),
-        MastersThesis = formatThesis(paper, ifelse(is.null(paper$type), "mathesis", NULL)),
+        TechReport = {
+                      typ <-  if (is.null(paper$type))
+                               "techreport"
+                              else NULL
+                      formatReport(paper, typ)
+                      },        
+        PhdThesis = {
+                     typ <-  if (is.null(paper$type))
+                               "phdthesis"
+                             else NULL
+                     formatThesis(paper, typ)
+                    },
+        MastersThesis = {
+                         typ <-  if (is.null(paper$type))
+                                   "mathesis"
+                                 else NULL
+                         formatThesis(paper, typ)
+                        },
         Www = formatOnline(paper),
         Electronic = formatOnline(paper),
         Conference = formatInProceedings(paper),       
