@@ -13,8 +13,9 @@ To Do:
 ==================================================================================================================
 Important
 -------------------
-098. no printing, sorting, searching, etc. errors when check = FALSE and bib missing fields
-76. In JSS paper need to document
+8. seealso in operators are doubled. e.g. see ?\`[.BibEntry\`
+12. old build fails on getBibstyle. is it in Namespace file?
+9. 76. In JSS paper need to document
   - toBibtex and toBiblatex examples
   - conversion with as.BibEntry, as.data.frame
   - ReadPubMed functions
