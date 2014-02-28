@@ -4,8 +4,8 @@
 #' bibliographic references.  It greatly enhances the bibentry class by
 #' providing a class BibEntry which stores BibTeX and BibLaTeX references,
 #' supports UTF-8 encoding, and can be easily searched by any field, by date
-#' ranges, and by various formats of name lists (author by last names,
-#' translator by full names, etc.). Entries can be updated, combined, printed
+#' ranges, and by various formats for name lists (author by last names,
+#' translator by full names, etc.). Entries can be updated, combined, sorted, printed
 #' in a number of styles, and exported. BibTeX and BibLaTeX .bib files can be
 #' read into R and converted to BibEntry objects.  Interfaces to NCBI's
 #' Entrez, CrossRef, and Zotero are provided for importing references and
