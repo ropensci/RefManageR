@@ -1126,20 +1126,6 @@ formatThesis <- function(paper){
                ))   
 }
 
-formatThesis <- function(paper){
-    collapse(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index), 
-               fmtIBTitle(paper$title, paper$subtitle, FALSE),
-               fmtAddOn(paper$titleaddon), 
-               fmtLanguage(paper$language), addPeriod(fmtType(paper$type)), 
-               fmtNote(paper$note), 
-               sentence(fmtPublisher(NULL, paper$location, paper$address),                                  
-               fmtChapter(paper$chapter), fmtPages(paper$pages, paper$bookpagination), sep = ''), 
-               fmtTotalPages(paper$pagetotal, paper$bookpagination),
-               fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum), 
-               fmtPubstate(paper$pubstate)
-               ))   
-}
-
 formatUnpublished <- function(paper){
     collapse(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index), 
                fmtIBTitle(paper$title, paper$subtitle, FALSE),
