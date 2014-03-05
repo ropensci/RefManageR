@@ -111,7 +111,7 @@ literate=
 
 %http://tex.stackexchange.com/questions/37095/compatibility-of-bibtex-and-biblatex-bibliography-files
 %http://tex.stackexchange.com/questions/25701/bibtex-vs-biber-and-biblatex-vs-natbib
-\title{\Biblatex{} Bibliography Managament in \R{} Using the \ourpkg{} Package}
+\title{Straightforward Bibliography Managament in \R{} Using the \ourpkg{} Package}
 
 \author{Mathew W.\ McLean\\ Texas A\&M University
 \And
@@ -138,19 +138,17 @@ URL: \url{http://stat.tamu.edu/~mmclean}
 \begin{document}
 %\SweaveOpts{concordance=TRUE}
 \maketitle
-
+\section{Introduction}
 Creating, managing, and processing references can often be a hastle.  There are a number of reasons one may want or need to work with bibliographic data in \R{}, for example for bibliometrics.  The \code{person} and \code{bibentry} classes available in the base-priority \pkg{utils} package since \R{} 2.14.0 provide very useful functionality for working with names and bibliographic information, respectively.  An introduction to these classes is available in \citet{hornik2012who}.  In this paper, we introduce the \ourpkg{} package, which uses these classes as building blocks to greatly simplify working with bibliographies in \R{}.
 
 %Mention \pkg{bibtex}, \pkg{CITAN}, \pkg{scholar}, \pkg{tm}, ROpenSCi, \pkg{knitcitations}, \pkg{RMendeley}.
 
-The \code{bibentry} class is designed to work with references in \Bibtex{} format \citep{bibtex}.  \ourpkg{} also works with \Bibtex{} references, but additionally supports \Biblatex{} formatting.  \Biblatex{} offers a huge amount of additional functionality compared to \Bibtex{}.  For the full details, one can see the 253 page user manual \citep{biblatex}.  \Biblatex{} expands the number of automatically recognized entry types and fields offered by \Bibtex{}, allowing for much more detailed bibliographic entries,  while still maintaining compatibility with \Bibtex{}.  There is greatly expanded support for electronic publications with fields for eprint, eprinttype, eprintclass, urldate, and pubstate.  For example, the below entry is used to shamelessly cite a submitted manuscript of the first author's available on \texttt{arXiv}. 
+The \code{bibentry} class is designed to work with references in \Bibtex{} format \citep{bibtex}.  \ourpkg{} provides the \code{BibEntry} class which also works with \Bibtex{} references, but additionally supports \Biblatex{} formatting.  \Biblatex{} offers a huge amount of additional functionality compared to \Bibtex{}.  For the full details, one can see the 253 page user manual \citep{biblatex}.  \Biblatex{} expands the number of automatically recognized entry types and fields offered by \Bibtex{}, allowing for much more detailed bibliographic entries,  while still maintaining compatibility with \Bibtex{}.  For example, to handle an \texttt{arXiv} eprint in \Bibtex{}, one needs to use or create a special \Bibtex{} style, or perhaps use the `note' and `year' fields in unintended ways.  The below entry is used to shamelessly cite a submitted manuscript of the first author's using the \code{bibentry} function. 
 
 <<setup, cache=FALSE, include=FALSE>>=
 ## opts_knit$set(self.contained = TRUE,
 ##              root.dir = '~/biblatex/code')
 ## opts_chunk$set(concordance = TRUE)
-#setwd('~/biblatex/code/RefManageR/R')
-setwd('C:/Users/Matthew/Documents/biblatex/RefManageR/code/RefManageR/R')
 library(knitr)
 # library(lubridate)
 # lapply(list.files(pattern='.R$', full=TRUE), source, echo = FALSE, verbose = FALSE)
@@ -166,7 +164,14 @@ knit_hooks$set(message = function(x, options) {
     '\\end{lstlisting}'))
 })
 @
-
+<<bibtexexample, cache=FALSE, eval=TRUE, results='markup', tidy=FALSE>>=
+bibentry("misc", key = "mclean2013bayesian", author = "McLean, M. W. and 
+         Scheipl, F. and Hooker, G. and Greven, S. and Ruppert, D.",
+         title = "Bayesian Functional Generalized Additive Models 
+                 with Sparsely Observed Covariates", year = "Submitted", 
+         note = "arXiv eprint: 1305.3585")
+@
+Though arXiv provides suggestions for creating \Bibtex{} entries for their papers (\url{http://arxiv.org/hypertex/bibstyles/}), there is a frustrating lack of consistency in how people choose to create \Bibtex{} entries for their arXiv papers.  In \Biblatex{}, there is greatly expanded support for electronic publications with fields for eprint, eprinttype, eprintclass, urldate, and pubstate.  One can cite the same article in \Biblatex{} without the need of a special \code{.bst} file or the note field using
  %<<bibexample, cache=FALSE, eval=FALSE, results='markup', tidy=FALSE>>=
  \begin{verbatim}
  @misc{mclean2013bayesian,
@@ -178,31 +183,35 @@ knit_hooks$set(message = function(x, options) {
    date = {2013},
    eprinttype = {arxiv},
    eprintclass = {stat.ME},
-   eprint = {1305.3585}
+   eprint = {1305.3585},
+   pubstate = {submitted},
  }
  \end{verbatim}
+ We can create this entry using the \code{BibEntry} function in \ourpkg{}
 <<bibexample, cache=FALSE, eval=TRUE, results='markup', tidy=FALSE>>=
 BibEntry("misc", key = "mclean2013bayesian", author = "McLean, M. W. and 
          Scheipl, F. and Hooker, G. and Greven, S. and Ruppert, D.",
          title = "Bayesian Functional Generalized Additive Models 
                  with Sparsely Observed Covariates", urldate = "2013-10-06", 
-         date = "2013", eprinttype = "arxiv", eprintclass = "stat.ME", eprint = "1305.3585")
+         date = "2013", eprinttype = "arxiv", eprintclass = "stat.ME", 
+         eprint = "1305.3585", pubstate = "submitted")
 @
-Notice that in the reference section the full url is not given, but the hyper-reference still works.  You may also notice that the `year' field is missing, and that there is instead a field `date'.  The `year' field is still supported and could have been specified instead of date, but date allows for specifying a month and day in addition to year, and also allows for a range of dates to be specified.
+In \Biblatex{} the eprint identifier will automatically become a hyperlink to the paper on \texttt{arXiv}.  Notice that the `year' field is missing, and that there is instead a field `date'.  The `year' field is still supported and could have been specified instead of date, but date allows for specifying a month and day in addition to year, and also allows for a range of dates to be specified.
 
 The \Bibtex{} fields stored in a \code{bibentry} object can be easily accessed using the \code{\bt$\bt} operator, but there do not exist functions for conveniently conducting complicated searches.  These are provided by the \ourpkg{} package using the \code{\bt[\bt} operator.  With this operator one may search a collection of references by any field or group of fields.  \Biblatex{} fields for lists of names, such as 'author' and 'editor', can be searched by family name only, full name, or full name with initials.  Additionally, dates may be specified by ranges and are compared using the lubridate package \citep{lubridate}.  Entries may also be indexed by key, created in several different ways using functions \code{BibEntry} and \code{as.BibEntry}, and updated using the \code{\bt[<-\bt} operator.  The \code{bibentry} class provides a method for the \code{c} generic for concatenating entries, retain this feature, while also providing a \code{merge} method to remove potential duplicate entries when combine entries from various sources.
 
 Entries may be imported into \R{} in a number of ways.  A function is provided for reading in \code{.bib} files in \Biblatex{} and \Bibtex{} format.  For machines with \code{Poppler} installed, bibliographic metadata can be read from PDFs stored on the machine to generate a citation for each PDF.  Interfaces are provided to the CrossRef, Zotero, and NCBI's Entrez APIs to search and import references from these resources.  References can also be obtained from a researcher's Google Scholar profile.
 
-We also provide additional printing formats and several bibliography and citation styles.  All the bibliography sorting options available in \Biblatex{} are available in \ourpkg{}.  To our knowledge our package is the first of its kind to provide support for including citations and bibliographys with hyperlinks in HTML and Markdown documents.  Links can point from each citation to their bibliography entry and vice versa, and hyperlinks are also automatically created for values in the \Biblatex{} fields `url', `doi', and `eprint'.
+We also provide additional printing formats and several bibliography and citation styles.  All the bibliography sorting options available in \Biblatex{} are available in \ourpkg{}.  To our knowledge our package is the first of its kind to provide support for including citations and bibliographys with hyperlinks in \code{[R]HTML} and \code{[R]Markdown} documents.  Links can point from each citation to their bibliography entry and vice versa, and hyperlinks are also automatically created for values in the \Biblatex{} fields `url', `doi', and `eprint'.
 
+The rest of the document proceeds as follows: In Section~\ref{sec_create} we show how to create bibliography entries in \R{}, import them from local files, and discuss setting package options; Section~\ref{sec_import} discusses importing references from the web; in Section~\ref{sec_print} we discuss printing, sorting, and exporting references; in Section~\ref{sec_manip} we show how to search and update \code{BibEntry} objects; Section~\ref{sec_cite} introduces using \ourpkg{} to cite references and print a bibliography of cited references; lastly, Section~\ref{sec_conc} concludes.
 % One advantage of \Biblatex{} over \Bibtex{} is that it does not use \bst{} files for styling the bibliography. A \bst{} file must be written in a special-purpose language that few are familiar with.  One style is implemented in base \proglang{R}, namely the one used by the Journal of Statistical Software.  The code may be viewed in \proglang{R} by entering \code{as.list(tools:::makeJSS())} at the console.  On the other hand \Biblatex{} bibliographies, are styled entirely using \TeX{} macros.  Multilanguage support.  Better support for crossreferences.  No memory issues for large databases like with \Bibtex{}.  Sorting and encoding issues (discussed in biblatex doc section 2.4.3). Mention eTeX and url handling
 % 
 % Another advantage of \Biblatex{} is its support for UTF-8 encoding. ``bibtex is an 8bit engine so it processes every file in 8-bit pieces. In utf8 non-ascii chars are longer than 8 bit so they are splitted by bibtex. This means that bibtex has problems to sort references with non-ascii chars correctly. It can also happen that bibtex inserts a line break in the middle of an utf8-char and then you will get errors.''  A list of the supported encodings on your system can be viewed in \proglang{R} using \code{iconvlist()}.  By default, ReadBib will read in a .bib file using UTF-8.  UTF-8 is  
-\section{Creating BibEntry Objects and Importing From Files}
+\section{Creating BibEntry Objects and Importing From Files}\label{sec_create}
 \subsection{The BibEntry Function}
-Similar to the \code{bibentry} function in \pkg{utils}, \ourpkg{} provides a function \code{BibEntry} for creating a \code{BibEntry} object containing a single reference, which can be combined with other references into a single \code{BibEntry} object.  Though the ``year'' field is still supported for backwards compatibility with \Bibtex{}, the field ``date'' is preferred and allows for a number of different formats for the date, which will be discussed later.  The field ``journaltitle'' is preferred for specifying journals, though ``journal'' remains supported.  An entry is specified to the \code{BibEntry} function via an argument \code{bibtype} for the entry type, an argument \code{key} for the entry key and by specifying other arguments
-in \code{field = value} form.  Below we create and print an entry of type online with fields author, title, date, journaltitle, volume, and number.  The \code{print} function for \code{BibEntry} objects offers a number of features which will be discussed in detail later.  It's default settings are chosen to mimic the defaults of \Biblatex{}.  The \code{toBiblatex} function can be used to display the entry in its \code{.bib} file format.
+Similar to the \code{bibentry} function in \pkg{utils}, \ourpkg{} provides a function \code{BibEntry} for creating a \code{BibEntry} object containing a single reference, which can be combined with other references into a single \code{BibEntry} object.  An entry is specified to the \code{BibEntry} function via an argument \code{bibtype} for the entry type, an argument \code{key} for the entry key and by specifying other arguments
+in \code{field = value} form.  Though the ``year'' field is still supported for backwards compatibility with \Bibtex{}, the field ``date'' is preferred and allows for a number of different formats for the date, which will be discussed later.  The field ``journaltitle'' is preferred for specifying journals, though ``journal'' remains supported.  Below we create and print an entry of type online with fields author, title, date, journaltitle, volume, and number.  The \code{print} function for \code{BibEntry} objects offers a number of features which will be discussed in detail later.  It's default settings are chosen to mimic the defaults of \Biblatex{}.  The \code{toBiblatex} function can be used to display the entry in its \code{.bib} file format.
 <<BibEntry1, tidy=FALSE, highlight=TRUE, echo=-1>>=
 library(tools, quietly = TRUE, warn.conflicts = FALSE, verbose = FALSE)
 bib <- BibEntry(bibtype="Article", key = "barry1996", date = "1996-08", 
@@ -285,9 +294,35 @@ bib <- ReadPDFs(".")
 bib
 @
 We then clean up using \code{setwd(curdir)} and \code{unlink(tmpdir)}.
-\subsection{Setting Package Options}
+\subsection{BibEntry Conversion To and From Other Object Types}
+The \code{as.BibEntry} function will convert objects of several other data types to BibEntry if they have the proper format.  Acceptable formats include a named \code{character vector} with entries for `bibtype', `key' and other fields for a single entry; a \code{list} of named \code{character vectors} for multiple entries; \code{bibentry} objects; or a \code{data.frame} with row names corresponding to `keys' and a column for `bibtype'.
+<<asBibEntry, cache=TRUE, tidy = FALSE>>=
+bib <- as.BibEntry(c(key = "carroll2014dietary", bibtype = "article", year = 2014,
+  title = "Estimating the distribution of dietary consumption patterns", author = 
+    "Raymond J. Carroll", journal = "Statistical Science", pubstate = "inpress"))
+bib
+@
 
-\section{Importing Citations From the Web}
+To demonstrate the function's use further, the following example will create a \code{Bibentry} object containing entries for every installed \R{} package.  It makes use of the \code{installed.packages} and \code{citation} functions in the \pkg{utils} package.
+<<asBibEntry2, cache=TRUE, tidy = FALSE, warning=FALSE, message=FALSE>>=
+pkg.names <- rownames(installed.packages())
+pkg.bib <- lapply(pkg.names, function(pkg){
+  refs <- as.BibEntry(citation(pkg))
+  names(refs) <- make.unique(rep(pkg, length(refs)))
+  refs
+})
+@
+Keys may be extracted from \code{BibEntry} objects using either the \code{names} method or the \code{\bt$\bt} operator with name argument (the value to the right of the `\$' sign) equal to `key'.  The extra step involving the \code{names<-} method for \code{BibEntry} objects assigns a unique key to each entry, as the \code{citation} function does not provide a key for each entry and may return more than one reference for a single package.  At this point, because of the use of \code{lapply}, \code{pkg.bib} is a \code{list} of \code{BibEntry} objects, instead of a single \code{BibEntry} object.  One way to rectify this is using the internal function \code{MakeCitationList}.  Additionally, we use the \code{names<-} method to assign keys.  We may then refer to entries in our \code{BibEntry} object of packages using the package name/key because of the special features of the \code{\bt[\bt} operator for \code{BibEntry} objects, which we discuss in detail in a later section.
+<<asBibEntry3, cache=TRUE, tidy = FALSE, warning=FALSE, message=FALSE>>=
+pkg.bib <- RefManageR:::MakeCitationList(pkg.bib)
+pkg.bib["boot"]
+pkg.bib[key = "boot"]
+@
+Using \code{pkg.bib["boot"]} matches the entry with key exactly ``boot''.  Using \code{pkg.bib[key = "boot"]}, we match any entry whose key contains the string ``boot''.
+The BibEntry class also has methods \code{as.data.frame} and \code{unlist} to convert BibEntry objects to a data frame and unlist'ed vector, respectively.  The function \code{as.data.frame} will create  a \code{data.frame} from a \code{BibEntry} object with each row corresponding to a unique entry and one column for every field present in the \code{BibEntry} object, including a column called `bibtype' for the type of entry.  \code{NA} values indicate that the field is not present in that entry (row of the \code{data.frame}).  The row names will be the `key's of the entries.
+\subsection{Setting Package Options}
+error checking
+\section{Importing Citations From the Web}\label{sec_import}
 \subsection{NCBI's Entrez}
 The National Center for Biotechnology Information's Entrez Global Query Cross-Database Search provides access to a large number of databases related to health sciences. \ourpkg{} provides an interface to Entrez which allows for searching for references and parsing them to BibEntry objects.  Additionally, users may look up references given a set of PubMed ID's, search for ID's for references already stored in a BibEntry object, and search for related works to references already in \R{}.
 \subsection{Zotero}
@@ -342,7 +377,7 @@ Although false negatives are rare, the CrossRef Metadata Search can be prone to 
 % # bib <- ReadCrossRef(query = 'rj carroll data', limit = 3, sort = "relevance", 
 % #              min.relevance = 50, verbose = TRUE)
 % # @
-\section{Sorting, Printing, Opening, and Outputting to File}
+\section{Sorting, Printing, Opening, and Outputting to File}\label{sec_print}
 \subsection{Printing}
 A number of \Biblatex{} bibliography styles are available in \ourpkg{} for formatting and displaying citations.  The styles currently implemented are ``numeric'' (the default), ``authortitle'', ``authoryear'', ``alphabetic'', and ``draft''.  The ``authoryear'' style always begins with the family name of the first author and follows the list of authors with the year of publication in parentheses.  The other four styles all use the same format, differing only in the label they print before each entry.  Style ``numeric'' prints the numeric index of each entry in the bibliography, style ``authortitle'' uses no label, style ``alphabetic'' creates a label using the family names of the authors and the last two digits of the publication year, and style ``draft'' uses the entry key as the label.
 
@@ -372,7 +407,7 @@ The function \code{WriteBib}, based on the function \code{write.bib} in the pack
 Nine different methods are available for sorting citations stored in a BibEntry object, corresponding to the ones predefined in \Biblatex{}.  Depending on the \code{bib.style} option, the default sorting method is \code{``nty''} to sort by name (`n'), then title (`t'), then year/date (`y').  Other possibilities are ``debug'' to sort by keys, ``none'' for no sorting, ``nyt'', ``nyvt'', ``anyt'', ``anyvt'', ``ynt'', and ``ydnt''; where the `a' stands for sorting by alphabetic label, `v' stands for sorting by volume, and `yd' for sorting by year/date in descending order.
 
 All sorting methods first consider the field `presort', if available. Entries with no presort field are assigned presort value ``mm''. Next the `sortkey' field is used.  When sorting by name, the sortname field is used first. If it is not present, the author field is used, if that is not present editor is used, and if that is not present translator is used.  When sorting by title, first the field sorttitle is considered. Similarly, when sorting by year, the field sortyear is first considered.  When sorting by volume, if the field is present it is padded to four digits with leading zeros; otherwise, the string ``0000'' is used.  When sorting by alphabetic label, first the shorthand field is considered, then label, then shortauthor, shorteditor, author, editor, and translator. Refer to \citet[Sections~3.1.2.1 and 3.5 and Appendix~C.2][]{biblatex} for further details.
-\section{Searching and Manipulating BibEntry Objects}
+\section{Searching and Manipulating BibEntry Objects}\label{sec_manip}
 \subsection{Extraction Operators - Searching and Indexing}\label{searchsec}
 The extraction operator \code{'['}, has been defined for BibEntry objects to allow for easily searching a database of references saved in a BibEntry object.  A different interface providing the same functionality is the function \code{SearchBib}.  Search options can be changed by set variables in the BibOptions object or alternatively specified directly as arguments to the function \code{SearchBib}.  BibLaTeX date fields (\code{date,year,origdate,urldate,eventdate}) and name lists (author, editor, editora, editorb, editorc, translator, commentator, annotator, introduction, foreword, afterword, bookauthor, and holder) are handled specially as outlined below.  Other fields can be searched using either exact string matching or regular expressions, with or without ignoring case.
 
@@ -451,9 +486,10 @@ bib2[3]
 @
 \subsection{Merging}
 The combine function, \code{c}, is available for concatenating multiple \code{BibEntry} objects, and has been inherited from the \code{bibentry} class.  Of course, this does not perform any checking for duplicate entries.  For this, there is the \code{base} package generics \code{anyDuplicated}, \code{duplicated}, and \code{unique}, which check vectors for duplicate elements.  However if \code{BibEntry} objects have been complied from a number of different sources, these functions may be too strict, declaring entries distinct even if only one field has a small difference between the two entries.  For this reason, we provide an additional operator \code{'+'} and a wrapper function \code{merge}, that compare entries only based on the fields specified by the user.  Given \code{BibEntry} objects \code{bib1} and \code{bib2}, \code{bib1 + bib2} will return \code{bib1} appended with all entries of bib2 that have been determined not be duplicates of entries already in \code{bib1} by comparing all fields in \code{.BibOptions$merge.fields.to.check}, which can include \code{bibtype} and \code{key}.  The function also checks if there are any duplicate keys in the result, and will force them to be unique if duplicates are detected using \code{make.unique}. 
-\subsection{BibEntry Conversion To and From Other Object Types}
-The \code{as.BibEntry} function will convert objects of several other data types to BibEntry if they have the proper format.
 
-The BibEntry class also has methods \code{as.data.frame} and \code{unlist} to convert BibEntry objects to a data frame and unlist'ed vector, respectively.
+\section[Using RefManageR for Citations]{Using \ourpkg{} for HTML and Markdown Citations and Bibliographies}\label{sec_cite}
+
+\section{Conclusion}\label{sec_conc}
+The \ourpkg{} package provides \R{} with considerable extra functionality for working with bibliography data.  Working with \Bibtex{} bibliography files and managing references can be frustrating, due to several shortcomings of \Bibtex{} including its lack of out-of-the-box support for certain fields that leads to entries 
 \bibliography{biblatex}
 \end{document}
