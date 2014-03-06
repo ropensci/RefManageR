@@ -280,7 +280,7 @@ ProcessPubMedResult <- function(article){
 #' @return a BibEntry object - \code{bib} with additional eprinttype and eprint fields when the search is successful
 #' for an entry.
 #' @details For each entry a citation string is created using the fields journaltitle/journal, date/year,
-#'   volume|, pages, and author; and these strings are then used to search the NCBI database for PubMed ID's.
+#'   volume, pages, and author; and these strings are then used to search the NCBI database for PubMed ID's.
 #'   
 #'   If an ID is found for an entry, the entry is updated so that the eprinttype field is assigned the value 
 #'   \dQuote{pubmed} and the eprint field is assigned the ID.
@@ -309,9 +309,9 @@ LookupPubMedID <- function(bib, index){
   res <- sub('KeY\\|', '', res)
   ind <- grep('[0-9]', res)
   if (length(ind)){
-    message(paste0('Success for entries: ', paste0(ind, collapse=', ')))
-    bib$eprint[ind] <- res[ind]
-    bib$eprinttype[ind] <- "pubmed"
+    message(paste0('Success for entries: ', paste0(index[ind], collapse=', ')))
+    bib$eprint[index[ind]] <- res[ind]
+    bib$eprinttype[index[ind]] <- "pubmed"
   }else{
     message("No PubMed ID\'s found")
   }
