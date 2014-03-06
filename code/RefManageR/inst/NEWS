@@ -9,6 +9,7 @@ BUG FIXES
 * Fix pmidrelated field when `batch.mode = FALSE` in `GetPubMedRelated`
 * Fix for `LookupPubMedID` when `index` argument specified
 * Fix for `open.BibEntry`
+* Fix for converting thesis entries in `toBibtex.BibEntry`
 
 NEW FEATURES
 
