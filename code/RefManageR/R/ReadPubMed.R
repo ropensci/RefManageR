@@ -128,7 +128,10 @@ GetPubMedByID <- function(id, db = 'pubmed', ...){
 #' IDs so that only one set of linked IDs is returned.  If \code{FALSE}, a set of linked IDs is obtained for each ID 
 #' in \code{id}.
 #' will be returned
-#' @param max.results numeric; the maximum number of results to return
+#' @param max.results numeric vector; the maximum number of results to return if \code{batch.mode}
+#' \code{TRUE}; or if \code{batch.mode} is \code{FALSE}, this should have the same length 
+#' as \code{id} with each element giving the maximum number of results to return for the
+#' corresponding ID.
 #' @param return.sim.scores logical; Entrez returns a similarity score with each returned citation giving a 
 #' measure of how similar the returned entry is to the ones specified by the query.  If \code{TRUE} these scores are added
 #' to the returned BibEntry object in a field called \sQuote{score}.
@@ -171,6 +174,7 @@ GetPubMedRelated <- function(id, database = 'pubmed', batch.mode = TRUE, max.res
     names(parms) <- rep("id", length(id))
     parms <- c(parms, cmd = "neighbor_score", dbfrom = "pubmed", db = database)
   }
+  id.len <- length(id)
   
   base.url <- 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi'
 
@@ -179,10 +183,10 @@ GetPubMedRelated <- function(id, database = 'pubmed', batch.mode = TRUE, max.res
     return(NA)
   
   tdoc <- xmlParse(results)
-  max.results <- rep(max.results, l = length(id))
-  res <- vector("list", length(id))
+  max.results <- rep(max.results, l = id.len)
+  res <- vector("list", id.len)
   ch <- getNodeSet(tdoc, '/eLinkResult/LinkSet')
-  for (i in seq_along(id)){
+  for (i in seq_len(id.len)){
     temp <- xmlDoc(ch[[i]])
     if (return.related.ids)
       related <- paste0(unlist(xpathApply(temp, '/LinkSet/IdList/Id', 
@@ -195,7 +199,7 @@ GetPubMedRelated <- function(id, database = 'pubmed', batch.mode = TRUE, max.res
       return()
     }
     
-    ind <- seq_len(min(max.results, length(ids)))
+    ind <- seq_len(min(max.results[i], length(ids)))
     if (return.sim.scores)
       scores <- unlist(xpathApply(temp, '/LinkSetDb/Link/Score', xmlValue))[ind]
   
@@ -203,7 +207,7 @@ GetPubMedRelated <- function(id, database = 'pubmed', batch.mode = TRUE, max.res
     if (return.sim.scores)
       tres$score <- scores 
     if (return.related.ids)
-      tres$PMIDrelated <- related[ind]
+      tres$PMIDrelated <- rep(related, l = length(ind))
     res[[i]] <- tres
   }
   res <- c(unlist(res, recursive = FALSE))
