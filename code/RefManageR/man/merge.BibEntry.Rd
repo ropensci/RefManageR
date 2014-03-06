@@ -1,4 +1,5 @@
 \name{+.BibEntry}
+\alias{+.BibEntry}
 \alias{merge.BibEntry}
 \title{Merge two BibEntry objects while discarding duplicates}
 \usage{

@@ -19,8 +19,12 @@ GetPubMedRelated(id, database = "pubmed", batch.mode = TRUE,
   returned.  If \code{FALSE}, a set of linked IDs is
   obtained for each ID in \code{id}. will be returned}
 
-  \item{max.results}{numeric; the maximum number of results
-  to return}
+  \item{max.results}{numeric vector; the maximum number of
+  results to return if \code{batch.mode} \code{TRUE}; or if
+  \code{batch.mode} is \code{FALSE}, this should have the
+  same length as \code{id} with each element giving the
+  maximum number of results to return for the corresponding
+  ID.}
 
   \item{return.sim.scores}{logical; Entrez returns a
   similarity score with each returned citation giving a
