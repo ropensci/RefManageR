@@ -74,7 +74,6 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 #' operator by changing the corresponding option in the .BibOptions object; see \code{\link{BibOptions}}.
 #' @method [ BibEntry
 #' @export
-#' @aliases [.BibEntry
 #' @importFrom lubridate int_start int_end year month is.interval %within%
 #' @keywords database manip list
 #' @family operators

@@ -21,6 +21,8 @@ To Do:
 Important
 -------------------
 30. should bib[key1, key2, key3, ...] work?
+9. pandoc style citations? e.g. [@key]
+   * csl files
 8. seealso in operators are doubled. e.g. see ?\`[.BibEntry\`
 12. old build fails on getBibstyle. is it in Namespace file?
 9. 76. In JSS paper need to document
