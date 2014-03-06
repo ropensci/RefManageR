@@ -989,9 +989,70 @@ The package has a number of options similar to those available in \Biblatex{}, i
 
 The user can create a custom \Biblatex{} or \Bibtex{} bibliography style using the \code{bibstyle} fuction in the \code{tools} package.  To do this involves creating an environment containing functions for formatting entries of each type with signatures such as `formatArticle(paper)` and `formatBook(paper)`.
 
-A downside of \Biblatex{} is that the majority of academic journals do not support its use, having long ago written a custom \code{bst} file for generating citations which can only be used by \Bibtex{}.  For this reason \ourpkg{} provides the function \code{toBibtex} for conversion of entries written in \Biblatex{} to \Bibtex{}.  Entries of a type that are not supported by \Bibtex{} will be converted to a type that is, e.g., entries of type ``report'' are converted to type ``techreport''.  Other conversions include replacing the date field with a properly formatted year field (if year is not already present) and converting the ``journaltitle'' field to ``journal''.  Since the cross-referencing system in \Bibtex{} is more limited than the one supported by \Biblatex{}, an attempt is made to ensure the cross-referencing will still work as expected in \Bibtex{}.
+A downside of \Biblatex{} is that the majority of academic journals do not support its use, having long ago written a custom \code{bst} file for generating citations which can only be used by \Bibtex{}.  For this reason \ourpkg{} provides a \code{toBibtex} method returning a character vector with entries converted from \Biblatex{} to \Bibtex{} format.  Entries of a type that are not supported by \Bibtex{} will be converted to a type that is, e.g., entries of type `report' are converted to type `techreport'.  Other conversions include replacing the `date' field with a properly formatted `year' field (if year is not already present) and converting the `journaltitle' field to `journal'.  Since the cross-referencing system in \Bibtex{} is more limited than the one supported by \Biblatex{}, an attempt is made to ensure the cross-referencing will still work as expected in \Bibtex{}.  All fields not normally supported by \Bibtex{} are dropped unless they are specified in the argument \code{extra.fields}.  The argument \code{note.replace.field} can be used to specify fields to add to the `note' field in entries that are missing the it.  The \code{toBiblatex} function will convert a \code{BibEntry} object to a character vector contains lines of the corresponding \Biblatex-formatted bibliography.  No fields are either converted or dropped by this function; in this way it is very similar to the \code{toBibtex} method for \code{bibentry} objects.
 
-The function \code{WriteBib}, based on the function \code{write.bib} in the package \pkg{bibtex} \citep{Rbibtex}, is provided for writing a \code{BibEntry} object to a \code{bib} file in \Biblatex{} or \Bibtex{} format.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{ref} \hlkwb{<-} \hlkwd{BibEntry}\hlstd{(}\hlstr{"thesis"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"schieplthesis"}\hlstd{,} \hlkwc{date} \hlstd{=} \hlstr{"2011-03-17"}\hlstd{,} \hlkwc{url} \hlstd{=}
+\hlstr{"http://edoc.ub.uni-muenchen.de/13028/"}\hlstd{,} \hlkwc{urldate} \hlstd{=} \hlstr{"2014-03-06"}\hlstd{,} \hlkwc{title} \hlstd{=}
+\hlstr{"Bayesian Regularization and Model Choice for Structured Additive Regression"}\hlstd{,}
+\hlkwc{type} \hlstd{=} \hlstr{"phdthesis"}\hlstd{,} \hlkwc{institution} \hlstd{=} \hlstr{"LMU Munich"}\hlstd{,} \hlkwc{author} \hlstd{=} \hlstr{"Fabian Scheipl"}\hlstd{)}
+\hlkwd{toBiblatex}\hlstd{(ref)}
+\end{alltt}
+\begin{lstlisting}[showstringspaces=false,style=output,columns=fullflexible,breaklines=true,inputencoding=utf8,extendedchars=	rue,breakautoindent=false,breakindent=0pt,inputencoding=utf8]
+## @Thesis{schieplthesis,
+##   date = {2011-03-17},
+##   url = {http://edoc.ub.uni-muenchen.de/13028/},
+##   urldate = {2014-03-06},
+##   title = {Bayesian Regularization and Model Choice for Structured Additive Regression},
+##   type = {phdthesis},
+##   institution = {LMU Munich},
+##   author = {Fabian Scheipl},
+## }
+\end{lstlisting}\begin{alltt}
+\hlkwd{toBibtex}\hlstd{(ref,} \hlkwc{note.replace.field} \hlstd{=} \hlstr{"urldate"}\hlstd{)}
+\end{alltt}
+\begin{lstlisting}[showstringspaces=false,style=output,columns=fullflexible,breaklines=true,inputencoding=utf8,extendedchars=	rue,breakautoindent=false,breakindent=0pt,inputencoding=utf8]
+## @PhdThesis{schieplthesis,
+##   url = {http://edoc.ub.uni-muenchen.de/13028/},
+##   title = {Bayesian Regularization and Model Choice for Structured Additive Regression},
+##   author = {Fabian Scheipl},
+##   year = {2011},
+##   month = {mar},
+##   school = {LMU Munich},
+##   note = {Last visited on 03/06/2014},
+## }
+\end{lstlisting}\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{knit_hooks}\hlopt{$}\hlkwd{set}\hlstd{(}\hlkwc{output} \hlstd{= oldhook)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+The function \code{WriteBib}, based on the function \code{write.bib} in the package \pkg{bibtex} \citep{Rbibtex}, is provided for writing a \code{BibEntry} object to a \code{bib} file in \Biblatex{} or \Bibtex{} format using \code{toBiblatex} and \code{toBibtex}, respectively, depending on the value of the \code{biblatex} logical argument to \code{WriteBib}.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{tmpfile} \hlkwb{<-} \hlkwd{tempfile}\hlstd{(}\hlkwc{fileext} \hlstd{=} \hlstr{".bib"}\hlstd{)}
+\hlkwd{WriteBib}\hlstd{(ref,} \hlkwc{file} \hlstd{= tmpfile,} \hlkwc{biblatex} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{verbose} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlkwd{library}\hlstd{(bibtex)}
+\hlkwd{read.bib}\hlstd{(tmpfile)}
+\end{alltt}
+\begin{lstlisting}
+## ignoring entry 'schieplthesis' (line 1) because :
+## 	'bibtype' has to be one of Article, Book, Booklet, InBook, InCollection, InProceedings, Manual, MastersThesis, Misc, PhdThesis, Proceedings, TechReport, Unpublished
+\end{lstlisting}\begin{alltt}
+\hlkwd{unlink}\hlstd{(tmpfile)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
 \subsection{Sorting}
 Nine different methods are available for sorting citations stored in a BibEntry object, corresponding to the ones predefined in \Biblatex{}.  Depending on the \code{bib.style} option, the default sorting method is \code{``nty''} to sort by name (`n'), then title (`t'), then year/date (`y').  Other possibilities are ``debug'' to sort by keys, ``none'' for no sorting, ``nyt'', ``nyvt'', ``anyt'', ``anyvt'', ``ynt'', and ``ydnt''; where the `a' stands for sorting by alphabetic label, `v' stands for sorting by volume, and `yd' for sorting by year/date in descending order.
 
