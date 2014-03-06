@@ -115,6 +115,13 @@ literate=
   moredelim=**[is][\color{red}]{@}{@},
 }
 
+\lstdefinestyle{output}{
+  language=C,
+  emptylines=1,
+  breaklines=true,
+  basicstyle=\ttfamily\color{black},
+}
+
 %\usepackage{dtklogos}
 %\newcommand{\Bibtex}{B\kern-.05em%\hbox{$\m@th$\csnameS@\f@size\endcsname\fontsize\sf@size\z@\math@fontsfalse\selectfontI\kern-.025emB}\kern-.08em\-\TeX}
 
@@ -380,14 +387,34 @@ The \code{GetPubMedRelated} function uses the ELink E-Utility to find related ar
 GetPubMedRelated(rjc.pm, batch.mode = TRUE, max.results = 1)
 @
 
-Entrez returns a similarity score with each returned citation giving a measure of how similar the returned entry is to the specified IDs.  These scores can be returned in the outputted \code{BibEntry} object in a field called `score' by specifying \code{return.sim.scores = TRUE} in the call.  Additionally, the IDs in the call that were used to determine that an outputted entry is a related one can included in the output in a field called `PMIDrelated' if the argument \code{return.related.ids} is \code{TRUE}.
-<<PubMed4, cache = TRUE, dependson="PubMed1">>=
+Entrez returns a similarity score with each returned citation giving a measure of how similar the returned entry is to the specified IDs.  These scores can be returned in the outputted \code{BibEntry} object in a field called `score' by specifying \code{return.sim.scores = TRUE} in the call.  Additionally, the IDs in the call that were used to determine the relation can be included in the output in a field called `PMIDrelated' if the argument \code{return.related.ids} is \code{TRUE}.  In the next example we set \code{batch.mode = FALSE} and return one related article for each of two entries in \code{rjc.pm}.
+<<PMopt, include = FALSE>>=
+oldhook <- knit_hooks$get("output")
+knit_hooks$set(output = function(x, options) {
+    return(paste0('\\begin{lstlisting}[showstringspaces=false,style=output,columns=fullflexible,breaklines=true,inputencoding=utf8,extendedchars=\true,breakautoindent=false,breakindent=0pt,inputencoding=utf8]\n',
+      x,
+    '\\end{lstlisting}'))
+})
+@ 
+<<PubMed4, cache = TRUE, dependson="PubMed1", tidy=FALSE>>=
 BibOptions(check.entries = FALSE)
-related <- GetPubMedRelated(rjc.pm[1:3], batch.mode = FALSE, max.results = 10,
-                            return.sim.scores = TRUE, return.related.ids = TRUE)
-toBiblatex(related[[3L]])
+ids <- rjc.pm$eprint[3:4]
+ids
+related <- GetPubMedRelated(ids, batch.mode = FALSE, max.results = c(1, 1),
+                      return.sim.scores = TRUE, return.related.ids = TRUE)
+toBiblatex(related)
+@
+<<PMreset, include = FALSE>>=
+knit_hooks$set(output = oldhook)
 @
 
+The \code{LookupPubMedID} function is provided by \ourpkg{} to use Entrez's Ecitmatch to search for PubMed IDs for entries in an existing \code{BibEntry} object.  In the following, we read in a \Bibtex{} file of references of RJC's from Google Scholar and search for PubMed ID's for some of the entries.  If the search is successful and an ID is found, the corresponding entry is updated so that the `eprinttype' field is assigned the value “pubmed” and the `eprint' field is assigned the ID.
+<<PubMed5, cache = TRUE>>=
+file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
+bib <- ReadBib(file.name)
+bib <- LookupPubMedID(bib, 50)
+bib[[50]]$eprint
+@
 If one wishes to use other NCBI E-Utilities and does not wish to work with \code{BibEntry} or \code{bibentry} objects, see the \pkg{rentrez} package \citep{rentrez}.
 \subsection{Zotero}
 \code{Zotero} is free, open source software for collecting and sharing bibliographic information.  \code{Zotero} can automatically retrieve bibliographic metadata that has been embedded in webpages using \code{ContextObjects in Spans} (\code{COinS}), and is thus a very convenient way to collect bibliographic information when browsing, for example, journal websites.  The \ourpkg{} package contains functions for querying existing \code{Zotero} libraries and converting the results to a BibEntry object and also for uploaded an existing BibEntry object to a Zotero library.  To use the Zotero API, a Zotero account, their userID and an API key for the library one wishes to access.  The userID and API key for personal libraries may be found by logging in and visiting the page \url{https://www.zotero.org/settings/keys}.  The following example, the following call to ReadZotero returns the first two entries in the library specified by the \code{``key''} that contain the word ``Bayesian'' in the title.
@@ -458,13 +485,13 @@ old.opts <- BibOptions(bib.style = "alphabetic", max.names = 2,
                        first.inits = FALSE)
 bib[bibtype = "report"]
 BibOptions(old.opts)  # reset to original values
-print(bib[[18:19]], style = "html", no.print.fields = "url", 
-      .opts = list(bib.style = "authortitle"))
+print(bib[[19]], .opts = list(style = "html", no.print.fields = "url", 
+      bib.style = "authortitle"))
 @
 
 The user can create a custom \Biblatex{} or \Bibtex{} bibliography style using the \code{bibstyle} fuction in the \code{tools} package.  To do this involves creating an environment containing functions for formatting entries of each type with signatures such as `formatArticle(paper)` and `formatBook(paper)`.
 
-A downside of \Biblatex{} is that the majority of academic journals do not support its use, having long ago written a custom \code{bst} file for generating citations which can only be used by \Bibtex{}.  For this reason \ourpkg{} provides functions for conversion of entries written in \Biblatex{} to \Bibtex{}.  Entries of a type that are not supported by \Bibtex{} will be converted to a type that is, e.g., entries of type ``report'' are converted to type ``techreport''.  Other conversions include replacing the date field with a properly formatted year field (if year is not already present) and converting the ``journaltitle'' field to ``journal''.  Since the cross-referencing system in \Bibtex{} is more limited than the one supported by \Biblatex{}, an attempt is made to ensure the cross-referencing will still work as expected in \Bibtex{}.
+A downside of \Biblatex{} is that the majority of academic journals do not support its use, having long ago written a custom \code{bst} file for generating citations which can only be used by \Bibtex{}.  For this reason \ourpkg{} provides the function \code{toBibtex} for conversion of entries written in \Biblatex{} to \Bibtex{}.  Entries of a type that are not supported by \Bibtex{} will be converted to a type that is, e.g., entries of type ``report'' are converted to type ``techreport''.  Other conversions include replacing the date field with a properly formatted year field (if year is not already present) and converting the ``journaltitle'' field to ``journal''.  Since the cross-referencing system in \Bibtex{} is more limited than the one supported by \Biblatex{}, an attempt is made to ensure the cross-referencing will still work as expected in \Bibtex{}.
 
 The function \code{WriteBib}, based on the function \code{write.bib} in the package \pkg{bibtex} \citep{Rbibtex}, is provided for writing a \code{BibEntry} object to a \code{bib} file in \Biblatex{} or \Bibtex{} format.
 \subsection{Sorting}
