@@ -720,21 +720,38 @@ Entrez returns a similarity score with each returned citation giving a measure o
 
 
 
-The \code{LookupPubMedID} function is provided by \ourpkg{} to use Entrez's Ecitmatch to search for PubMed IDs for entries in an existing \code{BibEntry} object.  In the following, we read in a \Bibtex{} file of references of RJC's from Google Scholar and search for PubMed ID's for some of the entries.  If the search is successful and an ID is found, the corresponding entry is updated so that the `eprinttype' field is assigned the value “pubmed” and the `eprint' field is assigned the ID.
+The \code{LookupPubMedID} function is provided by \ourpkg{} to use Entrez's Ecitmatch to search for PubMed IDs for entries in an existing \code{BibEntry} object.  In the following, we read in a \Bibtex{} file of references to RJC papers from Google Scholar and search for PubMed ID's for the first ten entries.  If the search is successful and an ID is found, the corresponding entry is updated so that the `eprinttype' field is assigned the value “pubmed” and the `eprint' field is assigned the ID.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{file.name} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"Bib"}\hlstd{,} \hlstr{"RJC.bib"}\hlstd{,} \hlkwc{package} \hlstd{=} \hlstr{"RefManageR"}\hlstd{)}
 \hlstd{bib} \hlkwb{<-} \hlkwd{ReadBib}\hlstd{(file.name)}
-\hlstd{bib} \hlkwb{<-} \hlkwd{LookupPubMedID}\hlstd{(bib,} \hlnum{50}\hlstd{)}
+\hlstd{bib} \hlkwb{<-} \hlkwd{LookupPubMedID}\hlstd{(bib,} \hlkwd{seq_len}\hlstd{(}\hlnum{10}\hlstd{))}
 \end{alltt}
 \begin{lstlisting}
-## Success for entries: 1
+## Success for entries: 1, 2, 8, 9
 \end{lstlisting}\begin{alltt}
-\hlstd{bib[[}\hlnum{50}\hlstd{]]}\hlopt{$}\hlstd{eprint}
+\hlstd{bib[}\hlkwc{eprinttype} \hlstd{=} \hlstr{"pubmed"}\hlstd{][[}\hlnum{1L}\hlstd{]]}  \hlcom{# print entry for first successfully located ID}
 \end{alltt}
 \begin{verbatim}
-## NULL
+## [1] N. Serban, A. M. Staicu and R. J. Carroll. "Multilevel
+## Cross-Dependent Binary Longitudinal Data". In: _Biometrics_ 69.4
+## (2013), pp. 903-913. PMID: 24131242.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Finally, the \code{GetPubMedByID} function uses Entrez's Efetch to obtain bibliography data given a vector of PubMed ID's.  We can use the PubMed ID we just obtained to get the \Bibtex{} entry from Entrez and compare it with the one already in our bibliography from Google Scholar.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{GetPubMedByID}\hlstd{(}\hlkwd{unlist}\hlstd{(bib}\hlopt{$}\hlstd{eprint)[}\hlnum{1L}\hlstd{])}
+\end{alltt}
+\begin{verbatim}
+## [1] N. Serban, A. Staicu and R. J. Carroll. "Multilevel
+## cross-dependent binary longitudinal data". In: _Biometrics_ 69.4
+## (2013), pp. 903-13. DOI: 10.1111/biom.12083. PMID: 24131242.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
