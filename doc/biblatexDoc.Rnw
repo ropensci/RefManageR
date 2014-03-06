@@ -391,11 +391,12 @@ GetPubMedRelated(rjc.pm, batch.mode = TRUE, max.results = 1)
 Entrez returns a similarity score with each returned citation giving a measure of how similar the returned entry is to the specified IDs.  These scores can be returned in the outputted \code{BibEntry} object in a field called `score' by specifying \code{return.sim.scores = TRUE} in the call.  Additionally, the IDs in the call that were used to determine the relation can be included in the output in a field called `PMIDrelated' if the argument \code{return.related.ids} is \code{TRUE}.  In the next example we set \code{batch.mode = FALSE} and return one related article for each of two entries in \code{rjc.pm}.
 <<PMopt, include = FALSE>>=
 oldhook <- knit_hooks$get("output")
-knit_hooks$set(output = function(x, options) {
+newhook <- function(x, options) {
     return(paste0('\\begin{lstlisting}[showstringspaces=false,style=output,columns=fullflexible,breaklines=true,inputencoding=utf8,extendedchars=\true,breakautoindent=false,breakindent=0pt,inputencoding=utf8]\n',
       x,
     '\\end{lstlisting}'))
-})
+}
+knit_hooks$set(output = newhook)
 @ 
 <<PubMed4, cache = TRUE, dependson="PubMed1", tidy=FALSE>>=
 BibOptions(check.entries = FALSE)
@@ -497,9 +498,29 @@ print(bib[[19]], .opts = list(style = "html", no.print.fields = "url",
 
 The user can create a custom \Biblatex{} or \Bibtex{} bibliography style using the \code{bibstyle} fuction in the \code{tools} package.  To do this involves creating an environment containing functions for formatting entries of each type with signatures such as `formatArticle(paper)` and `formatBook(paper)`.
 
-A downside of \Biblatex{} is that the majority of academic journals do not support its use, having long ago written a custom \code{bst} file for generating citations which can only be used by \Bibtex{}.  For this reason \ourpkg{} provides a \code{toBibtex} method returning a character vector with entries converted from \Biblatex{} to \Bibtex{} format.  Entries of a type that are not supported by \Bibtex{} will be converted to a type that is, e.g., entries of type `report' are converted to type `techreport'.  Other conversions include replacing the `date' field with a properly formatted `year' field (if year is not already present) and converting the `journaltitle' field to `journal'.  Since the cross-referencing system in \Bibtex{} is more limited than the one supported by \Biblatex{}, an attempt is made to ensure the cross-referencing will still work as expected in \Bibtex{}.  All fields not normally supported by \Bibtex{} are dropped unless they are specified in the argument \code{extra.fields}.  The argument \code{note.replace.field} can be used to specify fields to add to the `note' field in entries that are missing the `note' field.  The
+A downside of \Biblatex{} is that the majority of academic journals do not support its use, having long ago written a custom \code{bst} file for generating citations which can only be used by \Bibtex{}.  For this reason \ourpkg{} provides a \code{toBibtex} method returning a character vector with entries converted from \Biblatex{} to \Bibtex{} format.  Entries of a type that are not supported by \Bibtex{} will be converted to a type that is, e.g., entries of type `report' are converted to type `techreport'.  Other conversions include replacing the `date' field with a properly formatted `year' field (if year is not already present) and converting the `journaltitle' field to `journal'.  Since the cross-referencing system in \Bibtex{} is more limited than the one supported by \Biblatex{}, an attempt is made to ensure the cross-referencing will still work as expected in \Bibtex{}.  All fields not normally supported by \Bibtex{} are dropped unless they are specified in the argument \code{extra.fields}.  The argument \code{note.replace.field} can be used to specify fields to add to the `note' field in entries that are missing the it.  The \code{toBiblatex} function will convert a \code{BibEntry} object to a character vector contains lines of the corresponding \Biblatex-formatted bibliography.  No fields are either converted or dropped by this function; in this way it is very similar to the \code{toBibtex} method for \code{bibentry} objects.
 
-The function \code{WriteBib}, based on the function \code{write.bib} in the package \pkg{bibtex} \citep{Rbibtex}, is provided for writing a \code{BibEntry} object to a \code{bib} file in \Biblatex{} or \Bibtex{} format.
+<<toBibtex, cache = TRUE, tidy = FALSE, echo = -1>>=
+knit_hooks$set(output = newhook)
+ref <- BibEntry("thesis", key = "schieplthesis", date = "2011-03-17", url = 
+"http://edoc.ub.uni-muenchen.de/13028/", urldate = "2014-03-06", title = 
+"Bayesian Regularization and Model Choice for Structured Additive Regression", 
+type = "phdthesis", institution = "LMU Munich", author = "Fabian Scheipl")
+toBiblatex(ref)
+toBibtex(ref, note.replace.field = "urldate")
+@
+<<toBibreset>>=
+knit_hooks$set(output = oldhook)
+@
+
+The function \code{WriteBib}, based on the function \code{write.bib} in the package \pkg{bibtex} \citep{Rbibtex}, is provided for writing a \code{BibEntry} object to a \code{bib} file in \Biblatex{} or \Bibtex{} format using \code{toBiblatex} and \code{toBibtex}, respectively, depending on the value of the \code{biblatex} logical argument to \code{WriteBib}.
+<<WriteBib, cache = TRUE>>=
+tmpfile <- tempfile(fileext = ".bib")
+WriteBib(ref, file = tmpfile, biblatex = FALSE, verbose = FALSE)
+library(bibtex)
+read.bib(tmpfile)
+unlink(tmpfile)
+@
 \subsection{Sorting}
 Nine different methods are available for sorting citations stored in a BibEntry object, corresponding to the ones predefined in \Biblatex{}.  Depending on the \code{bib.style} option, the default sorting method is \code{``nty''} to sort by name (`n'), then title (`t'), then year/date (`y').  Other possibilities are ``debug'' to sort by keys, ``none'' for no sorting, ``nyt'', ``nyvt'', ``anyt'', ``anyvt'', ``ynt'', and ``ydnt''; where the `a' stands for sorting by alphabetic label, `v' stands for sorting by volume, and `yd' for sorting by year/date in descending order.
 
