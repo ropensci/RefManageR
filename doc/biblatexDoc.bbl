@@ -1,4 +1,4 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{8}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -8,6 +8,11 @@
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 \providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{Beebe(2004)}]{bibparser}
+Beebe NHF (2004).
+\newblock \enquote{bibparse.}
+\newblock \urlprefix\url{http://ftp.math.utah.edu/pub/bibparse/}.
 
 \bibitem[{Francois(2013)}]{Rbibtex}
 Francois R (2013).
