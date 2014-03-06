@@ -5,11 +5,12 @@ BUG FIXES
 
 * Fix for `names<-.BibEntry`
 * Fix for `print.BibEntry` when entry has urldate field but no url field
-* Correct some documentation typos
+* Corrections for some documentation typos
 * Fix pmidrelated field when `batch.mode = FALSE` in `GetPubMedRelated`
 * Fix for `LookupPubMedID` when `index` argument specified
-* Fix for `open.BibEntry`
+* `open.BibEntry` now works properly
 * Fix for converting thesis entries in `toBibtex.BibEntry`
+* Fix for `WriteBib` with `biblatex` argument
 
 NEW FEATURES
 
