@@ -155,6 +155,15 @@ literate=
 \newcommand{\ourpkg}{\pkg{RefManageR}}
 \newcommand{\bt}{\`{}}
 
+% red text for errors in listings environment
+\lstdefinestyle{error}{
+  language=C,
+  emptylines=1,
+  breaklines=true,
+  basicstyle=\ttfamily\color{red},
+  moredelim=**[is][\color{red}]{@}{@},
+}
+
 %\usepackage{dtklogos}
 %\newcommand{\Bibtex}{B\kern-.05em%\hbox{$\m@th$\csnameS@\f@size\endcsname\fontsize\sf@size\z@\math@fontsfalse\selectfontI\kern-.025emB}\kern-.08em\-\TeX}
 
@@ -244,8 +253,8 @@ Though arXiv provides suggestions for creating \Bibtex{} entries for their paper
 \begin{verbatim}
 ## [1] McLean, M. W., Scheipl, et al. _Bayesian Functional
 ## Generalized Additive Models with Sparsely Observed Covariates_.
-## 2013. arXiv: 1305.3585 [stat.ME]. <URL: 2013-10-06> (visited on
-## 10/06/2013). Submitted.
+## 2013. arXiv: 1305.3585 [stat.ME]. (Visited on 10/06/2013).
+## Submitted.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -390,6 +399,38 @@ The cross-referencing system in \Biblatex{} and \ourpkg{} is more sophisticated 
 \end{kframe}
 \end{knitrout}
 
+
+\subsection[Reading .bib Files Into R]{Reading \code{.bib} Files Into \R{}} 
+\ourpkg{} provides the function \code{ReadBib} for parsing \code{.bib} files in \Biblatex{} or \Bibtex{} format and creating \code{BibEntry} objects from them.  This function is based on the \code{read.bib} function in package \pkg{bibtex} \citep{Rbibtex}, which uses code for parsing \Bibtex{} files from \citet{bibparser}.  \code{ReadBib} expands on \code{read.bib} by providing \Biblatex{} support; by having an argument/option \code{check}, which can be disabled, and checks that each entry in the file has all the fields required by that \Biblatex{} or \Bibtex{} entry type; and also has expanded handling of name list fields to ensure that complicated names are correctly converted to \code{person} objects.  This last feature is important when searching the BibEntry object later; as we will not be able to properly search by parts of a name (such as family name only) if a name has not been correctly converted to a \code{person} object.  Since it is often not necessary in \Biblatex{} to provide all "required" fields for an entry, it can be useful to be able turn of the check for required fields in \R{} when one wants to work with entries that are missing some fields.  For example, the sample \code{.bib} file that comes with the \Biblatex{} package, and is also included with \ourpkg{} for demonstration purposes has three entries that are missing required fields.  The default behaviour is to not add these entries, but this can be changed.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{file} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"Bib"}\hlstd{,} \hlstr{"biblatexExamples.bib"}\hlstd{,} \hlkwc{package} \hlstd{=} \hlstr{"RefManageR"}\hlstd{)}
+\hlstd{bib} \hlkwb{<-} \hlkwd{ReadBib}\hlstd{(file,} \hlkwc{check} \hlstd{=} \hlstr{"error"}\hlstd{)}
+\end{alltt}
+\begin{lstlisting}
+## Ignoring entry titled "The Chicago Manual of Style" because A bibentry of bibtype 'Manual' has to specify the field: c("author", "editor")
+## Ignoring entry titled "CTAN" because A bibentry of bibtype 'Online' has to specify the field: c("author", "editor")
+## Ignoring entry titled "Computers and Graphics" because A bibentry of bibtype 'Periodical' has to specify the field: editor
+\end{lstlisting}\begin{alltt}
+\hlstd{bib} \hlkwb{<-} \hlkwd{ReadBib}\hlstd{(file,} \hlkwc{check} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlkwd{print}\hlstd{(bib[}\hlkwd{c}\hlstd{(}\hlstr{"cms"}\hlstd{,} \hlstr{"jcg"}\hlstd{,} \hlstr{"ctan"}\hlstd{)],} \hlkwc{.opts} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{check.entries} \hlstd{=} \hlnum{FALSE}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## [1] _The Chicago Manual of Style. The Essential Guide for Writers,
+## Editors, and Publishers_. 15th ed. Chicago, Ill.: University of
+## Chicago Press, 2003. ISBN: 0-226-10403-6.
+## 
+## [2] _Computers and Graphics_. 35.4 (2011): _Semantic 3D Media and
+## Content_. ISSN: 0097-8493.
+## 
+## [3] _CTAN. The Comprehensive TeX Archive Network_. 2006. <URL:
+## http://www.ctan.org> (visited on 10/01/2006).
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
 \subsection{Creating Citations From PDFs}
 Using the function \code{ReadPDFs} and the freely available software Poppler, it is possible to create references from PDFs stored on a user's machine.  The user specifies a directory containing PDFs (or a single PDF file) which are then read by Poppler and converted to \code{.txt} files which are read into \R{}, parsed into citations, and output as a BibEntry object.  
 
@@ -460,7 +501,8 @@ to test out.
 \end{knitrout}
 
 We then clean up using \code{setwd(curdir)} and \code{unlink(tmpdir)}.
-\subsection{BibEntry Conversion To and From Other Object Types}
+
+\subsection[Conversion of Other Object Types to Class BibEntry]{Conversion of Other Object Types to Class \code{BibEntry}}
 The \code{as.BibEntry} function will convert objects of several other data types to BibEntry if they have the proper format.  Acceptable formats include a named \code{character vector} with entries for `bibtype', `key' and other fields for a single entry; a \code{list} of named \code{character vectors} for multiple entries; \code{bibentry} objects; or a \code{data.frame} with row names corresponding to `keys' and a column for `bibtype'.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
@@ -499,35 +541,59 @@ Keys may be extracted from \code{BibEntry} objects using either the \code{names}
 \hlstd{pkg.bib} \hlkwb{<-} \hlstd{RefManageR:::}\hlkwd{MakeCitationList}\hlstd{(pkg.bib)}
 \hlstd{pkg.bib[}\hlstr{"boot"}\hlstd{]}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: subscript out of bounds}}\begin{alltt}
+\begin{lstlisting}[style=error]
+## Error: subscript out of bounds
+\end{lstlisting}\begin{alltt}
 \hlstd{pkg.bib[}\hlkwc{key} \hlstd{=} \hlstr{"boot"}\hlstd{]}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: subscript out of bounds}}\end{kframe}
+\begin{lstlisting}[style=error]
+## Error: subscript out of bounds
+\end{lstlisting}\end{kframe}
 \end{knitrout}
 
-Using \code{pkg.bib["boot"]} matches the entry with key exactly ``boot''.  Using \code{pkg.bib[key = "boot"]}, we match any entry whose key contains the string ``boot''.
+Using \code{pkg.bib["boot"]} matches the entry with key exactly ``boot''.  Using \code{pkg.bib[key = "boot"]}, we match any entry whose key contains the string ``boot'', for reasons that will be made clear in Section~\ref{sec_manip}.
 The BibEntry class also has methods \code{as.data.frame} and \code{unlist} to convert BibEntry objects to a data frame and unlist'ed vector, respectively.  The function \code{as.data.frame} will create  a \code{data.frame} from a \code{BibEntry} object with each row corresponding to a unique entry and one column for every field present in the \code{BibEntry} object, including a column called `bibtype' for the type of entry.  \code{NA} values indicate that the field is not present in that entry (row of the \code{data.frame}).  The row names will be the `key's of the entries.
+
+\subsection{Setting Package Options}
+We provide a convenience function \code{BibOptions} for changing packages options.  This function behaves similarly to the \code{options} function in \pkg{base}.  This allows the user to set default values for several arguments to the most commonly used functions, so the user does not have to specify them each call.  We leave the discussion of most of the options to later sections when introducing the functions the options affect.  The \code{bibentry} class checks every entry to ensure that it has the values for each fields required by \Bibtex{} for that entry type.  In \Biblatex{}, though entries have required fields, they are not really required as \Biblatex{} will work and generate a citation in any reasonable situation with missing fields.  Thus, one option we provide is to turn off the check for missing fields use the option \code{check.entries}.  The default value \code{"error"} throws an error when an attempt is made to use an entry with missing fields and will not create a new entry when an entry is specified with missing fields.  The value \code{"warn"} results in a warning be thrown when a entry with missing fields is encountered, but execution will not be stopped.  Lastly, the value \code{FALSE} turnings off checking of entries entirely.  In the following example we demonstrate the use of the \code{BibOptions} function and show what happens for the different settings of the \code{check.entries} option.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{bib} \hlkwb{<-} \hlkwd{as.BibEntry}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{key} \hlstd{=} \hlstr{"carroll2014dietary"}\hlstd{,} \hlkwc{bibtype} \hlstd{=} \hlstr{"article"}\hlstd{,} \hlkwc{year} \hlstd{=} \hlnum{2014}\hlstd{,}
-  \hlkwc{title} \hlstd{=} \hlstr{"Estimating the distribution of dietary consumption patterns"}\hlstd{,} \hlkwc{author} \hlstd{=}
-    \hlstr{"Raymond J. Carroll"}\hlstd{,} \hlkwc{journal} \hlstd{=} \hlstr{"Statistical Science"}\hlstd{,} \hlkwc{pubstate} \hlstd{=} \hlstr{"inpress"}\hlstd{))}
-\hlstd{bib}
+\hlkwd{BibOptions}\hlstd{(}\hlstr{"check.entries"}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-## [1] R. J. Carroll. "Estimating the distribution of dietary
-## consumption patterns". In: _Statistical Science_ (2014). In press.
+## $check.entries
+## [1] "error"
 \end{verbatim}
+\begin{alltt}
+\hlkwd{BibEntry}\hlstd{(}\hlkwc{bibtype} \hlstd{=} \hlstr{"Online"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"ctan"}\hlstd{,} \hlkwc{date} \hlstd{=} \hlstr{"2006"}\hlstd{,}
+ \hlkwc{title} \hlstd{=} \hlstr{"The Comprehensive TeX Archive Network"}\hlstd{,} \hlkwc{url} \hlstd{=} \hlstr{"http://www.ctan.org"}\hlstd{)}
+\end{alltt}
+\begin{lstlisting}[style=error]
+## Error: A bibentry of bibtype 'Online' has to specify the field: c("author", "editor")
+\end{lstlisting}\begin{alltt}
+\hlstd{old.opt.val} \hlkwb{<-} \hlkwd{BibOptions}\hlstd{(}\hlkwc{check.entries} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlkwd{c}\hlstd{(}\hlkwc{old} \hlstd{= old.opt.val[[}\hlnum{1L}\hlstd{]],} \hlkwc{new} \hlstd{=} \hlkwd{BibOptions}\hlstd{()}\hlopt{$}\hlstd{check.entries)}
+\end{alltt}
+\begin{verbatim}
+##     old     new 
+## "error" "FALSE"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{BibEntry}\hlstd{(}\hlkwc{bibtype} \hlstd{=} \hlstr{"Online"}\hlstd{,} \hlkwc{key} \hlstd{=} \hlstr{"ctan"}\hlstd{,} \hlkwc{date} \hlstd{=} \hlstr{"2006"}\hlstd{,}
+ \hlkwc{title} \hlstd{=} \hlstr{"The Comprehensive TeX Archive Network"}\hlstd{,} \hlkwc{url} \hlstd{=} \hlstr{"http://www.ctan.org"}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] _The Comprehensive TeX Archive Network_. 2006. <URL:
+## http://www.ctan.org>.
+\end{verbatim}
+\begin{alltt}
+\hlkwd{BibOptions}\hlstd{(old.opt.val)}  \hlcom{# restore the old value of the options}
+\end{alltt}
 \end{kframe}
 \end{knitrout}
 
-\subsection{Setting Package Options}
-error checking
+The default values of all options can be restored using \code{BibOptions(restore.defaults = TRUE)}.
 \section{Importing Citations From the Web}\label{sec_import}
 \subsection{NCBI's Entrez}
 The National Center for Biotechnology Information's Entrez Global Query Cross-Database Search provides access to a large number of databases related to health sciences. \ourpkg{} provides an interface to Entrez which allows for searching for references and parsing them to BibEntry objects.  Additionally, users may look up references given a set of PubMed ID's, search for ID's for references already stored in a BibEntry object, and search for related works to references already in \R{}.
@@ -696,7 +762,7 @@ Although false negatives are rare, the CrossRef Metadata Search can be prone to 
 \subsection{Printing}
 A number of \Biblatex{} bibliography styles are available in \ourpkg{} for formatting and displaying citations.  The styles currently implemented are ``numeric'' (the default), ``authortitle'', ``authoryear'', ``alphabetic'', and ``draft''.  The ``authoryear'' style always begins with the family name of the first author and follows the list of authors with the year of publication in parentheses.  The other four styles all use the same format, differing only in the label they print before each entry.  Style ``numeric'' prints the numeric index of each entry in the bibliography, style ``authortitle'' uses no label, style ``alphabetic'' creates a label using the family names of the authors and the last two digits of the publication year, and style ``draft'' uses the entry key as the label.
 
-Entries may be printed as plain text, HTML, \Bibtex{} format, \Biblatex{} format, as \R{} code, Markdown, or as a mixture of \Bibtex{} and plain text commonly used for citations.  For an example of the ``authoryear style''
+Entries may be printed as plain text, HTML, \Bibtex{} format, \Biblatex{} format, as \R{} code, Markdown, or as a mixture of \Bibtex{} and plain text commonly used for citations.  For an example of the ``authoryear'' style
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}

@@ -106,6 +106,15 @@ literate=
 \newcommand{\ourpkg}{\pkg{RefManageR}}
 \newcommand{\bt}{\`{}}
 
+% red text for errors in listings environment
+\lstdefinestyle{error}{
+  language=C,
+  emptylines=1,
+  breaklines=true,
+  basicstyle=\ttfamily\color{red},
+  moredelim=**[is][\color{red}]{@}{@},
+}
+
 %\usepackage{dtklogos}
 %\newcommand{\Bibtex}{B\kern-.05em%\hbox{$\m@th$\csnameS@\f@size\endcsname\fontsize\sf@size\z@\math@fontsfalse\selectfontI\kern-.025emB}\kern-.08em\-\TeX}
 
@@ -160,6 +169,11 @@ opts_knit$set(out.format = "latex")
 knit_theme$set('fine_blue')
 knit_hooks$set(message = function(x, options) {
     return(paste0('\\begin{lstlisting}\n',
+      x,
+    '\\end{lstlisting}'))
+})
+knit_hooks$set(error = function(x, options) {
+    return(paste0('\\begin{lstlisting}[style=error]\n',
       x,
     '\\end{lstlisting}'))
 })
@@ -260,6 +274,16 @@ c(BibEntry("book", key = "parent", title = "The Book Title", year = 2012,
    editora = "S. Loewenfeld and F. Kaltenbrunner and P. Ewald",
    editoratype = "redactor", totalpages = "10", bookpagination = "section")
  @
+
+\subsection[Reading .bib Files Into R]{Reading \code{.bib} Files Into \R{}} 
+\ourpkg{} provides the function \code{ReadBib} for parsing \code{.bib} files in \Biblatex{} or \Bibtex{} format and creating \code{BibEntry} objects from them.  This function is based on the \code{read.bib} function in package \pkg{bibtex} \citep{Rbibtex}, which uses code for parsing \Bibtex{} files from \citet{bibparser}.  \code{ReadBib} expands on \code{read.bib} by providing \Biblatex{} support; by having an argument/option \code{check}, which can be disabled, and checks that each entry in the file has all the fields required by that \Biblatex{} or \Bibtex{} entry type; and also has expanded handling of name list fields to ensure that complicated names are correctly converted to \code{person} objects.  This last feature is important when searching the BibEntry object later; as we will not be able to properly search by parts of a name (such as family name only) if a name has not been correctly converted to a \code{person} object.  Since it is often not necessary in \Biblatex{} to provide all "required" fields for an entry, it can be useful to be able turn of the check for required fields in \R{} when one wants to work with entries that are missing some fields.  For example, the sample \code{.bib} file that comes with the \Biblatex{} package, and is also included with \ourpkg{} for demonstration purposes has three entries that are missing required fields.  The default behaviour is to not add these entries, but this can be changed.
+<<ReadBib, cache = TRUE>>=
+file <- system.file("Bib", "biblatexExamples.bib", package = "RefManageR")
+bib <- ReadBib(file, check = "error")
+bib <- ReadBib(file, check = FALSE)
+print(bib[c("cms", "jcg", "ctan")], .opts = list(check.entries = FALSE))
+@
+
 \subsection{Creating Citations From PDFs}
 Using the function \code{ReadPDFs} and the freely available software Poppler, it is possible to create references from PDFs stored on a user's machine.  The user specifies a directory containing PDFs (or a single PDF file) which are then read by Poppler and converted to \code{.txt} files which are read into \R{}, parsed into citations, and output as a BibEntry object.  
 
@@ -294,12 +318,14 @@ bib <- ReadPDFs(".")
 bib
 @
 We then clean up using \code{setwd(curdir)} and \code{unlink(tmpdir)}.
-\subsection{BibEntry Conversion To and From Other Object Types}
+
+\subsection[Conversion of Other Object Types to Class BibEntry]{Conversion of Other Object Types to Class \code{BibEntry}}
 The \code{as.BibEntry} function will convert objects of several other data types to BibEntry if they have the proper format.  Acceptable formats include a named \code{character vector} with entries for `bibtype', `key' and other fields for a single entry; a \code{list} of named \code{character vectors} for multiple entries; \code{bibentry} objects; or a \code{data.frame} with row names corresponding to `keys' and a column for `bibtype'.
 <<asBibEntry, cache=TRUE, tidy = FALSE>>=
-bib <- as.BibEntry(c(key = "carroll2014dietary", bibtype = "article", year = 2014,
-  title = "Estimating the distribution of dietary consumption patterns", author = 
-    "Raymond J. Carroll", journal = "Statistical Science", pubstate = "inpress"))
+bib <- as.BibEntry(c(key = "carroll2014dietary", bibtype = "article", 
+  title = "Estimating the distribution of dietary consumption patterns", 
+  author = "Raymond J. Carroll", journal = "Statistical Science", 
+  year = 2014, pubstate = "inpress"))
 bib
 @
 
@@ -313,15 +339,27 @@ pkg.bib <- lapply(pkg.names, function(pkg){
 })
 @
 Keys may be extracted from \code{BibEntry} objects using either the \code{names} method or the \code{\bt$\bt} operator with name argument (the value to the right of the `\$' sign) equal to `key'.  The extra step involving the \code{names<-} method for \code{BibEntry} objects assigns a unique key to each entry, as the \code{citation} function does not provide a key for each entry and may return more than one reference for a single package.  At this point, because of the use of \code{lapply}, \code{pkg.bib} is a \code{list} of \code{BibEntry} objects, instead of a single \code{BibEntry} object.  One way to rectify this is using the internal function \code{MakeCitationList}.  Additionally, we use the \code{names<-} method to assign keys.  We may then refer to entries in our \code{BibEntry} object of packages using the package name/key because of the special features of the \code{\bt[\bt} operator for \code{BibEntry} objects, which we discuss in detail in a later section.
-<<asBibEntry3, cache=TRUE, tidy = FALSE, warning=FALSE, message=FALSE>>=
+<<asBibEntry3, cache=FALSE, tidy = FALSE, warning=FALSE, message=FALSE, dependson = "asBibEntry2">>=
 pkg.bib <- RefManageR:::MakeCitationList(pkg.bib)
 pkg.bib["boot"]
 pkg.bib[key = "boot"]
 @
-Using \code{pkg.bib["boot"]} matches the entry with key exactly ``boot''.  Using \code{pkg.bib[key = "boot"]}, we match any entry whose key contains the string ``boot''.
+Using \code{pkg.bib["boot"]} matches the entry with key exactly ``boot''.  Using \code{pkg.bib[key = "boot"]}, we match any entry whose key contains the string ``boot'', for reasons that will be made clear in Section~\ref{sec_manip}.
 The BibEntry class also has methods \code{as.data.frame} and \code{unlist} to convert BibEntry objects to a data frame and unlist'ed vector, respectively.  The function \code{as.data.frame} will create  a \code{data.frame} from a \code{BibEntry} object with each row corresponding to a unique entry and one column for every field present in the \code{BibEntry} object, including a column called `bibtype' for the type of entry.  \code{NA} values indicate that the field is not present in that entry (row of the \code{data.frame}).  The row names will be the `key's of the entries.
+
 \subsection{Setting Package Options}
-error checking
+We provide a convenience function \code{BibOptions} for changing packages options.  This function behaves similarly to the \code{options} function in \pkg{base}.  This allows the user to set default values for several arguments to the most commonly used functions, so the user does not have to specify them each call.  We leave the discussion of most of the options to later sections when introducing the functions the options affect.  The \code{bibentry} class checks every entry to ensure that it has the values for each fields required by \Bibtex{} for that entry type.  As mentioned, though entries have required fields, they are not really required as \Biblatex{} will work and generate a citation in any reasonable situation with missing fields.  Thus, one option we provide is to turn off the check for missing fields using the option \code{check.entries}.  The default value \code{"error"} throws an error when an attempt is made to use an entry with missing fields and will not create a new entry when an entry is specified with missing fields.  The value \code{"warn"} results in a warning be thrown when a entry with missing fields is encountered, but execution will not be stopped.  Lastly, the value \code{FALSE} turnings off checking of entries entirely.  In the following example we demonstrate the use of the \code{BibOptions} function and show what happens for the different settings of the \code{check.entries} option.
+<<BibOpt, tidy = FALSE>>=
+BibOptions("check.entries")
+BibEntry(bibtype = "Online", key = "ctan", date = "2006", 
+ title = "The Comprehensive TeX Archive Network", url = "http://www.ctan.org")
+old.opt.val <- BibOptions(check.entries = FALSE)
+c(old = old.opt.val[[1L]], new = BibOptions()$check.entries)
+BibEntry(bibtype = "Online", key = "ctan", date = "2006", 
+ title = "The Comprehensive TeX Archive Network", url = "http://www.ctan.org")
+BibOptions(old.opt.val)  # restore the old value of the options
+@
+The default values of all options can be restored using \code{BibOptions(restore.defaults = TRUE)}.
 \section{Importing Citations From the Web}\label{sec_import}
 \subsection{NCBI's Entrez}
 The National Center for Biotechnology Information's Entrez Global Query Cross-Database Search provides access to a large number of databases related to health sciences. \ourpkg{} provides an interface to Entrez which allows for searching for references and parsing them to BibEntry objects.  Additionally, users may look up references given a set of PubMed ID's, search for ID's for references already stored in a BibEntry object, and search for related works to references already in \R{}.
@@ -381,7 +419,7 @@ Although false negatives are rare, the CrossRef Metadata Search can be prone to 
 \subsection{Printing}
 A number of \Biblatex{} bibliography styles are available in \ourpkg{} for formatting and displaying citations.  The styles currently implemented are ``numeric'' (the default), ``authortitle'', ``authoryear'', ``alphabetic'', and ``draft''.  The ``authoryear'' style always begins with the family name of the first author and follows the list of authors with the year of publication in parentheses.  The other four styles all use the same format, differing only in the label they print before each entry.  Style ``numeric'' prints the numeric index of each entry in the bibliography, style ``authortitle'' uses no label, style ``alphabetic'' creates a label using the family names of the authors and the last two digits of the publication year, and style ``draft'' uses the entry key as the label.
 
-Entries may be printed as plain text, HTML, \Bibtex{} format, \Biblatex{} format, as \R{} code, Markdown, or as a mixture of \Bibtex{} and plain text commonly used for citations.  For an example of the ``authoryear style''
+Entries may be printed as plain text, HTML, \Bibtex{} format, \Biblatex{} format, as \R{} code, Markdown, or as a mixture of \Bibtex{} and plain text commonly used for citations.  For an example of the ``authoryear'' style
 <<Print1, tidy=TRUE, highlight=TRUE, cache=TRUE>>=
 file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 bib <- ReadBib(file.name, check = FALSE)
