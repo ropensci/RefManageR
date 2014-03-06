@@ -408,12 +408,17 @@ toBiblatex(related)
 knit_hooks$set(output = oldhook)
 @
 
-The \code{LookupPubMedID} function is provided by \ourpkg{} to use Entrez's Ecitmatch to search for PubMed IDs for entries in an existing \code{BibEntry} object.  In the following, we read in a \Bibtex{} file of references of RJC's from Google Scholar and search for PubMed ID's for some of the entries.  If the search is successful and an ID is found, the corresponding entry is updated so that the `eprinttype' field is assigned the value “pubmed” and the `eprint' field is assigned the ID.
+The \code{LookupPubMedID} function is provided by \ourpkg{} to use Entrez's Ecitmatch to search for PubMed IDs for entries in an existing \code{BibEntry} object.  In the following, we read in a \Bibtex{} file of references to RJC papers from Google Scholar and search for PubMed ID's for the first ten entries.  If the search is successful and an ID is found, the corresponding entry is updated so that the `eprinttype' field is assigned the value “pubmed” and the `eprint' field is assigned the ID.
 <<PubMed5, cache = TRUE>>=
 file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 bib <- ReadBib(file.name)
-bib <- LookupPubMedID(bib, 50)
-bib[[50]]$eprint
+bib <- LookupPubMedID(bib, seq_len(10))
+bib[eprinttype = "pubmed"][[1L]]  # print entry for first located ID
+@
+
+Finally, the \code{GetPubMedByID} function uses Entrez's Efetch to obtain bibliography data given a vector of PubMed ID's.  We can use the PubMed ID we just obtained to get the \Bibtex{} entry from Entrez and compare it with the one already in our bibliography from Google Scholar.
+<<PubMed6, cache = TRUE>>=
+GetPubMedByID(unlist(bib$eprint)[1L])
 @
 If one wishes to use other NCBI E-Utilities and does not wish to work with \code{BibEntry} or \code{bibentry} objects, see the \pkg{rentrez} package \citep{rentrez}.
 \subsection{Zotero}
@@ -575,11 +580,18 @@ bib2[3] <- c(journal='', eprinttype = "arxiv", eprint = "1308.5427",
            eprintclass = "math.ST", pubstate = "submitted", bibtype = "Misc")
 bib2[3]
 @
+
+Using the \code{open} method for \code{BibEntry} objects, it is possible to open a connection to a copy of an entry in the bibliography.  This will work for entries that have a value for the `file' field (for e.g. the path to a local copy of the reference), the `doi' field, the `url' field, or the `eprint' field when the `eprinttype' field is equal to \code{"jstor"}, \code{"arxiv"}, or \code{"pubmed"}.  Which of those fields are used and in which order they are checked for can be specified using the \code{open.field} argument.  The viewer to use can be specified (as a path) using the \code{viewer} argument.  By default the value \code{getOptions("pdfviewer")} is used when opening values stored in the `file' field, and the value of \code{getOptions("browser")} is used to open values in the other fields.  Recalling our bibliography of installed packages, we can use the `url' field to open the resource for the \pkg{base} package.  We can add a path to the \R{} Language Definition manual in the `file' field, so that can be opened instead when requested.
+<<open, eval = FALSE>>=
+open(pkg.bib[["base"]])  # will use use the 'url' field
+pkg.bib[["base"]]$file <- file.path(R.home("doc/manual"), "R-lang.pdf")
+
+@
 \subsection{Merging}
 The combine function, \code{c}, is available for concatenating multiple \code{BibEntry} objects, and has been inherited from the \code{bibentry} class.  Of course, this does not perform any checking for duplicate entries.  For this, there is the \code{base} package generics \code{anyDuplicated}, \code{duplicated}, and \code{unique}, which check vectors for duplicate elements.  However if \code{BibEntry} objects have been complied from a number of different sources, these functions may be too strict, declaring entries distinct even if only one field has a small difference between the two entries.  For this reason, we provide an additional operator \code{'+'} and a wrapper function \code{merge}, that compare entries only based on the fields specified by the user.  Given \code{BibEntry} objects \code{bib1} and \code{bib2}, \code{bib1 + bib2} will return \code{bib1} appended with all entries of bib2 that have been determined not be duplicates of entries already in \code{bib1} by comparing all fields in \code{.BibOptions$merge.fields.to.check}, which can include \code{bibtype} and \code{key}.  The function also checks if there are any duplicate keys in the result, and will force them to be unique if duplicates are detected using \code{make.unique}. 
 
-\section[Using RefManageR for Citations]{Using \ourpkg{} in Dynamic Documents}\label{sec_cite}
-
+\section[Using RefManageR in Dynamic Documents]{Using \ourpkg{} in Dynamic Documents}\label{sec_cite}
+Using \ourpkg{}, one may print citations from a \code{BibEntry} object and generate a bibliography for all citations.  This is especially useful for inclusion in \code{RMarkdown} or \code{RHTML} documents.  In those two situations, which can be specified by setting \code{style = "markdown"} and \code{style = "html"}, respectively, in \code{BibOptions}, hyperlinks will also automatically be generated.  These hyperlinks will either link to external references
 \section{Conclusion}\label{sec_conc}
 The \ourpkg{} package provides \R{} with considerable extra functionality for working with bibliography data.  Working with \Bibtex{} bibliography files and managing references can be frustrating, due to several shortcomings of \Bibtex{} including its lack of out-of-the-box support for certain fields that leads to entries 
 \bibliography{biblatex}
