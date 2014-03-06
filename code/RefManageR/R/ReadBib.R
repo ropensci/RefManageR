@@ -31,7 +31,7 @@ ReadBib <- function (file, .Encoding = "UTF-8",
                    srcfile = srcfile, PACKAGE = "bibtex")
   
   at <- attributes(out)
-  if ((typeof(out) != "integer") || (getRversion() < "3.0.0")) 
+  if (typeof(out) != "integer") 
     out <- lapply(out, MakeBibEntry)
   else out <- list()
   preamble <- at[["preamble"]]

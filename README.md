@@ -16,11 +16,14 @@ Change log:
 30. Correct some documentation typos
 45. Fix pmidrelated field when `batch.mode = FALSE` in `GetPubMedRelated`
 76. Fix LookupPubMedID when specify `index` argument
+80. Fix open.bib and GetURL
 
 To Do:
 ==================================================================================================================
 Important
 -------------------
+* Add CITATION when manuscript on arXiv see `system.file("CITATION", package = "mgcv")
+* Added reference to arXiv manuscript in RefManageR-package.Rd
 30. should bib[key1, key2, key3, ...] work?
 9. pandoc style citations? e.g. [@key]
    * csl files

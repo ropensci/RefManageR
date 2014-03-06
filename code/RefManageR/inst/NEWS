@@ -3,8 +3,14 @@ Changes in Version 0.7.3 (2013-03-06)
 
 BUG FIXES
 
-* fix for `names<-.BibEntry`
-* fix for `print.BibEntry` when entry has urldate field but no url field
+* Fix for `names<-.BibEntry`
+* Fix for `print.BibEntry` when entry has urldate field but no url field
 * Correct some documentation typos
 * Fix pmidrelated field when `batch.mode = FALSE` in `GetPubMedRelated`
-* Fix `LookupPubMedID` when specify `index` argument
+* Fix for `LookupPubMedID` when `index` argument specified
+* Fix for `open.BibEntry`
+
+NEW FEATURES
+
+* Added Vignette
+* Added NEWS
