@@ -15,6 +15,7 @@ Change log:
 12. fix for print function when entry has urldate but no url field
 30. Correct some documentation typos
 45. Fix pmidrelated field when `batch.mode = FALSE` in `GetPubMedRelated`
+76. Fix LookupPubMedID when specify `index` argument
 
 To Do:
 ==================================================================================================================
