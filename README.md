@@ -9,10 +9,18 @@ The purpose of this work is to develop an R package which will make it very easy
 
 We will add additional functionality to these existing tools in a number of ways: 1) By including many additional tools for importing bibliographic references, 2) By providing convenient tools for manipulating objects of class `bibentry` including searching and merging, 3) By providing tools for summarizing `bibentry` objects including plotting, printing, tabling, writing to files or to the web, etc., and 4) By providing support for `BibLaTeX` which is to this point not available in R, but offers much, much greater functionality for using `.bib` files in `LaTeX` than `BibTeX`.
 
+Change log:
+=============================
+9. bug fix for `names<-.BibEntry`
+12. fix for print function when entry has urldate but no url field
+30. Correct some documentation typos
+
+
 To Do:
 ==================================================================================================================
 Important
 -------------------
+30. should bib[key1, key2, key3, ...] work?
 8. seealso in operators are doubled. e.g. see ?\`[.BibEntry\`
 12. old build fails on getBibstyle. is it in Namespace file?
 9. 76. In JSS paper need to document
