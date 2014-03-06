@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{11}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -41,8 +41,14 @@ Keirstead J (2013).
 \newblock R package version 0.1.1,
   \urlprefix\url{http://CRAN.R-project.org/package=scholar}.
 
-\bibitem[{Lang(2013)}]{RJSONIO}
-Lang DT (2013).
+\bibitem[{Lang(2013{\natexlab{a}})}]{rcurl}
+Lang DT (2013{\natexlab{a}}).
+\newblock \emph{RCurl: General network (HTTP/FTP/...) client interface for R}.
+\newblock R package version 1.95-4.1,
+  \urlprefix\url{http://CRAN.R-project.org/package=RCurl}.
+
+\bibitem[{Lang(2013{\natexlab{b}})}]{RJSONIO}
+Lang DT (2013{\natexlab{b}}).
 \newblock \emph{RJSONIO: Serialize R objects to JSON, JavaScript Object
   Notation}.
 \newblock R package version 1.0-3,
