@@ -164,6 +164,13 @@ literate=
   moredelim=**[is][\color{red}]{@}{@},
 }
 
+\lstdefinestyle{output}{
+  language=C,
+  emptylines=1,
+  breaklines=true,
+  basicstyle=\ttfamily\color{black},
+}
+
 %\usepackage{dtklogos}
 %\newcommand{\Bibtex}{B\kern-.05em%\hbox{$\m@th$\csnameS@\f@size\endcsname\fontsize\sf@size\z@\math@fontsfalse\selectfontI\kern-.025emB}\kern-.08em\-\TeX}
 
@@ -656,34 +663,81 @@ The \code{GetPubMedRelated} function uses the ELink E-Utility to find related ar
 \end{knitrout}
 
 
-Entrez returns a similarity score with each returned citation giving a measure of how similar the returned entry is to the specified IDs.  These scores can be returned in the outputted \code{BibEntry} object in a field called `score' by specifying \code{return.sim.scores = TRUE} in the call.  Additionally, the IDs in the call that were used to determine that an outputted entry is a related one can included in the output in a field called `PMIDrelated' if the argument \code{return.related.ids} is \code{TRUE}.
+Entrez returns a similarity score with each returned citation giving a measure of how similar the returned entry is to the specified IDs.  These scores can be returned in the outputted \code{BibEntry} object in a field called `score' by specifying \code{return.sim.scores = TRUE} in the call.  Additionally, the IDs in the call that were used to determine the relation can be included in the output in a field called `PMIDrelated' if the argument \code{return.related.ids} is \code{TRUE}.  In the next example we set \code{batch.mode = FALSE} and return one related article for each of two entries in \code{rjc.pm}.
+
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{BibOptions}\hlstd{(}\hlkwc{check.entries} \hlstd{=} \hlnum{FALSE}\hlstd{)}
-\hlstd{related} \hlkwb{<-} \hlkwd{GetPubMedRelated}\hlstd{(rjc.pm[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{],} \hlkwc{batch.mode} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{max.results} \hlstd{=} \hlnum{10}\hlstd{,}
-    \hlkwc{return.sim.scores} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{return.related.ids} \hlstd{=} \hlnum{TRUE}\hlstd{)}
-\hlkwd{toBiblatex}\hlstd{(related[[}\hlnum{3L}\hlstd{]])}
+\hlstd{ids} \hlkwb{<-} \hlstd{rjc.pm}\hlopt{$}\hlstd{eprint[}\hlnum{3}\hlopt{:}\hlnum{4}\hlstd{]}
+\hlstd{ids}
+\end{alltt}
+\begin{lstlisting}[showstringspaces=false,style=output,columns=fullflexible,breaklines=true,inputencoding=utf8,extendedchars=	rue,breakautoindent=false,breakindent=0pt,inputencoding=utf8]
+## $guenther2014healthy
+## [1] "24453128"
+## 
+## $li2013selecting
+## [1] "24376287"
+\end{lstlisting}\begin{alltt}
+\hlstd{related} \hlkwb{<-} \hlkwd{GetPubMedRelated}\hlstd{(ids,} \hlkwc{batch.mode} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{max.results} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{),}
+                      \hlkwc{return.sim.scores} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{return.related.ids} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlkwd{toBiblatex}\hlstd{(related)}
+\end{alltt}
+\begin{lstlisting}[showstringspaces=false,style=output,columns=fullflexible,breaklines=true,inputencoding=utf8,extendedchars=	rue,breakautoindent=false,breakindent=0pt,inputencoding=utf8]
+## @Article{guenther2008evaluation,
+##   title = {Evaluation of the Healthy Eating Index-2005},
+##   author = {Patricia M Guenther and Jill Reedy and Susan M Krebs-Smith and Bryce B Reeve},
+##   year = {2008},
+##   journal = {Journal of the American Dietetic Association},
+##   volume = {108},
+##   number = {11},
+##   pages = {1854-64},
+##   eprint = {18954575},
+##   doi = {10.1016/j.jada.2008.08.011},
+##   eprinttype = {pubmed},
+##   score = {54583749},
+##   pmidrelated = {24453128},
+## }
+## 
+## @Article{seghouane2007criterion,
+##   title = {The AIC criterion and symmetrizing the Kullback-Leibler divergence},
+##   author = {Abd-Krim Seghouane and Shun-Ichi Amari},
+##   year = {2007},
+##   journal = {IEEE transactions on neural networks / a publication of the IEEE Neural Networks Council},
+##   volume = {18},
+##   number = {1},
+##   pages = {97-106},
+##   eprint = {17278464},
+##   doi = {10.1109/TNN.2006.882813},
+##   eprinttype = {pubmed},
+##   score = {20610997},
+##   pmidrelated = {24376287},
+## }
+\end{lstlisting}\end{kframe}
+\end{knitrout}
+
+
+
+
+The \code{LookupPubMedID} function is provided by \ourpkg{} to use Entrez's Ecitmatch to search for PubMed IDs for entries in an existing \code{BibEntry} object.  In the following, we read in a \Bibtex{} file of references of RJC's from Google Scholar and search for PubMed ID's for some of the entries.  If the search is successful and an ID is found, the corresponding entry is updated so that the `eprinttype' field is assigned the value “pubmed” and the `eprint' field is assigned the ID.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.973, 0.973, 0.973}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{file.name} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"Bib"}\hlstd{,} \hlstr{"RJC.bib"}\hlstd{,} \hlkwc{package} \hlstd{=} \hlstr{"RefManageR"}\hlstd{)}
+\hlstd{bib} \hlkwb{<-} \hlkwd{ReadBib}\hlstd{(file.name)}
+\hlstd{bib} \hlkwb{<-} \hlkwd{LookupPubMedID}\hlstd{(bib,} \hlnum{50}\hlstd{)}
+\end{alltt}
+\begin{lstlisting}
+## Success for entries: 1
+\end{lstlisting}\begin{alltt}
+\hlstd{bib[[}\hlnum{50}\hlstd{]]}\hlopt{$}\hlstd{eprint}
 \end{alltt}
 \begin{verbatim}
-## @Article{ng2005role,
-##   title = {The role of docosahexaenoic acid in mediating mitochondrial membrane lipid oxidation and apoptosis in colonocytes},
-##   author = {Yeevoon Ng and Rola Barhoumi and Ronald B Tjalkens and Yang-Yi Fan and Satya Kolar and Naisyin Wang and Joanne R Lupton and Robert S Chapkin},
-##   year = {2005},
-##   journal = {Carcinogenesis},
-##   volume = {26},
-##   number = {11},
-##   pages = {1914-21},
-##   eprint = {15975958},
-##   doi = {10.1093/carcin/bgi163},
-##   eprinttype = {pubmed},
-##   score = {31673714},
-##   pmidrelated = {NA},
-## }
+## NULL
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-
 
 If one wishes to use other NCBI E-Utilities and does not wish to work with \code{BibEntry} or \code{bibentry} objects, see the \pkg{rentrez} package \citep{rentrez}.
 \subsection{Zotero}
@@ -696,14 +750,14 @@ If one wishes to use other NCBI E-Utilities and does not wish to work with \code
 \end{alltt}
 \begin{verbatim}
 ## [1] P. Müller and R. Mitra. "Bayesian Nonparametric Inference –
-## Why and How". In: _Bayesian Analysis_ 8.2 (Oct. 24, 2013), pp.
+## Why and How". In: _Bayesian Analysis_ 8.2 (Jun. 2013), pp.
 ## 269-302. ISSN: 1936-0975. DOI: 10.1214/13-BA811. <URL:
 ## http://projecteuclid.org/euclid.ba/1369407550> (visited on
 ## 10/24/2013).
 ## 
 ## [2] K. Sriram, R. Ramamoorthi and P. Ghosh. "Posterior Consistency
 ## of Bayesian Quantile Regression Based on the Misspecified
-## Asymmetric Laplace Density". In: _Bayesian Analysis_ 8.2 (Oct. 24,
+## Asymmetric Laplace Density". In: _Bayesian Analysis_ 8.2 (Jun.
 ## 2013), pp. 479-504. ISSN: 1936-0975. DOI: 10.1214/13-BA817. <URL:
 ## http://projecteuclid.org/euclid.ba/1369407561> (visited on
 ## 10/24/2013).
@@ -723,19 +777,21 @@ We provide a function for downloading citations from a public Google Scholar pro
 \hlstd{rjc.bib}
 \end{alltt}
 \begin{verbatim}
-## [1] T. P. Garcia, S. Müller, R. J. Carroll et al. "Identification
-## of important regressor groups, subgroups and individuals via
-## regularization methods: application to gut microbiome data". In:
-## _Bioinformatics, btt_ 608 (2013).
+## [1] Y. Cho, N. D. Turner, L. A. Davidson, et al. "Colon cancer
+## cell apoptosis is induced by combined exposure to the n-3 fatty
+## acid docosahexaenoic acid and butyrate through promoter
+## methylation". In: _Experimental Biology and Medicine_
+## 1535370213514927 (2014).
 ## 
-## [2] E. M. Jennings, J. S. Morris, R. J. Carroll et al. "Bayesian
-## methods for expression-based integration of various types of
-## genomics data". In: _EURASIP Journal on Bioinformatics and Systems
-## Biology_ 2013.1 (2013), pp. 1-11.
+## [2] P. M. Guenther, S. I. Kirkpatrick, J. Reedy, et al. "The
+## Healthy Eating Index-2010 Is a Valid and Reliable Measure of Diet
+## Quality According to the 2010 Dietary Guidelines for Americans".
+## In: _The Journal of nutrition, jn._ 113 (2014).
 ## 
-## [3] N. Serban, A. M. Staicu and R. J. Carroll. "Multilevel
-## Cross-Dependent Binary Longitudinal Data". In: _Biometrics_ 69.4
-## (2013), pp. 903-913.
+## [3] M. P. Little, A. G. Kukush, S. V. Masiuk, et al. "Impact of
+## Uncertainties in Exposure Assessment on Estimates of Thyroid
+## Cancer Risk among Ukrainian Children and Adolescents Exposed from
+## the Chernobyl Accident". In: _PLOS ONE_ 9.1 (2014).
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -752,26 +808,24 @@ The function also stores the number of citations of each result.  Each \code{Bib
 \hlstd{rjc.bib}
 \end{alltt}
 \begin{verbatim}
-## [1] R. J. Caroll, D. Ruppert, L. A. Stefanski et al. _Measurement
-## error in nonlinear models: a modern perspective_. Chapman &
-## Hall/CRC, 2006.
+## [1] R. J. Carroll and D. Ruppert. _Transformation and weighting in
+## regression_. CRC Press, 1988.
 ## 
-## [2] D. Ruppert, M. P. Wand and R. J. Carroll. _Semiparametric
+## [2] R. J. Carroll, D. Ruppert, L. A. Stefanski, et al.
+## _Measurement error in nonlinear models: a modern perspective_. CRC
+## press, 2012.
+## 
+## [3] D. Ruppert, M. P. Wand and R. J. Carroll. _Semiparametric
 ## regression_. Cambridge University Press, 2003.
-## 
-## [3] M. C. Wu and K. R. Bailey. "Estimation and comparison of
-## changes in the presence of informative right censoring:
-## conditional linear model". In: _Biometrics_ 939 (1989), pp.
-## 939-955.
 \end{verbatim}
 \begin{alltt}
 \hlkwd{cbind}\hlstd{(rjc.bib}\hlopt{$}\hlstd{key, rjc.bib}\hlopt{$}\hlstd{cites, rjc.bib}\hlopt{$}\hlstd{bibtype)}
 \end{alltt}
 \begin{verbatim}
-##      [,1]                        [,2]   [,3]     
-## [1,] "caroll2006measurement"     "2440" "Book"   
-## [2,] "ruppert2003semiparametric" "1840" "Book"   
-## [3,] "wu1989estimation"          "550"  "Article"
+##                           [,1]                        [,2]   [,3]  
+## carroll2012measurement    "carroll2012measurement"    "2492" "Book"
+## ruppert2003semiparametric "ruppert2003semiparametric" "1931" "Book"
+## carroll1988transformation "carroll1988transformation" "1415" "Book"
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -823,20 +877,20 @@ The function \code{ReadCrossRef} uses the CrossRef Metadata Search API to import
              \hlkwc{sort} \hlstd{=} \hlstr{"relevance"}\hlstd{,} \hlkwc{min.relevance} \hlstd{=} \hlnum{80}\hlstd{,} \hlkwc{verbose} \hlstd{=} \hlnum{FALSE}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-## [1] R. J. Carroll. _Measurement Error in Epidemiologic Studies_.
-## Wiley Blackwell (John Wiley & Sons), . ISBN: 047084907X. DOI:
-## 10.1002/0470011815.b2a03082. <URL:
-## http://dx.doi.org/10.1002/0470011815.b2a03082>.
+## [1] R. J. Carroll, D. Ruppert and L. A. Stefanski. "Measurement
+## Error in Nonlinear Models".  (1995). DOI:
+## 10.1007/978-1-4899-4477-1. <URL:
+## http://dx.doi.org/10.1007/978-1-4899-4477-1>.
 ## 
-## [2] R. J. Carroll, D. Ruppert and L. A. Stefanski. _Response
-## Variable Error_. Springer-Verlag, 1995, pp. 229-242. ISBN:
-## 978-0-412-04721-3. DOI: 10.1007/978-1-4899-4477-1_13. <URL:
+## [2] R. J. Carroll, D. Ruppert and L. A. Stefanski. "Response
+## Variable Error". In: _Measurement Error in Nonlinear Models_
+## (1995), p. 229–242. DOI: 10.1007/978-1-4899-4477-1_13. <URL:
 ## http://dx.doi.org/10.1007/978-1-4899-4477-1_13>.
 ## 
-## [3] D. Ruppert, M. P. Wand and R. J. Carroll. _Measurement Error_.
-## Cambridge University Press, 2003, pp. 268-275. ISBN:
-## 9780511755453. DOI: 10.1017/CBO9780511755453.017. <URL:
-## http://dx.doi.org/10.1017/CBO9780511755453.017>.
+## [3] D. Ruppert, M. P. Wand and R. J. Carroll. "Measurement Error".
+## In: _Semiparametric Regression_ (2003), p. 268–275. DOI:
+## 10.1017/cbo9780511755453.017. <URL:
+## http://dx.doi.org/10.1017/cbo9780511755453.017>.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -902,20 +956,14 @@ The package has a number of options similar to those available in \Biblatex{}, i
 \end{verbatim}
 \begin{alltt}
 \hlkwd{BibOptions}\hlstd{(old.opts)}  \hlcom{# reset to original values}
-\hlkwd{print}\hlstd{(bib[[}\hlnum{18}\hlopt{:}\hlnum{19}\hlstd{]],} \hlkwc{style} \hlstd{=} \hlstr{"html"}\hlstd{,} \hlkwc{no.print.fields} \hlstd{=} \hlstr{"url"}\hlstd{,}
-      \hlkwc{.opts} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{bib.style} \hlstd{=} \hlstr{"authortitle"}\hlstd{))}
+\hlkwd{print}\hlstd{(bib[[}\hlnum{19}\hlstd{]],} \hlkwc{.opts} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{style} \hlstd{=} \hlstr{"html"}\hlstd{,} \hlkwc{no.print.fields} \hlstd{=} \hlstr{"url"}\hlstd{,}
+      \hlkwc{bib.style} \hlstd{=} \hlstr{"authortitle"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
-## <p>Sigfridsson, E. and U. Ryde.
-## &ldquo;Comparison of methods for deriving atomic charges from the
-## electrostatic potential and moments&rdquo;.
-## In: <EM>Journal of Computational Chemistry</EM> 19.4 (1998), pp. 377-395.
-## DOI: 10.1002/(SICI)1096-987X(199803)19:4&lt;377::AID-JCC1&gt;3.0.CO;2-P.
-## 
-## <p>Spiegelberg, H.
+## <p><cite>Spiegelberg, H.
 ## &ldquo;&ldquo;Intention&rdquo; und &ldquo;Intentionalität&rdquo; in
 ## der Scholastik, bei Brentano und Husserl&rdquo;.
-## In: <EM>Studia Philosophica</EM> 29 (1969), pp. 189-216.
+## In: <EM>Studia Philosophica</EM> 29 (1969), pp. 189-216.</cite></p>
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -923,7 +971,7 @@ The package has a number of options similar to those available in \Biblatex{}, i
 
 The user can create a custom \Biblatex{} or \Bibtex{} bibliography style using the \code{bibstyle} fuction in the \code{tools} package.  To do this involves creating an environment containing functions for formatting entries of each type with signatures such as `formatArticle(paper)` and `formatBook(paper)`.
 
-A downside of \Biblatex{} is that the majority of academic journals do not support its use, having long ago written a custom \code{bst} file for generating citations which can only be used by \Bibtex{}.  For this reason \ourpkg{} provides functions for conversion of entries written in \Biblatex{} to \Bibtex{}.  Entries of a type that are not supported by \Bibtex{} will be converted to a type that is, e.g., entries of type ``report'' are converted to type ``techreport''.  Other conversions include replacing the date field with a properly formatted year field (if year is not already present) and converting the ``journaltitle'' field to ``journal''.  Since the cross-referencing system in \Bibtex{} is more limited than the one supported by \Biblatex{}, an attempt is made to ensure the cross-referencing will still work as expected in \Bibtex{}.
+A downside of \Biblatex{} is that the majority of academic journals do not support its use, having long ago written a custom \code{bst} file for generating citations which can only be used by \Bibtex{}.  For this reason \ourpkg{} provides the function \code{toBibtex} for conversion of entries written in \Biblatex{} to \Bibtex{}.  Entries of a type that are not supported by \Bibtex{} will be converted to a type that is, e.g., entries of type ``report'' are converted to type ``techreport''.  Other conversions include replacing the date field with a properly formatted year field (if year is not already present) and converting the ``journaltitle'' field to ``journal''.  Since the cross-referencing system in \Bibtex{} is more limited than the one supported by \Biblatex{}, an attempt is made to ensure the cross-referencing will still work as expected in \Bibtex{}.
 
 The function \code{WriteBib}, based on the function \code{write.bib} in the package \pkg{bibtex} \citep{Rbibtex}, is provided for writing a \code{BibEntry} object to a \code{bib} file in \Biblatex{} or \Bibtex{} format.
 \subsection{Sorting}
