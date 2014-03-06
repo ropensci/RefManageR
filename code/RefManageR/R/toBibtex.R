@@ -15,7 +15,7 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
     
     if (bibtype == "article" && 'journaltitle' %in% obj.names  && is.null(object$journal))
       object$journal <- object$journaltitle
-
+    
     if ("location" %in% obj.names  && is.null(object$address))
       object$address <- object$location
     
@@ -35,8 +35,10 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
       }
     }
     
-    if ("institution" %in% obj.names && bibtype == 'thesis' && is.null(object$school))
+    if ("institution" %in% obj.names && bibtype == 'thesis' && is.null(object$school)){
       object$school <- object$institution
+      object$institution <- NULL 
+    }
     if ("eprinttype" %in% obj.names && is.null(object$archiveprefix))
       object$archiveprefix <- object$eprinttype
     if ("eprintclass" %in% obj.names && is.null(object$primaryclass))
@@ -49,7 +51,7 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
       object$booktitle <- object$issuetitle
     if ("eventtitle" %in% obj.names && !"booktitle" %in% obj.names)
       object$booktitle <- object$eventtitle
-
+    
     # fill empty note with urldate or pubstate
     if (!"note" %in% obj.names && length(note.replace.field)){
       for (i in seq_along(note.replace.field)){
@@ -57,7 +59,7 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
           if (note.replace.field[i] == 'urldate'){
             fDate <- try(ProcessDate(object$urldate, NULL), TRUE)
             if (!is.null(fDate) && !inherits(fDate, 'try-error')){
-              object$note <- paste0('Last visited on ', tools::bibstyle('BibLaTeX')$DateFormatter(fDate, TRUE))  
+              object$note <- paste0('Last visited on ', MakeBibLaTeX()$DateFormatter(fDate, TRUE))  
             }else{
               object$note <- paste0('Last visited on ', object$urldate)
             }
@@ -69,24 +71,30 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
       }
     }
     
-    if (bibtype == "thesis"){
-      bibtype <- ifelse(is.null(object$type) || !object$type == "mathesis", "PhdThesis", "MastersThesis")
+    if (bibtype == "thesis" && length(object$type)){
+      bibtype <- switch(object$type, mathesis = { 
+        object$type <- NULL
+        "mastersthesis" 
+      }, phdthesis = { 
+        object$type  <- NULL
+        "phdthesis"
+      }, "phdthesis")
     }
     
     pos <- match(bibtype, tolower(names(BibTeX_entry_field_db)))
     if (is.na(pos)){
       bibtype <- switch(bibtype, "mvbook" = "Book", "bookinbook" = "InBook", "suppbook" = "InBook",
-                                        "collection" = "Book", "mvcollection" = "Book", "suppcollection" = "InCollection",
-                                         "reference" = "Book", "mvreference" = "Book", "inreference" = "InBook",
-                                        "report" = "TechReport", "proceedings" = "Book", "mvproceedings" = "Book",
-                                  "periodical" = "Book", "suppperiodical" = "InBook", "patent" = "TechReport", "Misc")
+                        "collection" = "Book", "mvcollection" = "Book", "suppcollection" = "InCollection",
+                        "reference" = "Book", "mvreference" = "Book", "inreference" = "InBook",
+                        "report" = "TechReport", "proceedings" = "Book", "mvproceedings" = "Book",
+                        "periodical" = "Book", "suppperiodical" = "InBook", "patent" = "TechReport", "Misc")
     }else{
       bibtype <- names(BibTeX_entry_field_db)[pos]
     }
     
     rval <- paste0("@", bibtype, "{", attr(object, "key"), ",")
     rval <- c(rval, sapply(names(object)[names(object) %in% c(.Bibtex_fields, extra.fields)], function(n) paste0("  ", 
-                                                             n, " = {", object[[n]], "},")), "}", "")
+                                                                                                                 n, " = {", object[[n]], "},")), "}", "")
     return(rval)
   }
   
