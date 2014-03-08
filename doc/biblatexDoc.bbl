@@ -1,4 +1,4 @@
-\begin{thebibliography}{11}
+\begin{thebibliography}{13}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -13,6 +13,12 @@
 Beebe NHF (2004).
 \newblock \enquote{bibparse.}
 \newblock \urlprefix\url{http://ftp.math.utah.edu/pub/bibparse/}.
+
+\bibitem[{Daly(2010)}]{natbib}
+Daly PW (2010).
+\newblock \emph{Natural Science Citations and References}.
+\newblock
+  \urlprefix\url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/natbib/natbib.pdf}.
 
 \bibitem[{Francois(2013)}]{Rbibtex}
 Francois R (2013).
@@ -66,6 +72,12 @@ Patashnik O (1988).
 \newblock \emph{\Bibtex\textit{ing}}.
 \newblock
   \urlprefix\url{http://ctan.sharelatex.com/tex-archive/biblio/bibtex/base/btxdoc.pdf}.
+
+\bibitem[{{R Core Team}(2013)}]{R}
+{R Core Team} (2013).
+\newblock \emph{R: A Language and Environment for Statistical Computing}.
+\newblock R Foundation for Statistical Computing, Vienna, Austria.
+\newblock \urlprefix\url{http://www.R-project.org/}.
 
 \bibitem[{Sayers(2009)}]{entrez}
 Sayers E (2009).
