@@ -1,0 +1,34 @@
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{RMarkdown Citations - Alphabetic Style}
+-->
+Add Citations to an RMarkdown Document and Print Bibliography
+========================================================
+
+```{r setup, include = TRUE, cache = FALSE}
+library(RefManageR)
+bib <- ReadBib(system.file("Bib", "biblatexExamples.bib", 
+                           package = "RefManageR"), check = FALSE)
+BibOptions(check.entries = FALSE, style = "markdown", bib.style = "alphabetic", cite.style = 'alphabetic')
+```
+  This is an R Markdown document. This is an example of a citation in the text `r Citet(bib, 12, .opts = list(longnamesfirst = FALSE))`. Now we cite in parentheses `r AutoCite(bib, "baez/online", before = "e.g., ")`.  You can change the default options in a setup chunk at the start of the document or at any other point using the <code>BibOptions</code> function or by specifying options as a list in the `.opts` argument to the cite functions.
+
+These are reports `r Citet(bib, bibtype = "Report", .opts = list(hyperlink = "to.doc", super = TRUE))`.  Their hyperlinks go to their entry in the bibliography.
+The link for `r AutoCite(bib, "markey")` will take you to the document in a new window; this is the default behaviour, if a link is available (see `?open.BibEntry`). The following citation has no hyperlink `r AutoCite(bib, location = "Uppsala", .opts = list(hyperlink = FALSE))`.  You can also embed plots, for example: 
+  
+```{r fig.width=7, fig.height=6}
+plot(cars)
+```
+`r NoCite(bib = bib, title = "CTAN")`I've added a reference to CTAN without citing it.  Look at all my Aristotle: `r AutoCite(bib, author = "Aristotle")`.  
+
+```{r fig.width=7, fig.height=6}
+plot(cars)
+```
+
+Some papers on the arXiv are `r TextCite(bib, eprinttype = "arxiv")`.
+
+**References**
+
+```{r results = "asis", echo = FALSE}
+PrintBibliography(bib, .opts = list(check.entries = FALSE))
+```

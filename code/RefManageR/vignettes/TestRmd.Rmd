@@ -1,0 +1,41 @@
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{RMarkdown Citations Example}
+-->
+Add Citations to an RMarkdown Document and Print Bibliography
+========================================================
+
+```{r setup, include = FALSE, cache = FALSE}
+library(RefManageR)
+bib <- ReadBib(system.file("Bib", "biblatexExamples.bib", 
+                           package = "RefManageR"), check = FALSE)
+bib2 <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[[seq_len(20)]]
+BibOptions(check.entries = FALSE, style = "markdown", cite.style = "authoryear",
+           bib.style = "numeric")
+```
+  This is an R Markdown document. This is an example of a citation in the text `r Citet(bib, "loh")`. Now we cite in parentheses `r AutoCite(bib, "baez/online", before = "e.g., ")`.  Notice the useful 'b' beside the year in the citation.  You can change the default options in a setup chunk at the start of the document or at any other point using the <code>BibOptions</code> function or by specifying options as a list in the `.opts` argument to the cite functions.  In this example we mix `"authoyear"` citation style with `"numeric"` bibliography style.
+
+Note that I do not only have to cite by key, and may use all the features of the `SearchBib` function to index into the BibEntry object.  Here are all the entries of type `Report` in my bibliography `r Citet(bib, bibtype = "Report", .opts = list(hyperlink = "to.doc"))`.  The hyperlinks will take you to their entry in the bibliography.  The link for `r TextCite(bib, "markey")` will open the document in a new window; this is the default behaviour, if a link is available (see `?open.BibEntry`). The following citation has no hyperlink `r AutoCite(bib, location = "Uppsala", .opts = list(hyperlink = FALSE))`.  You can also embed plots, to make the page longer: 
+  
+```{r fig.width=7, fig.height=6}
+plot(cars)
+```
+`r NoCite(bib = bib, title = "CTAN")`I've added a reference to CTAN without citing it using the `NoCite` function.  Now I'm adding a reference from another bibliography (a second `BibEntry` object) `r AutoCite(bib2, title = "binary longitudinal data")`.  Look at all my Aristotle: `r TextCite(bib, author = "Aristotle")`.  
+
+```{r fig.width=7, fig.height=6}
+plot(cars)
+```
+
+Some papers on the arXiv are `r TextCite(bib, eprinttype = "arxiv")`.
+
+**References**
+
+```{r results = "asis", echo = FALSE}
+PrintBibliography(bib, .opts = list(check.entries = FALSE, sorting = "ynt"))
+```
+
+**More References**
+
+```{r results = "asis", echo = FALSE}
+PrintBibliography(bib2)
+```

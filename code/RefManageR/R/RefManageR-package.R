@@ -55,7 +55,7 @@
 #' functions such as \code{\link{print.BibEntry}}, \code{\link{[.BibEntry}}, and 
 #' \code{\link{Cite}}.  Its interface is similar to \code{\link{options}}.
 #' @keywords package
-#' @references McLean, M.W. and R.J. Carroll (2014). Biblatex Bibliography Managament in R Using the RefManager Package.
+#' @references McLean, M.W. (2014). Straightforward Bibliography Management in R Using the RefManageR Package.
 #' \url{http://stat.tamu.edu/~mmclean}.
 #' @references Lehman, P., P. Kime, A. Boruvka, and J. Wright (2013). The biblatex Package.
 #' \url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.

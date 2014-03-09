@@ -83,8 +83,8 @@ interface is similar to \code{\link{options}}.
 McLean, M. W. \email{mathew.w.mclean@gmail.com}
 }
 \references{
-McLean, M.W. and R.J. Carroll (2014). Biblatex Bibliography
-Managament in R Using the RefManager Package.
+McLean, M.W. (2014). Straightforward Bibliography
+Management in R Using the RefManageR Package.
 \url{http://stat.tamu.edu/~mmclean}.
 
 Lehman, P., P. Kime, A. Boruvka, and J. Wright (2013). The
