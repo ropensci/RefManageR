@@ -73,8 +73,8 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 #' @note The arguments to the SearchBib function that control certain search features can also be changed for the extraction
 #' operator by changing the corresponding option in the .BibOptions object; see \code{\link{BibOptions}}.
 #' @method [ BibEntry
-#' @export
 #' @aliases [.BibEntry
+#' @export
 #' @importFrom lubridate int_start int_end year month is.interval %within%
 #' @keywords database manip list
 #' @family operators

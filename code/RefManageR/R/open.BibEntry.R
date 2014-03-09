@@ -26,14 +26,13 @@
 #' testbib$file <- file.path(R.home("doc/manual"), "R-intro.pdf")
 #' open(testbib)
 #' }
-open.BibEntry <- function(con, entry = 1, open.field = c("file", "url", "eprint", "doi"), 
+open.BibEntry <- function(con, entry = 1L, open.field = c("file", "url", "eprint", "doi"), 
                           viewer, ...){
-  bib <- bib[entry]
-  stopifnot(length(bib) == 1)
-  
+  ref <- con[entry]
+  stopifnot(length(ref) == 1L)
   if (missing(viewer))
     viewer <- getOption("browser")
-  url <- GetURL(bib, open.field)
+  url <- GetURL(ref, open.field)
   if (grepl("^file", url))
     viewer <- getOption("pdfviewer")
 
@@ -50,24 +49,24 @@ GetURL <- function(entry, flds, to.bib = FALSE){
   entry <- unclass(entry)[[1L]]
   while (!opened && i <= length(flds)){
     if (flds[i] == "file" && !is.null(entry$file)){
-      url <- paste0('file://', entry['file'])
+      url <- paste0('file://', entry[['file']])
       opened <- TRUE
-    }else if (flds[i]=="eprint" && !is.null(entry$eprint)){
-      eprinttype <- suppressMessages(tolower(entry['eprinttype']))
+    }else if (flds[i] == "eprint" && !is.null(entry$eprint)){
+      eprinttype <- suppressMessages(tolower(entry[['eprinttype']]))
       if (length(eprinttype)){
         base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
                            arxiv = "http://arxiv.org/abs/", 
                            pubmed = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=")
         if (!is.null(base.url)){
-          url <- paste0(base.url, entry["eprint"])
+          url <- paste0(base.url, entry[["eprint"]])
           opened <- TRUE    
         }
       }
     }else if (flds[i] == "doi" && !is.null(entry$doi)){
-      url <- paste0("http://dx.doi.org/", entry["doi"])
+      url <- paste0("http://dx.doi.org/", entry[["doi"]])
       opened <- TRUE
     }else if (flds[i] == "url" && !is.null(entry$url)){
-      url <- entry["url"]
+      url <- entry[["url"]]
       opened <- TRUE
     }
     i <- i + 1L

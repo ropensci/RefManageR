@@ -535,7 +535,7 @@ fmtEventDate <- function(ed, ven){
 }
   
 fmtURL <- function(paper){
-  if (length(paper$url)){
+  if (length(paper[["url"]])){
     res <- paper$url
     res <- switch(docstyle, html = paste0("URL: \\url{", res, "}"),
                   markdown = paste0("URL: [", res, "](", res, ")"),
@@ -546,6 +546,10 @@ fmtURL <- function(paper){
         res <- paste0(res, ' (visited on ', DateFormatter(fDate, TRUE), ')')
     }
     addPeriod(res)
+  }else if (length(paper$urldate)){
+    fDate <- try(ProcessDate(paper$urldate, NULL), TRUE)
+    if (!is.null(fDate) && !inherits(fDate, 'try-error'))
+      paste0('(Visited on ', DateFormatter(fDate, TRUE), ').')    
   }
 }
 

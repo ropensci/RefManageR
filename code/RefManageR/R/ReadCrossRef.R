@@ -3,17 +3,17 @@
 #' Provides an interface to the CrossRef API, searching for citations given a string query.  Results are written to a
 #' bib file, read back into \code{R} using \code{\link{WriteBib}}, and returned as a BibEntry object.
 #' 
-#' @param query - string; search term
-#' @param limit - numeric; maximum number of entries to return
-#' @param sort - string; how should the results from CrossRef be returned.
-#' @param year - numeric; if specified, only results from this year will be returned.
-#' @param min.relevance - numeric; only results with a CrossRef-assigned relevance score at least this high will be returned.
-#' @param temp.file - string; file name to use for storing Bibtex information returned by CrossRef.
-#' @param delete.file - boolean; should the bib file be deleted on exit?
-#' @param verbose - boolean; if \code{TRUE}, additional messages are output regarding the results of the query.
+#' @param query string; search term
+#' @param limit numeric; maximum number of entries to return
+#' @param sort string; how should the results from CrossRef be returned.
+#' @param year numeric; if specified, only results from this year will be returned.
+#' @param min.relevance numeric; only results with a CrossRef-assigned relevance score at least this high will be returned.
+#' @param temp.file string; file name to use for storing Bibtex information returned by CrossRef.
+#' @param delete.file boolean; should the bib file be deleted on exit?
+#' @param verbose boolean; if \code{TRUE}, additional messages are output regarding the results of the query.
 #' @return An object of class BibEntry.
 #' @details CrossRef assigns a score between 0 and 100 based on how relevant a reference seems to be
-#' to your query.  The API documenation warns that while false negatives are unlikely, the search can be prone 
+#' to your query.  The API documentation warns that while false negatives are unlikely, the search can be prone 
 #' to false positives.  Hence, setting \code{min.revelance} to a high value may be necessary.
 #' @importFrom RJSONIO fromJSON
 #' @importFrom RCurl getForm getURLContent

@@ -1,0 +1,19 @@
+Changes in Version 0.7.3 (2013-03-06)
+---------------------------------------------------------
+
+BUG FIXES
+
+* Fix for `names<-.BibEntry`
+* Fix for `print.BibEntry` when entry has urldate field but no url field
+* Corrections for some documentation typos
+* Fix pmidrelated field when `batch.mode = FALSE` in `GetPubMedRelated`
+* Fix for `LookupPubMedID` when `index` argument specified
+* `open.BibEntry` now works properly
+* Fix for converting thesis entries in `toBibtex.BibEntry`
+* Fix for `WriteBib` with `biblatex` argument
+
+NEW FEATURES
+
+* Added Vignette
+* Added NEWS
+* Added HTML output of Rmd and RHTML citation examples to doc/
