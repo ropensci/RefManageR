@@ -1,6 +1,6 @@
-\name{SearchBib}
-\alias{[.BibEntry}
+\name{[.BibEntry}
 \alias{SearchBib}
+\alias{[.BibEntry}
 \title{Search BibEntry objects by field}
 \usage{
 \method{[}{BibEntry}(x, i, j, ..., drop = FALSE)
