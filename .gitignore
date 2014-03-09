@@ -17,3 +17,6 @@ framed.sty
 pkg/
 ReadPDFex/
 ReadPDFex2/
+*.html
+*.png
+*.md
