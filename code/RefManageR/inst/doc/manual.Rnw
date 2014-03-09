@@ -1,0 +1,16 @@
+\documentclass[a4paper]{article}
+%\VignetteIndexEntry{RefManageR User Manual}
+%\VignettePackage{RefManageR} 
+\usepackage{pdfpages}
+
+\begin{document}
+
+\newread\PDFtoInclude
+\openin\PDFtoInclude=RefManageR.pdf
+\ifeof\PDFtoInclude
+\typeout{No file RefManageR.pdf}
+\else
+\includepdf[fitpaper=true,pages=-]{RefManageR.pdf}
+\fi
+
+\end{document}

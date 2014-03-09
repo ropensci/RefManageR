@@ -16,3 +16,4 @@ NEW FEATURES
 
 * Added Vignette
 * Added NEWS
+* Added HTML output of Rmd and RHTML citation examples to doc/

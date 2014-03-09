@@ -2,7 +2,7 @@
 \alias{open.BibEntry}
 \title{Open BibEntry in PDF viewer or web browser.}
 \usage{
-\method{open}{BibEntry}(con, entry = 1, open.field = c("file", "url",
+\method{open}{BibEntry}(con, entry = 1L, open.field = c("file", "url",
   "eprint", "doi"), viewer, ...)
 }
 \arguments{
