@@ -27,7 +27,7 @@ AddCite <- function(index, use.hyper = TRUE){
 #' @param after string; optional text to display after the citation.
 #' @param .opts list; See the relevant section in \code{\link{BibOptions}} for a description
 #' of all valid options for these functions.
-#' @details   Read and execute the files in the examples.
+#' @details See the package vignettes and execute the examples below.
 #' @return For the cite functions: a character string containing the citation
 #' @rdname Cite
 #' @export

@@ -14,6 +14,6 @@ BUG FIXES
 
 NEW FEATURES
 
-* Added Vignette
+* Added Vignettes including user manual and Rmd citation examples
 * Added NEWS
 * Added HTML output of Rmd and RHTML citation examples to doc/

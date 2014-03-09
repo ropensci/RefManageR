@@ -63,7 +63,7 @@ including a citation.  These functions are most useful when
 used in, e.g., a RMarkdown or RHTML document.
 }
 \details{
-Read and execute the files in the examples.
+See the package vignettes and execute the examples below.
 
 If \code{bib.style = "alphabetic"} or \code{bib.style =
 "numeric"}, then sorting needs to be done at the start of
