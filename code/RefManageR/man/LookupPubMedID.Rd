@@ -22,7 +22,7 @@ citations stored in a BibEntry object.
 }
 \details{
 For each entry a citation string is created using the
-fields journaltitle/journal, date/year, volume|, pages, and
+fields journaltitle/journal, date/year, volume, pages, and
 author; and these strings are then used to search the NCBI
 database for PubMed ID's.
 

@@ -29,8 +29,10 @@ SearchBib(x, .opts = list(), ...)
   \item{drop}{logical, should attributes besides class be
   dropped from result?}
 
-  \item{.opts}{list of search options with name = value
-  entries.  The following values may be set \itemize{ \item
+  \item{.opts}{list of search options with \code{name =
+  value} entries.  Any option described in
+  \code{\link{BibOptions}} is valid, with the following
+  being the most relevant ones \itemize{ \item
   \code{use.regex} - logical; are the search terms regular
   expressions or should exact matching be used? \item
   \code{ignore.case} - logical; should case be ignored when

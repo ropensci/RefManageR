@@ -47,9 +47,9 @@ WriteBib <- function (bib, file = "references.bib", biblatex = TRUE, append = FA
     message("Writing ", length(bib), " Bibtex entries ... ", 
             appendLF = FALSE)
   if (biblatex){
-    writeLines(toBibtex(bib, ...), fh)  
-  }else{
     writeLines(toBiblatex(bib, ...), fh)
+  }else{
+    writeLines(toBibtex(bib, ...), fh)      
   }
   
   if (verbose) 
