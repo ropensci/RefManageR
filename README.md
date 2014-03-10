@@ -24,18 +24,13 @@ Important
 -------------------
 * Add CITATION when manuscript on arXiv see `system.file("CITATION", package = "mgcv")
 * Added reference to arXiv manuscript in RefManageR-package.Rd
+* Option for `LaTeX` format name lists in `BibEntry` function and maybe `as.BibEntry`
+* Option for `"draft"` style citations (just print key)
+* Include custom bibstyle example in documentation e.g. chance format of volume and number fields + remove "In: " from journal
 30. should bib[key1, key2, key3, ...] work?
 9. pandoc style citations? e.g. [@key]
    * csl files
 8. seealso in operators are doubled. e.g. see ?\`[.BibEntry\`
-12. old build fails on getBibstyle. is it in Namespace file?
-9. 76. In JSS paper need to document
-  - toBibtex and toBiblatex examples
-  - conversion with as.BibEntry, as.data.frame
-  - ReadPubMed functions
-  - check.entries options
-  - return.ind option
-  - expanded crossreferences
 6. `[[<-` with length > 1 `BibEntry` objects
 98. toBibtex - UTF-8 to latex option
 87. merge should handle year and date specially
