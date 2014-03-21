@@ -37,9 +37,13 @@ ranges to restrict search results.  Possible formats are
 \dQuote{YYYY}, \dQuote{YYYY/MM}, and \dQuote{YYYY/MM/DD}. }
 }
 \note{
-The returned entries will have type either Article or Misc
-depending on whether journal information was retrieved. See
-the Entrez documentation listed in the \emph{References}.
+The returned entries will have type either \sQuote{Article}
+or \sQuote{Misc} depending on whether journal information
+was retrieved. See the Entrez documentation listed in the
+\emph{References}.
+
+The language of the entry will be returned in the field
+\dQuote{language}, if it is available.
 }
 \examples{
 ReadPubMed(query = "raymond carroll measurement error", retmax = 5, mindate = 1990)

@@ -425,6 +425,7 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
   if (!length(l))
     return(list())
   td <- l[[1L]]
+  
   title <- xmlValue(td[[1L]], encoding)
   author <- xmlValue(td[[3L]], encoding)
   cited_by <- as.numeric(xmlValue(l[[2L]][[1L]], encoding))
@@ -456,7 +457,7 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
   res <- list(title = title, author = author, 
               journal = journal, number = numbers, cites = cited_by, 
               year = year)
-  if(res$number==''){  # assume book entry if no number
+  if (is.na(res$number) || res$number==''){  # assume book entry if no number
     if (as.numeric(cited_by) < 10L){
       attr(res, 'entry') <- "report"
       res$institution <- res$journal
