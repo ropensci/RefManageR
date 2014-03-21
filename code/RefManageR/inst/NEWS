@@ -1,4 +1,16 @@
-Changes in Version 0.7.3 (2013-03-06)
+Changes in Version 0.8.2 (2013-03-20)
+---------------------------------------------------------
+
+BUG FIXES
+
+* Fix for `ReadGS` when argument `check.entries` is FALSE or "warn" 
+
+NEW FEATURES
+
+* Functions for interacting with PubMed return language of each article
+* Added CITATION file
+
+Changes in Version 0.8.1 (2013-03-09)
 ---------------------------------------------------------
 
 BUG FIXES
