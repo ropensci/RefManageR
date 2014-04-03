@@ -27,7 +27,7 @@
 #' 
 #' @return An object of class BibEntry.  If the entry has any citations, the number of citations 
 #' is stored in a field \sQuote{cites}.
-#' @seealso \code{\link{BibEntry}}, \code{\link{BibEntry}}, \code{get_publications} in package \code{scholar}
+#' @seealso \code{\link{BibEntry}}
 #' @note Read Google's Terms of Service before using.
 #' 
 #' It is not possible to automatically import BibTeX entries directly from Google Scholar as no API is available and 
