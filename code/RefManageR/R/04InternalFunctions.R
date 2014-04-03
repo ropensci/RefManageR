@@ -485,10 +485,25 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
 
 #' @keywords internal
 ProcessGSAuthors <- function(authors){
-  authors <- gsub(',', ', and', authors)  # add "and" to separate authors
-  authors <- gsub('([A-Z])([A-Z])', '\\1 \\2', authors)  # add space between given name initials
+  # authors <- gsub(',', ', and', authors)  # add "and" to separate authors
+  # authors <- gsub('([A-Z])([A-Z])', '\\1 \\2', authors)  # add space between given name initials
+  authors <- gsub(", [.]{3}$", "", authors)
+  authors <- strsplit(authors, ", ")[[1]]
   
-  return(as.personList(authors))
+  # need to ensure given name initials are processed correctly, GS returns them without spaces
+  m <- regexec("^([[:alpha:]]*)[[:space:]](.*)", authors)
+  autList <- regmatches(authors, m)
+  autList <- lapply(seq_along(authors), function(i){
+    if (length(name <- autList[[i]]))
+      paste0(gsub("(.)", "\\1 ", name[2]), name[3])
+    else authors[[i]]
+  } )
+  
+  # autList <- lapply(regmatches(authors, m), function(name) paste0(gsub("(.)", "\\1 ", name[2]),
+  #                                                                name[3]))
+  authors <- gsub("(\\w)(\\w*)", "\\U\\1\\L\\2", autList, perl = TRUE)
+  
+  return(as.person(authors))
 }
 
 #' @keywords internal
