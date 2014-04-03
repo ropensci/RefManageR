@@ -16,10 +16,11 @@ See NEWS file
 To Do:
 ==================================================================================================================
 
-* Make hyperlinks in bibliography optional
-* add function that uses pandoc or knitr to compile document
+* Issue with names in all caps from Scholar see [here](http://scholar.google.com/citations?user=LQQrHeEAAAAJ&hl=en); does it happen in `ReadBib` or `BibEntry`?
 * Remove '...' from long author lists in ReadGS
 * add support for 'language' field localization keys, check if these agree with PubMed values above
+* Make hyperlinks in bibliography optional
+* add function that uses pandoc or knitr to compile document
 * Option for `LaTeX` format name lists in `BibEntry` function and maybe `as.BibEntry`
 * Option for `"draft"` style citations (just print key)
 * Include custom bibstyle example in documentation e.g. change format of volume and number fields + remove "In: " from journal
