@@ -11,25 +11,18 @@ We will add additional functionality to these existing tools in a number of ways
 
 Change log:
 =============================
-9. bug fix for `names<-.BibEntry`
-12. fix for print function when entry has urldate but no url field
-30. Correct some documentation typos
-45. Fix pmidrelated field when `batch.mode = FALSE` in `GetPubMedRelated`
-76. Fix LookupPubMedID when specify `index` argument
-80. Fix open.bib and GetURL
+See NEWS file
 
 To Do:
 ==================================================================================================================
 
-* Add CITATION when manuscript on arXiv see `system.file("CITATION", package = "mgcv")
-  * Straightforward Bibliography Management in R with the RefManageR Package MW McLean arXiv preprint arXiv:1403.2036 
-* Added reference to arXiv manuscript in RefManageR-package.Rd
-* get language `in ProcessPubMedResult`: `res$language <- unlist(xpathApply(tdoc, "//PubmedArticle/MedlineCitation/Article/Language", 
-    xmlValue))`
+* Make hyperlinks in bibliography optional
+* add function that uses pandoc or knitr to compile document
+* Remove '...' from long author lists in ReadGS
 * add support for 'language' field localization keys, check if these agree with PubMed values above
 * Option for `LaTeX` format name lists in `BibEntry` function and maybe `as.BibEntry`
 * Option for `"draft"` style citations (just print key)
-* Include custom bibstyle example in documentation e.g. chance format of volume and number fields + remove "In: " from journal
+* Include custom bibstyle example in documentation e.g. change format of volume and number fields + remove "In: " from journal
 30. should bib[key1, key2, key3, ...] work?
 9. pandoc style citations? e.g. [@key]
    * csl files
