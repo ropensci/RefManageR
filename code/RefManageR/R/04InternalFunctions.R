@@ -425,6 +425,7 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
   if (!length(l))
     return(list())
   td <- l[[1L]]
+  
   title <- xmlValue(td[[1L]], encoding)
   author <- xmlValue(td[[3L]], encoding)
   cited_by <- as.numeric(xmlValue(l[[2L]][[1L]], encoding))
@@ -456,7 +457,7 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
   res <- list(title = title, author = author, 
               journal = journal, number = numbers, cites = cited_by, 
               year = year)
-  if(res$number==''){  # assume book entry if no number
+  if (is.na(res$number) || res$number==''){  # assume book entry if no number
     if (as.numeric(cited_by) < 10L){
       attr(res, 'entry') <- "report"
       res$institution <- res$journal
@@ -484,10 +485,25 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
 
 #' @keywords internal
 ProcessGSAuthors <- function(authors){
-  authors <- gsub(',', ', and', authors)  # add "and" to separate authors
-  authors <- gsub('([A-Z])([A-Z])', '\\1 \\2', authors)  # add space between given name initials
+  # authors <- gsub(',', ', and', authors)  # add "and" to separate authors
+  # authors <- gsub('([A-Z])([A-Z])', '\\1 \\2', authors)  # add space between given name initials
+  authors <- gsub(", [.]{3}$", "", authors)
+  authors <- strsplit(authors, ", ")[[1]]
   
-  return(as.personList(authors))
+  # need to ensure given name initials are processed correctly, GS returns them without spaces
+  m <- regexec("^([[:alpha:]]*)[[:space:]](.*)", authors)
+  autList <- regmatches(authors, m)
+  autList <- lapply(seq_along(authors), function(i){
+    if (length(name <- autList[[i]]))
+      paste0(gsub("(.)", "\\1 ", name[2]), name[3])
+    else authors[[i]]
+  } )
+  
+  # autList <- lapply(regmatches(authors, m), function(name) paste0(gsub("(.)", "\\1 ", name[2]),
+  #                                                                name[3]))
+  authors <- gsub("(\\w)(\\w*)", "\\U\\1\\L\\2", autList, perl = TRUE)
+  
+  return(as.person(authors))
 }
 
 #' @keywords internal

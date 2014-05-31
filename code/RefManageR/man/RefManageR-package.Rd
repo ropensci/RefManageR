@@ -83,9 +83,10 @@ interface is similar to \code{\link{options}}.
 McLean, M. W. \email{mathew.w.mclean@gmail.com}
 }
 \references{
-McLean, M.W. (2014). Straightforward Bibliography
+McLean, M. W. (2014). Straightforward Bibliography
 Management in R Using the RefManageR Package.
-\url{http://stat.tamu.edu/~mmclean}.
+\href{http://arxiv.org/abs/1403.2036}{arXiv: 1403.2036
+[cs.DL]}. Submitted.
 
 Lehman, P., P. Kime, A. Boruvka, and J. Wright (2013). The
 biblatex Package.

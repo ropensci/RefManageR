@@ -1,5 +1,5 @@
 Package: RefManageR
-Version: 0.8.1
+Version: 0.8.2
 Date: 2014-03-08
 Title: Straightforward BibTeX and BibLaTeX Bibliography Management
 Authors@R: person(c("Mathew", "W."), "McLean", role = c("aut", "cre"),
@@ -16,7 +16,7 @@ Description: RefManageR provides tools for importing and working with
     references can be created from locally stored PDFs using Poppler.  Includes
     functions for citing and generating a bibliography with hyperlinks for
     documents prepared with RMarkdown or RHTML.
-License: BSD_3_clause + file LICENSE
+License: GPL-2 | GPL-3 | BSD_3_clause + file LICENSE
 Imports:
     XML,
     RCurl,

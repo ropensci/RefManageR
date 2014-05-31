@@ -73,8 +73,7 @@ kat.bib <- ReadGS(scholar.id = "vqW0UqUAAAAJ")
 kat.bib["cites"]
 }
 \seealso{
-\code{\link{BibEntry}}, \code{\link{BibEntry}},
-\code{get_publications} in package \code{scholar}
+\code{\link{BibEntry}}
 }
 \keyword{database}
 
