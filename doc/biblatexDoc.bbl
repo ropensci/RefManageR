@@ -16,7 +16,7 @@ Beebe NHF (2004).
 
 \bibitem[{Daly(2010)}]{natbib}
 Daly PW (2010).
-\newblock \emph{Natural Science Citations and References}.
+\newblock \emph{Natural science citations and references}.
 \newblock
   \urlprefix\url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/natbib/natbib.pdf}.
 
@@ -28,15 +28,15 @@ Francois R (2013).
 
 \bibitem[{Grolemund and Wickham(2011)}]{lubridate}
 Grolemund G, Wickham H (2011).
-\newblock \enquote{Dates and Times Made Easy with {lubridate}.}
+\newblock \enquote{Dates and times made easy with {lubridate}.}
 \newblock \emph{Journal of Statistical Software}, \textbf{40}(3), 1--25.
 \newblock \urlprefix\url{http://www.jstatsoft.org/v40/i03/}.
 
 \bibitem[{Hornik \emph{et~al.}(2012)Hornik, Murdoch, and
   Zeileis}]{hornik2012who}
 Hornik K, Murdoch D, Zeileis A (2012).
-\newblock \enquote{Who Did What? The Roles of R Package Authors and How to
-  Refer to Them.}
+\newblock \enquote{Who did what? The roles of {R} package authors and how to
+  refer to them.}
 \newblock \emph{The {R} Journal}, \textbf{4}(1).
 \newblock
   \urlprefix\url{http://journal.r-project.org/archive/2012-1/RJournal_2012-1.pdf}.
@@ -63,7 +63,7 @@ Lang DT (2013{\natexlab{b}}).
 \bibitem[{Lehman \emph{et~al.}(2013)Lehman, Kime, Boruvka, and
   Wright}]{biblatex}
 Lehman P, Kime P, Boruvka A, Wright J (2013).
-\newblock \emph{The {biblatex} Package}.
+\newblock \emph{The {biblatex} package}.
 \newblock
   \urlprefix\url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 
@@ -75,13 +75,13 @@ Patashnik O (1988).
 
 \bibitem[{{R Core Team}(2013)}]{R}
 {R Core Team} (2013).
-\newblock \emph{R: A Language and Environment for Statistical Computing}.
+\newblock \emph{R: {A} language and environment for statistical computing}.
 \newblock R Foundation for Statistical Computing, Vienna, Austria.
 \newblock \urlprefix\url{http://www.R-project.org/}.
 
 \bibitem[{Sayers(2009)}]{entrez}
 Sayers E (2009).
-\newblock \enquote{Entrez Programming Utilities Help.}
+\newblock \enquote{Entrez programming utilities help.}
 \newblock \urlprefix\url{http://www.ncbi.nlm.nih.gov/books/NBK25499/}.
 
 \bibitem[{Winter(2012)}]{rentrez}
