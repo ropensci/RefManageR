@@ -16,7 +16,7 @@ Description: RefManageR provides tools for importing and working with
     references can be created from locally stored PDFs using Poppler.  Includes
     functions for citing and generating a bibliography with hyperlinks for
     documents prepared with RMarkdown or RHTML.
-License: BSD_3_clause + file LICENSE
+License: GPL-2 | GPL-3 | BSD_3_clause + file LICENSE
 Imports:
     XML,
     RCurl,
