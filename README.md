@@ -5,7 +5,7 @@ R package RefManageR
 
 Overview
 =====================================
-The purpose of this work is to develop an R package which will make it very easy for users to manipulate bibliographic information within R.  R already has a useful `bibentry` class and `person` class for managing `BibTeX` entries and author information.  There is also a very useful function in the package `bibtex` for reading a `.bib` file into and creating an object of class `bibentry` from the references in the file.  
+The purpose of this work is to develop an R package which will make it very easy for users to manipulate bibliographic information within R.  R already has a useful `bibentry` class and `person` class for managing `BibTeX` entries and author information.  There is also a very useful function in the package `bibtex` for reading a `.bib` file into and creating an object of class `bibentry` from the references in the file.
 
 We will add additional functionality to these existing tools in a number of ways: 1) By including many additional tools for importing bibliographic references, 2) By providing convenient tools for manipulating objects of class `bibentry` including searching and merging, 3) By providing tools for summarizing `bibentry` objects including plotting, printing, tabling, writing to files or to the web, etc., and 4) By providing support for `BibLaTeX` which is to this point not available in R, but offers much, much greater functionality for using `.bib` files in `LaTeX` than `BibTeX`.
 
@@ -16,6 +16,7 @@ See NEWS file
 To Do:
 ==================================================================================================================
 
+* Add check for missing keys in `as.BibEntry(obj)` when `class(obj)=='BibEntry'`
 * Issue with names in all caps from Scholar see [here](http://scholar.google.com/citations?user=LQQrHeEAAAAJ&hl=en); does it happen in `ReadBib` or `BibEntry`?
 * Remove '...' from long author lists in ReadGS
 * add support for 'language' field localization keys, check if these agree with PubMed values above
@@ -39,15 +40,15 @@ To Do:
 - implement a useful summary function
 - BibStyle function so no conflicts with bibentry styles
 - `check='warn'` or `check=convert.to.misc` option
-- read from WorldCat (*investigated - worldcat sucks*)   
+- read from WorldCat (*investigated - worldcat sucks*)
 - Read bibentries from clipboard
 - UpdateSingleAuthor function
-* Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg  
+* Make sure unicode handled properly? Unicode_alphabetic_tokenizer function in Unicode pkg
 Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
-- plot function. sig.: plot(db, field, plottype, ...)  both 'author' and 'author-full' possible          
+- plot function. sig.: plot(db, field, plottype, ...)  both 'author' and 'author-full' possible
   * See igraph pkg or perhaps adapt http://bl.ocks.org/mbostock/3037015 (add counts on edges)
   * See the [wordcloud package](http://blog.fellstat.com/?cat=11)
-- make table function.  table(db, field)  both 'author' and 'author-full'    
+- make table function.  table(db, field)  both 'author' and 'author-full'
 * http://opencitations.net/
 * write "-.BibEntry" function
 * see the `scholar` R package.  Imports bibtex data using scholar id's
@@ -84,15 +85,15 @@ Also see ?Encoding and ?iconv.  biblatex to bibtex function should use `iconv`
 BUGS
 =================================================================================
 - (**FIXED**) merge doesn't work when `length(bib1) > length(bib2)` in `bib1+bib2`
-- (**FIXED**) fix tryCatch in MakeBibEntry 
+- (**FIXED**) fix tryCatch in MakeBibEntry
 - (**FIXED**) `$` doesn't work for creating field that does not exist in any entries
   - happened in ReadPDFs when adding file info after calling MakeCitationList
   - possible problem when list elements sent to make citation list are already BibEntry class?
 - if doi + url both available, `print` function formats and includes both as url
-- ReadPDF  
-  - (**FIXED**) key needs to be made after scanning text and meta data in ReadPDFs, not by both separately  
-  - (**FIXED**) msgs for entries with no author+title should not occur in both reading of text and metadata in `ReadPDFs` 
-  - handle ligatures in ReadPDFs: ff: "< U + F B 0 0 >" 
+- ReadPDF
+  - (**FIXED**) key needs to be made after scanning text and meta data in ReadPDFs, not by both separately
+  - (**FIXED**) msgs for entries with no author+title should not occur in both reading of text and metadata in `ReadPDFs`
+  - handle ligatures in ReadPDFs: ff: "< U + F B 0 0 >"
   - (**FIXED**) volume and number not working
   - (**FIXED**) files[[13]] - BoveHeld-BFapproximation(ArXiv2013).pdf should work for both authors - only gets one
   - year for WoodKohnShivelyJiang-BayesSSselection(JRSSB2002).pdf in GetJSTOR
@@ -120,9 +121,9 @@ BUGS
 - (**FIXED**) author (year)., pp. 12
 - 'authoryear' style still screws up unicode when `bookpagination = true`
 - (**FIXED**) 'authoryear' style should only display year for date
-- print not working with `@strings`: pass strings to `expand_crossref` then 
+- print not working with `@strings`: pass strings to `expand_crossref` then
 `if (!is.null(attr(test2, 'strings'))){
- tmp <-  lapply(unclass(test2), function(x, strs){ 
+ tmp <-  lapply(unclass(test2), function(x, strs){
     y <- mapply(function(string, name, bib){
     x <- gsub(string, name, bib)
     names(x) <- names(bib)
@@ -148,7 +149,7 @@ BUGS
 - (**FIXED**) Printing year followed by editor for Article entries has extra period  `(2013).. Ed by M. McLean, pp. 60-70.`
 - BibOptions are not reset on error - especially bad if return.ind is made TRUE inside function. Should be fixable with try-catch blocks in `print` and `[` and `search` and `sort` and `[<-`
 
-DONE     
+DONE
 ==================================================================================================================
 
 * read from Zotero: http://www.zotero.org/support/dev/server_api/v2/read_requests
@@ -183,7 +184,7 @@ DONE
 - support for pagination and bookpagination fields (predefined: page, column, line, verse, section, paragraph)
 - Convert to and from data.frame for use with plyr
 - xdata entry supported
-- toBiblatex and toBibtex functions [S/O thread explaining how to do this](http://tex.stackexchange.com/questions/114787/converting-from-biblatex-to-bibtex-format-using-biber)  
+- toBiblatex and toBibtex functions [S/O thread explaining how to do this](http://tex.stackexchange.com/questions/114787/converting-from-biblatex-to-bibtex-format-using-biber)
 - field = "!search.term" to negate match for search.term
 =============================================================================================================
 
@@ -206,7 +207,7 @@ JSS Doc Outline
     * unclass
     * as.data.frame.BibEntry
   2. Merging
-  3. Other Generics - sort, names, $, levels, 
+  3. Other Generics - sort, names, $, levels,
 4. **Printing/Viewing/Saving**
   1. Already available in bibentry
   3. toBiblatex - toBibtex
