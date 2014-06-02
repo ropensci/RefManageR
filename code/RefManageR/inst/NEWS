@@ -1,9 +1,10 @@
-Changes in Version 0.8.2 (2013-04-03)
+Changes in Version 0.8.2 (2013-06-01)
 ---------------------------------------------------------
 
 BUG FIXES
 
-* Fix for `ReadGS` when argument `check.entries` is FALSE or "warn" 
+* Cite functions work if a specified entry has no key.  Note that keys should always be provided for all entries as they  are required for all entries in a BibLaTeX bib file.
+* Fix for `ReadGS` when argument `check.entries` is FALSE or "warn"
 * Family names from Scholar in all caps are handled correctly in ReadGS
 
 NEW FEATURES
