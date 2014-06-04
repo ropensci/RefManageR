@@ -3,13 +3,14 @@ Changes in Version 0.8.2 (2013-06-01)
 
 BUG FIXES
 
-* Cite functions work if a specified entry has no key.  Note that keys should always be provided for all entries as they  are required for all entries in a BibLaTeX bib file.
-* Fix for `ReadGS` when argument `check.entries` is FALSE or "warn"
+* Cite functions work if a specified entry has no key.  Note that keys should always be provided for all entries as they  are required for all entries in a BibLaTeX bib file (h/t Carl Boettiger)
+* Entries returned by Crossref that have entry type 'Data' which is not supported by default in BibLaTeX are converted to type 'Online' (h/t Carl Boettiger)
+* Fix for `ReadGS` when argument `check.entries` is FALSE or "warn" (h/t Francisco Rodriguez Sanchez)
 * Family names from Scholar in all caps are handled correctly in ReadGS
 
 NEW FEATURES
 
-* Functions for interacting with PubMed return language of each article
+* Functions for interacting with PubMed return language of each article (h/t Dale Steele)
 * Added CITATION file
 
 Changes in Version 0.8.1 (2013-03-09)
