@@ -17,7 +17,7 @@ AddCite <- function(index, use.hyper = TRUE){
 #' without including a citation.  These functions are most useful when used in,
 #' e.g., a RMarkdown or RHTML document.
 #'
-#' @param bib a BibEntry object
+#' @param bib a \code{BibEntry} or \code{bibentry} object
 #' @param ... passed to \code{\link{SearchBib}} for indexing into bib.  A character vector of
 #' keys, for example.
 #' @param textual logical; if TRUE, a \dQuote{textual} citation is produced, i.e.
@@ -74,6 +74,9 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
       old.opts <- BibOptions(.opts)
       on.exit(BibOptions(old.opts))
     }
+    
+    if (identical(class(bib), "bibentry"))
+      bib <- as.BibEntry(bib)
 
     result <- with(BibOptions(), {
       style <- .BibEntry_match_format_style(style)
@@ -245,6 +248,8 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
 PrintBibliography <- function(bib, .opts = list()){
   if (!length(bib))
     return(bib)
+  if (identical(class(bib), "bibentry"))
+    bib <- as.BibEntry(bib)
   keys <- unlist(bib$key)
   ind <- keys %in% names(.cites$indices)
   if (!any(ind)){

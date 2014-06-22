@@ -42,7 +42,9 @@ as.BibEntry <- function(x){
   }else if (inherits(x, 'bibentry')){
     att <- attributes(x)
     x <- lapply(unclass(x), function(y){
-      attr(y, 'dateobj') <- ProcessDates(y)
+      attr(y, "dateobj") <- ProcessDates(y)
+      if (!length(attr(y, "key")))
+        attr(y, "key") <- CreateBibKey(y[['title']], y[['author']], y[['year']])
       check <- try(.BibEntryCheckBibEntry1(y), TRUE)
       if (inherits(check, 'try-error')){
         message(paste0('Ignoring entry titled \"', y[['title']], '\" because ', strsplit(check, '\\n[[:space:]]*')[[1]][2]))

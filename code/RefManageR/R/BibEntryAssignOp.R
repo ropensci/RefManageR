@@ -18,8 +18,13 @@
 #' bib$author <- "McLean, M. W. and Carroll, R. J." 
 #' bib$url <- "http://example.com"
 #' bib
+#' 
+#' bib <- c(bib, as.BibEntry(citation()))
+#' bib[1]$author[2] <- person(c("Raymond", "J."), "Carroll")
+#' bib$author
 `$<-.BibEntry` <- function(x, name, value){
-  stopifnot(length(x) == length(value) || length(value) <= 1)
+  # browser()
+  stopifnot(length(x) == length(value) || length(value) <= 1 || name %in% .BibEntryNameList)
   is_attribute <- name %in% bibentry_attribute_names
   x <- unclass(x)
   name <- tolower(name)
@@ -44,9 +49,13 @@
       x[[i]][[name]] <- if (is.null(value[[i]])) 
         NULL
       else {
-        if (name %in% .BibEntryNameList) 
-          ArrangeAuthors(value[[i]])
-        else paste(value[[i]])
+        if (name %in% .BibEntryNameList){
+          if (inherits(value, "person")){
+            value
+          }else{
+            ArrangeAuthors(value[[i]])  
+          }
+        }else paste(value[[i]])
       }
       if ( name %in% .BibEntryDateField){  # dateobj may need to be updated
         tdate <- ProcessDates(x[[i]])
