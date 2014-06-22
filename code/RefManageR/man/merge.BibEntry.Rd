@@ -44,13 +44,13 @@ bib1 <- bib[seq_len(44)]
 bib2 <- bib[45:length(bib)]
 
 ## The following is FALSE because the parent entry of one entry in bib1 is in bib2,
-##   so the child entry in is expanded in the BibEntry object returned by \\code{[}
+##   so the child entry in is expanded in the BibEntry object returned by `[`
 ##   to include the fields inherited from the dropped parent
 identical(merge(bib1, bib2, 'all'), bib)
 toBiblatex(bib1[[1L]])
 toBiblatex(bib[[1L]])
 
-## Alternatively, the operator \\code{[[} for BibEntry objects does not expand
+## Alternatively, the operator `[[` for BibEntry objects does not expand
 ##   cross references
 bib1 <- bib[[seq_len(44)]]
 bib2 <- bib[[45:length(bib)]]
@@ -60,12 +60,14 @@ identical(merge(bib1, bib2, 'all'), bib)
 invisible(merge(bib1, bib2, c('title', 'date')))
 
 ## New publications of R.J. Carroll from Google Scholar and Crossref
+\dontrun{
 bib1 <- ReadGS(scholar.id = "CJOHNoQAAAAJ", limit = '10', sort.by.date = TRUE)
 bib2 <- ReadCrossRef(query = "rj carroll", limit = 10, sort = "relevance",
   min.relevance = 80)
 oldopt <- BibOptions(merge.fields.to.check = "title")
 rjc.new.pubs <- bib1 + bib2
 BibOptions(oldopt)
+}
 }
 \author{
 McLean, M. W. \email{mathew.w.mclean@gmail.com}

@@ -1,3 +1,15 @@
+Changes in Version 0.8.3 (2013-06-21)
+---------------------------------------------------------
+
+NEW FEATURES
+
+* `as.BibEntry` will create entry key if given a `bibentry` object with no key.  Useful when citing 
+packages with `citation`.
+* PrintBibliography and Cite functions (Cite, Citet, etc.) accept `bibentry` objects in addition to
+`BibEntry` objects.
+* `$<-.BibEntry` will now accept a single person object, so that a single author in a multi-author entry
+may be updated.  An example may be found at `help("$<-.BibEntry")`.  (h/t Carl Boettiger)
+
 Changes in Version 0.8.2 (2013-06-01)
 ---------------------------------------------------------
 
@@ -12,6 +24,7 @@ NEW FEATURES
 
 * Functions for interacting with PubMed return language of each article (h/t Dale Steele)
 * Added CITATION file
+* Updated License to explicitly include GPL-2 and GPL-3
 
 Changes in Version 0.8.1 (2013-03-09)
 ---------------------------------------------------------

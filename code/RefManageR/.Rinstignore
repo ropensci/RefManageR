@@ -5,3 +5,4 @@ Rhtml/.*[.]html$
 Rhtml/.*[.]md$
 Rhtml/figure
 tests/
+.*~$

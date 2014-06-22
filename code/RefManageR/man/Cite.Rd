@@ -24,7 +24,7 @@ TextCite(bib, ..., before = NULL, after = NULL, .opts = list())
 NoCite(bib, ..., .opts = list())
 }
 \arguments{
-  \item{bib}{a BibEntry object}
+  \item{bib}{a \code{BibEntry} or \code{bibentry} object}
 
   \item{...}{passed to \code{\link{SearchBib}} for indexing
   into bib.  A character vector of keys, for example.}

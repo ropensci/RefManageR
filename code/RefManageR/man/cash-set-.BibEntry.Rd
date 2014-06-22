@@ -32,6 +32,10 @@ bib$year <- 2014
 bib$author <- "McLean, M. W. and Carroll, R. J."
 bib$url <- "http://example.com"
 bib
+
+bib <- c(bib, as.BibEntry(citation()))
+bib[1]$author[2] <- person(c("Raymond", "J."), "Carroll")
+bib$author
 }
 \seealso{
 Other operators: \code{\link{$.BibEntry}};
