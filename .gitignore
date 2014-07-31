@@ -20,3 +20,5 @@ ReadPDFex2/
 *.html
 *.png
 *.md
+RefManageR.Rcheck/
+*~

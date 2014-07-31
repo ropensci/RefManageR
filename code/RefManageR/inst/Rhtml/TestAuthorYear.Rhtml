@@ -3,14 +3,14 @@
 <head>
 <title>RefManageR R HTML</title>
 <link rel="stylesheet" type="text/css" href="../../CRAN_web.css"/>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta charset="UTF-8">
 </head>
 <body>
 <h1>Add Citations to an R HTML Document and Print Bibliography</h1>
 
 <!--begin.rcode setup, include = FALSE, cache = FALSE
 library(RefManageR)
-bib <- ReadBib(system.file("Bib", "biblatexExamples.bib", 
+bib <- ReadBib(system.file("Bib", "biblatexExamples.bib",
                            package = "RefManageR"), check = FALSE)
 bib2 <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[seq_len(20)]
 BibOptions(check.entries = FALSE, style = "html", bib.style = "authoryear", cite.style = "authoryear")
@@ -19,13 +19,13 @@ end.rcode-->
   This is an R HTML document. This is an example of a citation in the text <!--rinline Citet(bib, "loh") -->. Now we cite in parentheses <!--rinline AutoCite(bib, "baez/online", after = ", Ch. 2") -->.  You can change the default options in a setup chunk at the start of the document or at any other point using the <code>BibOptions</code> function or by specifying options as a list in the <code>.opts</code> argument to the cite functions.
 <p>
 These are reports <!--rinline Citet(bib, bibtype = "Report", .opts = list(hyperlink = "to.bib")) -->.  Their hyperlinks go to their entry in the bibliography.
-The link for <!--rinline TextCite(bib, "markey") --> will take you to the document in a new window; this is the default, if a link is available (see <code>?open.BibEnty</code>). The following citation has no hyperlink <!--rinline AutoCite(bib, location = "Uppsala", .opts = list(hyperlink = FALSE)) -->.  You can also embed plots, for example: 
-</p> 
+The link for <!--rinline TextCite(bib, "markey") --> will take you to the document in a new window; this is the default, if a link is available (see <code>?open.BibEnty</code>). The following citation has no hyperlink <!--rinline AutoCite(bib, location = "Uppsala", .opts = list(hyperlink = FALSE)) -->.  You can also embed plots, for example:
+</p>
 <!--begin.rcode fig.width=7, fig.height=6
 plot(cars)
 end.rcode-->
 <p>
-<!--rinline NoCite(bib = bib, title = "CTAN") -->I've added a reference to <code>CTAN</code> without citing it.  Now I'm adding a reference from another bibliography (a second <code>BibEntry</code> object) <!--rinline AutoCite(bib2, title = "binary longitudinal data") -->.  Look at all my Aristotle: <!--rinline TextCite(bib, author = "Aristotle") -->.  
+<!--rinline NoCite(bib = bib, title = "CTAN") -->I've added a reference to <code>CTAN</code> without citing it.  Now I'm adding a reference from another bibliography (a second <code>BibEntry</code> object) <!--rinline AutoCite(bib2, title = "binary longitudinal data") -->.  Look at all my Aristotle: <!--rinline TextCite(bib, author = "Aristotle") -->.
 </p>
 <!--begin.rcode fig.width=7, fig.height=6
 plot(cars)

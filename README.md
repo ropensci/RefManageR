@@ -16,18 +16,26 @@ See NEWS file
 To Do:
 ==================================================================================================================
 
-* Add check for missing keys in `as.BibEntry(obj)` when `class(obj)=='BibEntry'`
-* Issue with names in all caps from Scholar see [here](http://scholar.google.com/citations?user=LQQrHeEAAAAJ&hl=en); does it happen in `ReadBib` or `BibEntry`?
-* Remove '...' from long author lists in ReadGS
-* add support for 'language' field localization keys, check if these agree with PubMed values above
+* pandoc style citations? e.g. [@key]
+   1. when user specifies style = "pandoc",
+   2. check for installed pandoc `pandocExists <- system("pandoc -v") == 0`
+   3. citations become [@key] (for Citep) and @key for Citet
+   4. nocite:
+   `---
+    nocite:
+    | @item1, @item2
+    ...
+   `
+   5. need to use YAML metadata to specify bibliography file and csl style
+   6. since need bib file, will have to use WriteBib and clean up
+   7. need to check what knitr and RMarkdown do
+   * csl files
 * Make hyperlinks in bibliography optional
 * add function that uses pandoc or knitr to compile document
 * Option for `LaTeX` format name lists in `BibEntry` function and maybe `as.BibEntry`
 * Option for `"draft"` style citations (just print key)
 * Include custom bibstyle example in documentation e.g. change format of volume and number fields + remove "In: " from journal
 30. should bib[key1, key2, key3, ...] work?
-9. pandoc style citations? e.g. [@key]
-   * csl files
 8. seealso in operators are doubled. e.g. see ?\`[.BibEntry\`
 6. `[[<-` with length > 1 `BibEntry` objects
 98. toBibtex - UTF-8 to latex option

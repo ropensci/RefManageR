@@ -1,9 +1,9 @@
-Changes in Version 0.8.3 (2013-06-21)
+Changes in Version 0.8.3 (2013-07-30)
 ---------------------------------------------------------
 
 NEW FEATURES
 
-* `as.BibEntry` will create entry key if given a `bibentry` object with no key.  Useful when citing 
+* `as.BibEntry` will create entry key if given a `bibentry` object with no key.  Useful when citing
 packages with `citation`.
 * PrintBibliography and Cite functions (Cite, Citet, etc.) accept `bibentry` objects in addition to
 `BibEntry` objects.
