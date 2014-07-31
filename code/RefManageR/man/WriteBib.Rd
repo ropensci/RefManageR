@@ -37,12 +37,14 @@ argument \code{biblatex} should be \code{TRUE}, otherwise
 conversion is done as in \code{\link{toBibtex.BibEntry}}.
 }
 \examples{
-bib <- ReadCrossRef(query = 'carroll journal of the american statistical association',
-  year = 2012)
-tfile <- tempfile(fileext = ".bib")
-WriteBib(bib, tfile, biblatex = TRUE)
-identical(ReadBib(tfile), bib)
-unlink(tfile)
+bib <- ReadCrossRef(query = '10.1080/01621459.2012.699793')
+## Write bib if no server error
+if (length(bib)){
+  tfile <- tempfile(fileext = ".bib")
+  WriteBib(bib, tfile, biblatex = TRUE)
+  identical(ReadBib(tfile), bib)
+  unlink(tfile)
+}
 }
 \author{
 McLean, M. W. - based on \code{write.bib} function in

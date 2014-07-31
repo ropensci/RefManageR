@@ -1,7 +1,7 @@
 #' Encode in a common format
-#' 
+#'
 #' Format a BibEntry object in a pretty format.
-#' 
+#'
 #' @param x - an object of class BibEntry
 #' @param style
 #' @return character vector containing formatted BibEntry object.
@@ -9,14 +9,14 @@
 #' @S3method format BibEntry
 #' @keywords internal
 #' @seealso \code{\link{print.BibEntry}}, \code{\link{BibEntry}}
-format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOptions$bib.style, 
-                             citation.bibtex.max = getOption("citation.bibtex.max", 1), .sort = TRUE, 
+format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOptions$bib.style,
+                             citation.bibtex.max = getOption("citation.bibtex.max", 1), .sort = TRUE,
                             .sorting = 'nty', enc = 'UTF-8', ...){
     style <- .BibEntry_match_format_style(style)
     ret.ind <- .BibOptions$return.ind
     .BibOptions$return.ind <- FALSE
     on.exit(.BibOptions$return.ind <- ret.ind)
-    if (.sort && !style %in% c('html', 'text', 'latex', "markdown")) 
+    if (.sort && !style %in% c('html', 'text', 'latex', "markdown"))
       x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.labs = TRUE)
 
     .format_bibentry_via_Rd <- function(f){
@@ -27,7 +27,7 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
             close(out)
         })
         x <- .BibEntry_expand_crossrefs(x)
-        if (.sort) 
+        if (.sort)
           x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.labs = TRUE)
         res <- sapply(x, function(y) {
           rd <- toRd.BibEntry(y, .style = .bibstyle, .sorting = 'none')
@@ -36,10 +36,10 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
           f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8', ...)
           paste(readLines(out, encoding = 'UTF-8'), collapse = "\n")
         })
-        if (style == "html"){  
+        if (style == "html"){
           res <- sub("<code>([[:print:]]*)</code>", "<a id='bib-\\1'></a>", res)
           res <- if (.bibstyle == "alphabetic" || .bibstyle == "numeric")
-            sub("^<p>([[:print:]]*\\])", "<p>\\1<cite>", res)
+            sub("^<p>([[:print:]]*\\]</a>)", "<p>\\1<cite>", res)
           else if (.bibstyle == "draft") sub("^<p>([[:print:]]*</B>)", "<p>\\1<cite>", res)
           else sub("^<p>", "<p><cite>", res)
           res <- paste0(res, "</cite></p>")
@@ -48,24 +48,24 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
     }
     .format_bibentry_as_citation <- function(x) {
         bibtex <- length(x) <= citation.bibtex.max
-        c(paste(strwrap(attr(x, "mheader")), collapse = "\n"), 
+        c(paste(strwrap(attr(x, "mheader")), collapse = "\n"),
             unlist(lapply(x, function(y) {
-                paste(c(if (!is.null(y$header)) c(strwrap(y$header), 
+                paste(c(if (!is.null(y$header)) c(strwrap(y$header),
                   ""), if (!is.null(y$textVersion)) {
                   strwrap(y$textVersion, prefix = "  ")
                 } else {
                   format(y)
                 }, if (bibtex) {
-                  c(gettext("\nA BibTeX entry for LaTeX users is\n"), 
+                  c(gettext("\nA BibTeX entry for LaTeX users is\n"),
                     paste0("  ", unclass(toBibtex(y))))
-                }, if (!is.null(y$footer)) c("", strwrap(y$footer))), 
+                }, if (!is.null(y$footer)) c("", strwrap(y$footer))),
                   collapse = "\n")
             })), paste(strwrap(attr(x, "mfooter")), collapse = "\n"))
     }
-    out <- switch(style, text = .format_bibentry_via_Rd(tools::Rd2txt), 
-                  markdown = .format_bibentry_via_Rd(tools::Rd2txt), 
-        html = .format_bibentry_via_Rd(tools::Rd2HTML), 
-        latex = .format_bibentry_via_Rd(tools::Rd2latex), 
+    out <- switch(style, text = .format_bibentry_via_Rd(tools::Rd2txt),
+                  markdown = .format_bibentry_via_Rd(tools::Rd2txt),
+        html = .format_bibentry_via_Rd(tools::Rd2HTML),
+        latex = .format_bibentry_via_Rd(tools::Rd2latex),
         Bibtex = {
            x$.duplicated <- NULL
            unlist(lapply(x, function(y) paste(toBiblatex(y), collapse = "\n")))
@@ -78,7 +78,7 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
             unlist(out)
         }, citation = .format_bibentry_as_citation(x), R = {
           x$.duplicated <- NULL
-          .format_BibEntry_as_R_code(x, 
+          .format_BibEntry_as_R_code(x,
             ...)
           })
     as.character(out)
