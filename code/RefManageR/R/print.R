@@ -59,10 +59,31 @@ print.BibEntry <- function (x, .opts = list(), ...){
     for (i in seq_along(no.print))
       x <- do.call(`$<-`, list(x = x, name = tolower(no.print[i]), value = NULL))
   }
-  if (style == "R" || style == "yaml") {
+  if (style == "R") {
     writeLines(format(x, style, collapse = TRUE, ...))
+  }else if (style == "yaml"){
+    pandocExists <- suppressWarnings(system("pEXandoc-citeproc -V", ignore.stdout = TRUE,
+                           ignore.stderr = TRUE, show.output.on.console = FALSE) == 0)
+    pandocPath <- if (pandocExists)
+                    "pandoc-citeproc"
+                  else{
+                    temp <- readline(prompt = paste0(
+                      "Please specify the path to pandoc-citeproc executable",
+                                         options("prompt")))
+                    if (!length(grep("pandoc-citeproc$", temp)))
+                      temp <- paste(temp, "pandoc-citeproc", sep = "/")
+                    if (suppressWarnings(system2(temp, "-V", stdout = FALSE,
+                           stderr = FALSE) != 0))
+                      stop("pandoc-citeproc not found.")
+                    temp
+                  }
+    tmpfile <- tempfile(fileext = ".bib")
+    on.exit(unlink(tmpfile))
+    suppressMessages(WriteBib(x, tmpfile))
+    system2(pandocPath, c("-y", tmpfile))
   }else if (length(x)) {
-      y <- format(x, style = style, .BibOptions$bib.style, .sorting = sorting, .sort = TRUE, ...)
+      y <- format(x, style = style, .BibOptions$bib.style, .sorting = sorting,
+                  .sort = TRUE, ...)
       if (style == "citation") {
           n <- length(y)
           if (nzchar(header <- y[1L]))
