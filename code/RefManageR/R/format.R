@@ -80,6 +80,10 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
           x$.duplicated <- NULL
           .format_BibEntry_as_R_code(x,
             ...)
+          }, yaml = {
+          x$.duplicated <- NULL
+          .format_BibEntry_as_yaml(x,
+            ...)
           })
     as.character(out)
 }

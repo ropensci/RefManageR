@@ -15,7 +15,8 @@ See NEWS file
 
 To Do:
 ==================================================================================================================
-
+* make textVersion field work
+* print with style = "citation" not working
 * pandoc style citations? e.g. [@key]
    1. when user specifies style = "pandoc",
    2. check for installed pandoc `pandocExists <- system("pandoc -v") == 0`
