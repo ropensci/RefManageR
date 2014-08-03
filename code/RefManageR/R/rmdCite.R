@@ -74,161 +74,171 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
       old.opts <- BibOptions(.opts)
       on.exit(BibOptions(old.opts))
     }
-    
+
     if (identical(class(bib), "bibentry"))
       bib <- as.BibEntry(bib)
 
     result <- with(BibOptions(), {
       style <- .BibEntry_match_format_style(style)
       papers <- suppressMessages(do.call(`[.BibEntry`, list(x = bib, ...)))
+      keys <- unlist(papers$key)
       if (!length(papers))
         return("")
+      if (cite.style == "pandoc"){
+        result <- paste0(paste0("@", names(papers)), collapse = paste0(bibpunct[5L],
+                                                         " "))
+        result <- paste0(before, result, after)
+        if (textual)
+          result <- paste0(bibpunct[3L], result,
+                             bibpunct[4L])
+        AddCite(keys, FALSE)
+        result
+      }else{
+        shortName <- function(person){
+            if (length(person$family))
+                paste(cleanupLatex(person$family), collapse = " ")
+            else paste(cleanupLatex(person$given), collapse = " ")
+        }
+        authorList <- function(paper){
+          names <- sapply(paper$author, shortName)
+          if (!length(names))
+            names <- sapply(paper$editor, shortName)
+          if (!length(names))
+            names <- paper$label
+          if (!length(names))
+            names <- sapply(paper$translator, shortName)
+          names
+        }
 
-      shortName <- function(person) {
-          if (length(person$family))
-              paste(cleanupLatex(person$family), collapse = " ")
-          else paste(cleanupLatex(person$given), collapse = " ")
-      }
-      authorList <- function(paper){
-        names <- sapply(paper$author, shortName)
-        if (!length(names))
-          names <- sapply(paper$editor, shortName)
-        if (!length(names))
-          names <- paper$label
-        if (!length(names))
-          names <- sapply(paper$translator, shortName)
-        names
-      }
+        numeric <- "numeric" %in% cite.style
+        alphabetic <- "alphabetic" %in% cite.style
+        if (cite.style != .cites$sty)
+          ClearLabs(cite.style)
+        n <- length(papers)
+        cited <- names(.cites$indices)
+        first <- !(keys %in% cited)
 
-      numeric <- "numeric" %in% cite.style
-      alphabetic <- "alphabetic" %in% cite.style
-      if (cite.style != .cites$sty)
-        ClearLabs(cite.style)
-      keys <- unlist(papers$key)
-      n <- length(papers)
-      cited <- names(.cites$indices)
-      first <- !(keys %in% cited)
-
-      if (cite.style != "numeric"){
-        if (any(!names(bib) %in% names(.cites$labs))){
-          # some entries in bib have note been seen before
-          # note we use bib here instead of papers (the subset) in case
-          # a possible "duplicate" in bib is cited in the future. we want to disambiguate this
-          # By duplicate, I mean we want to distinguish Smith 2008a and Smith 2008b
-          bibstyle <- switch(cite.style, authortitle = "authoryear", cite.style)
-          bib <- sort(bib, sorting = "none", .bibstyle = bibstyle, return.labs = TRUE)
-          newinds <- bib$.index
-          .labs <- newinds[keys]
-          .cites$labs <- c(.cites$labs, newinds)
-        }else{  # all entries in bib have been seen before, get the label from .cites env.
+        if (cite.style != "numeric"){
+          if (any(!names(bib) %in% names(.cites$labs))){
+            # some entries in bib have note been seen before
+            # note we use bib here instead of papers (the subset) in case
+            # a possible "duplicate" in bib is cited in the future. we want to disambiguate this
+            # By duplicate, I mean we want to distinguish Smith 2008a and Smith 2008b
+            bibstyle <- switch(cite.style, authortitle = "authoryear", cite.style)
+            bib <- sort(bib, sorting = "none", .bibstyle = bibstyle, return.labs = TRUE)
+            newinds <- bib$.index
+            .labs <- newinds[keys]
+            .cites$labs <- c(.cites$labs, newinds)
+          }else{  # all entries in bib have been seen before, get the label from .cites env.
+            .labs <- .cites$labs[keys]
+          }
+        }else{
+          first.ind <- if (!length(.cites$labs))  # cite.style has changed, labs have been reset
+                         seq_along(papers)
+                       else which(first | !keys %in% names(.cites$labs))
+          if (length(first.ind)){
+            shorthands <- unlist(papers$shorthand)
+            max.ind <- suppressWarnings(sum(!is.na(as.numeric(.cites$labs))))
+            newinds <- seq.int(max.ind+1L, length.out = length(first.ind))
+            names(newinds) <- keys[first.ind]
+            if (length(shorthands))
+              newinds[names(shorthands)] <- shorthands
+            .cites$labs <- c(.cites$labs, newinds)
+          }
           .labs <- .cites$labs[keys]
         }
-      }else{
-        first.ind <- if (!length(.cites$labs))  # cite.style has changed, labs have been reset
-                       seq_along(papers)
-                     else which(first | !keys %in% names(.cites$labs))
-        if (length(first.ind)){
-          shorthands <- unlist(papers$shorthand)
-          max.ind <- suppressWarnings(sum(!is.na(as.numeric(.cites$labs))))
-          newinds <- seq.int(max.ind+1L, length.out = length(first.ind))
-          names(newinds) <- keys[first.ind]
-          if (length(shorthands))
-            newinds[names(shorthands)] <- shorthands
-          .cites$labs <- c(.cites$labs, newinds)
-        }
-        .labs <- .cites$labs[keys]
-      }
 
-      AddCite(keys, !identical(hyperlink, FALSE))
-      year <- match(keys, names(.cites$indices))
-      if (alphabetic || numeric){
-        year <- structure(.labs, names = NULL)
-      }else{
-        year <- structure(unlist(sapply(papers$dateobj,
-                                        MakeAuthorYear()$DateFormatter)), names = NULL)
-
-        if (any(.labs %in% letters)) # make sure labels are authoryear labels
-          year <- paste0(year, .labs)
-      }
-
-      if (textual || (!numeric && !alphabetic)){
-          auth <- character(n)
-          authorLists <- lapply(papers, authorList)
-          lastAuthors <- NULL
-          for (i in seq_len(n)) {
-              authors <- authorLists[[i]]
-            if (length(authors) > max.names && !(first[i]  && longnamesfirst)){
-              authors <- authors[seq_len(max.names)]
-              authors[length(authors)] <- paste0(authors[length(authors)], ", et al.")
-            }else{
-              if (length(authors) > 1L)
-                authors[length(authors)] <- paste("and", authors[length(authors)])
-            }
-            if (length(authors) > 2L)
-              auth[i] <- paste(authors, collapse = ", ")
-            else auth[i] <- paste(authors, collapse = " ")
-          }
-  # attempt to combine Smith 2008, Smith 2010 into Smith 2008, 2010.
-  #         suppressauth <- which(!nzchar(auth))
-  #         if (length(suppressauth)) {
-  #             for (i in suppressauth) year[i - 1L] <- paste0(year[i -
-  #                 1L], bibpunct[6L], " ", year[i])
-  #             auth <- auth[-suppressauth]
-  #             year <- year[-suppressauth]
-  #         }
-      }
-      make.hyper <- !identical(hyperlink, FALSE)
-
-      if (textual) {
-        if (numeric || alphabetic){
-          result <- paste0(bibpunct[3L], before, year, after, bibpunct[4L])
+        AddCite(keys, !identical(hyperlink, FALSE))
+        year <- match(keys, names(.cites$indices))
+        if (alphabetic || numeric){
+          year <- structure(.labs, names = NULL)
         }else{
-          result <- paste0(bibpunct[1L], before, year, after, bibpunct[2L])
+          year <- structure(unlist(sapply(papers$dateobj,
+                                          MakeAuthorYear()$DateFormatter)), names = NULL)
+
+          if (any(.labs %in% letters)) # make sure labels are authoryear labels
+            year <- paste0(year, .labs)
         }
-        if (super && numeric && (!style %in% c("markdown", "html") || !make.hyper))
-            result <- paste0(auth, "^{", result, "}")
-        else if (!super || !numeric) result <- paste0(auth, " ", result)
-      }else if (numeric || alphabetic) {
-        result <- year
-      }else {
-          result <- paste0(auth, bibpunct[6L], " ", year)
-      }
-      if (make.hyper){
-        url = switch(hyperlink, to.bib = paste0("#bib-", gsub("[^_a-zA-Z0-9-]", "", keys)),
-                     to.doc = sapply(papers, GetURL,
-                                     flds = c("url", "eprint", "doi"),
-                                     to.bib = TRUE),
-                     hyperlink)
-        if (style == "html"){
-          new.links <- if (any(first))
-            paste(paste("<a id='cite-", gsub("[^_a-zA-Z0-9-]", "", keys[first]), "'></a>", sep = ""), collapse = "")
-                       else ""
-          result <- if (numeric && super && textual)
-                      paste0(auth, "<sup><a href='", url, "'>", result, "</a></sup>")
-                    else paste0("<a href='", url, "'>", result, "</a>")
-        }else if(style == "markdown"){
-          new.links <- if(any(first))
-            paste(paste("<a name=cite-", gsub("[^_a-zA-Z0-9-]", "", keys[first]), "></a>", sep = ""), collapse = "")
-          else ""
-          result <- if (numeric && super && textual)
-                      paste0(auth, "^[", result, "](", url, ")")
-                    else paste0("[", result, "](", url, ")")
+
+        if (textual || (!numeric && !alphabetic)){
+            auth <- character(n)
+            authorLists <- lapply(papers, authorList)
+            lastAuthors <- NULL
+            for (i in seq_len(n)) {
+                authors <- authorLists[[i]]
+              if (length(authors) > max.names && !(first[i]  && longnamesfirst)){
+                authors <- authors[seq_len(max.names)]
+                authors[length(authors)] <- paste0(authors[length(authors)], ", et al.")
+              }else{
+                if (length(authors) > 1L)
+                  authors[length(authors)] <- paste("and", authors[length(authors)])
+              }
+              if (length(authors) > 2L)
+                auth[i] <- paste(authors, collapse = ", ")
+              else auth[i] <- paste(authors, collapse = " ")
+            }
+    # attempt to combine Smith 2008, Smith 2010 into Smith 2008, 2010.
+    #         suppressauth <- which(!nzchar(auth))
+    #         if (length(suppressauth)) {
+    #             for (i in suppressauth) year[i - 1L] <- paste0(year[i -
+    #                 1L], bibpunct[6L], " ", year[i])
+    #             auth <- auth[-suppressauth]
+    #             year <- year[-suppressauth]
+    #         }
         }
-      }
-      result <- paste(result, collapse = paste0(bibpunct[5L], " "))
-      if (!textual && (numeric || alphabetic)) {
-        result <- paste0(bibpunct[3L], before, result, after,
-                         bibpunct[4L])
-        if (super && numeric)
-          result <- paste0("^{", result, "}")
-      }else if (!textual){
-        result <- paste0(bibpunct[1L], before, result, after,
-                         bibpunct[2L])
-      }
-      if (make.hyper && style %in% c("html", "markdown"))
-        result <- paste0(new.links, result)
-      result
-    })
+        make.hyper <- !identical(hyperlink, FALSE)
+
+        if (textual) {
+          if (numeric || alphabetic){
+            result <- paste0(bibpunct[3L], before, year, after, bibpunct[4L])
+          }else{
+            result <- paste0(bibpunct[1L], before, year, after, bibpunct[2L])
+          }
+          if (super && numeric && (!style %in% c("markdown", "html") || !make.hyper))
+              result <- paste0(auth, "^{", result, "}")
+          else if (!super || !numeric) result <- paste0(auth, " ", result)
+        }else if (numeric || alphabetic) {
+          result <- year
+        }else {
+            result <- paste0(auth, bibpunct[6L], " ", year)
+        }
+        if (make.hyper){
+          url = switch(hyperlink, to.bib = paste0("#bib-", gsub("[^_a-zA-Z0-9-]", "", keys)),
+                       to.doc = sapply(papers, GetURL,
+                                       flds = c("url", "eprint", "doi"),
+                                       to.bib = TRUE),
+                       hyperlink)
+          if (style == "html"){
+            new.links <- if (any(first))
+              paste(paste("<a id='cite-", gsub("[^_a-zA-Z0-9-]", "", keys[first]), "'></a>", sep = ""), collapse = "")
+                         else ""
+            result <- if (numeric && super && textual)
+                        paste0(auth, "<sup><a href='", url, "'>", result, "</a></sup>")
+                      else paste0("<a href='", url, "'>", result, "</a>")
+          }else if(style == "markdown"){
+            new.links <- if(any(first))
+              paste(paste("<a name=cite-", gsub("[^_a-zA-Z0-9-]", "", keys[first]), "></a>", sep = ""), collapse = "")
+            else ""
+            result <- if (numeric && super && textual)
+                        paste0(auth, "^[", result, "](", url, ")")
+                      else paste0("[", result, "](", url, ")")
+          }
+        }
+        result <- paste(result, collapse = paste0(bibpunct[5L], " "))
+        if (!textual && (numeric || alphabetic)) {
+          result <- paste0(bibpunct[3L], before, result, after,
+                           bibpunct[4L])
+          if (super && numeric)
+            result <- paste0("^{", result, "}")
+        }else if (!textual){
+          result <- paste0(bibpunct[1L], before, result, after,
+                           bibpunct[2L])
+        }
+        if (make.hyper && style %in% c("html", "markdown"))
+          result <- paste0(new.links, result)
+        result
+      }  # end else for if cite.style == "pandoc"
+    })  # end with for BibOptions
     result
 }
 
@@ -263,6 +273,9 @@ PrintBibliography <- function(bib, .opts = list()){
   citestyle <- if (length(.opts$cite.style))
     .opts$cite.style
   else .BibOptions$cite.style
+  style <- if (length(.opts$style))
+                .opts$style
+              else .BibOptions$style
 
   bib <- bib[[ind]]
   # if bibstyle and citation style match, use citation labels, otherwise recompute them
@@ -282,6 +295,12 @@ PrintBibliography <- function(bib, .opts = list()){
   if (length(.opts)){
     old.opts <- BibOptions(.opts)
     on.exit(BibOptions(old.opts))
+  }
+
+  if (style == "yaml"){
+    cat("\n---\nnocite:",
+    sQuote(paste0(paste0("@", names(.cites$indices)), collapse = ", ")))
+    cat("\n...  \n\n")
   }
   print(bib)
 }

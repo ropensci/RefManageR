@@ -6,10 +6,10 @@
 #' @param .opts a list of formatting options from \code{\link{BibOptions}}.  Possible options are
 #' \itemize{
 #' \item \code{style} - character string naming the printing style.  Possible values are
-#' plain text (style \dQuote{text}), BibTeX (\dQuote{Bibtex}), BibLaTeX (\dQuote{Biblatex}),
-#' a mixture of plain text and BibTeX as
+#' plain text (style \dQuote{text}), BibTeX (\dQuote{Bibtex}), BibLaTeX
+#' (\dQuote{Biblatex}), a mixture of plain text and BibTeX as
 #' traditionally used for citations (\dQuote{citation}), HTML (\dQuote{html}),
-#' LaTeX (\dQuote{latex}), \dQuote{markdown},
+#' LaTeX (\dQuote{latex}), \dQuote{markdown}, \dQuote{yaml} (see Note),
 #' R code (\dQuote{R}), and a simple copy of the textVersion elements
 #' (style \dQuote{textVersion}, see \code{\link{BibEntry}})
 #' \item \code{bib.style} - character string specifying BibLaTeX style to use for formatting references.  Possible values are
@@ -22,7 +22,7 @@
 #' if \code{TRUE} duplicate author and editor lists are replaced with \dQuote{---} when printed.
 #' \item \code{no.print.fields} character vector; fields that should not be printed, e.g., doi, url, isbn, etc.
 #' }
-#' @param ... not used.
+#' @param ... extra parameters to pass to the renderer.
 #' @method print BibEntry
 #' @export
 #' @importFrom tools toRd
@@ -30,6 +30,11 @@
 #'
 #' Custom BibLaTeX styles may be defined using the function \code{\link{bibstyle}}.  To fully support BibLaTeX, the created
 #' environment must have functions for formatting each of the entry types decribed in \code{\link{BibEntry}}.
+#'
+#' \code{style = "yaml"} is only available if the user has downloaded a version of
+#' \code{pandoc} that includes \code{pandoc-citeproc}.  In this case, a temporary
+#' \code{.bib} file will be written and processed by \code{pandoc-citeproc}, the results
+#' of which will be outputted.
 #' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex Package. \url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 #' @seealso \code{\link{BibEntry}}, \code{\link{ReadBib}}, \code{\link{sort.BibEntry}}
 #' @examples
@@ -62,13 +67,13 @@ print.BibEntry <- function (x, .opts = list(), ...){
   if (style == "R") {
     writeLines(format(x, style, collapse = TRUE, ...))
   }else if (style == "yaml"){
-    pandocExists <- suppressWarnings(system("pEXandoc-citeproc -V", ignore.stdout = TRUE,
+    pandocExists <- suppressWarnings(system("pandoc-citeproc -V", ignore.stdout = TRUE,
                            ignore.stderr = TRUE, show.output.on.console = FALSE) == 0)
     pandocPath <- if (pandocExists)
                     "pandoc-citeproc"
                   else{
                     temp <- readline(prompt = paste0(
-                      "Please specify the path to pandoc-citeproc executable",
+                      "Please specify the path to the pandoc-citeproc executable",
                                          options("prompt")))
                     if (!length(grep("pandoc-citeproc$", temp)))
                       temp <- paste(temp, "pandoc-citeproc", sep = "/")
@@ -80,7 +85,7 @@ print.BibEntry <- function (x, .opts = list(), ...){
     tmpfile <- tempfile(fileext = ".bib")
     on.exit(unlink(tmpfile))
     suppressMessages(WriteBib(x, tmpfile))
-    system2(pandocPath, c("-y", tmpfile))
+    writeLines(system2(pandocPath, c("-y", tmpfile), stdout = TRUE))
   }else if (length(x)) {
       y <- format(x, style = style, .BibOptions$bib.style, .sorting = sorting,
                   .sort = TRUE, ...)
@@ -92,8 +97,7 @@ print.BibEntry <- function (x, .opts = list(), ...){
               footer <- c("", footer, "")
           writeLines(c(header, paste(y[-c(1L, n)], collapse = "\n\n"),
               footer))
-      }
-      else {
+      }else {
           writeLines(paste(y, collapse = "\n\n"))
       }
   }

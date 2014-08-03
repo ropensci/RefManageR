@@ -16,8 +16,21 @@ See NEWS file
 To Do:
 ==================================================================================================================
 * make textVersion field work
+* see if you can reproduce Prof. Ripley's error: ReadCrossRef returns an entry with
+  key "Carroll_1995" when queried for "carroll journal of the american statistical
+  association" with `year = 2012`
 * print with style = "citation" not working
 * pandoc style citations? e.g. [@key]
+   * currently, not working because of following issues
+      * native encoding for Windows shell is not UTF-8, try writing to file then using
+        readlines (Not fixed)
+      * knitr wraps output of `PrintBibliography` in code block unless `PrintBibliography`
+        is wrapped in `I`, but this totally f&*%s things in ways I don't understand (FIXED)
+      * other possibility is knit then add bib then use pandoc via system2. usefulness is
+        questionable.  Also seems much slower.  Basically, knit, grep for citations (done),
+        write bib for those citations, add YAML for bibliography to `.md` file, pandoc
+      * need special handling of NoCite (FIXED)
+* proposal for supporting pandoc
    1. when user specifies style = "pandoc",
    2. check for installed pandoc `pandocExists <- system("pandoc -v") == 0`
    3. citations become [@key] (for Citep) and @key for Citet

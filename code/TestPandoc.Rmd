@@ -4,75 +4,46 @@ output: html_document
 ---
 
 ```{r setup, include = FALSE, cache = FALSE}
-library(RefManageR)
-bib <- ReadBib(system.file("Bib", "biblatexExamples.bib",
-                           package = "RefManageR"), check = FALSE)
-bib2 <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[[seq_len(20)]]
-BibOptions(check.entries = FALSE, style = "markdown", cite.style = "authoryear",
+load_all('c:/Users/Matthew/Documents/biblatex/RefManageR/code/RefManageR/')
+## library(RefManageR)
+## system.file("Bib", "biblatexExamples.bib",
+##                           package = "RefManageR")
+bib <- ReadBib("~/biblatex/RefManageR/code/RefManageR/inst/Bib/biblatexExamples.bib",
+  check = FALSE)
+## bib2 <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[[seq_len(20)]]
+BibOptions(check.entries = FALSE, style = "markdown", cite.style = "pandoc",
            bib.style = "numeric")
 ```
 
----
-references:
-- id: bertram
-  type: Article
-  author: 
-  - given: Aaron
-    family: Bertram
-  - given: Richard
-    family: Wentworth
-  title: Gromov invariants for holomorphic maps on Riemann surfaces
-  journaltitle: 'J. Amer. Math. Soc.'
-  date: "1996"
-  volume: "9"
-  number: "2"
-  pages: "529-571"
-  langid: "english"
-  langidopts: 'variant=american'
-  shorttitle: "Gromov invariants"
-  annotation: An textttarticle entry with a textttvolume and a textttnumber field
-- id: "doody"
-  type: "Article"
-  author: 
-  - given: "Terrence"
-    family: "Doody"
-  title: "Hemingways Style and Jake/s Narration"
-  year: "1974"
-  volume: "4"
-  number: "3"
-  pages: "212-225"
-  langid: "english"
-  langidopts: "variant=american"
-  related: 'matuz:doody'
-  relatedstring: autocapexcerpt in
-  journal: The Journal of Narrative Technique
-  annotation: An textttarticle entry cited as an excerpt from atextttcollection entry.
-...
-
-
   This is an R Markdown document. This is an example of a citation in the text @loh. Now we cite in parentheses [@baez/online].  Notice the useful 'b' beside the year in the citation.  You can change the default options in a setup chunk at the start of the document or at any other point using the <code>BibOptions</code> function or by specifying options as a list in the `.opts` argument to the cite functions.  In this example we mix `"authoyear"` citation style with `"numeric"` bibliography style.
 
-Note that I do not only have to cite by key, and may use all the features of the `SearchBib` function to index into the BibEntry object.  Here are all the entries of type `Report` in my bibliography `r Citet(bib, bibtype = "Report", .opts = list(hyperlink = "to.doc"))`.  The hyperlinks will take you to their entry in the bibliography.  The link for `r TextCite(bib, "markey")` will open the document in a new window; this is the default behaviour, if a link is available (see `?open.BibEntry`). The following citation has no hyperlink `r AutoCite(bib, location = "Uppsala", .opts = list(hyperlink = FALSE))`.  You can also embed plots, to make the page longer:
+Note that I do not only have to cite by key, and may use all the features of the `SearchBib` function to index into the BibEntry object.  Here are all the entries of type `Report` in my bibliography `r Citet(bib, bibtype = "Report", .opts = list(hyperlink = "to.doc"))`.  The hyperlinks will take you to their entry in the bibliography.  The link for `r TextCite(bib, "markey")` will open the document in a new window; this is the default behaviour, if a link is available (see `?open.BibEntry`). The following citation has no hyperlink `r AutoCite(bib, c("doody", "markey"), .opts = list(hyperlink = FALSE))`.  You can also embed plots, to make the page longer:
 
 ```{r fig.width=7, fig.height=6}
 plot(cars)
 ```
-`r NoCite(bib = bib, title = "CTAN")`I've added a reference to CTAN without citing it using the `NoCite` function.  Now I'm adding a reference from another bibliography (a second `BibEntry` object) `r AutoCite(bib2, title = "binary longitudinal data")`.  Look at all my Aristotle: `r TextCite(bib, author = "Aristotle")`.
+`r NoCite(bib = bib, title = "CTAN")`I've added a reference to CTAN without citing it using the `NoCite` function.  Look at all my Aristotle: `r TextCite(bib, author = "Aristotle")`.
 
 ```{r fig.width=7, fig.height=6}
 plot(cars)
 ```
 
-Some ppers on the arXiv are `r TextCite(bib, eprinttype = "arxiv")`.  A reference to @doody and [@bertram].
+Some papers on the arXiv are `r TextCite(bib, eprinttype = "arxiv")`.  A reference to @doody and [@markey].
 
 **References**
+```{r include = FALSE, echo = FALSE, results = FALSE}
+## `r I(PrintBibliography(bib, .opts = list(check.entries = FALSE, sorting = "ynt",
+##     style = "yaml")))`
+```
 
 ```{r results = "asis", echo = FALSE}
-PrintBibliography(bib, .opts = list(check.entries = FALSE, sorting = "ynt"))
+knit_hooks$set(output = function(x, options) x )
+## knit_hooks$set(chunk = function(x, options) x )
+PrintBibliography(bib, .opts = list(check.entries = FALSE, style = "yaml"))
 ```
 
 # References
 
 ```{r results = FALSE, echo = FALSE}
-WriteBib(bib[c("loh","baez/online")], file = "pandocBib.bib")
+## WriteBib(bib[c("loh","baez/online")], file = "pandocBib.bib")
 ```

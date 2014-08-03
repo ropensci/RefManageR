@@ -1,4 +1,21 @@
-Changes in Version 0.8.3 (2013-07-30)
+Changes in Version 0.9.0 (2014-08-30)
+---------------------------------------------------------
+
+NEW FEATURES
+
+* BibEntry objects can be printed in `YAML` format if `pandoc-citeproc` is available
+* `Cite` functions can now print citations in format read by `pandoc` and `RMarkdown`
+* Added function `RenderWithPandoc` for processing `RMarkdown` documents with `knitr` and
+`pandoc`.  One of the main uses of this is support for `CSL` citation formats.
+* Added TestPandoc.Rmd vignette to demonstrate the above features
+
+BUG FIXES
+
+* "textVersion" attribute for entries in a BibEntry object now works properly (h/t Carl
+Boettiger)
+* `print.BibEntry` with `BibOptions(style = "citation")` now works properly
+
+Changes in Version 0.8.3 (2014-07-30)
 ---------------------------------------------------------
 
 NEW FEATURES
@@ -10,7 +27,7 @@ packages with `citation`.
 * `$<-.BibEntry` will now accept a single person object, so that a single author in a multi-author entry
 may be updated.  An example may be found at `help("$<-.BibEntry")`.  (h/t Carl Boettiger)
 
-Changes in Version 0.8.2 (2013-06-01)
+Changes in Version 0.8.2 (2014-06-01)
 ---------------------------------------------------------
 
 BUG FIXES
@@ -26,7 +43,7 @@ NEW FEATURES
 * Added CITATION file
 * Updated License to explicitly include GPL-2 and GPL-3
 
-Changes in Version 0.8.1 (2013-03-09)
+Changes in Version 0.8.1 (2014-03-09)
 ---------------------------------------------------------
 
 BUG FIXES

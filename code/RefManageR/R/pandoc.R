@@ -11,19 +11,32 @@
 #' @references \url{http://johnmacfarlane.net/pandoc/README.html}
 #' @references \url{http://citationstyles.org/downloads/primer.html}
 #'
-RenderDoc <- function(infile, outfile, csl="ieee.csl", pandoc.opts = ""){
+RenderWithPandoc <- function(infile, outfile, csl="ieee.csl", pandoc.opts = ""){
   pandocExists <- system("pandoc -v", ignore.stdout = TRUE, ignore.stderr = TRUE,
                          show.output.on.console = FALSE) == 0
   pandocPath <- if (pandocExists)
                   "pandoc"
-                else
-                  readline(prompt = "Please specify the path to pandoc executable.")
+                else{
+                    temp <- readline(prompt = paste0(
+                      "Please specify the path to the pandoc executable",
+                                         options("prompt")))
+                    if (!length(grep("pandoc$", temp)))
+                      temp <- paste(temp, "pandoc", sep = "/")
+                    if (suppressWarnings(system2(temp, "-V", stdout = FALSE,
+                           stderr = FALSE) != 0))
+                      stop("pandoc not found.")
+                    temp
+                  }
   pandoc.opts <- unlist(strsplit(pandoc.opts, " "))
   knit.outfile <- gsub("[.]Rmd$", "[.]md", infile)
   knit(infile, knit.outfile)
+  doc <- readLines(knit.outfile)
+  m <- gregexpr("(^|[[:space:][])@([[:alpha:]_][[:alnum:]:.#$%&-+?<>~/]*)", doc)
+  citations <- unlist(regmatches(doc, m))
+  citations <- sub("(^|[[:space:][])@", "", citations)
+  ## citations <- unlist(lapply(citations, function(x) if (length(x)) x[3]))
   tfile <- tempfile(fileext = ".bib")
   WriteBib(bib, tfile, biblatex = TRUE)
-
 
   system2(pandocPath, args = c(pandoc.opts, "--biblio", "tfile", "--csl", csl, "-f",
                           knit.outfile, "-o", outfile))
