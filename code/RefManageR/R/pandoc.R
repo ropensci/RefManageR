@@ -10,7 +10,6 @@
 #' @param pandoc.opts character; additional options to pass to pandoc
 #' @references \url{http://johnmacfarlane.net/pandoc/README.html}
 #' @references \url{http://citationstyles.org/downloads/primer.html}
-#'
 RenderWithPandoc <- function(infile, outfile, csl="ieee.csl", pandoc.opts = ""){
   pandocExists <- system("pandoc -v", ignore.stdout = TRUE, ignore.stderr = TRUE,
                          show.output.on.console = FALSE) == 0
@@ -22,7 +21,7 @@ RenderWithPandoc <- function(infile, outfile, csl="ieee.csl", pandoc.opts = ""){
                                          options("prompt")))
                     if (!length(grep("pandoc$", temp)))
                       temp <- paste(temp, "pandoc", sep = "/")
-                    if (suppressWarnings(system2(temp, "-V", stdout = FALSE,
+                    if (suppressWarnings(system2(temp, "-v", stdout = FALSE,
                            stderr = FALSE) != 0))
                       stop("pandoc not found.")
                     temp

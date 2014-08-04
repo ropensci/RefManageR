@@ -26,6 +26,7 @@ To Do:
         readlines (Not fixed)
       * knitr wraps output of `PrintBibliography` in code block unless `PrintBibliography`
         is wrapped in `I`, but this totally f&*%s things in ways I don't understand (FIXED)
+        Suspected culprit was double use of `on.exit` in `print.BibEntry`
       * other possibility is knit then add bib then use pandoc via system2. usefulness is
         questionable.  Also seems much slower.  Basically, knit, grep for citations (done),
         write bib for those citations, add YAML for bibliography to `.md` file, pandoc

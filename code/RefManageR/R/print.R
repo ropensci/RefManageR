@@ -83,9 +83,13 @@ print.BibEntry <- function (x, .opts = list(), ...){
                     temp
                   }
     tmpfile <- tempfile(fileext = ".bib")
-    on.exit(unlink(tmpfile))
+    on.exit(unlink(tmpfile), TRUE)
     suppressMessages(WriteBib(x, tmpfile))
-    writeLines(system2(pandocPath, c("-y", tmpfile), stdout = TRUE))
+    ## writeLines(system2(pandocPath, c("-y", tmpfile), stdout = TRUE))
+    tfile <- file("temp-file", encoding = "")
+    cat(system2(pandocPath, c("-y", tmpfile), stdout = ""), file = tfile)
+    iconv(readLines(tfile, encoding = ""), from = "", to = "UTF-8")
+    close(tfile)
   }else if (length(x)) {
       y <- format(x, style = style, .BibOptions$bib.style, .sorting = sorting,
                   .sort = TRUE, ...)
