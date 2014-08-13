@@ -22,3 +22,11 @@ ReadPDFex2/
 *.md
 RefManageR.Rcheck/
 *~
+
+_region_*
+*.bib.bak
+*.tex.bak
+*.bbl
+*.aux
+*.synctex
+*.log

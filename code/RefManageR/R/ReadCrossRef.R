@@ -16,18 +16,20 @@
 #' to your query.  The API documentation warns that while false negatives are unlikely, the search can be prone
 #' to false positives.  Hence, setting \code{min.revelance} to a high value may be necessary.
 #' @importFrom RJSONIO fromJSON
-#' @importFrom RCurl getForm getURLContent
+#' @importFrom RCurl getForm getURLContent url.exists
 #' @export
 #' @keywords database
 #' @seealso \code{\link{ReadZotero}}, \code{\link{BibEntry}}
 #' @family pubmed
 #' @references \url{http://search.crossref.org/help/api}
 #' @examples
-#' ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
-#'   min.relevance = 80)
+#' if (interactive() && url.exists("http://search.labs.crossref.org/dois")){
+#'   ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
+#'     min.relevance = 80)
 #'
-#' ReadCrossRef(query = 'carroll journal of the american statistical association',
-#'   year = 2012, limit = 2)
+#'   ReadCrossRef(query = 'carroll journal of the american statistical association',
+#'     year = 2012, limit = 2)
+#' }
 ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.relevance = 80,
                            temp.file = tempfile(fileext = '.bib'), delete.file = TRUE, verbose = FALSE){
   if (is.na(query))

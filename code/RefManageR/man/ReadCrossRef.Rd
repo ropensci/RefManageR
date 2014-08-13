@@ -49,11 +49,13 @@ Hence, setting \code{min.revelance} to a high value may be
 necessary.
 }
 \examples{
-ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
-  min.relevance = 80)
+if (interactive() && url.exists("http://search.labs.crossref.org/dois")){
+  ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
+    min.relevance = 80)
 
-ReadCrossRef(query = 'carroll journal of the american statistical association',
-  year = 2012, limit = 2)
+  ReadCrossRef(query = 'carroll journal of the american statistical association',
+    year = 2012, limit = 2)
+}
 }
 \references{
 \url{http://search.crossref.org/help/api}

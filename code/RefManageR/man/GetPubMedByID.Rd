@@ -28,7 +28,8 @@ Article entry will be created; otherwise, a Misc entry will
 be created.
 }
 \examples{
-GetPubMedByID(c("11209037", "21245076"))
+if (interactive() && url.exists("http://eutils.ncbi.nlm.nih.gov/"))
+  GetPubMedByID(c("11209037", "21245076"))
 }
 \references{
 \url{http://www.ncbi.nlm.nih.gov/books/NBK25500/}
