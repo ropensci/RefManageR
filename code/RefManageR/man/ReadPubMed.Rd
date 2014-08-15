@@ -43,10 +43,12 @@ was retrieved. See the Entrez documentation listed in the
 \emph{References}.
 
 The language of the entry will be returned in the field
-\dQuote{language}, if it is available.
+\dQuote{language} and the abstract will be returned in the
+field \dQuote{abstract}, if they are available.
 }
 \examples{
-ReadPubMed(query = "raymond carroll measurement error", retmax = 5, mindate = 1990)
+if (interactive() && url.exists("http://eutils.ncbi.nlm.nih.gov/"))
+  ReadPubMed(query = "raymond carroll measurement error", retmax = 5, mindate = 1990)
 }
 \references{
 \url{http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}

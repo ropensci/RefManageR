@@ -31,9 +31,11 @@ that the eprinttype field is assigned the value
 \dQuote{pubmed} and the eprint field is assigned the ID.
 }
 \examples{
-file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
-bib <- ReadBib(file.name)
-LookupPubMedID(bib[[101:102]])
+if (interactive() && url.exists("http://eutils.ncbi.nlm.nih.gov/")){
+  file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
+  bib <- ReadBib(file.name)
+  LookupPubMedID(bib[[101:102]])
+}
 }
 \seealso{
 Other pubmed: \code{\link{GetPubMedByID}};

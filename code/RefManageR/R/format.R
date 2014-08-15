@@ -54,7 +54,7 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
                   ""), if (!is.null(y$textVersion)) {
                   strwrap(y$textVersion, prefix = "  ")
                 } else {
-                  format(y)
+                  format(y, style = "text")
                 }, if (bibtex) {
                   c(gettext("\nA BibTeX entry for LaTeX users is\n"),
                     paste0("  ", unclass(toBibtex(y))))
