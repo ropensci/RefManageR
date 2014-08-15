@@ -1,3 +1,16 @@
+Changes in Version 0.8.32 (2014-08-14)
+--------------------------------------------------------
+
+NEW FEATURES
+
+* Functions for interacting with PubMed return language of each article (request of Erich Studerus) 
+
+BUG FIXES
+
+* `print.BibEntry` with `BibOptions(style = "citation")` now works properly
+* Examples calling web resources should no longer upset the check farm (h/t HI&RH Lord Ripley of England)
+
+
 Changes in Version 0.8.3 (2013-07-30)
 ---------------------------------------------------------
 

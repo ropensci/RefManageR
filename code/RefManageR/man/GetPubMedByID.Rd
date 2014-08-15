@@ -23,12 +23,13 @@ information given a vector of PubMed ID's and returns the
 results as a BibEntry object.
 }
 \note{
-If journal information is returned for an ID, then and
-Article entry will be created; otherwise, a Misc entry will
-be created.
+If journal information is returned for an ID, then an entry
+with \code{bibtype} \dQuote{Article} will be created;
+otherwise, the \code{bibtype} will be \dQuote{Misc}.
 }
 \examples{
-GetPubMedByID(c("11209037", "21245076"))
+if (interactive() && url.exists("http://eutils.ncbi.nlm.nih.gov/"))
+  GetPubMedByID(c("11209037", "21245076"))
 }
 \references{
 \url{http://www.ncbi.nlm.nih.gov/books/NBK25500/}

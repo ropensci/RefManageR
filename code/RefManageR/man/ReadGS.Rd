@@ -63,14 +63,17 @@ directly from Google Scholar as no API is available and
 this violates their Terms of Service.
 }
 \examples{
-## R. J. Carroll's ten newest publications
-ReadGS(scholar.id = "CJOHNoQAAAAJ", limit = 10, sort.by.date = TRUE)
+if (interactive() && url.exists("http://scholar.google.com")){
+  ## R. J. Carroll's ten newest publications
+  ReadGS(scholar.id = "CJOHNoQAAAAJ", limit = 10, sort.by.date = TRUE)
 
-## Matthias Katzfu\\ss
-kat.bib <- ReadGS(scholar.id = "vqW0UqUAAAAJ")
+  ## Matthias Katzfu\\ss
+  BibOptions(check.entries = "warn")
+  kat.bib <- ReadGS(scholar.id = "vqW0UqUAAAAJ")
 
-## retrieve GS citation counts stored in field 'cites'
-kat.bib["cites"]
+  ## retrieve GS citation counts stored in field 'cites'
+  kat.bib["cites"]
+}
 }
 \seealso{
 \code{\link{BibEntry}}

@@ -33,7 +33,7 @@
 #' @note The returned entries will have type either \sQuote{Article} or \sQuote{Misc} depending on whether journal information was retrieved.
 #' See the Entrez documentation listed in the \emph{References}.
 #'
-#' The language of the entry will be returned in the field \dQuote{language}, if it is available.
+#' The language of the entry will be returned in the field \dQuote{language} and the abstract will be returned in the field \dQuote{abstract}, if they are available.
 #' @references \url{http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
 #' @family pubmed
 #' @examples
@@ -84,8 +84,8 @@ ReadPubMed <- function(query, database = 'PubMed', ...){
 #' @param ... additional parameters to use for the search.
 #' See the Entrez documentation listed in the \emph{References}.
 #' @return a BibEntry object.
-#' @note If journal information is returned for an ID, then and Article entry will be created; otherwise,
-#' a Misc entry will be created.
+#' @note If journal information is returned for an ID, then an entry with \code{bibtype}
+#' \dQuote{Article} will be created; otherwise, the \code{bibtype} will be \dQuote{Misc}.
 #' @importFrom RCurl getForm
 #' @importFrom XML xmlParse getNodeSet
 #' @keywords database

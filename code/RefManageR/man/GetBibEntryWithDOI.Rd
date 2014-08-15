@@ -29,7 +29,8 @@ file and then read back into \code{R} and return as a
 \code{BibEntry} object.
 }
 \examples{
-GetBibEntryWithDOI(c("10.1016/j.iheduc.2003.11.004", "10.3998/3336451.0004.203"))
+if (interactive() && url.exists("http://dx.doi.org/"))
+  GetBibEntryWithDOI(c("10.1016/j.iheduc.2003.11.004", "10.3998/3336451.0004.203"))
 }
 \references{
 \url{http://www.doi.org/tools.html}
