@@ -223,11 +223,11 @@ GetPubMedRelated <- function(id, database = 'pubmed', batch.mode = TRUE, max.res
 }
 
 #' @keywords internal
-#' @importFrom XML xpathApply xmlValue free
+#' @importFrom XML xpathApply xmlValue free xmlGetAttr
 ProcessPubMedResult <- function(article){
   tdoc <- xmlDoc(article)
   res <- list()
-  
+
   title <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/ArticleTitle',
                                  xmlValue))
   res$title <- gsub('\\.$', '', title)
