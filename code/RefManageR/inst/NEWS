@@ -1,5 +1,10 @@
-Changes in Version 0.8.33 (2014-08-17)
+Changes in Version 0.8.34 (2014-08-18)
 --------------------------------------------------------
+
+NEW FEATURES
+
+* Added function `GetDOIs` which searches CrossRef for DOIs for the citations stored in
+a `BibEntry` object
 
 BUG FIXES
 

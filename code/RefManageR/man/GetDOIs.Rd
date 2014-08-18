@@ -1,0 +1,42 @@
+\name{GetDOIs}
+\alias{GetDOIs}
+\title{Search CrossRef for Document Object Identifiers for Given Citations}
+\usage{
+GetDOIs(bib)
+}
+\arguments{
+  \item{bib}{a \code{BibEntry} object}
+}
+\value{
+\code{bib} with any found DOI's added in the \sQuote{doi}
+field
+}
+\description{
+This function queries CrossRef to obtain DOIs for the
+entries in a given \code{BibEntry} object.
+}
+\note{
+Only entries in \code{bib} that do not already contain a
+value in the \sQuote{doi} field will be searched for.
+}
+\examples{
+if (interactive() && url.exists("http://search.crossref.org")){
+  BibOptions(check.entries = FALSE)
+  bib <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[1:5]
+  bib <- GetDOIs(bib)
+  bib$doi
+}
+}
+\references{
+\url{http://search.crossref.org/help/api}
+}
+\seealso{
+\code{\link{ReadCrossRef}}
+
+Other pubmed: \code{\link{GetPubMedByID}};
+\code{\link{GetPubMedRelated}};
+\code{\link{LookupPubMedID}}; \code{\link{ReadCrossRef}};
+\code{\link{ReadPubMed}}
+}
+\keyword{database}
+

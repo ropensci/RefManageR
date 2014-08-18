@@ -61,9 +61,11 @@ if (interactive() && url.exists("http://search.crossref.org/")){
 \url{http://search.crossref.org/help/api}
 }
 \seealso{
-\code{\link{ReadZotero}}, \code{\link{BibEntry}}
+\code{\link{ReadZotero}}, \code{\link{BibEntry}},
+\code{\link{GetDOIs}}
 
-Other pubmed: \code{\link{GetPubMedByID}};
+Other pubmed: \code{\link{GetDOIs}};
+\code{\link{GetPubMedByID}};
 \code{\link{GetPubMedRelated}};
 \code{\link{LookupPubMedID}}; \code{\link{ReadPubMed}}
 }

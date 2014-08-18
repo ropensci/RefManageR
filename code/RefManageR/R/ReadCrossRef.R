@@ -19,7 +19,7 @@
 #' @importFrom RCurl getForm getURLContent url.exists
 #' @export
 #' @keywords database
-#' @seealso \code{\link{ReadZotero}}, \code{\link{BibEntry}}
+#' @seealso \code{\link{ReadZotero}}, \code{\link{BibEntry}}, \code{\link{GetDOIs}}
 #' @family pubmed
 #' @references \url{http://search.crossref.org/help/api}
 #' @examples

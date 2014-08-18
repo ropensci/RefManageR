@@ -58,9 +58,9 @@ if (interactive() && url.exists("http://eutils.ncbi.nlm.nih.gov/")){
 \url{http://www.ncbi.nlm.nih.gov/books/NBK25500/}
 }
 \seealso{
-Other pubmed: \code{\link{GetPubMedByID}};
-\code{\link{LookupPubMedID}}; \code{\link{ReadCrossRef}};
-\code{\link{ReadPubMed}}
+Other pubmed: \code{\link{GetDOIs}};
+\code{\link{GetPubMedByID}}; \code{\link{LookupPubMedID}};
+\code{\link{ReadCrossRef}}; \code{\link{ReadPubMed}}
 }
 \keyword{database}
 
