@@ -38,7 +38,8 @@ if (interactive() && url.exists("http://eutils.ncbi.nlm.nih.gov/")){
 }
 }
 \seealso{
-Other pubmed: \code{\link{GetPubMedByID}};
+Other pubmed: \code{\link{GetDOIs}};
+\code{\link{GetPubMedByID}};
 \code{\link{GetPubMedRelated}}; \code{\link{ReadCrossRef}};
 \code{\link{ReadPubMed}}
 }

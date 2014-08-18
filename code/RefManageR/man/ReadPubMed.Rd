@@ -54,7 +54,8 @@ if (interactive() && url.exists("http://eutils.ncbi.nlm.nih.gov/"))
 \url{http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
 }
 \seealso{
-Other pubmed: \code{\link{GetPubMedByID}};
+Other pubmed: \code{\link{GetDOIs}};
+\code{\link{GetPubMedByID}};
 \code{\link{GetPubMedRelated}};
 \code{\link{LookupPubMedID}}; \code{\link{ReadCrossRef}}
 }
