@@ -3,6 +3,7 @@ Changes in Version 0.8.33 (2014-08-17)
 
 BUG FIXES
 
+* `ReadCrossRef` fixed to account for change to CrossRef API endpoint
 * Abstracts returned by NCBI Entrez can be multiple parts.  This is now handled correctly and the complete
 abstract will be returned in the 'abstract' field. (h/t Erich Studerus)
 * DOI's were too naively extracted from NCBI Entrez results, resulting in some entries having 'doi' fields with
@@ -13,7 +14,7 @@ Changes in Version 0.8.32 (2014-08-14)
 
 NEW FEATURES
 
-* Functions for interacting with NCBI Entrez return abstract of each article (request of Erich Studerus) 
+* Functions for interacting with NCBI Entrez return abstract of each article (request of Erich Studerus)
 
 BUG FIXES
 

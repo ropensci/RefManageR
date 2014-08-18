@@ -23,7 +23,7 @@
 #' @family pubmed
 #' @references \url{http://search.crossref.org/help/api}
 #' @examples
-#' if (interactive() && url.exists("http://search.labs.crossref.org/dois")){
+#' if (interactive() && url.exists("http://search.crossref.org/")){
 #'   ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
 #'     min.relevance = 80)
 #'
@@ -44,7 +44,7 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.
 
     good <- GetCrossRefBibTeX(paste0('http://dx.doi.org/', .doi), temp.file)
   }else{
-    results <- try(getForm("http://search.labs.crossref.org/dois", q=query, year=year, sort=sort,
+    results <- try(getForm("http://search.crossref.org/dois", q=query, year=year, sort=sort,
                        rows=limit))
     if (inherits(results, 'try-error'))
       return(NA)

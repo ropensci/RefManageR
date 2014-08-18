@@ -49,7 +49,7 @@ Hence, setting \code{min.revelance} to a high value may be
 necessary.
 }
 \examples{
-if (interactive() && url.exists("http://search.labs.crossref.org/dois")){
+if (interactive() && url.exists("http://search.crossref.org/")){
   ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
     min.relevance = 80)
 
