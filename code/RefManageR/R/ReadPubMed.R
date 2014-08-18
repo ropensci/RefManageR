@@ -227,7 +227,7 @@ GetPubMedRelated <- function(id, database = 'pubmed', batch.mode = TRUE, max.res
 ProcessPubMedResult <- function(article){
   tdoc <- xmlDoc(article)
   res <- list()
-
+  
   title <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/ArticleTitle',
                                  xmlValue))
   res$title <- gsub('\\.$', '', title)
@@ -263,13 +263,36 @@ ProcessPubMedResult <- function(article){
                           xmlValue))
   doi <- unlist(xpathApply(tdoc, '//PubmedArticle/PubmedData/ArticleIdList/ArticleId',
                               xmlValue))
-  res$doi <- grep('/', doi, value = TRUE)
+  res$doi <- if (length(doi > 1)){
+    id.types <- unlist(xpathApply(tdoc,
+                    "//PubmedArticle/PubmedData/ArticleIdList/ArticleId",
+                                    xmlGetAttr, name = "IdType", default = ""))
+    if (length(doi.pos <- grep("doi", id.types, ignore.case = TRUE)))
+       doi[doi.pos[1L]]
+    else{
+      doi <- sapply(doi, SearchDOIText)
+      if (any(doi.pos <- !is.na(doi)))
+        doi[doi.pos[1L]]
+      else
+        NULL
+    }
+  }else
+    doi
+  # res$doi <- grep('/', doi, value = TRUE)
 
   res$language <- unlist(xpathApply(tdoc,
                            "//PubmedArticle/MedlineCitation/Article/Language", xmlValue))
   res$abstract <- unlist(xpathApply(tdoc,
                     "//PubmedArticle/MedlineCitation/Article/Abstract/AbstractText",
                                     xmlValue))
+  if (length(res$abstract) > 1){  # some abstracts are separated into sections: methods, conclusion, etc.
+      abstract.labs <- unlist(xpathApply(tdoc,
+                    "//PubmedArticle/MedlineCitation/Article/Abstract/AbstractText",
+                                    xmlGetAttr, name = "Label", default = ""))
+      res$abstract <- if (!any(sapply(abstract.labs, .is_not_nonempty_text)))
+                           paste0(paste(abstract.labs, res$abstract, sep = ": "), collapse = "\n")
+                      else paste0(res$abstract, collapse = "\n")
+  }
 
   free(tdoc)
   res$eprinttype <- 'pubmed'
