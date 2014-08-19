@@ -24,7 +24,7 @@ GetDOIs <- function(bib){
   if (!length(missing.dois.pos))
     message("All entries already have DOIs")
   else{
-    json.bib <- toJSON(format(bib[[missing.dois.pos]], style = "text"))
+    json.bib <- toJSON(format(bib[[missing.dois.pos]], style = "text", .sort = FALSE))
 
     headers <- list('Accept' = 'application/json', 'Content-Type' = 'application/json')
     json.res <- postForm("http://search.crossref.org/links",
