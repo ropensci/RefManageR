@@ -50,6 +50,7 @@ necessary.
 }
 \examples{
 if (interactive() && url.exists("http://search.crossref.org/")){
+  BibOptions(check.entries = FALSE)
   ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
     min.relevance = 80)
 
