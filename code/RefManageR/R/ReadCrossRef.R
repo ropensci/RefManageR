@@ -24,6 +24,7 @@
 #' @references \url{http://search.crossref.org/help/api}
 #' @examples
 #' if (interactive() && url.exists("http://search.crossref.org/")){
+#'   BibOptions(check.entries = FALSE)
 #'   ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
 #'     min.relevance = 80)
 #'
