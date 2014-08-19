@@ -7,6 +7,7 @@
 #' @importFrom RJSONIO toJSON fromJSON
 #' @importFrom RCurl postForm
 #' @keywords database
+#' @export
 #' @seealso \code{\link{ReadCrossRef}}
 #' @family pubmed
 #' @note Only entries in \code{bib} that do not already contain a value in the
@@ -25,8 +26,8 @@ GetDOIs <- function(bib){
     message("All entries already have DOIs")
   else{
     json.bib <- toJSON(format(bib[[missing.dois.pos]], style = "text", .sort = FALSE))
-
     headers <- list('Accept' = 'application/json', 'Content-Type' = 'application/json')
+
     json.res <- postForm("http://search.crossref.org/links",
                       .opts = list(postfields = json.bib, httpheader = headers))
     json.res <- try(fromJSON(json.res), TRUE)
