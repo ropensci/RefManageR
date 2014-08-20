@@ -8,7 +8,7 @@ a `BibEntry` object
 
 BUG FIXES
 
-* `ReadCrossRef` fixed to account for change to CrossRef API endpoint
+* `ReadCrossRef` fixed to account for change to CrossRef API endpoint. (h/t Carl Boettiger)
 * Abstracts returned by NCBI Entrez can be multiple parts.  This is now handled correctly and the complete
 abstract will be returned in the 'abstract' field. (h/t Erich Studerus)
 * DOI's were too naively extracted from NCBI Entrez results, resulting in some entries having 'doi' fields with
