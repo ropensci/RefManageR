@@ -1,3 +1,11 @@
+Changes in Version 0.8.35 (2014-08-23)
+--------------------------------------------------------
+
+NEW FEATURES
+
+* Improved formatting of citation given to CrossRef for increased chances of finding matches with `GetDOIs`
+function (h/t Erich Studerus)
+
 Changes in Version 0.8.34 (2014-08-18)
 --------------------------------------------------------
 

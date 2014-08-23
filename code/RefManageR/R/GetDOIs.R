@@ -25,7 +25,7 @@ GetDOIs <- function(bib){
   if (!length(missing.dois.pos))
     message("All entries already have DOIs")
   else{
-    json.bib <- toJSON(format(bib[[missing.dois.pos]], style = "text", .sort = FALSE))
+    json.bib <- toJSON(FormatEntryForCrossRef(bib[[missing.dois.pos]]))
     headers <- list('Accept' = 'application/json', 'Content-Type' = 'application/json')
 
     json.res <- postForm("http://search.crossref.org/links",
@@ -49,3 +49,48 @@ GetDOIs <- function(bib){
   bib
 }
 
+
+FormatEntryForCrossRef <- function(bib){
+    with(MakeBibLaTeX("text", TRUE), {
+      bibstyle <- "authoryear"
+      collapse <- function(strings)
+                    paste(strings, collapse = " ")
+
+      fmtVolume <- function(vol, num){
+          if (length(vol)){
+            res <- paste0("vol. ", vol)
+            if (length(num))
+              res <- paste(res, num, sep = ', no. ')
+            res
+          }
+       }
+       fmtJTitle <- function(title){
+         if (length(grep('[.?!]$', title)))
+           paste0("\"", collapse(cleanupLatex(title)), "\"")
+         else paste0("\"", collapse(cleanupLatex(title)), "\".")
+       }
+      
+      fmtJournal <- function(s){
+        if (length(s$journaltitle)){
+          res <- cleanupLatex(s$journaltitle)
+          if (length(s$journalsubtitle))
+            res <- paste(addPeriod(res), cleanupLatex(s$journalsubtitle))
+          return(res)
+        }else if(!is.null(s$journal)){
+          cleanupLatex(s$journal)  
+        }
+      }
+
+      formatArticle <- function(paper){
+         collapse(c(fmtBAuthor(paper), fmtJTitle(paper$title), 
+               sentence(fmtJournal(paper), fmtVolume(paper$volume, paper$number),
+                                      fmtPages(paper$pages, paper$pagination),
+                       fmtDate(attr(paper, "dateobj")), sep = ', '),
+               fmtISSN(paper$issn)))
+      }
+      sapply(unclass(bib), function(doc){
+            doc$.duplicated <- FALSE
+            formatArticle(doc)
+          })
+      })
+}
