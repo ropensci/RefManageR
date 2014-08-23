@@ -15,13 +15,15 @@
 #' @references \url{http://search.crossref.org/help/api}
 #' @examples
 #' if (interactive() && url.exists("http://search.crossref.org")){
-#'   BibOptions(check.entries = FALSE)
+#'   BibOptions(check.entries = FALSE, sorting = "none")
 #'   bib <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[1:5]
 #'   bib <- GetDOIs(bib)
 #'   bib$doi
 #' }
 GetDOIs <- function(bib){
-  missing.dois.pos <- which(sapply(bib$doi, is.null))
+  missing.dois.pos <- which(if (length(bib) == 1)
+                        is.null(bib$doi)
+                      else sapply(bib$doi, is.null))
   if (!length(missing.dois.pos))
     message("All entries already have DOIs")
   else{
@@ -51,7 +53,9 @@ GetDOIs <- function(bib){
 
 
 FormatEntryForCrossRef <- function(bib){
-    with(MakeBibLaTeX("text", TRUE), {
+    fmt.env <- MakeBibLaTeX("text", TRUE)
+    assign("bib", bib, envir = fmt.env)
+    with(fmt.env, {
       bibstyle <- "authoryear"
       collapse <- function(strings)
                     paste(strings, collapse = " ")
@@ -88,6 +92,8 @@ FormatEntryForCrossRef <- function(bib){
                        fmtDate(attr(paper, "dateobj")), sep = ', '),
                fmtISSN(paper$issn)))
       }
+      oldopts <- BibOptions(max.names = 99, first.inits = TRUE)
+      on.exit(BibOptions(oldopts))
       sapply(unclass(bib), function(doc){
             doc$.duplicated <- FALSE
             formatArticle(doc)
