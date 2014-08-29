@@ -8,7 +8,7 @@ function (h/t Erich Studerus)
 
 BUG FIXES
 
-* DOI's hyperlinks in Markdown format are now correct (h/t Stephen Eglen)
+* DOI hyperlinks in Markdown format are now correct (h/t Stephen Eglen)
 
 Changes in Version 0.8.34 (2014-08-18)
 --------------------------------------------------------
