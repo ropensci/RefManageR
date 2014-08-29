@@ -516,7 +516,7 @@ fmtDOI <- switch(docstyle, html = function(doi){
   }
 }, markdown = function(doi){
   if (length(doi)){
-    paste0("DOI: [href=http://dx.doi.org/", doi, "](", doi, ").")
+    paste0("DOI: [", doi, "](http://dx.doi.org/", doi, ").")
   }
 }, label(prefix = 'DOI: ', suffix = '.'))
 
