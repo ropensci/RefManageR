@@ -1,0 +1,21 @@
+## test3
+
+```{r setup, include = TRUE, cache = FALSE}
+library(RefManageR)
+file <- system.file("Bib", "biblatexExamples.bib", package = "RefManageR")
+BibOptions(check.entries = FALSE, style = "markdown", bib.style = "authoryear", cite.style = 'alphabetic')
+bib = ReadBib(file, check="error")
+```
+
+Does the DOI appear okay as a link?
+
+```{r, results='asis'}
+bib[author="Kastenholz"]
+```
+
+I think the markdown needs to be [10.1063/1.2172593](http://dx.doi.org/10.1063/1.2172593)
+
+## Compiling this document
+```{r,eval=FALSE}
+knit2html("test3.Rmd")
+```
