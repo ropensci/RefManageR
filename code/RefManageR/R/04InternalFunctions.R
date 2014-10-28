@@ -3,25 +3,25 @@
   if (identical(check, FALSE))
     return(NULL)
   fields <- names(x)
-  if (!force && (!.is_not_nonempty_text(x$crossref) || !.is_not_nonempty_text(x$xdata))) 
+  if (!force && (!.is_not_nonempty_text(x$crossref) || !.is_not_nonempty_text(x$xdata)))
     return(NULL)
   bibtype <- attr(x, "bibtype")
-  rfields <- strsplit(BibLaTeX_entry_field_db[[bibtype]], 
+  rfields <- strsplit(BibLaTeX_entry_field_db[[bibtype]],
                       "|", fixed = TRUE)
   if (length(rfields) > 0L) {
     ok <- sapply(rfields, function(f) any(f %in% fields))
-    if (any(!ok)){ 
+    if (any(!ok)){
       if (check == 'warn'){
-        warning(sprintf(ngettext(sum(!ok), "A bibentry of bibtype %s has to specify the field: %s", 
-                              "A bibentry of bibtype %s has to specify the fields: %s"), 
-                     sQuote(bibtype), paste(rfields[!ok], collapse = ", ")), 
+        warning(sprintf(ngettext(sum(!ok), "A bibentry of bibtype %s has to specify the field: %s",
+                              "A bibentry of bibtype %s has to specify the fields: %s"),
+                     sQuote(bibtype), paste(rfields[!ok], collapse = ", ")),
              domain = NA)
         return(NULL)
       }else{
-        stop(sprintf(ngettext(sum(!ok), "A bibentry of bibtype %s has to specify the field: %s", 
-                              "A bibentry of bibtype %s has to specify the fields: %s"), 
-                     sQuote(bibtype), paste(rfields[!ok], collapse = ", ")), 
-             domain = NA) 
+        stop(sprintf(ngettext(sum(!ok), "A bibentry of bibtype %s has to specify the field: %s",
+                              "A bibentry of bibtype %s has to specify the fields: %s"),
+                     sQuote(bibtype), paste(rfields[!ok], collapse = ", ")),
+             domain = NA)
       }
     }
   }
@@ -29,11 +29,11 @@
 
 #' @keywords internal
 .BibEntry_match_format_style <- function (style){
-    ind <- pmatch(tolower(style), tolower(bibentry_format_styles), 
+    ind <- pmatch(tolower(style), tolower(bibentry_format_styles),
         nomatch = 0L)
-    if (all(ind == 0L)) 
-        stop(gettextf("%s should be one of %s", sQuote("style"), 
-            paste(dQuote(bibentry_format_styles), collapse = ", ")), 
+    if (all(ind == 0L))
+        stop(gettextf("%s should be one of %s", sQuote("style"),
+            paste(dQuote(bibentry_format_styles), collapse = ", ")),
             domain = NA)
     bibentry_format_styles[ind]
 }
@@ -42,7 +42,7 @@
 .BibEntry_expand_crossrefs <- function (x, more = list(), to.bibtex = FALSE){
   if (!length(x))
     return(NULL)
-  y <- if (length(more)) 
+  y <- if (length(more))
     c(x, more)  # do.call(c, c(list(x), more))
   else x
   x <- unclass(x)
@@ -53,13 +53,13 @@
     xk <- sapply(xrefs[px], strsplit, ',')
     # xdata field can be comma-separated list of keys
     x[px] <- Map(function(entry, xdat.keys, full.bib){
-      pos <- match(xdat.keys, .BibEntry_get_key(full.bib)) 
+      pos <- match(xdat.keys, .BibEntry_get_key(full.bib))
       ok <- !is.na(pos)
       if (any(ok)){
         for (i in pos[ok]){
           xdat <- full.bib[[i]]
           add <- setdiff(names(xdat), names(entry))
-            
+
           entry[add] <- xdat[add]
           if (any(add %in% .BibEntryDateField))
             attr(entry, 'dateobj') <- ProcessDates(entry)
@@ -68,13 +68,13 @@
       entry
     }, x[px], xk, MoreArgs = list(full.bib = y))
   }
-  
+
   crossrefs <- lapply(x, `[[`, "crossref")
   pc <- which(vapply(crossrefs, length, 0L) > 0L)
   if (length(pc)) {
     pk <- match(unlist(crossrefs[pc]), .BibEntry_get_key(y))
     ok <- !is.na(pk)
-    
+
     if (to.bibtex){
       x[pc[ok]] <- lapply(x[pc[ok]], function(bib){
         if (attr(bib, 'bibtype') %in% c("InBook", "InCollection", "InProceedings") && is.null(bib$subtitle))
@@ -85,7 +85,7 @@
         if (attr(bib, 'bibtype') %in% c("Book", "Proceedings") && is.null(bib$subtitle))
           bib$booktitle <- bib$title
         bib
-      })  
+      })
     }else{
       x[pc[ok]] <- Map(ResolveBibLaTeXCrossRef, x[pc[ok]], y[pk[ok]])
     }
@@ -107,15 +107,15 @@ ResolveBibLaTeXCrossRef <- function(chi, par){
                                "inbook", "suppbook", "bookinbook", "book", "inproceedings", "proceedings",
                                "article", "suppperiodical"))))
     add <- add[!add %in% c("subtitle", "titleaddon")]
-  chi[add] <- par[add]      
+  chi[add] <- par[add]
   if (any(add %in% .BibEntryDateField))
     attr(chi, 'dateobj') <- ProcessDates(chi)
-  # special handling for bookauthor, maintitle, mainsubtitle, maintitleaddon, booktitle, booktitleaddon, 
+  # special handling for bookauthor, maintitle, mainsubtitle, maintitleaddon, booktitle, booktitleaddon,
   #  booksubtitle, journaltitle, journalsubtitle; see Appendix B of biblatex manual
-  if (!is.na(match(par.type, c('mvbook', 'book'))) && 
-        !is.na(match(chi.type, c('inbook', 'bookinbook', 'suppbook'))) && is.null(chi$bookauthor)) 
+  if (!is.na(match(par.type, c('mvbook', 'book'))) &&
+        !is.na(match(chi.type, c('inbook', 'bookinbook', 'suppbook'))) && is.null(chi$bookauthor))
     chi$bookauthor <- par$author
-  
+
   if (par.type == 'mvbook' && !is.na(match(chi.type, c('book', 'inbook', 'bookinbook', 'suppbook')))){
     if (is.null(chi$maintitle))
       chi$maintitle <- par$title
@@ -188,7 +188,7 @@ ArrangeSingleAuthor <- function(y){
   parts <- unlist(strsplit(y, ','))
   len.parts <- length(parts)
   if (len.parts == 1L){
-    #     parts <- "{Barnes} {and} {Noble,} {Inc.}"    
+    #     parts <- "{Barnes} {and} {Noble,} {Inc.}"
     if (grepl('[}]$', parts)){
       s <- unlist(strsplit(parts, ''))
       i <- length(s) - 1L
@@ -247,13 +247,13 @@ ArrangeSingleAuthor <- function(y){
     if (is.na(von)){  # e.g. White, Jr., Walter
       person(UnlistSplitClean(parts[3L]), c(cleanupLatex(parts[1L]), cleanupLatex(parts[2L])))
     }else{  # e.g. des White, Jr., Walter
-      person(UnlistSplitClean(parts[3L]), 
+      person(UnlistSplitClean(parts[3L]),
              c(cleanupLatex(von), cleanupLatex(sub(vonrx, '', parts[1L])), cleanupLatex(parts[2L])))
     }
   }else{
     stop('Invalid name format in bibentry.')
   }
-} 
+}
 
 #' @keywords internal
 UnlistSplitClean <- function(s){
@@ -263,16 +263,16 @@ UnlistSplitClean <- function(s){
 
 #' @keywords internal
 cleanupLatex <- function (x){
-  if (!length(x)) 
+  if (!length(x))
     return(x)
-  
+
   if (any(grepl('mkbib', x))){
     x <- gsub('mkbibquote', 'dQuote', x)
     x <- gsub('mkbibemph', 'emph', x)
     x <- gsub('mkbibbold', 'bold', x)
   }
   x <- gsub('\\\\hyphen', '-', x)
-  
+
   latex <- try(tools::parseLatex(x), silent = TRUE)
   if (inherits(latex, "try-error")) {
     x
@@ -311,14 +311,14 @@ MakeCitationList <- function( x, header, footer){
 
 #' @keywords internal
 .listify <- function (x){
-  if (inherits(x, "list")) 
-    x 
+  if (inherits(x, "list"))
+    x
   else list(x)
 }
 
 #' @keywords internal
 .format_BibEntry_as_R_code <- function(x, collapse = FALSE){
-  if (!length(x)) 
+  if (!length(x))
     return("bibentry()")
   x$.index <- NULL
   x$dateobj <- NULL
@@ -330,7 +330,7 @@ MakeCitationList <- function( x, header, footer){
     n <- length(cargs)
     lens <- sapply(cargs, length)
     sums <- cumsum(lens)
-    starters <- c(sprintf("%s(", cname), rep.int(.blanks(nchar(cname) + 
+    starters <- c(sprintf("%s(", cname), rep.int(.blanks(nchar(cname) +
                                                            1L), sums[n] - 1L))
     trailers <- c(rep.int("", sums[n] - 1L), ")")
     trailers[sums[-n]] <- ","
@@ -342,20 +342,20 @@ MakeCitationList <- function( x, header, footer){
       cargs <- sprintf("%s = %s", names(e), sapply(e, deparse))
       .format_call_RR("person", cargs)
     })
-    if (length(s) > 1L) 
+    if (length(s) > 1L)
       .format_call_RR("c", s)
     else unlist(s, use.names = FALSE)
   }
   f <- function(e){
-    if (inherits(e, "person")) 
+    if (inherits(e, "person"))
       .format_person_as_R_code(e)
     else deparse(e)
   }
   g <- function(u, v){
     prefix <- sprintf("%s = ", u)
     n <- length(v)
-    if (n > 1L) 
-      prefix <- c(prefix, rep.int(.blanks(nchar(prefix)), 
+    if (n > 1L)
+      prefix <- c(prefix, rep.int(.blanks(nchar(prefix)),
                                   n - 1L))
     sprintf("%s%s", prefix, v)
   }
@@ -364,7 +364,7 @@ MakeCitationList <- function( x, header, footer){
     e <- e[!sapply(e, is.null)]
     ind <- !is.na(match(names(e), c(anames, manames, "other")))
     if (any(ind)) {
-      other <- paste(names(e[ind]), sapply(e[ind], f), 
+      other <- paste(names(e[ind]), sapply(e[ind], f),
                      sep = " = ")
       other <- Map(g, names(e[ind]), sapply(e[ind], f))
       other <- .format_call_RR("list", other)
@@ -373,22 +373,22 @@ MakeCitationList <- function( x, header, footer){
     else {
       other <- NULL
     }
-    c(Map(g, names(a), sapply(a, deparse)), Map(g, names(e), 
-                                                sapply(e, f)), if (length(other)) list(g("other", 
+    c(Map(g, names(a), sapply(a, deparse)), Map(g, names(e),
+                                                sapply(e, f)), if (length(other)) list(g("other",
                                                                                          other)))
   })
-  if (!is.null(mheader <- attr(x, "mheader"))) 
+  if (!is.null(mheader <- attr(x, "mheader")))
     s[[1L]] <- c(s[[1L]], paste("mheader = ", deparse(mheader)))
-  if (!is.null(mfooter <- attr(x, "mfooter"))) 
+  if (!is.null(mfooter <- attr(x, "mfooter")))
     s[[1L]] <- c(s[[1L]], paste("mfooter = ", deparse(mfooter)))
   s <- Map(.format_call_RR, "bibentry", s)
-  if (collapse && (length(s) > 1L)) 
+  if (collapse && (length(s) > 1L))
     paste(.format_call_RR("c", s), collapse = "\n")
   else unlist(lapply(s, paste, collapse = "\n"), use.names = FALSE)
 }
 
 bibentry_attribute_names <- c("bibtype", "textVersion", "header", "footer", "key", "dateobj")
-bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "textVersion", 
+bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "textVersion",
                             "R", "Biblatex", "markdown")
 
 #' from utils:::toBibtex, good for matching by given name initials only
@@ -396,14 +396,14 @@ bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "text
 format_author <- function(author) paste(sapply(author, function(p) {
   fnms <- p$family
   only_given_or_family <- is.null(fnms) || is.null(p$given)
-  fbrc <- if (length(fnms) > 1L || any(grepl("[[:space:]]", 
-                                             fnms)) || only_given_or_family) 
+  fbrc <- if (length(fnms) > 1L || any(grepl("[[:space:]]",
+                                             fnms)) || only_given_or_family)
     c("{", "}")
   else ""
-  gbrc <- if (only_given_or_family) 
+  gbrc <- if (only_given_or_family)
     c("{", "}")
   else ""
-  format(p, include = c("given", "family"), braces = list(given = gbrc, 
+  format(p, include = c("given", "family"), braces = list(given = gbrc,
                                                           family = fbrc))
 }), collapse = " and ")
 
@@ -411,7 +411,7 @@ bibentry_list_attribute_names <- c("mheader", "mfooter", "strings")
 
 #' @keywords internal
 .BibEntry_get_key <- function (x){
-  if (!length(x)) 
+  if (!length(x))
     return(character())
   keys <- lapply(unclass(x), attr, "key")
   keys[!vapply(keys, length, 0L)] <- ""
@@ -425,7 +425,7 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
   if (!length(l))
     return(list())
   td <- l[[1L]]
-  
+
   title <- xmlValue(td[[1L]], encoding)
   author <- xmlValue(td[[3L]], encoding)
   cited_by <- as.numeric(xmlValue(l[[2L]][[1L]], encoding))
@@ -433,29 +433,29 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
     cited_by <- "0"
   year <- as.numeric(xmlValue(l[[4L]], encoding))
   src <- xmlValue(td[[5L]])
-  first_digit <- as.numeric(regexpr("[\\[\\(]?\\d", 
+  first_digit <- as.numeric(regexpr("[\\[\\(]?\\d",
                                     src)) - 1L
   ids <- which(first_digit < 0L)
   first_digit <- replace(first_digit, ids, str_length(src)[ids])
   journal <- str_trim(str_sub(src, 1L, first_digit))
   trailing_commas <- as.numeric(regexpr(",$", journal)) - 1L
   ids <- which(trailing_commas < 0L)
-  trailing_commas <- replace(trailing_commas, ids, 
+  trailing_commas <- replace(trailing_commas, ids,
                              str_length(journal)[ids])
   journal <- str_sub(journal, 1L, trailing_commas)
-  numbers <- str_trim(str_sub(src, first_digit + 1L, 
+  numbers <- str_trim(str_sub(src, first_digit + 1L,
                               str_length(src)))
-  
+
   # handle '...' in title, journal, or authors
   if (!identical(check.entries, FALSE)){
-    if (is.null(title <- CheckGSDots(title, title, check.entries)) || 
+    if (is.null(title <- CheckGSDots(title, title, check.entries)) ||
           is.null(author <- CheckGSDots(author, title, check.entries)) ||
           is.null(journal <- CheckGSDots(journal, title, check.entries)))
       return(NA)
   }
-  
-  res <- list(title = title, author = author, 
-              journal = journal, number = numbers, cites = cited_by, 
+
+  res <- list(title = title, author = author,
+              journal = journal, number = numbers, cites = cited_by,
               year = year)
   if (is.na(res$number) || res$number==''){  # assume book entry if no number
     if (as.numeric(cited_by) < 10L){
@@ -464,7 +464,7 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
       res$type <- "techreport"
     }else{
       attr(res, 'entry') <- "book"
-      res$publisher <- res$journal  
+      res$publisher <- res$journal
     }
     res$number <- NULL
     res$journal <- NULL
@@ -475,11 +475,11 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
     res$pages <- numbers$pages
     res$volume <- numbers$volume
   }
-  
+
   res$author <- ProcessGSAuthors(res$author)  # format authors for MakeBibEntry
   # create key
   attr(res, "key") <- CreateBibKey(res$title, res$author, res$year)
-  
+
   return(res)
 }
 
@@ -489,7 +489,7 @@ ProcessGSAuthors <- function(authors){
   # authors <- gsub('([A-Z])([A-Z])', '\\1 \\2', authors)  # add space between given name initials
   authors <- gsub(", [.]{3}$", "", authors)
   authors <- strsplit(authors, ", ")[[1]]
-  
+
   # need to ensure given name initials are processed correctly, GS returns them without spaces
   m <- regexec("^([[:alpha:]]*)[[:space:]](.*)", authors)
   autList <- regmatches(authors, m)
@@ -498,18 +498,18 @@ ProcessGSAuthors <- function(authors){
       paste0(gsub("(.)", "\\1 ", name[2]), name[3])
     else authors[[i]]
   } )
-  
+
   # autList <- lapply(regmatches(authors, m), function(name) paste0(gsub("(.)", "\\1 ", name[2]),
   #                                                                name[3]))
   authors <- gsub("(\\w)(\\w*)", "\\U\\1\\L\\2", autList, perl = TRUE)
-  
+
   return(as.person(authors))
 }
 
 #' @keywords internal
 ProcessGSNumbers <- function(numbers){
   pages <- volume <- number <- NULL
-  
+
   m <- regexpr('([0-9]+)', numbers)
   if(m != -1)
     volume <- regmatches(numbers, m)
@@ -519,13 +519,13 @@ ProcessGSNumbers <- function(numbers){
     number <- regmatches(numbers, m)
     number <- substr(number, 2, nchar(number)-1)  # remove ( )
   }
-  
+
   m <- regexpr('[0-9]+[\\-][0-9]+', numbers)
   if(m != -1){
     pages <- regmatches(numbers, m)
     pages <- gsub('-', '--', pages)  # '-' --> '--'
   }
-  
+
   return(list(pages = pages, number = number, volume = volume))
 }
 
@@ -552,19 +552,19 @@ MakeBibEntry <- function(x, to.person = TRUE){
   key <- attr(x, "key")
   y <- as.list(x)
   names(y) <- tolower(names(y))
-  
+
   if (to.person){
     lapply(.BibEntryNameList, function(fld){
-                 if (fld %in% names(y)) 
+                 if (fld %in% names(y))
                     y[[fld]] <<- ArrangeAuthors(y[[fld]])
              })
   }else{
     lapply(.BibEntryNameList, function(fld){
-             if (fld %in% names(y)) 
+             if (fld %in% names(y))
                 y[[fld]] <<- as.person(y[[fld]])
          })
   }
-  
+
   tdate <- NULL
   if (type != 'set')
     tdate <- ProcessDates(y)
@@ -573,10 +573,10 @@ MakeBibEntry <- function(x, to.person = TRUE){
   if (inherits(res, 'try-error')){
     if(!is.null(y[['title']])){
       message(paste0('Ignoring entry titled \"', y[['title']], '\" because ', strsplit(res, '\\n[[:space:]]*')[[1]][2]))
-      #message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines      
+      #message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines
     }else{
       message(paste0('Ignoring entry with key \"', key, '\" because ', strsplit(res, '\\n[[:space:]]*')[[1]][2]))
-      # message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines      
+      # message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines
     }
     return(NULL)
   }
@@ -587,14 +587,14 @@ MakeBibEntry <- function(x, to.person = TRUE){
 #' @keywords internal
 ProcessDates <- function(bib){
   tdate <- try(ProcessDate(bib[['date']], NULL), TRUE)
-   
+
   if (inherits(tdate, 'try-error') || is.null(tdate)){
     tdate <- try(ProcessDate(bib[['year']], bib[['month']]), TRUE)
     if (inherits(tdate, 'try-error') || is.null(tdate))
       tdate <- try(ProcessDate(bib[['eventdate']], NULL), TRUE)
-    if (inherits(tdate, 'try-error') || is.null(tdate))  
+    if (inherits(tdate, 'try-error') || is.null(tdate))
       tdate <- try(ProcessDate(bib[['origdate']], NULL), TRUE)
-    if (inherits(tdate, 'try-error') || is.null(tdate))  
+    if (inherits(tdate, 'try-error') || is.null(tdate))
       tdate <- try(ProcessDate(bib[['urldate']], NULL), TRUE)
     if (inherits(tdate, 'try-error') || is.null(tdate))
       tdate <- NULL
@@ -608,16 +608,15 @@ ProcessDates <- function(bib){
 ProcessDate <- function(dat, mon, searching = FALSE){
   if (!length(dat))
     return()
-  
+
   .day <- FALSE  # does entry contain valid day?
   .mon <- FALSE  # does entry contain valid month?
   if (grepl("^(1|2)[0-9]{3}((-?-|/)(1|2)[0-9]{3})?$", dat)){  # e.g. 1991, 1991--1992, or 1991/1992
+    # check for year specified as range
+    dats <- strsplit(dat, "-?-|/")[[1]]
+    if (length(dats) == 1L)
+      dats <- c(dat, dat)
     if (!is.null(mon)){
-      # check for year specified as range
-      dats <- strsplit(dat, "-?-|/")[[1]]
-      if (length(dats) == 1L)
-        dats <- c(dat, dat)
-        
       # Some Bibtex users, e.g. paperpile.com, format month as `"day~" # month` in bib entry; attempt to handle this
       # examples: "2~" # dec, "4--6~" # aug, jan # "/" # feb,
       res <- try(if (grepl("~", mon)){
@@ -674,10 +673,10 @@ ProcessDate <- function(dat, mon, searching = FALSE){
                as.POSIXct(paste0(dat, '-01-01'))
              else
                new_interval(as.POSIXct(paste0(dats[1], '-01-01')), as.POSIXct(paste0(dats[2], '-01-01')))
-    
+
   }else if (grepl('^(1|2)[0-9]{3}/$', dat)){
     if (!is.null(mon)){
-      res <- new_interval(parse_date_time(paste0(substring(dat, 1, 4), '-', mon, '-01'), c("%Y-%m-%d", "%Y-%b-%d")), 
+      res <- new_interval(parse_date_time(paste0(substring(dat, 1, 4), '-', mon, '-01'), c("%Y-%m-%d", "%Y-%b-%d")),
                           Sys.Date())
       .mon <- TRUE
     }else{
@@ -732,7 +731,7 @@ CreateBibKey <- function(ti, au, yr){
   }
   if (!length(res))
     return()
-  
+
   return(res)
 }
 
@@ -740,5 +739,5 @@ CreateBibKey <- function(ti, au, yr){
              'introduction', 'foreword', 'afterword', 'bookauthor', 'holder')
 .BibEntryDateField <- c('date', 'year', 'month', 'eventdate', 'origdate', 'urldate')
 .BibEntryTypeField <- c(mathesis = 'MA Thesis', phdthesis = 'PhD thesis', datacd = 'CD-ROM',
-                        candthesis = 'Cand. thesis', techreport = 'Tech. rep.', 
+                        candthesis = 'Cand. thesis', techreport = 'Tech. rep.',
                         resreport = 'Research rep.', software = 'Comp. software', audiocd = 'Audio CD')
