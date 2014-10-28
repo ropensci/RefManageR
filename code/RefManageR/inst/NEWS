@@ -9,6 +9,7 @@ function (h/t Erich Studerus)
 BUG FIXES
 
 * DOI's hyperlinks in Markdown format are now correct (h/t Stephen Eglen)
+* `print.BibEntry` with `BibOptions(style = "Biblatex")` fixed (h/t Artem Klevtsov)
 
 Changes in Version 0.8.34 (2014-08-18)
 --------------------------------------------------------
