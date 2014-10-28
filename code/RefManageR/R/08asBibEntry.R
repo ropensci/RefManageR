@@ -1,7 +1,7 @@
 #' Coerce to a BibEntry object
-#' 
+#'
 #' Functions to check if an object is a BibEntry, or coerce it if possible.
-#' 
+#'
 #' @param x any \code{R} object.
 #' @details \code{as.BibEntry} is able to coerce suitably formatted character vectors, \code{\link{bibentry}} objects, lists,
 #' and data.frames to BibEntry objects.  See the examples.
@@ -17,23 +17,23 @@
 #' identical(as.BibEntry(unlist(bib)), bib)  ## see also RelistBibEntry
 #'
 #' identical(as.BibEntry(unclass(bib)), bib)
-#' 
+#'
 #' identical(as.BibEntry(as.data.frame(bib)), bib)
-#' 
-#' bib <- c(bibtype = "article", key = "mclean2014", title = "My New Article", 
+#'
+#' bib <- c(bibtype = "article", key = "mclean2014", title = "My New Article",
 #'   author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-01")
-#' as.BibEntry(bib) 
-#' 
-#' bib <- bibentry(bibtype = "article", key = "mclean2014", title = "My New Article", 
+#' as.BibEntry(bib)
+#'
+#' bib <- bibentry(bibtype = "article", key = "mclean2014", title = "My New Article",
 #' journal = "The Journal", year = 2014, author = "Mathew W. McLean")
 #' print(bib, .bibstyle = "JSS")
 #' as.BibEntry(bib)
-#' 
-#' bib <- list(c(bibtype = "article", key = "mclean2014a", title = "My New Article", 
-#'   author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-01"), 
+#'
+#' bib <- list(c(bibtype = "article", key = "mclean2014a", title = "My New Article",
+#'   author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-01"),
 #'   c(bibtype = "article", key = "mclean2014b", title = "Newer Article",
-#'   author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-02"))       
-#' as.BibEntry(bib)   
+#'   author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-02"))
+#' as.BibEntry(bib)
 as.BibEntry <- function(x){
   if (!length(x))
     return(x)
@@ -55,10 +55,10 @@ as.BibEntry <- function(x){
     x <- x[!sapply(x, is.null)]
     if (length(x)){
       attributes(x) <- att
-      class(x) <- c('BibEntry', 'bibentry')  
+      class(x) <- c('BibEntry', 'bibentry')
     }
   }else if (is.character(x)){
-    
+
     if (is.na(x['bibtype']) || is.na(x['key']))
       stop("Object of class character must have entries named bibtype and key.")
     x <- as.list(x)
@@ -105,7 +105,7 @@ as.BibEntry <- function(x){
 }
 
 #' @rdname as.BibEntry
-#' @return \code{is.BibEntry} - logical; \code{TRUE} if \code{x} is a BibEntry object. 
+#' @return \code{is.BibEntry} - logical; \code{TRUE} if \code{x} is a BibEntry object.
 #' @export
 is.BibEntry <- function(x){
   inherits(x, "BibEntry")
