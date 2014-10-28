@@ -66,7 +66,7 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
                   markdown = .format_bibentry_via_Rd(tools::Rd2txt),
         html = .format_bibentry_via_Rd(tools::Rd2HTML),
         latex = .format_bibentry_via_Rd(tools::Rd2latex),
-        Bibtex = {
+        Biblatex = {
            x$.duplicated <- NULL
            unlist(lapply(x, function(y) paste(toBiblatex(y), collapse = "\n")))
         }, Bibtex = {
