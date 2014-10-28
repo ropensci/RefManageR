@@ -14,6 +14,7 @@
 #' @param user Zotero userID for use in calls to the Zotero API.  This is not the same as your Zotero
 #'   username.  The userID for accessing user-owned libraries can be found at
 #'   \url{https://www.zotero.org/settings/keys}.
+#' @param group Zotero groupID for use in calls to the Zotero API.  Only one of \code{user} and \code{group} should be specified; \code{group} will be ignored if both are specified.
 #' @param .params A \emph{named} list of parameters to use in requests to the Zotero API with possible values
 #'  \itemize{
 #'    \item q - Search string to use to search the library
@@ -35,46 +36,52 @@
 #' @examples
 #' \dontrun{
 #' ## first two entries in library with bayesian in title
-#' ReadZotero(user='1648676', .params=list(q='bayesian', key='7lhgvcwVq60CDi7E68FyE3br',
+#' ReadZotero(user = "1648676", .params = list(q = "bayesian", key = "7lhgvcwVq60CDi7E68FyE3br",
 #'   limit=2))
 #'
 #' ## Search specific collection
 #' ## collection key can be found by reading uri when collection is selected in Zotero
-#' ReadZotero(user='1648676', .params=list(q='yu', key='7lhgvcwVq60CDi7E68FyE3br',
-#'   collection='3STEQRNU'))
+#' ReadZotero(user = "1648676", .params=list(q = "yu", key = "7lhgvcwVq60CDi7E68FyE3br",
+#'   collection = "3STEQRNU"))
 #'
 #' ## Search by tag
 #' ## Notice the issue with how Zotero uses a TechReport entry for arXiv manuscripts
 #' ## This is one instance where the added fields of BibLaTeX are useful
-#' ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br',
-#'   tag='Statistics - Machine Learning'))
+#' ReadZotero(user = "1648676", .params=list(key = "7lhgvcwVq60CDi7E68FyE3br",
+#'   tag = "Statistics - Machine Learning"))
 #'
 #' ## To read these in you must set check.entries to FALSE or "warn"
-#' BibOptions(check.entries = FALSE)
-#' ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br',
-#'   tag='Statistics - Machine Learning'))
+#' old.opts <- BibOptions(check.entries = FALSE)
+#' ReadZotero(user = "1648676", .params = list(key = "7lhgvcwVq60CDi7E68FyE3br",
+#'   tag = "Statistics - Machine Learning"))
+#'
+#' length(ReadZotero(group = "298776", .params = list(q = "Canadian")))
+#' BibOptions(old.opts)
 #' }
 #' @keywords database
-ReadZotero <- function(user, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE){
+ReadZotero <- function(user, group, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE){
   if (delete.file)
     on.exit(unlink(temp.file, force = TRUE))
 
   bad.ind <- which(!names(.params) %in% c('q', 'itemType', 'tag', 'collection', 'key', 'limit', 'start', 'qmode'))
   .parms <- .params
   if (length(bad.ind)){
-    warning('Invalid .params specified and will be ignored')
+    warning("Invalid .params specified and will be ignored")
     .parms <- .parms[-bad.ind]
   }
   .parms$format <- 'bibtex'
   if (is.null(.parms$limit))
     .parms$limit <- 99L
 
-  .parms$uri <- if (is.null(.params$collection))
-     paste('https://api.zotero.org/users/', user, '/items', sep='')
-  else
-    paste('https://api.zotero.org/users/', user, '/collections/',
-          .params$collection, '/items', sep='')
-
+  .parms$uri <- if (!missing(user)){
+                  if (is.null(.params$collection))
+                    paste0("https://api.zotero.org/users/", user, "/items")
+                  else
+                    paste0("https://api.zotero.org/users/", user, "/collections/",
+                      .params$collection, "/items")
+               }else
+                 paste0("https://api.zotero.org/groups/", group, "/items")
+  
   cert <- try(system.file("CurlSSL/cacert.pem", package = "RCurl"))
   .parms$.opts <- if (class(cert)=='try-error')
       curlOptions(ssl.verifypeer=FALSE, httpheader='Zotero-API-Version: 2',
