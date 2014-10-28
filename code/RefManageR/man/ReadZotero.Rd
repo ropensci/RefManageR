@@ -3,13 +3,15 @@
 \alias{ReadZotero}
 \title{Get Bibliography Information From a Zotero Library.}
 \usage{
-ReadZotero(user, .params, temp.file = tempfile(fileext = ".bib"),
+ReadZotero(user, group, .params, temp.file = tempfile(fileext = ".bib"),
   delete.file = TRUE)
 }
 \arguments{
 \item{user}{Zotero userID for use in calls to the Zotero API.  This is not the same as your Zotero
 username.  The userID for accessing user-owned libraries can be found at
 \url{https://www.zotero.org/settings/keys}.}
+
+\item{group}{Zotero groupID for use in calls to the Zotero API.  Only one of \code{user} and \code{group} should be specified; \code{group} will be ignored if both are specified.}
 
 \item{.params}{A \emph{named} list of parameters to use in requests to the Zotero API with possible values
 \itemize{
@@ -36,24 +38,27 @@ Get Bibliography Information From a Zotero Library.
 \examples{
 \dontrun{
 ## first two entries in library with bayesian in title
-ReadZotero(user='1648676', .params=list(q='bayesian', key='7lhgvcwVq60CDi7E68FyE3br',
+ReadZotero(user = "1648676", .params = list(q = "bayesian", key = "7lhgvcwVq60CDi7E68FyE3br",
   limit=2))
 
 ## Search specific collection
 ## collection key can be found by reading uri when collection is selected in Zotero
-ReadZotero(user='1648676', .params=list(q='yu', key='7lhgvcwVq60CDi7E68FyE3br',
-  collection='3STEQRNU'))
+ReadZotero(user = "1648676", .params=list(q = "yu", key = "7lhgvcwVq60CDi7E68FyE3br",
+  collection = "3STEQRNU"))
 
 ## Search by tag
 ## Notice the issue with how Zotero uses a TechReport entry for arXiv manuscripts
 ## This is one instance where the added fields of BibLaTeX are useful
-ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br',
-  tag='Statistics - Machine Learning'))
+ReadZotero(user = "1648676", .params=list(key = "7lhgvcwVq60CDi7E68FyE3br",
+  tag = "Statistics - Machine Learning"))
 
 ## To read these in you must set check.entries to FALSE or "warn"
-BibOptions(check.entries = FALSE)
-ReadZotero(user='1648676', .params=list(key='7lhgvcwVq60CDi7E68FyE3br',
-  tag='Statistics - Machine Learning'))
+old.opts <- BibOptions(check.entries = FALSE)
+ReadZotero(user = "1648676", .params = list(key = "7lhgvcwVq60CDi7E68FyE3br",
+  tag = "Statistics - Machine Learning"))
+
+length(ReadZotero(group = "298776", .params = list(q = "Canadian")))
+BibOptions(old.opts)
 }
 }
 \references{
