@@ -1,14 +1,18 @@
-Changes in Version 0.8.35 (2014-08-28)
+Changes in Version 0.8.35 (2014-10-28)
 --------------------------------------------------------
 
 NEW FEATURES
 
 * Improved formatting of citation given to CrossRef for increased chances of finding matches with `GetDOIs`
 function (h/t Erich Studerus)
+* Additional parsing of 'month' field to accomodate days and ranges of days and months.  Example bib entries
+that will be parsed correctly include `month = jun # "/" # jul`, `month = "20~" # jan`, 
+`month = "20--25~" # dec`, `month =  "10~" # jan # "/" # feb` (request of Stephen Eglen)
 
 BUG FIXES
 
-* DOI hyperlinks in Markdown format are now correct (h/t Stephen Eglen)
+* DOI's hyperlinks in Markdown format are now correct (h/t Stephen Eglen)
+* `print.BibEntry` with `BibOptions(style = "Biblatex")` fixed (h/t Artem Klevtsov)
 
 Changes in Version 0.8.34 (2014-08-18)
 --------------------------------------------------------

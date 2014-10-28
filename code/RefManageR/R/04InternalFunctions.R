@@ -609,16 +609,73 @@ ProcessDate <- function(dat, mon, searching = FALSE){
   if (!length(dat))
     return()
   
-  .day <- FALSE
-  .mon <- FALSE
-  if (length(grep('^(1|2)[0-9]{3}$', dat))){
+  .day <- FALSE  # does entry contain valid day?
+  .mon <- FALSE  # does entry contain valid month?
+  if (grepl("^(1|2)[0-9]{3}((-?-|/)(1|2)[0-9]{3})?$", dat)){  # e.g. 1991, 1991--1992, or 1991/1992
     if (!is.null(mon)){
-      res <- parse_date_time(paste0(dat, '-', mon, '-01'), c("%Y-%m-%d", "%Y-%b-%d"))
-      .mon <- TRUE
-    }else{
-      res <- as.POSIXct(paste0(dat, '-01-01'))
+      # check for year specified as range
+      dats <- strsplit(dat, "-?-|/")[[1]]
+      if (length(dats) == 1L)
+        dats <- c(dat, dat)
+        
+      # Some Bibtex users, e.g. paperpile.com, format month as `"day~" # month` in bib entry; attempt to handle this
+      # examples: "2~" # dec, "4--6~" # aug, jan # "/" # feb,
+      res <- try(if (grepl("~", mon)){
+               days <- strsplit(sub("~.*", "", mon), "-?-")[[1L]]
+               mons <- strsplit(sub(".*~", "", mon), "/")[[1L]]
+               .day <- TRUE
+               if (length(days) == 2){
+                  if (length(mons) == 1)
+                    new_interval(parse_date_time(paste0(dats[1], "-", mons, "-", days[1]),
+                                                 c("%Y-%m-%d", "%Y-%b-%d")),
+                                 parse_date_time(paste0(dats[2], "-", mons, "-", days[2]),
+                                                 c("%Y-%m-%d", "%Y-%b-%d")))
+                  else if(length(mons) == 2)
+                    new_interval(parse_date_time(paste0(dats[1], "-", mons[1], "-", days[1]),
+                                                 c("%Y-%m-%d", "%Y-%b-%d")),
+                                 parse_date_time(paste0(dats[2], "-", mons[2], "-", days[2]),
+                                                 c("%Y-%m-%d", "%Y-%b-%d")))
+                  else NA
+              }else{
+                if (length(mons) == 1){
+                  if (dats[1] == dats[2])
+                    parse_date_time(paste0(dat, "-", mons, "-", days), c("%Y-%m-%d", "%Y-%b-%d"))
+                  else
+                    new_interval(parse_date_time(paste0(dats[1], "-", mons, "-", days),
+                                                 c("%Y-%m-%d", "%Y-%b-%d")),
+                                 parse_date_time(paste0(dats[2], "-", mons, "-", days),
+                                                 c("%Y-%m-%d", "%Y-%b-%d")))
+                }else if (length(mons) == 2)
+                  new_interval(parse_date_time(paste0(dats[1], "-", mons[1], "-", days),
+                                               c("%Y-%m-%d", "%Y-%b-%d")),
+                               parse_date_time(paste0(dats[2], "-", mons[2], "-", days),
+                                               c("%Y-%m-%d", "%Y-%b-%d")))
+                else NA
+              }
+          }else if (grepl("/", mon)){  # feb/mar
+            mons <- strsplit(mon, "/")[[1L]]
+            new_interval(parse_date_time(paste0(dats[1], "-", mons[1], "-01"), c("%Y-%m-%d", "%Y-%b-%d")),
+                         parse_date_time(paste0(dats[2], "-", mons[2], "-01"), c("%Y-%m-%d", "%Y-%b-%d")))
+          }else{
+            if (dats[1] == dats[2])
+              parse_date_time(paste0(dat, '-', mon, '-01'), c("%Y-%m-%d", "%Y-%b-%d"))
+            else
+              new_interval(parse_date_time(paste0(dats[1], '-', mon, '-01'), c("%Y-%m-%d", "%Y-%b-%d")),
+                           parse_date_time(paste0(dats[2], '-', mon, '-01'), c("%Y-%m-%d", "%Y-%b-%d")))
+          }, TRUE)
+      if (inherits(res, "try-error") || is.na(res)){
+         warning(paste0("Failed to parse month: ", mon, ". Ignoring and using year only."))
+         .day <- FALSE
+      }else
+        .mon <- TRUE
     }
-  }else if (length(grep('^(1|2)[0-9]{3}/$', dat))){
+    if (!.mon)  # mon is missing or failed to parse
+      res <- if (dats[1] == dats[2])
+               as.POSIXct(paste0(dat, '-01-01'))
+             else
+               new_interval(as.POSIXct(paste0(dats[1], '-01-01')), as.POSIXct(paste0(dats[2], '-01-01')))
+    
+  }else if (grepl('^(1|2)[0-9]{3}/$', dat)){
     if (!is.null(mon)){
       res <- new_interval(parse_date_time(paste0(substring(dat, 1, 4), '-', mon, '-01'), c("%Y-%m-%d", "%Y-%b-%d")), 
                           Sys.Date())
@@ -626,32 +683,32 @@ ProcessDate <- function(dat, mon, searching = FALSE){
     }else{
       res <- new_interval(paste0(substring(dat, 1, 4), '-01-01'), Sys.Date())
     }
-  }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]/$', dat))){
+  }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]/$', dat)){
     res <- new_interval(paste0(substring(dat, 1, 7), '-01'), Sys.Date())
     .mon <- TRUE
-  }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]/$', dat))){
+  }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]/$', dat)){
     res <- new_interval(substring(dat, 1, 10), Sys.Date())
     .mon <- .day <- TRUE
-  }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]$', dat))){
+  }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]$', dat)){
     res <- as.POSIXct(paste0(dat, '-01'))
     .mon <- TRUE
-  }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat))){
+  }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat)){
     res <- as.POSIXct(dat)
     .day <- .mon <- TRUE
-  }else if (length(grep('^(1|2)[0-9]{3}/(1|2)[0-9]{3}$', dat))){
-    res <- new_interval(paste0(substring(dat, 1, 4), '-01-01'), paste0(substring(dat, 6, 9), '-01-01'))
-  }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]/(1|2)[0-9]{3}-[01][0-9]$', dat))){
+  ## already handled above: }else if (grepl('^(1|2)[0-9]{3}/(1|2)[0-9]{3}$', dat)){
+  ##  res <- new_interval(paste0(substring(dat, 1, 4), '-01-01'), paste0(substring(dat, 6, 9), '-01-01'))
+  }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]/(1|2)[0-9]{3}-[01][0-9]$', dat)){
     res <- new_interval(paste0(substring(dat, 1, 7), '-01'), paste0(substring(dat, 9, 15), '-01'))
     .mon <- TRUE
-  }else if (length(grep('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]/(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat))){
+  }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]/(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat)){
     res <- new_interval(substring(dat, 1, 10), substring(dat, 12, 21))
     .day <- .mon <- TRUE
   }else if (searching){
-    if (length(grep('^/(1|2)[0-9]{3}$', dat))){
+    if (grepl('^/(1|2)[0-9]{3}$', dat)){
       res <- new_interval('0001-01-01', paste0(substring(dat, 2, 5), '-01-01'))
-    }else if (length(grep('^/(1|2)[0-9]{3}-[01][0-9]$', dat))){
+    }else if (grepl('^/(1|2)[0-9]{3}-[01][0-9]$', dat)){
       res <- new_interval('0001-01-01', paste0(substring(dat, 2, 8), '-01'))
-    }else if (length(grep('^/(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat))){
+    }else if (grepl('^/(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat)){
       res <- new_interval('0001-01-01', substring(dat, 2, 11))
     }else{
       stop('No valid date format available.')
