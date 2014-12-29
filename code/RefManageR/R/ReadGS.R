@@ -12,21 +12,27 @@
 #' @param check.entries What should be done with incomplete entries (those containing \dQuote{...} due to long fields)?
 #' Either \code{FALSE} to add them anyway, \code{"warn"} to add with a warning, or any other value to drop the entry
 #' with a message and continue processing the remaining entries.
-#' @importFrom RCurl getForm
+#' @importFrom RCurl getForm curlEscape
 #' @importFrom XML xpathApply htmlParse
 #' @importFrom stringr str_length str_sub
 #' @keywords database
 #' @export
-#' @details This function creates \sQuote{Article} or \sQuote{Book} BibTeX entries from an author's Google Scholar page.
-#' If the function finds numbers corresponding to volume/number/pages of a journal article, an \sQuote{Article} entry
-#' is created; otherwise, a \sQuote{Book} entry is created.
+#' @details This function creates \code{BibTeX} entries from an author's
+#' Google Scholar page.
+#' If the function finds numbers corresponding to volume/number/pages of a journal
+#' article, an \sQuote{Article} entry
+#' is created.  If an arXiv identifier is found, a \sQuote{Misc} entry is created
+#' with \code{eprint}, \code{eprinttype}, and \code{url} fields.  Otherwise, a
+#' \sQuote{TechReport} entry is created; unless the entry has more than ten citations,
+#' in which case a \sQuote{Book} entry is created.
 #'
 #' Long author lists, long titles, and long journal/publisher names can all lead to these fields being incomplete for
-#' a particular entry.  When this occurs, these entries are either dropped or added with warning depending on the value
+#' a particular entry.  When this occurs, these entries are either dropped or added with
+#' a warning depending on the value
 #' of the \code{check.entries} argument.
 #'
-#' @return An object of class BibEntry.  If the entry has any citations, the number of citations
-#' is stored in a field \sQuote{cites}.
+#' @return An object of class BibEntry.  If the entry has any citations, the number of
+#' citations is stored in a field \sQuote{cites}.
 #' @seealso \code{\link{BibEntry}}
 #' @note Read Google's Terms of Service before using.
 #'
@@ -42,7 +48,7 @@
 #'   kat.bib <- ReadGS(scholar.id = "vqW0UqUAAAAJ")
 #'
 #'   ## retrieve GS citation counts stored in field 'cites'
-#'   kat.bib["cites"]
+#'   kat.bib$cites
 #' }
 ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
                      .Encoding = 'UTF-8', check.entries = BibOptions()$check.entries){
@@ -57,16 +63,30 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
     .params$sortby = 'pubdate'
 
   uri <- 'http://scholar.google.com/citations'
-
-  doc <- getForm(uri, .params = .params, .encoding = .Encoding)
-  cites <- xpathApply(htmlParse(doc, encoding = .Encoding),
-                      "//tr[@class=\"cit-table item\"]")
+  els <- mapply(function(id, val) {
+      paste(curlEscape(id), curlEscape(val), sep = "=", collapse = "&")
+  }, names(.params), .params)
+  args <- paste(els, collapse = "&")
+  uri <- paste(uri, args, sep = if (grepl("\\?", uri))
+      "&"
+  else "?")
+  # getURLContent(uri, .opts = .opts, .encoding = .encoding,
+  #     binary = binary, curl = curl)
+  doc <- htmlParse(uri)
+  # browser()
+  ## doc <- GetForm(uri, .params = .params, .encoding = .Encoding)
+  ## cites <- xpathApply(htmlParse(doc, encoding = .Encoding),
+  ##                     "//tr[@class=\"cit-table item\"]")
+  cites <- xpathApply(doc, "//tr[@class=\"gsc_a_tr\"]")
   if(!length(cites)){
     message('No results.')
     return()
   }
   cites <- cites[seq_len(min(limit, length(cites)))]
-  tmp <- lapply(cites, ParseGSCites)
+#  browser()
+  noNAwarn <- function(w) if( any( grepl( "NAs introduced", w) ) )
+      invokeRestart( "muffleWarning" )
+  tmp <- withCallingHandlers(lapply(cites, ParseGSCites2), warning = noNAwarn)
   out <- lapply(tmp[!is.na(tmp)], MakeBibEntry, to.person = FALSE)
   out <- MakeCitationList(out)
 

@@ -9,7 +9,6 @@
 #' @param verbose as in \code{\link{write.bib}}
 #' @param ... additional arguments passed to \code{\link{writeLines}}
 #' @return \code{bib} - invisibly
-#' @author McLean, M. W. - based on \code{write.bib} function in package \code{bibtex} by Francois, R.
 #' @seealso \code{\link{write.bib}}, \code{\link{ReadBib}}, \code{\link{toBibtex.BibEntry}},
 #' \code{\link{toBiblatex}}, \code{\link{BibEntry}}
 #' @keywords IO

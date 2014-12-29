@@ -52,6 +52,7 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL, min.
 
     fromj <- RJSONIO::fromJSON(results)
     num.res <- min(limit, length(fromj))
+    browser()
     if(num.res == 0L){
       message(paste0('Query \"', query, '\" returned no matches'))
       return(NA)

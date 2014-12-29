@@ -1,21 +1,24 @@
-#' Encode in a common format
-#'
-#' Format a BibEntry object in a pretty format.
-#'
-#' @param x - an object of class BibEntry
-#' @param style
-#' @return character vector containing formatted BibEntry object.
+# Encode in a common format
+#
+# Format a BibEntry object in a pretty format.
+#
+# @param x - an object of class BibEntry
+# @param style
+# @return character vector containing formatted BibEntry object.
+# @seealso \code{\link{print.BibEntry}}, \code{\link{BibEntry}}
 #' @importFrom tools Rd2txt_options Rd2txt Rd2HTML Rd2latex
 #' @S3method format BibEntry
 #' @keywords internal
-#' @seealso \code{\link{print.BibEntry}}, \code{\link{BibEntry}}
 format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOptions$bib.style,
                              citation.bibtex.max = getOption("citation.bibtex.max", 1), .sort = TRUE,
                             .sorting = 'nty', enc = 'UTF-8', ...){
-    style <- .BibEntry_match_format_style(style)
-    ret.ind <- .BibOptions$return.ind
-    .BibOptions$return.ind <- FALSE
-    on.exit(.BibOptions$return.ind <- ret.ind)
+    old.opts <- BibOptions(list(style = .BibEntry_match_format_style(style),
+                               return.ind = FALSE))
+    on.exit(BibOptions(old.opts))
+    ## style <- .BibEntry_match_format_style(style)
+    ## ret.ind <- .BibOptions$return.ind
+    ## .BibOptions$return.ind <- FALSE
+    ## on.exit(.BibOptions$return.ind <- ret.ind)
     if (.sort && !style %in% c('html', 'text', 'latex', "markdown"))
       x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.labs = TRUE)
 
@@ -39,10 +42,14 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
         if (style == "html"){
           res <- sub("<code>([[:print:]]*)</code>", "<a id='bib-\\1'></a>", res)
           res <- if (.bibstyle == "alphabetic" || .bibstyle == "numeric")
-            sub("^<p>([[:print:]]*\\]</a>)", "<p>\\1<cite>", res)
-          else if (.bibstyle == "draft") sub("^<p>([[:print:]]*</B>)", "<p>\\1<cite>", res)
+            sub("^<p>([[:print:]]*\\])(</a>)?", "<p>\\1\\2<cite>", res)
+          else if (.bibstyle == "draft") sub("^<p>([[:print:]]*</B>)",
+                        "<p>\\1<cite>", res)
           else sub("^<p>", "<p><cite>", res)
-          res <- paste0(res, "</cite></p>")
+          res <- sapply(res, function(x) if (grepl("<cite>", x))
+                        paste0(x, "</cite></p>")
+                      else  # XData or Set
+                        paste0(x, "</p>"))
         }
         res
     }
