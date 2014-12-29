@@ -1,4 +1,16 @@
-Changes in Version 0.8.35 (2014-10-28)
+Changes in Version 0.8.44 (2014-12-29)
+--------------------------------------------------------
+
+BUG FIXES
+
+* `ReadGS` fixed to account for changes to Google "API" (h/t Norman L Guinasso Jr)
+* Improved parsing for names ending with a '}' (h/t Henrik Bengtsson)
+* printing with `style = "html"` would not always add an opening <cite> tag when
+`bib.style = "numeric"` or `bib.style = "alphabetic"` (h/t Henrik Bengtsson)
+* `format.BibEntry` would ignore the `.style` argument if called directly by the user.
+Note, this function should normally not need to be called directly. (h/t Henrik Bengtsson)
+
+Changes in Version 0.8.40 (2014-10-28)
 --------------------------------------------------------
 
 NEW FEATURES

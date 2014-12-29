@@ -179,7 +179,7 @@ ArrangeAuthors <- function (x){
 
 #' @keywords internal
 ArrangeSingleAuthor <- function(y){
-  #browser()
+
   if (grepl('[\\]', y)){
     tmp <- try(parseLatex(y), TRUE)
     if (!inherits(tmp, 'try-error'))
@@ -189,7 +189,7 @@ ArrangeSingleAuthor <- function(y){
   len.parts <- length(parts)
   if (len.parts == 1L){
     #     parts <- "{Barnes} {and} {Noble,} {Inc.}"
-    if (grepl('[}]$', parts)){
+    if (grepl("[^{][[:print:]][}]$", parts)){
       s <- unlist(strsplit(parts, ''))
       i <- length(s) - 1L
       paren <- 1
@@ -391,7 +391,7 @@ bibentry_attribute_names <- c("bibtype", "textVersion", "header", "footer", "key
 bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "textVersion",
                             "R", "Biblatex", "markdown")
 
-#' from utils:::toBibtex, good for matching by given name initials only
+# from utils:::toBibtex, good for matching by given name initials only
 #' @keywords internal
 format_author <- function(author) paste(sapply(author, function(p) {
   fnms <- p$family
@@ -483,6 +483,99 @@ ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
   return(res)
 }
 
+
+#' @keywords internal
+ProcessArxiv <- function(arxinfo){
+      res <- list(eprinttype = 'arxiv')
+      # need to check date since arXiv identifier format changed in Apr-07
+      m <- regexpr('[0-9]{1,2}[[:space:]][A-Z][a-z]{2}[[:space:]][0-9]{4}', arxinfo)
+
+      adate <- strptime(regmatches(arxinfo, m), format='%d %b %Y')
+      if (length(adate) && adate >= strptime('01 Apr 2007', format='%d %b %Y')){
+        m <- regexec('arXiv:([0-9]{4}[\\.][0-9]{4}v[0-9])[[:space:]]\\[([[:graph:]]+)\\]', arxinfo)
+        regm <- regmatches(arxinfo, m)
+        res$eprintclass <- regm[[1]][3]
+        res$eprint <- regm[[1]][2]
+      }else{
+        m <- regexec('arXiv:([[:graph:]]+)\\s', arxinfo)
+        regm <- regmatches(arxinfo, m)
+        res$eprint <- regm[[1]][2]
+      }
+      res$url <- paste0('http://arxiv.org/abs/', res$eprint)
+      res
+}
+
+#' @keywords internal
+#' @importFrom XML xmlValue
+#' @importFrom stringr str_sub str_trim
+ParseGSCites2 <- function(l, encoding, check.entries=.BibOptions$check.entries){
+  if (!length(l))
+    return(list())
+  td <- l[[1L]]
+
+  title <- xmlValue(td[[1L]], encoding)
+  author <- xmlValue(td[[2L]], encoding)
+  cited_by <- as.numeric(xmlValue(l[[2L]][[1L]], encoding))
+  if (is.na(cited_by))  # no citation yet
+    cited_by <- "0"
+  src <- xmlValue(td[[3L]], encoding)
+
+  year <- as.numeric(regmatches(src, regexpr("([12][0-9]{3}$)", src)))
+  first_digit <- as.numeric(regexpr("[\\[\\(]?\\d",
+                                    src)) - 1L
+  ids <- which(first_digit < 0L)
+  first_digit <- replace(first_digit, ids, str_length(src)[ids])
+  journal <- str_trim(str_sub(src, 1L, first_digit))
+  trailing_commas <- as.numeric(regexpr(",$", journal)) - 1L
+  ids <- which(trailing_commas < 0L)
+  trailing_commas <- replace(trailing_commas, ids,
+                             str_length(journal)[ids])
+  journal <- str_sub(journal, 1L, trailing_commas)
+  numbers <- str_trim(str_sub(src, first_digit + 1L,
+                              str_length(src)))
+  # handle '...' in title, journal, or authors
+  if (!identical(check.entries, FALSE)){
+    if (is.null(title <- CheckGSDots(title, title, check.entries)) ||
+          is.null(author <- CheckGSDots(author, title, check.entries)) ||
+          is.null(journal <- CheckGSDots(journal, title, check.entries)))
+      return(NA)
+  }
+
+  res <- list(title = title, author = author, cites = cited_by,
+              year = year)
+  if (!is.na(eprint <- regmatches(src, regexec("arXiv:([0-9.]*)", src))[[1]][2])){
+    res$eprinttype <- "arxiv"
+    res$eprint <- eprint
+    res$url <- paste0("http://arxiv.org/abs/", eprint)
+    attr(res, "entry") <- "misc"
+  }else{
+    if (is.na(numbers) || numbers == "" || as.character(year) == numbers){
+      if (as.numeric(cited_by) < 10L){
+        attr(res, "entry") <- "report"
+        res$institution <- journal
+        res$type <- "techreport"
+      }else{
+        attr(res, "entry") <- "book"
+        res$publisher <- res$journal
+      }
+    }else{
+      res$journal <- journal
+      res$number <- numbers
+      attr(res, 'entry') <- 'article'
+      numbers <- ProcessGSNumbers(res$number)
+      res$number <- numbers$number
+      res$pages <- numbers$pages
+      res$volume <- numbers$volume
+    }
+  }
+
+  res$author <- ProcessGSAuthors(res$author)  # format authors for MakeBibEntry
+  # create key
+  attr(res, "key") <- CreateBibKey(res$title, res$author, res$year)
+
+  return(res)
+}
+
 #' @keywords internal
 ProcessGSAuthors <- function(authors){
   # authors <- gsub(',', ', and', authors)  # add "and" to separate authors
@@ -535,7 +628,7 @@ CheckGSDots <- function(x, title, check){
   if(is.na(x) || tx != x){
     entry <- deparse(substitute(x))
     if (check == 'warn'){
-      message(paste0('Incomplete ', entry, ' information for entry \"', title, '\" adding anyway'))
+      warning(paste0('Incomplete ', entry, ' information for entry \"', title, '\" adding anyway'))
       return(tx)
     }else{
       message(paste0('Incomplete ', entry, ' information for entry \"', title, '\" it will NOT be added'))
@@ -552,18 +645,20 @@ MakeBibEntry <- function(x, to.person = TRUE){
   key <- attr(x, "key")
   y <- as.list(x)
   names(y) <- tolower(names(y))
-
-  if (to.person){
-    lapply(.BibEntryNameList, function(fld){
-                 if (fld %in% names(y))
-                    y[[fld]] <<- ArrangeAuthors(y[[fld]])
-             })
-  }else{
-    lapply(.BibEntryNameList, function(fld){
-             if (fld %in% names(y))
-                y[[fld]] <<- as.person(y[[fld]])
-         })
-  }
+  fun <- ifelse(to.person, "ArrangeAuthors", "as.person")
+  lapply(intersect(names(y), .BibEntryNameList), function(fld)
+         y[[fld]] <<- do.call(fun, list(y[[fld]])))
+  ## if (to.person){
+  ##   lapply(intersect(names(y), .BibEntryNameList), function(fld){
+  ##                if (fld %in% names(y))
+  ##                   y[[fld]] <<- ArrangeAuthors(y[[fld]])
+  ##            })
+  ## }else{
+  ##   lapply(.BibEntryNameList, function(fld){
+  ##            if (fld %in% names(y))
+  ##               y[[fld]] <<- as.person(y[[fld]])
+  ##        })
+  ## }
 
   tdate <- NULL
   if (type != 'set')
