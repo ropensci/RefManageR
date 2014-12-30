@@ -36,8 +36,8 @@
 #' @examples
 #' \dontrun{
 #' ## first two entries in library with bayesian in title
-#' ReadZotero(user = "1648676", .params = list(q = "bayesian", key = "7lhgvcwVq60CDi7E68FyE3br",
-#'   limit=2))
+#' ReadZotero(user = "1648676", .params = list(q = "bayesian",
+#'   key = "7lhgvcwVq60CDi7E68FyE3br", limit=2))
 #'
 #' ## Search specific collection
 #' ## collection key can be found by reading uri when collection is selected in Zotero
@@ -52,10 +52,12 @@
 #'
 #' ## To read these in you must set check.entries to FALSE or "warn"
 #' old.opts <- BibOptions(check.entries = FALSE)
-#' ReadZotero(user = "1648676", .params = list(key = "7lhgvcwVq60CDi7E68FyE3br",
-#'   tag = "Statistics - Machine Learning"))
+#' length(ReadZotero(user = "1648676", .params = list(key = "7lhgvcwVq60CDi7E68FyE3br",
+#'   tag = "Statistics - Machine Learning")))
 #'
-#' length(ReadZotero(group = "298776", .params = list(q = "Canadian")))
+#' ## Example using groups
+#' ReadZotero(group = "13495", .params = list(q = "Schmidhuber",
+#'   collection = "QU23T27Q"))
 #' BibOptions(old.opts)
 #' }
 #' @keywords database
@@ -73,15 +75,14 @@ ReadZotero <- function(user, group, .params, temp.file = tempfile(fileext = '.bi
   if (is.null(.parms$limit))
     .parms$limit <- 99L
 
-  .parms$uri <- if (!missing(user)){
-                  if (is.null(.params$collection))
-                    paste0("https://api.zotero.org/users/", user, "/items")
-                  else
-                    paste0("https://api.zotero.org/users/", user, "/collections/",
-                      .params$collection, "/items")
-               }else
-                 paste0("https://api.zotero.org/groups/", group, "/items")
-  
+  coll <- if (is.null(.parms$collection))
+            NULL
+          else
+            paste0("/collections/", .parms$collection)
+  .parms$uri <- paste0("https://api.zotero.org/", if (!missing(user))
+                        paste0("users/", user) else paste0("groups/", group),
+                       coll, "/items")
+
   cert <- try(system.file("CurlSSL/cacert.pem", package = "RCurl"))
   .parms$.opts <- if (class(cert)=='try-error')
       curlOptions(ssl.verifypeer=FALSE, httpheader='Zotero-API-Version: 2',
