@@ -39,8 +39,8 @@ Get Bibliography Information From a Zotero Library.
 \examples{
 \dontrun{
 ## first two entries in library with bayesian in title
-ReadZotero(user = "1648676", .params = list(q = "bayesian", key = "7lhgvcwVq60CDi7E68FyE3br",
-  limit=2))
+ReadZotero(user = "1648676", .params = list(q = "bayesian",
+  key = "7lhgvcwVq60CDi7E68FyE3br", limit=2))
 
 ## Search specific collection
 ## collection key can be found by reading uri when collection is selected in Zotero
@@ -55,10 +55,12 @@ ReadZotero(user = "1648676", .params=list(key = "7lhgvcwVq60CDi7E68FyE3br",
 
 ## To read these in you must set check.entries to FALSE or "warn"
 old.opts <- BibOptions(check.entries = FALSE)
-ReadZotero(user = "1648676", .params = list(key = "7lhgvcwVq60CDi7E68FyE3br",
-  tag = "Statistics - Machine Learning"))
+length(ReadZotero(user = "1648676", .params = list(key = "7lhgvcwVq60CDi7E68FyE3br",
+  tag = "Statistics - Machine Learning")))
 
-length(ReadZotero(group = "298776", .params = list(q = "Canadian")))
+## Example using groups
+ReadZotero(group = "13495", .params = list(q = "Schmidhuber",
+  collection = "QU23T27Q"))
 BibOptions(old.opts)
 }
 }
