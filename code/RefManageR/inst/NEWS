@@ -7,11 +7,11 @@ BUG FIXES
 cannot be otained for a particular DOI, which resulted in 'stack imbalance' warnings
 and no results being returned (h/t Norman L Guinasso Jr).
 * `ReadGS` fixed to account for changes to Google "API" (h/t Norman L Guinasso Jr).
-* Improved parsing for names ending with a '}' (h/t Henrik Bengtsson).
-* printing with `style = "html"` would not always add an opening <cite> tag when
-`bib.style = "numeric"` or `bib.style = "alphabetic"` (h/t Henrik Bengtsson).
+* Improved parsing for BibTeX format names ending with a '}' (h/t Henrik Bengtsson).
+* Printing references with `style = "html"` would not always add an opening <cite> tag
+when `bib.style = "numeric"` or `bib.style = "alphabetic"` (h/t Henrik Bengtsson).
 * `format.BibEntry` would ignore the `.style` argument if called directly by the user.
-Note, this function should normally not need to be called directly (h/t Henrik Bengtsson).
+Note, this function should normally not need to be called directly. (h/t Henrik Bengtsson)
 
 Changes in Version 0.8.40 (2014-10-28)
 --------------------------------------------------------
