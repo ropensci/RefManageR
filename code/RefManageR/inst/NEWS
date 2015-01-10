@@ -4,7 +4,7 @@ Changes in Version 0.8.45 (2014-12-29)
 BUG FIXES
 
 * `ReadCrossRef` now correctly handles the small number of cases where BibTeX information
-cannot be otained for a particular DOI, which resulted in 'stack imbalance' warnings
+cannot be obtained for a particular DOI, which resulted in 'stack imbalance' warnings
 and no results being returned (h/t Norman L Guinasso Jr).
 * `ReadGS` fixed to account for changes to Google "API" (h/t Norman L Guinasso Jr).
 * Improved parsing for BibTeX format names ending with a '}' (h/t Henrik Bengtsson).
