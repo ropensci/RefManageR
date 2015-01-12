@@ -251,7 +251,7 @@ ArrangeSingleAuthor <- function(y){
              c(cleanupLatex(von), cleanupLatex(sub(vonrx, '', parts[1L])), cleanupLatex(parts[2L])))
     }
   }else{
-    stop('Invalid name format in bibentry.')
+    stop('Invalid format.')
   }
 }
 
@@ -646,8 +646,17 @@ MakeBibEntry <- function(x, to.person = TRUE){
   y <- as.list(x)
   names(y) <- tolower(names(y))
   fun <- ifelse(to.person, "ArrangeAuthors", "as.person")
-  lapply(intersect(names(y), .BibEntryNameList), function(fld)
-         y[[fld]] <<- do.call(fun, list(y[[fld]])))
+  name.fields <- intersect(names(y), .BibEntryNameList)
+  lapply(name.fields, function(fld)
+         y[[fld]] <<- tryCatch(do.call(fun, list(y[[fld]])),
+                        error = function(e){
+                        message(sprintf("Ignoring entry '%s' (line %d) because: \n\tThe name list field '%s' cannot be parsed\n",
+                                          attr(x, "key"), attr(x, "srcref")[1], fld))
+                            NA
+                            }))
+  # Check if any were invalid, if so don't add entry
+  if (any(is.na(y)))
+       return(NULL)
   ## if (to.person){
   ##   lapply(intersect(names(y), .BibEntryNameList), function(fld){
   ##                if (fld %in% names(y))
@@ -663,20 +672,14 @@ MakeBibEntry <- function(x, to.person = TRUE){
   tdate <- NULL
   if (type != 'set')
     tdate <- ProcessDates(y)
-
-  res <- try(BibEntry(bibtype = type, key = key, dateobj = tdate, other = y), TRUE)
-  if (inherits(res, 'try-error')){
-    if(!is.null(y[['title']])){
-      message(paste0('Ignoring entry titled \"', y[['title']], '\" because ', strsplit(res, '\\n[[:space:]]*')[[1]][2]))
-      #message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines
-    }else{
-      message(paste0('Ignoring entry with key \"', key, '\" because ', strsplit(res, '\\n[[:space:]]*')[[1]][2]))
-      # message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines
-    }
-    return(NULL)
-  }
-
-  return(res)
+  tryCatch(BibEntry(bibtype = type, key = key, dateobj = tdate, other = y),
+            error = function(e){
+                message(sprintf("Ignoring entry '%s' (line %d) because:\n\t%s\n",
+                         key,
+                         attr(x, "srcref")[1],
+                         conditionMessage(e)))
+                NULL
+                })
 }
 
 #' @keywords internal
