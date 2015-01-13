@@ -1,48 +1,19 @@
 RefManageR
 ========
-Please see the [vignette](http://cran.r-project.org/web/packages/RefManageR/vignettes/manual.pdf)
-DESCRIPTION
-==================
-Package: RefManageR
-Version: 0.8.46
-Date: 2014-01-12
-Title: Straightforward BibTeX and BibLaTeX Bibliography Management
-Authors@R: person(c("Mathew", "W."), "McLean", role = c("aut", "cre"),
-    email = "mathew.w.mclean@gmail.com")
-Author: Mathew W. McLean [aut, cre]
-Maintainer: Mathew W. McLean <mathew.w.mclean@gmail.com>
-Description: RefManageR provides tools for importing and working with
-    bibliographic references.  It greatly enhances the bibentry class by
-    providing a class BibEntry which stores BibTeX and BibLaTeX references,
-    supports UTF-8 encoding, and can be easily searched by any field, by date
-    ranges, and by various formats for name lists (author by last names,
-    translator by full names, etc.). Entries can be updated, combined, sorted,
-    printed in a number of styles, and exported. BibTeX and BibLaTeX .bib files
-    can be read into R and converted to BibEntry objects.  Interfaces to NCBI's
-    Entrez, CrossRef, and Zotero are provided for importing references and
-    references can be created from locally stored PDFs using Poppler.  Includes
-    functions for citing and generating a bibliography with hyperlinks for
-    documents prepared with RMarkdown or RHTML.
-License: GPL-2 | GPL-3 | BSD_3_clause + file LICENSE
-Imports:
-    XML,
-    RCurl,
-    RJSONIO,
-    utils,
-    plyr,
-    tools,
-    bibtex,
-    lubridate,
-    stringr,
-    methods
-Suggests:
-    knitr
-Encoding: UTF-8
-Depends:
-    R (>= 3.0)
-VignetteBuilder: knitr
+RefManageR provides tools for importing and working with
+bibliographic references.  It greatly enhances the bibentry class by
+providing a class BibEntry which stores BibTeX and BibLaTeX references,
+supports UTF-8 encoding, and can be easily searched by any field, by date
+ranges, and by various formats for name lists (author by last names,
+translator by full names, etc.). Entries can be updated, combined, sorted,
+printed in a number of styles, and exported. BibTeX and BibLaTeX .bib files
+can be read into R and converted to BibEntry objects.  Interfaces to NCBI's
+Entrez, CrossRef, and Zotero are provided for importing references and
+references can be created from locally stored PDFs using Poppler.  Includes
+functions for citing and generating a bibliography with hyperlinks for
+documents prepared with RMarkdown or RHTML.
 
-
+Please see the [vignette](http://cran.r-project.org/web/packages/RefManageR/vignettes/manual.pdf).
 
 NEWS
 =====================================
