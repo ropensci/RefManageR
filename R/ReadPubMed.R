@@ -247,6 +247,16 @@ ProcessPubMedResult <- function(article){
                 '//PubmedArticle/MedlineCitation/Article/AuthorList/Author/ForeName',
                          xmlValue))
   res$author <- as.personList(paste(first.names, last.names))
+  if (is.null(res$author)){
+      last.names <- unlist(xpathApply(tdoc,
+                '//PubmedArticle/MedlineCitation/Article/AuthorList/Author/CollectiveName',
+                                  xmlValue))
+      if (length(last.names))
+          res$author <- person(last.names)
+  }
+  complete.AuthorList <- unlist(xpathApply(tdoc,
+                    "//PubmedArticle/MedlineCitation/Article/AuthorList",
+                                    xmlGetAttr, name = "CompleteYN", default = ""))
 
   res$year <- unlist(xpathApply(tdoc,
         '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Year',
@@ -296,6 +306,10 @@ ProcessPubMedResult <- function(article){
 
   res$language <- unlist(xpathApply(tdoc,
                            "//PubmedArticle/MedlineCitation/Article/Language", xmlValue))
+  res$issn <- unlist(xpathApply(tdoc,
+                           "//PubmedArticle/MedlineCitation/Article/Journal/ISSN",
+                                xmlValue))
+
   res$abstract <- unlist(xpathApply(tdoc,
                     "//PubmedArticle/MedlineCitation/Article/Abstract/AbstractText",
                                     xmlValue))
@@ -308,17 +322,19 @@ ProcessPubMedResult <- function(article){
                       else paste0(res$abstract, collapse = "\n")
   }
 
+  if (complete.AuthorList == "N")
+    warning(paste0("Incomplete list of authors returned by PubMed for ID: ", res$eprint))
+
   free(tdoc)
   res$eprinttype <- 'pubmed'
 
-  attr(res, 'entry') <- if (!is.null(res$journal))
+  attr(res, 'entry') <- if (!is.null(res$journal) && !is.null(res$author))
                           'article'
                         else
                           'misc'
 
   attr(res, 'key') <- CreateBibKey(res$title, res$author, res$year)
-
-  return(MakeBibEntry(res, FALSE))
+  MakeBibEntry(res, FALSE)
 }
 
 ProcessPubMedBookResult <- function(article){
