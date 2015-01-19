@@ -17,7 +17,7 @@ Please see the [vignette](http://cran.r-project.org/web/packages/RefManageR/vign
 
 NEWS
 =====================================
-Changes in Version 0.8.46 (2014-01-12)
+Changes in Version 0.8.47 (2014-01-18)
 --------------------------------------------------------
 
 BUG FIXES
@@ -25,6 +25,7 @@ BUG FIXES
 * `ReadBib`: If a name list field in an entry cannot be parsed in the bib file, the
 entry will be ignored, but the rest of the file will still be processed and
 returned. In the past, this caused an error and no output would be returned.
+* 'Book' entries will now be parsed correctly by `GetPubMedByID` (h/t Dale Steele)
 
 Changes in Version 0.8.45 (2014-12-29)
 --------------------------------------------------------
