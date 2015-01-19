@@ -647,11 +647,15 @@ MakeBibEntry <- function(x, to.person = TRUE){
   names(y) <- tolower(names(y))
   fun <- ifelse(to.person, "ArrangeAuthors", "as.person")
   name.fields <- intersect(names(y), .BibEntryNameList)
+  line.no <- if (is.null(attr(x, "srcref")))
+               ""
+             else
+               paste0("(line", attr(x, "srcref")[1], ") ")
   lapply(name.fields, function(fld)
          y[[fld]] <<- tryCatch(do.call(fun, list(y[[fld]])),
                         error = function(e){
-                        message(sprintf("Ignoring entry '%s' (line %d) because: \n\tThe name list field '%s' cannot be parsed\n",
-                                          attr(x, "key"), attr(x, "srcref")[1], fld))
+                        message(sprintf("Ignoring entry '%s' %sbecause: \n\tThe name list field '%s' cannot be parsed\n",
+                                          attr(x, "key"), line.no, fld))
                             NA
                             }))
   # Check if any were invalid, if so don't add entry
@@ -672,11 +676,12 @@ MakeBibEntry <- function(x, to.person = TRUE){
   tdate <- NULL
   if (type != 'set')
     tdate <- ProcessDates(y)
+
   tryCatch(BibEntry(bibtype = type, key = key, dateobj = tdate, other = y),
             error = function(e){
-                message(sprintf("Ignoring entry '%s' (line %d) because:\n\t%s\n",
+                message(sprintf("Ignoring entry '%s' %sbecause:\n\t%s\n",
                          key,
-                         attr(x, "srcref")[1],
+                         line.no,
                          conditionMessage(e)))
                 NULL
                 })
