@@ -13,3 +13,7 @@ test_that("GetPubMedByID will use collective name if individual authors missing 
     expect_true(length(authors) == 2L)
   }
 })
+
+test_that("GetPubMedByID warns if authors missing (#3)", {
+    gives_warning(GetPubMedByID("7936917"))
+})

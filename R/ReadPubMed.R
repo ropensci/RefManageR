@@ -322,8 +322,9 @@ ProcessPubMedResult <- function(article){
                       else paste0(res$abstract, collapse = "\n")
   }
 
-  if (complete.AuthorList == "N")
-    warning(paste0("Incomplete list of authors returned by PubMed for ID: ", res$eprint))
+  if (!length(complete.AuthorList) || complete.AuthorList == "N")
+    warning(paste0("Incomplete list of authors returned by PubMed for ID: ",
+                   res$eprint), call. = FALSE)
 
   free(tdoc)
   res$eprinttype <- 'pubmed'
