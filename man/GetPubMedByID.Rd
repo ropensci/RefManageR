@@ -22,8 +22,10 @@ Uses NCBI's E-Utilities to retrieve bibliographic information given a vector of 
 the results as a BibEntry object.
 }
 \note{
-If journal information is returned for an ID, then an entry with \code{bibtype}
-\dQuote{Article} will be created; otherwise, the \code{bibtype} will be \dQuote{Misc}.
+Returned entries will have \code{bibtype} \dQuote{Article} or \dQuote{Book},
+unless a collection title is present -- in which case the \code{bibtype} will be
+\dQuote{InBook} -- or there is no journal information returned for an article -- in
+which case the \code{bibtype} will be \dQuote{Misc}.
 }
 \examples{
 if (interactive() && url.exists("http://eutils.ncbi.nlm.nih.gov/"))

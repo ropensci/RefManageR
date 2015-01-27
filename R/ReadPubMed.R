@@ -84,8 +84,10 @@ ReadPubMed <- function(query, database = 'PubMed', ...){
 #' @param ... additional parameters to use for the search.
 #' See the Entrez documentation listed in the \emph{References}.
 #' @return a BibEntry object.
-#' @note If journal information is returned for an ID, then an entry with \code{bibtype}
-#' \dQuote{Article} will be created; otherwise, the \code{bibtype} will be \dQuote{Misc}.
+#' @note Returned entries will have \code{bibtype} \dQuote{Article} or \dQuote{Book},
+#' unless a collection title is present -- in which case the \code{bibtype} will be
+#' \dQuote{InBook} -- or there is no journal information returned for an article -- in
+#' which case the \code{bibtype} will be \dQuote{Misc}.
 #' @importFrom RCurl getForm
 #' @importFrom XML xmlParse getNodeSet
 #' @keywords database
@@ -110,16 +112,21 @@ GetPubMedByID <- function(id, db = 'pubmed', ...){
 
   # Note: directly using xpathApply on tdoc won't work if some results are missing certain fields
   results <- getNodeSet(tdoc, '//PubmedArticleSet/PubmedArticle')
+  results.book <- getNodeSet(tdoc, '//PubmedArticleSet/PubmedBookArticle')
 
-  if(!length(results)){
-    message('No results.')
-    return()
-  }
+  ## if(!length(results) && !length(results.book)){
+  ##   message('No results.')
+  ##   return()
+  ## }
 
-  results <- lapply(results, ProcessPubMedResult)
+  results <- c(lapply(results, ProcessPubMedResult),
+               lapply(results.book, ProcessPubMedBookResult))
 
-  res <- MakeCitationList(results)
-
+  res <- if (length(results))  # else NULL
+            MakeCitationList(results)
+  if (length(fails <- setdiff(id, unlist(res$eprint))))
+     message(paste0("Unable to fetch entries for id's: ",
+                    paste0(fails, collapse = ", ")))
   return(res)
 }
 
@@ -225,6 +232,8 @@ GetPubMedRelated <- function(id, database = 'pubmed', batch.mode = TRUE, max.res
 #' @keywords internal
 #' @importFrom XML xpathApply xmlValue free xmlGetAttr
 ProcessPubMedResult <- function(article){
+  if (!length(article))
+     return()
   tdoc <- xmlDoc(article)
   res <- list()
 
@@ -238,9 +247,24 @@ ProcessPubMedResult <- function(article){
                 '//PubmedArticle/MedlineCitation/Article/AuthorList/Author/ForeName',
                          xmlValue))
   res$author <- as.personList(paste(first.names, last.names))
+  if (is.null(res$author)){
+      last.names <- unlist(xpathApply(tdoc,
+                '//PubmedArticle/MedlineCitation/Article/AuthorList/Author/CollectiveName',
+                                  xmlValue))
+      if (length(last.names))
+          res$author <- person(last.names)
+  }
+  complete.AuthorList <- unlist(xpathApply(tdoc,
+                    "//PubmedArticle/MedlineCitation/Article/AuthorList",
+                                    xmlGetAttr, name = "CompleteYN", default = ""))
 
-  res$year <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Year',
+  res$year <- unlist(xpathApply(tdoc,
+        '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Year',
                                  xmlValue))
+  res$month <- unlist(xpathApply(tdoc,
+        '//PubmedArticle/MedlineCitation/Article/Journal/JournalIssue/PubDate/Month',
+                                 xmlValue))
+
     if (is.null(res$year))  # search extra hard for year
         res$year <- unlist(xpathApply(tdoc, '//PubmedArticle/MedlineCitation/Article/ArticleDate/Year',
                                  xmlValue))
@@ -282,6 +306,10 @@ ProcessPubMedResult <- function(article){
 
   res$language <- unlist(xpathApply(tdoc,
                            "//PubmedArticle/MedlineCitation/Article/Language", xmlValue))
+  res$issn <- unlist(xpathApply(tdoc,
+                           "//PubmedArticle/MedlineCitation/Article/Journal/ISSN",
+                                xmlValue))
+
   res$abstract <- unlist(xpathApply(tdoc,
                     "//PubmedArticle/MedlineCitation/Article/Abstract/AbstractText",
                                     xmlValue))
@@ -294,14 +322,107 @@ ProcessPubMedResult <- function(article){
                       else paste0(res$abstract, collapse = "\n")
   }
 
+  if (!length(complete.AuthorList) || complete.AuthorList == "N")
+    warning(paste0("Incomplete list of authors returned by PubMed for ID: ",
+                   res$eprint), call. = FALSE)
+
   free(tdoc)
   res$eprinttype <- 'pubmed'
 
-  if (!is.null(res$journal)){
-    attr(res, 'entry') <- 'article'
-  }else{
-    attr(res, 'entry') <- 'misc'
+  attr(res, 'entry') <- if (!is.null(res$journal) && !is.null(res$author))
+                          'article'
+                        else
+                          'misc'
+
+  attr(res, 'key') <- CreateBibKey(res$title, res$author, res$year)
+  MakeBibEntry(res, FALSE)
+}
+
+ProcessPubMedBookResult <- function(article){
+  if (!length(article))
+      return()
+  tdoc <- xmlDoc(article)
+  res <- list()
+
+  title <- unlist(xpathApply(tdoc, '//PubmedBookArticle/BookDocument/Book/BookTitle',
+                                 xmlValue))
+  res$title <- gsub('\\.$', '', title)
+  last.names <- unlist(xpathApply(tdoc,
+                '//PubmedBookArticle/BookDocument/Book/AuthorList/Author/LastName',
+                                  xmlValue))
+  first.names <- unlist(xpathApply(tdoc,
+                '//PubmedBookArticle/BookDocument/Book/AuthorList/Author/ForeName',
+                         xmlValue))
+  res$author <- as.personList(paste(first.names, last.names))
+
+  res$year <- unlist(xpathApply(tdoc,
+                       '//PubmedBookArticle/BookDocument/Book/PubDate/Year', xmlValue))
+    ## if (is.null(res$year))  # search extra hard for year
+    ##     res$year <- unlist(xpathApply(tdoc,
+    ##           '//PubmedBookArticle/MedlineCitation/Article/ArticleDate/Year',
+    ##                              xmlValue))
+  res$month <- unlist(xpathApply(tdoc,
+                       '//PubmedBookArticle/BookDocument/Book/PubDate/Month', xmlValue))
+  if (is.null(res$year))
+    res$year <- unlist(xpathApply(tdoc,
+                   '//PubmedBookArticle/PubmedBookData/History/PubMedPubDate/Year',
+                               xmlValue))[1]
+
+  res$booktitle <- unlist(xpathApply(tdoc,
+                            '//PubmedBookArticle/BookDocument/Book/CollectionTitle',
+                              xmlValue))
+
+  res$publisher <- unlist(xpathApply(tdoc,
+          '//PubmedBookArticle/BookDocument/Book/Publisher/PublisherName',
+                              xmlValue))
+
+  res$location <- unlist(xpathApply(tdoc,
+                    '//PubmedBookArticle/BookDocument/Book/Publisher/PublisherLocation',
+                              xmlValue))
+  res$eprint <- unlist(xpathApply(tdoc, '//PubmedBookArticle/BookDocument/PMID',
+                          xmlValue))
+  doc.ids <- unlist(xpathApply(tdoc,
+                   '//PubmedBookArticle/PubmedBookData/ArticleIdList/ArticleId',
+                              xmlValue))
+  id.types <- unlist(xpathApply(tdoc,
+                    "//PubmedBookArticle/PubmedBookData/ArticleIdList/ArticleId",
+                                    xmlGetAttr, name = "IdType", default = ""))
+  ## res$eprint <- if(length(pmid.pos <- grep("pubmed", id.types, ignore.case = TRUE)))
+  ##                  doc.ids[pmid.pos[1L]]
+  res$doi <- if (length(doi.pos <- grep("doi", id.types, ignore.case = TRUE)))
+               doc.ids[doi.pos[1L]]
+             else{
+               doc.ids <- sapply(doc.ids, SearchDOIText)
+               if (any(doi.pos <- !is.na(doc.ids)))
+                 doc.ids[doi.pos[1L]]
+               else
+                 NULL
+             }
+
+  # res$doi <- grep('/', doi, value = TRUE)
+
+  res$language <- unlist(xpathApply(tdoc,
+                           "//PubmedBookArticle/BookDocument/Language", xmlValue))
+  res$abstract <- unlist(xpathApply(tdoc,
+                    "//PubmedBookArticle/BookDocument/Abstract/AbstractText",
+                                    xmlValue))
+  if (length(res$abstract) > 1L){  # some abstracts are separated into sections: methods, conclusion, etc.
+      abstract.labs <- unlist(xpathApply(tdoc,
+                    "//PubmedBookArticle/BookDocument/Abstract/AbstractText",
+                                    xmlGetAttr, name = "Label", default = ""))
+      res$abstract <- if (!any(sapply(abstract.labs, .is_not_nonempty_text)))
+                           paste0(paste(abstract.labs, res$abstract, sep = ": "), collapse = "\n")
+                      else paste0(res$abstract, collapse = "\n")
   }
+
+  free(tdoc)
+  res$eprinttype <- 'pubmed'
+
+  attr(res, 'entry') <- if (!is.null(res$booktitle))
+                          'InBook'
+                        else
+                          'Book'
+
   attr(res, 'key') <- CreateBibKey(res$title, res$author, res$year)
 
   return(MakeBibEntry(res, FALSE))

@@ -17,14 +17,25 @@ Please see the [vignette](http://cran.r-project.org/web/packages/RefManageR/vign
 
 NEWS
 =====================================
-Changes in Version 0.8.46 (2014-01-12)
+Changes in Version 0.8.51 (2014-01-18)
 --------------------------------------------------------
+
+NEW FEATURES
+
+* `GetPubMedByID`: Now returns some additional fields including 'month' and 'issn' for
+articles; will print a warning if PubMed does not return the complete list
+of authors; will use the name of a collective if one is available and the individual
+authors are missing (h/t Dale Steele)
 
 BUG FIXES
 
 * `ReadBib`: If a name list field in an entry cannot be parsed in the bib file, the
 entry will be ignored, but the rest of the file will still be processed and
 returned. In the past, this caused an error and no output would be returned.
+* 'Book' entries will now be parsed correctly by `GetPubMedByID` (h/t Dale Steele)
+* Fix error/warning messages when entry is missing required fields (introduced in
+Version 0.8.45)
+
 
 Changes in Version 0.8.45 (2014-12-29)
 --------------------------------------------------------
