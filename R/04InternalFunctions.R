@@ -185,7 +185,7 @@ ArrangeSingleAuthor <- function(y){
     if (!inherits(tmp, 'try-error'))
       y <- deparseLatex(latexToUtf8(tmp))
   }
-  parts <- unlist(strsplit(y, ','))
+  parts <- unlist(strsplit(y, ", ?(?![^{}]*})", perl = TRUE))  # split on commas not in braces
   len.parts <- length(parts)
   if (len.parts == 1L){
     #     parts <- "{Barnes} {and} {Noble,} {Inc.}"

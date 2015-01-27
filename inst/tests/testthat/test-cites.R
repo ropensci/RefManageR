@@ -1,10 +1,15 @@
-rm(list = ls(all=TRUE))
+context("Cite functions")
+# rm(list = ls(all=TRUE))
 unloadNamespace("RefManageR")
 library(RefManageR)
+
 old.opts <- BibOptions(check.entries = FALSE, style = "markdown", bib.style = "numeric", cite.style = "numeric")
-expect_identical(old.opts, list(check.entries = "error", style = "text", 
-                                bib.style = "numeric", cite.style = "authoryear"))
-bib <- ReadBib(system.file("Bib", "biblatexExamples.bib", 
+test_that("BibOptions returns changed options correctly", {
+  expect_identical(old.opts, list(check.entries = "error", style = "text",
+                                  bib.style = "numeric", cite.style = "authoryear"))
+})
+
+bib <- ReadBib(system.file("Bib", "biblatexExamples.bib",
                            package = "RefManageR"), check = FALSE)
 
 expect_identical(Citet(bib, 11, .opts = list(longnamesfirst = FALSE)),
@@ -38,12 +43,12 @@ expect_true(grepl("\\[2\\]", Citep(bib, 14)))
 expect_true(grepl("\\[1\\]", Citet(bib, 12)))
 
 # error occurs if cite ref in one style and cite.style then switch *both*
-rm(list = ls(all=TRUE))
+# rm(list = ls(all=TRUE))
 unloadNamespace("RefManageR")
 library(RefManageR)
 #BibOptions(check.entries = FALSE, style = "markdown", bib.style = "numeric", cite.style = "numeric")
 BibOptions(check.entries = FALSE) #, cite.style = "alphabetic")
-bib <- ReadBib(system.file("Bib", "biblatexExamples.bib", 
+bib <- ReadBib(system.file("Bib", "biblatexExamples.bib",
                            package = "RefManageR"), check = FALSE)
 AutoCite(bib, author = "kant")
 #BibOptions(cite.style = "authoryear", check.entries = FALSE)
