@@ -17,7 +17,7 @@ Please see the [vignette](http://cran.r-project.org/web/packages/RefManageR/vign
 
 NEWS
 =====================================
-Changes in Version 0.8.51 (2014-01-18)
+Changes in Version 0.8.52 (2014-01-26)
 --------------------------------------------------------
 
 NEW FEATURES
@@ -35,6 +35,8 @@ returned. In the past, this caused an error and no output would be returned.
 * 'Book' entries will now be parsed correctly by `GetPubMedByID` (h/t Dale Steele)
 * Fix error/warning messages when entry is missing required fields (introduced in
 Version 0.8.45)
+* Name lists containing a comma in braces will now be parsed correctly,
+e.g. "Buchalter, Louis and {Murder, Inc.} and Anastasia, Albert"
 
 
 Changes in Version 0.8.45 (2014-12-29)

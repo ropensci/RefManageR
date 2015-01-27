@@ -50,3 +50,9 @@ test_that("des White, Jr., Walter", {
   expect_equal(length(parsed$family), 3L)
 })
 
+test_that("{Herm{\\`e}s International S.A.} and Katzfu{\\ss}, Matthias", {
+  authors <- "{Herm{\\`e}s International S.A.} and Katzfu{\\ss}, Matthias"
+  parsed <- RefManageR:::ArrangeAuthors(authors)
+  expect_match(parsed$family[[1]], "Hermès International S.A.")
+  expect_match(parsed$family[[2]], "Katzfuß")
+})
