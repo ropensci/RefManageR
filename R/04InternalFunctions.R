@@ -306,7 +306,7 @@ MakeCitationList <- function( x, header, footer){
 
 #' @keywords internal
 .is_not_nonempty_text <- function(x){
-  is.null(x) || any(is.na(x)) || all(grepl("^[[:space:]]*$", x))
+  is.null(x) || any(is.na(x)) || all(grepl("^[[:space:]]*$", x, useBytes = TRUE))
 }
 
 #' @keywords internal
