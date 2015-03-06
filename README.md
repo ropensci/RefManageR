@@ -1,5 +1,7 @@
 RefManageR
 ========
+![](https://travis-ci.org/mwmclean/RefManageR.svg?branch=master)
+
 RefManageR provides tools for importing and working with
 bibliographic references.  It greatly enhances the bibentry class by
 providing a class BibEntry which stores BibTeX and BibLaTeX references,
