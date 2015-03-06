@@ -1,0 +1,20 @@
+# see http://docs.travis-ci.com/user/languages/r/
+language: r
+
+# Be strict when checking our package
+warnings_are_errors: true
+
+# Use github version of testthat
+r_github_packages:
+ - hadley/testthat
+ - romainfrancois/bibtex
+
+# remove default --as-cran so testthat tests are run (also avoids to useless check notes)
+r_check_args:
+
+notifications:
+  email:
+    recipients:
+      - mathew.w.mclean@gmail.com
+    on_success: change # always|never|change, default: change
+    on_failure: always # default: always
