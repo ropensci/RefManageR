@@ -4,9 +4,8 @@ Rmd/figure
 Rhtml/.*[.]html$
 Rhtml/.*[.]md$
 Rhtml/figure
-tests/
 .*~$
-\#*\#
+\#.*\#
 ^[.]gitignore$
 ^[.]travis[.]yml$
 ^[.]git$
