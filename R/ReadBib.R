@@ -16,7 +16,7 @@
 #' @examples
 #' file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 #' bib <- ReadBib(file.name)
-ReadBib <- function (file, .Encoding = "UTF-8",
+ReadBib <- function(file, .Encoding = "UTF-8",
                      header = if (length(preamble)) paste(preamble, sep = "\n") else "",
                      footer = "", check = BibOptions()$check.entries){
   stopifnot(!missing(file))
