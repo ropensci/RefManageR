@@ -5,9 +5,9 @@
 context("'OR' searches with lists")
 
 test_that("OR search, several fields", {
-    ## rm(list=ls())
-    ## unloadNamespace("RefManageR")
-    ## library(RefManageR)
+    rm(list=ls())
+    unloadNamespace("RefManageR")
+    library(RefManageR)
     file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
     bib2 <- suppressMessages(ReadBib(file.name))
 
@@ -19,6 +19,10 @@ test_that("OR search, several fields", {
 
 ## Aristotle references before 1925 *OR* references with editor Westfahl
 test_that("'OR' search using list", {
+    rm(list=ls())
+    unloadNamespace("RefManageR")
+    library(RefManageR)
+
     file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
     bib <- suppressMessages(ReadBib(file.name))
 
