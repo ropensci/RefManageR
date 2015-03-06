@@ -32,6 +32,6 @@ bib <- ReadBib(file.name)
 McLean, M. W., based on code in \code{bibtex} package by Francois, R.
 }
 \seealso{
-\code{\link{read.bib}} in package \code{bibtex}
+\code{\link[bibtex]{read.bib}} in package \code{bibtex}
 }
 
