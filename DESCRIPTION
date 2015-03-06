@@ -31,7 +31,8 @@ Imports:
     stringr,
     methods
 Suggests:
-    knitr
+    knitr,
+    testthat
 Encoding: UTF-8
 Depends:
     R (>= 3.0)
