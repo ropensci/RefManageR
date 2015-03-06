@@ -103,8 +103,17 @@ test_that("switching cite.style and citing reference again", {
 ################## end bug
 
 test_that("PrintBibliography when multiple BibEntry objects cited", {
+    unloadNamespace("RefManageR")
+    library(RefManageR)
+    ## BibOptions(check.entries = FALSE, style = "markdown", bib.style = "numeric", cite.style = "numeric")
+    BibOptions(check.entries = FALSE) #, cite.style = "alphabetic")
+    bib <- ReadBib(system.file("Bib", "biblatexExamples.bib",
+                               package = "RefManageR"), check = FALSE)
+    AutoCite(bib, author = "kant")
+
     bib2 <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[seq_len(20)]
     AutoCite(bib2, title = "binary longitudinal data")
     bibtext <- capture.output(PrintBibliography(bib2, .opts = list(cite.style = "numeric")))
-    expect_equal(length(bibtext), 4L)  # only one entry taking up four lines is printed
+    ## only one entry is printed (so there are no blank lines separating entries)
+    expect_false(any(grepl("^$", bibtext)))
 })
