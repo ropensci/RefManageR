@@ -74,7 +74,7 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
       old.opts <- BibOptions(.opts)
       on.exit(BibOptions(old.opts))
     }
-    
+
     if (identical(class(bib), "bibentry"))
       bib <- as.BibEntry(bib)
 
@@ -377,4 +377,5 @@ NoCite <- function(bib, ..., .opts = list()){
     .labs <- .cites$labs[keys]
   }
   AddCite(keys, !identical(.BibOptions$hyperlink, FALSE))
+  invisible(NULL)
 }
