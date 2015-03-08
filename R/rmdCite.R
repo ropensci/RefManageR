@@ -290,40 +290,44 @@ PrintBibliography <- function(bib, .opts = list()){
 #' @rdname Cite
 Citep <- function(bib, ..., before = NULL, after = NULL,
                   .opts = list()){
-  kall <- match.call()
-  kall[[1L]] <- as.name("Cite")
-  kall$textual <- FALSE
-  eval(kall)
+  ## kall <- match.call()
+  ## kall[[1L]] <- as.name("Cite")
+  ## kall$textual <- FALSE
+  ## eval(kall)
+  Cite(bib, ..., textual = FALSE, before = before, after = after, .opts = .opts)
 }
 
 #' @export
 #' @rdname Cite
 AutoCite <- function(bib, ..., before = NULL, after = NULL,
                      .opts = list()){
-  kall <- match.call()
-  kall[[1L]] <- as.name("Cite")
-  kall$textual <- FALSE
-  eval(kall)
+  ## kall <- match.call()
+  ## kall[[1L]] <- as.name("Cite")
+  ## kall$textual <- FALSE
+  ## eval(kall)
+  Cite(bib, ..., textual = FALSE, before = before, after = after, .opts = .opts)
 }
 
 #' @export
 #' @rdname Cite
 Citet <- function(bib, ..., before = NULL, after = NULL,
                   .opts = list()){
-  kall <- match.call()
-  kall[[1L]] <- as.name("Cite")
-  kall$textual <- TRUE
-  eval(kall)
+  ## kall <- match.call()
+  ## kall[[1L]] <- as.name("Cite")
+  ## kall$textual <- TRUE
+  ## eval(kall)
+  Cite(bib, ..., textual = TRUE, before = before, after = after, .opts = .opts)
 }
 
 #' @export
 #' @rdname Cite
 TextCite <- function(bib, ..., before = NULL, after = NULL,
                      .opts = list()){
-  kall <- match.call()
-  kall[[1L]] <- as.name("Cite")
-  kall$textual <- TRUE
-  eval(kall)
+  ## kall <- match.call()
+  ## kall[[1L]] <- as.name("Cite")
+  ## kall$textual <- TRUE
+  ## eval(kall)
+  Cite(bib, ..., textual = TRUE, before = before, after = after, .opts = .opts)
 }
 
 #' @keywords internal
