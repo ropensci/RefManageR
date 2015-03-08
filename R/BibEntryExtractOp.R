@@ -172,7 +172,7 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
     ret.ind <- .BibOptions$return.ind
     .BibOptions$return.ind <- TRUE
     tryCatch({
-      kall$x <- bquote(.(x))  # needed so that repeated calls don't cause testthat and check errors
+      kall$x <- force(x)  # bquote(.(x))  # needed so that repeated calls don't cause testthat and check errors
       ind <- suppressMessages(eval(kall))
       if (!missing(j)){
         if (is.list(j[[1L]])){  # original call had at least two lists in ...
