@@ -1,6 +1,6 @@
 RefManageR
 ========
-![](https://travis-ci.org/mwmclean/RefManageR.svg?branch=master)
+[![](https://travis-ci.org/mwmclean/RefManageR.svg?branch=master)](https://travis-ci.org/mwmclean/RefManageR/)
 [![Coverage Status](https://coveralls.io/repos/mwmclean/RefManageR/badge.svg?branch=master)](https://coveralls.io/r/mwmclean/RefManageR?branch=master)
 
 RefManageR provides tools for importing and working with
