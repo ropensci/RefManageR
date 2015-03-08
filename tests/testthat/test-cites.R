@@ -1,8 +1,19 @@
 context("Cite functions")
-## rm(list = ls(all=TRUE))
-unloadNamespace("RefManageR")
-library(RefManageR)
 
+## rm(list = ls(all=TRUE))
+## unloadNamespace("RefManageR")
+## library("RefManageR")
+clear.cites <- function(){
+    env <- getNamespace("RefManageR")
+    unlockBinding(".cites", env)
+    assign(".cites", new.env(), env)
+    assign("indices", logical(0), get(".cites", envir = env))
+    assign("labs", character(0), get(".cites", envir = env))
+    assign("sty", "authoryear", get(".cites", envir = env))
+}
+
+clear.cites()
+BibOptions(restore.defaults = TRUE)
 old.opts <- BibOptions(check.entries = FALSE, style = "markdown", bib.style = "numeric", cite.style = "numeric")
 test_that("BibOptions returns changed options correctly", {
   expect_identical(old.opts, list(check.entries = "error", style = "text",
@@ -84,12 +95,11 @@ test_that("cite than switch to numeric citation", {
     expect_true(grepl("\\[1\\]", Citet(bib, 12)))
 })
 
-# error occurs if cite ref in one style and cite.style then switch *both*
-                                        # rm(list = ls(all=TRUE))
 test_that("switching cite.style and citing reference again", {
-    unloadNamespace("RefManageR")
-    library(RefManageR)
+    ## unloadNamespace("RefManageR")
+    ## library(RefManageR)
     ## BibOptions(check.entries = FALSE, style = "markdown", bib.style = "numeric", cite.style = "numeric")
+    clear.cites()
     BibOptions(check.entries = FALSE) #, cite.style = "alphabetic")
     bib <- ReadBib(system.file("Bib", "biblatexExamples.bib",
                                package = "RefManageR"), check = FALSE)
@@ -100,18 +110,24 @@ test_that("switching cite.style and citing reference again", {
     expect_false(grepl("NA", Cite(bib, 12)))
     expect_true(grepl("\\[KU\\]", Citet(bib, author = "Kant")))
 })
-################## end bug
+
 
 test_that("PrintBibliography when multiple BibEntry objects cited", {
-    unloadNamespace("RefManageR")
-    library(RefManageR)
+##    rm(list=ls(all=TRUE))
+    ## unloadNamespace("RefManageR")
+    ## library(RefManageR)
+    ## unlockBinding(".cites", getNamespace("RefManageR"))
+    ## assign(".cites", new.env(), getNamespace("RefManageR"))
+    clear.cites()
     ## BibOptions(check.entries = FALSE, style = "markdown", bib.style = "numeric", cite.style = "numeric")
-    BibOptions(check.entries = FALSE) #, cite.style = "alphabetic")
+    ## BibOptions(check.entries = FALSE) #, cite.style = "alphabetic")
     bib <- ReadBib(system.file("Bib", "biblatexExamples.bib",
-                               package = "RefManageR"), check = FALSE)
+                                package = "RefManageR"), check = FALSE)
     AutoCite(bib, author = "kant")
 
     bib2 <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[seq_len(20)]
+    if (!length(bib2))
+        skip("Couldn't load RCJ.bib'")
     AutoCite(bib2, title = "binary longitudinal data")
     bibtext <- capture.output(PrintBibliography(bib2, .opts = list(cite.style = "numeric")))
     ## only one entry is printed (so there are no blank lines separating entries)

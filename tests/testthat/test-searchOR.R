@@ -14,7 +14,7 @@ test_that("OR search, several fields", {
     len <- length(bib2[list(author='ruppert',bibtype="report",institution="north carolina"),
                        list(author="ruppert",journal="journal of the american statistical association")])
 
-    stopifnot(len==22L)
+    expect_equal(len, 22L)
 })
 
 ## Aristotle references before 1925 *OR* references with editor Westfahl
@@ -31,5 +31,5 @@ test_that("'OR' search using list", {
     ## print(len)
     ## print(bib[list(author="aristotle", date = "/1925"),
     ##                         list(editor = "westfahl")])
-    stopifnot(len==4L)
+    expect_equal(len, 4L)
 })

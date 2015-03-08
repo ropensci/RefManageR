@@ -1,10 +1,10 @@
 context("Searching")
 
-unloadNamespace("RefManageR")
-library(RefManageR)
+## unloadNamespace("RefManageR")
+## library(RefManageR)
 
 file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
-bib <- suppressMessages(ReadBib(file.name))
+bib <- suppressMessages(ReadBib(file.name, check = FALSE))
 
 test_that("author search via family names only", {
     expect_equal(length(bib[author = "aristotle"]), 4)
@@ -14,6 +14,7 @@ test_that("author search via family names only", {
 test_that("author and year interval search, no start year", {
     expect_equal(length(bib[author="aristotle", date = "/1925"]), 2L)
 })
+
 ## ## Aristotle references before 1925 *OR* references with editor Westfahl
 ## test_that("'OR' search using list", {
 ##     rm(list=ls())
@@ -44,40 +45,40 @@ file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 bib2 <- suppressMessages(ReadBib(file.name))
 
 
-## index by key
+## ## index by key
 test_that("search by key", {
     expect_equal(length(bib2[c("chen2013using", "carroll1978distributions")]), 2L)
 })
 
-## Papers with someone with family name Wang
+## ## Papers with someone with family name Wang
 test_that("search more authors", {
     expect_equal(length(SearchBib(bib2, author='Wang',
                               .opts = list(match.author = "family"))), 37L)
 })
 
-## Papers with Wang, N.
+## ## Papers with Wang, N.
 test_that("author with initials", {
     expect_equal(length(SearchBib(bib2, author='Wang, N.',
                               .opts = list(match.author = "family.with.initials"))), 19L)
 })
 
-## tech reports with Ruppert
+## ## tech reports with Ruppert
 test_that("search with author and bibtype", {
     expect_equal(length(bib2[author='ruppert',bibtype="report"]), 19L)
 })
 
-##Carroll and Ruppert tech reports at UNC
+## ##Carroll and Ruppert tech reports at UNC
 test_that("search with bibtype and institution", {
     expect_equal(length(bib2[author='ruppert',bibtype="report",institution="north carolina"]), 10L)
 })
 
-## Carroll and Ruppert papers since leaving UNC
+## ## Carroll and Ruppert papers since leaving UNC
 test_that("exact date search", {
     expect_equal(length(SearchBib(bib2, author='ruppert', date="1987-07/",
                      .opts = list(match.date = "exact"))), 53L)
 })
 
-## Carroll and Ruppert papers NOT in the 1990's
+## ## Carroll and Ruppert papers NOT in the 1990's
 test_that("search excluding dates", {
     expect_equal(length(SearchBib(bib2, author='ruppert', date = "!1990/1999")), 59L)
 })
@@ -91,7 +92,7 @@ test_that("three author search", {
     expect_equal(length(bib2[author="Carroll, R. J. and Simpson, D. G. and Ruppert, D."]), 5L)
 })
 
-## Carroll + Ruppert OR Carroll + Simpson
+## ## Carroll + Ruppert OR Carroll + Simpson
 test_that("search with author vector (OR)", {
     expect_equal(length(bib2[author=c("Carroll, R. J. and Ruppert, D.",
                                      "Carroll, R. J. and Simpson, D. G.")]), 94L)
