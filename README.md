@@ -1,6 +1,7 @@
 RefManageR
 ========
 ![](https://travis-ci.org/mwmclean/RefManageR.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/mwmclean/RefManageR/badge.svg?branch=master)](https://coveralls.io/r/mwmclean/RefManageR?branch=master)
 
 RefManageR provides tools for importing and working with
 bibliographic references.  It greatly enhances the bibentry class by
