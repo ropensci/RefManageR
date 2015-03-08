@@ -6,6 +6,10 @@ NEW FEATURES
 * Use `bibtex >= 0.4.9000` function `do_read_bib` to avoid `.External` call and
 `R check` note (request of HI&RH Lord Ripley of England)
 
+BUG FIXES
+
+* Fixed merging `BibEntry` objects by multiple fields when no duplicates
+
 
 Changes in Version 0.8.52 (2014-01-26)
 --------------------------------------------------------
