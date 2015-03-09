@@ -8,11 +8,6 @@ bib <- ReadBib(system.file("Bib", "biblatexExamples.bib",
                            package = "RefManageR"), check = FALSE)
 
 
-test_that("list extraction", {
-
-})
-
-
 test_that("addition operator", {
     res <- bib[1:3] + bib[3:4]
     expect_length(res, 4L)
@@ -56,5 +51,24 @@ test_that("open", {
       eprintclass = "stat.ME", year = 2013, urldate = "2014-02-01", pubstate = "submitted",
       title = "Something On the {arXiv}", author = "Mathew W. McLean", eprint = "1403.2036")
     open(testbib, entry = 1)  # eprint
+})
+
+test_that("c", {
+   expect_length(c(bib[1], bib[2]), 2L)
+   expect_warning(c(bib[1], unlist(bib[2])))
+})
+
+test_that("levels", {
+    expect_identical(levels(bib)[["angenendt"]], c("author", "title", "journaltitle", "date",
+                                                   "volume", "pages", "langid", "indextitle",
+                                                   "shorttitle", "annotation"))
+    expect_identical(levels(bib[[1]])[[1]], c("author", "title", "subtitle", "pages",
+                                              "crossref", "langid", "langidopts",
+                                              "indextitle", "annotation"))
+})
+
+test_that("list extraction", {
+    expect_length(bib[[c("westfahl:space", "angenendt")]], 2L)
+    expect_length(bib[[6:10]], 5L)
 })
 
