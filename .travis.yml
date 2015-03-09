@@ -4,6 +4,16 @@ language: r
 # Be strict when checking our package
 warnings_are_errors: true
 
+# before_script:
+#  - wget http://poppler.freedesktop.org/poppler-0.32.0.tar.xz
+#  - tar poppler-0.32.0.tar.xz
+#  - export PATH=$PATH:$PWD/poppler-0.32.0
+
+install:
+ - wget http://poppler.freedesktop.org/poppler-0.32.0.tar.xz
+ - tar poppler-0.32.0.tar.xz
+ - cd poppler-0.32.0 && ./configure --prefix=/usr && make && make install
+
 # Use github version of testthat
 r_github_packages:
  - hadley/testthat
