@@ -56,7 +56,8 @@ ReadFirstPages <- function(doc, page.one = TRUE){
 
 
       # make lame, conservative attempt to get journal
-      journ.ind <- regexec('^([[:alpha:] -]{2,})[,\\.;]?[[:print:]]*\\(?\\<((19|20)[0-9]{2})\\>', doc[1])  # [[:upper:]][[:alpha:]]+
+      journ.ind <- regexec('^([[:alpha:] -]{2,})[,\\.;]?[[:print:]]*\\(?\\<((19|20)[0-9]{2})\\>',
+                           doc[1], useBytes = TRUE)  # [[:upper:]][[:alpha:]]+
       if (length(journ.ind[[1]]) != 1){
         temp <- regmatches(doc[1], journ.ind)[[1]]
         res$journal <- gsub(' $', '', temp[2])
