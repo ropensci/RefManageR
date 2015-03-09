@@ -1,4 +1,4 @@
-Changes in Version 0.8.53 (2014-03-06)
+Changes in Version 0.8.55 (2014-03-08)
 --------------------------------------------------------
 
 NEW FEATURES
@@ -9,7 +9,8 @@ NEW FEATURES
 BUG FIXES
 
 * Fixed merging `BibEntry` objects by multiple fields when no duplicates
-
+* `open.BibEntry` fixed to not use partial matching of field names; e.g. an error would occur if the
+specified entry had a 'urldate' field, but no 'url' field
 
 Changes in Version 0.8.52 (2014-01-26)
 --------------------------------------------------------
