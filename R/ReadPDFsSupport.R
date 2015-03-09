@@ -453,7 +453,7 @@ ProcessPDFMeta <- function(x, enc = 'UTF-8'){
       }
     }else if (!is.na(ind <-pmatch('CreationDate', found.tags))){
       date <- sub('CreationDate:[[:space:]]+', '', x[ind])
-      date <- supressWarnings(lubridate::parse_date_time(date,
+      date <- suppressWarnings(lubridate::parse_date_time(date,
                                      orders = c("%m/%d/%y %H:%M:%S", "%m/%d %H:%M:%S %y")))
       if (!is.na(date)){
         res$year <- year(date)

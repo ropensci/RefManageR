@@ -1,10 +1,11 @@
-Changes in Version 0.8.58 (2014-03-09)
+Changes in Version 0.8.59 (2014-03-09)
 --------------------------------------------------------
 
 NEW FEATURES
 
 * Use `bibtex >= 0.4.9000` function `do_read_bib` to avoid `.External` call and
 `R check` note (request of HI&RH Lord Ripley of England)
+* Improve parsing of dates in `ReadPDFs`
 
 BUG FIXES
 
