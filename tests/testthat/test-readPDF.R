@@ -9,17 +9,19 @@ poppler.f <- download.file(
     "ftp://ftp.gnome.org/Public/GNOME/binaries/win32/dependencies/poppler_0.12.0-1_win32.zip", tmpfile,
      quiet = TRUE)
 unzip(tmpfile, exdir = tmpdir)
-curdir <- getwd()
-setwd(file.path(tmpdir, "bin", fsep = "\\"))
-jss.f <- download.file("http://www.jstatsoft.org/v56/i11/paper", "jss.pdf",
+#curdir <- getwd()
+exe.path <- file.path(tmpdir, "bin", fsep = "\\")
+Sys.setenv(PATH = paste(Sys.getenv("PATH"), exe.path, sep = ":"))
+jss.f <- download.file("http://www.jstatsoft.org/v56/i11/paper", paste0(exe.path, "\\jss.pdf"),
                 mode = "wb")
 arxiv1.f <- download.file("http://arxiv.org/pdf/math/0703791",
-              destfile = "FIZaop.pdf", mode = "wb")
+              destfile = paste0(exe.path, "\\FIZaop.pdf"), mode = "wb")
 arxiv2.f <- download.file("http://arxiv.org/pdf/math/0703858",
-              destfile = "PBHTaos.pdf", mode = "wb")
+              destfile = paste0(exe.path, "\\PBHTaos.pdf"), mode = "wb")
 biomet.f <- download.file("http://biomet.oxfordjournals.org/content/83/4/715.full.pdf",
-                          destfile = "ADVb.pdf", mode = "wb")
-jstor.f <- !file.copy(system.file("pdf", "jstor.pdf", package = "RefManageR"), getwd())
+                          destfile = paste0(exe.path, "\\ADVb.pdf"), mode = "wb")
+
+jstor.f <- !file.copy(system.file("pdf", "jstor.pdf", package = "RefManageR"), exe.path)
 ## jstor.f <- if (capabilities("libcurl"))
 ##                download.file("https://dl.dropboxusercontent.com/u/107936614/25050155.pdf",  # 25645718.pdf
 ## #                             destfile = "jstor.pdf", mode = "wb", method = "libcurl")
@@ -29,19 +31,19 @@ jstor.f <- !file.copy(system.file("pdf", "jstor.pdf", package = "RefManageR"), g
 test_that("Recognizes DOI", {
     if (poppler.f || arxiv1.f)
         skip("Couldn't download arxiv1")
-    expect_message(ReadPDFs("FIZaop.pdf", use.metadata = FALSE),
+    expect_message(ReadPDFs(paste0(exe.path, "\\FIZaop.pdf"), use.metadata = FALSE),
                    "Getting 1 BibTeX entries from CrossRef...")
 })
 
 test_that("Creates a BibEntry object", {
-    if (poppler.f || all(jstor.f, biomet.f, arxiv1, arxiv2, jss.f))
+    if (poppler.f || all(jstor.f, biomet.f, arxiv1.f, arxiv2.f, jss.f))
         skip("Couldn't download Poppler or a single PDF")
-    bib <- ReadPDFs(".", progress = TRUE)
+    bib <- ReadPDFs(exe.path, progress = TRUE)
     expect_is(bib, "BibEntry")
 })
 
 test_that("Add file field", {
-    if (poppler.f || all(jstor.f, biomet.f, arxiv1, arxiv2, jss.f))
+    if (poppler.f || all(jstor.f, biomet.f, arxiv1.f, arxiv2.f, jss.f))
         skip("Couldn't download Poppler or a single PDF")
     expect_is(unlist(bib$file), "character")
 })
@@ -49,7 +51,7 @@ test_that("Add file field", {
 test_that("Reading one PDF file name", {
     if (poppler.f || jstor.f)
         skip("Couldn't copy jstor.pdf")
-    bib1 <- ReadPDFs("jstor.pdf", use.metadata = FALSE)
+    bib1 <- ReadPDFs(paste0(exe.path, "\\jstor.pdf"), use.metadata = FALSE)
     expect_is(bib1, "BibEntry")
     expect_equal(length(bib1), 1L)
 })
@@ -92,11 +94,11 @@ test_that("Reading journal and title", {
 })
 
 test_that("use.metadata = FALSE", {
-    bib <- ReadPDFs(".", use.metadata = FALSE, use.crossref = FALSE)
+    bib <- ReadPDFs(exe.path, use.metadata = FALSE, use.crossref = FALSE)
     expect_is(bib, "BibEntry")
-    bib <- ReadPDFs(".", use.metadata = FALSE, use.crossref = TRUE)
+    bib <- ReadPDFs(exe.path, use.metadata = FALSE, use.crossref = TRUE)
     expect_is(bib, "BibEntry")
 })
 
-setwd(curdir)
+# setwd(curdir)
 unlink(tmpdir, force = TRUE)
