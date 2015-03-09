@@ -11,7 +11,7 @@ warnings_are_errors: true
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y libopenjp2-7
+  - sudo apt-get install -y libopenjpeg2
 
 install:
  - wget http://poppler.freedesktop.org/poppler-0.32.0.tar.xz
