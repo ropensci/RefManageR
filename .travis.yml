@@ -9,6 +9,10 @@ warnings_are_errors: true
 #  - tar poppler-0.32.0.tar.xz
 #  - export PATH=$PATH:$PWD/poppler-0.32.0
 
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y libopenjp2-7-dev
+
 install:
  - wget http://poppler.freedesktop.org/poppler-0.32.0.tar.xz
  - tar -xJf poppler-0.32.0.tar.xz
