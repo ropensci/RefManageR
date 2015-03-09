@@ -38,7 +38,7 @@ test_that("Recognizes DOI", {
 test_that("Creates a BibEntry object", {
     if (poppler.f || all(jstor.f, biomet.f, arxiv1.f, arxiv2.f, jss.f))
         skip("Couldn't download Poppler or a single PDF")
-    bib <- ReadPDFs(exe.path, progress = TRUE)
+    bib <<- ReadPDFs(exe.path, progress = TRUE)
     expect_is(bib, "BibEntry")
 })
 
@@ -94,6 +94,8 @@ test_that("Reading journal and title", {
 })
 
 test_that("use.metadata = FALSE", {
+    if (poppler.f || all(jstor.f, biomet.f, arxiv1.f, arxiv2.f, jss.f))
+        skip("Couldn't download Poppler or a single pdf")
     bib <- ReadPDFs(exe.path, use.metadata = FALSE, use.crossref = FALSE)
     expect_is(bib, "BibEntry")
     bib <- ReadPDFs(exe.path, use.metadata = FALSE, use.crossref = TRUE)
