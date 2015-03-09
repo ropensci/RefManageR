@@ -36,7 +36,7 @@ open.BibEntry <- function(con, entry = 1L, open.field = c("file", "url", "eprint
   if (grepl("^file", url))
     viewer <- getOption("pdfviewer")
 
-  if (!length(url))
+  if (!nzchar(url))
     message('Could not open the specified entry.')
   else browseURL(url, viewer)
 }
