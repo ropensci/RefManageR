@@ -444,18 +444,20 @@ ProcessPDFMeta <- function(x, enc = 'UTF-8'){
   if (is.null(res$year)){
     ind <- pmatch('ModDate', found.tags)
     if(!is.na(ind)){
-      res$date <- sub('ModDate:[[:space:]]+', '', x[ind])
-      res$date <- strptime(res$date, format = "%m/%d/%y %H:%M:%S")
-      if (!inherits(res$date, 'try-error')){
-        res$year <- year(res$date)
-        res$date <- trunc(res$date, 'days')
+      date <- sub('ModDate:[[:space:]]+', '', x[ind])
+      date <- suppressWarnings(lubridate::parse_date_time(date,
+                                             orders = c("%m/%d/%y %H:%M:%S", "%m/%d %H:%M:%S %y")))
+      if (!is.na(date)){
+        res$year <- year(date)
+        res$date <- trunc(date, 'days')
       }
     }else if (!is.na(ind <-pmatch('CreationDate', found.tags))){
-      res$date <- sub('CreationDate:[[:space:]]+', '', x[ind])
-      res$date <- try(strptime(res$date, format = "%m/%d/%y %H:%M:%S"), TRUE)
-      if (!inherits(res$date, 'try-error')){
-        res$year <- year(res$date)
-        res$date <- trunc(res$date, 'days')
+      date <- sub('CreationDate:[[:space:]]+', '', x[ind])
+      date <- supressWarnings(lubridate::parse_date_time(date,
+                                     orders = c("%m/%d/%y %H:%M:%S", "%m/%d %H:%M:%S %y")))
+      if (!is.na(date)){
+        res$year <- year(date)
+        res$date <- trunc(date, 'days')
       }
     }
   }
