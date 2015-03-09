@@ -39,6 +39,7 @@ open.BibEntry <- function(con, entry = 1L, open.field = c("file", "url", "eprint
   if (!nzchar(url))
     message('Could not open the specified entry.')
   else browseURL(url, viewer)
+  invisible()
 }
 
 #' @keywords internal

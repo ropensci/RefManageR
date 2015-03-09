@@ -41,9 +41,20 @@ test_that("head and tail", {
     expect_equal(tail(bib, 3), bib[(length(bib)-2):length(bib)])
 })
 
-test_that("Open", {
-    open(as.BibEntry(citation("RCurl")))
+test_that("open", {
+    open(as.BibEntry(citation("RCurl")))  # URL
+
     testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex"))
     testbib$file <- file.path(R.home("doc/manual"), "R-intro.pdf")
-    open(testbib)
+    open(testbib)  # PDF
+
+    expect_message(open(testbib, open.field = "eprint"),
+                   "Could not open the specified entry.")  # no error if cannot open
+
+    open(bib["kastenholz"])  # DOI
+    testbib <- BibEntry(bibtype = "Misc", key = "arxiv", eprinttype = "arxiv",
+      eprintclass = "stat.ME", year = 2013, urldate = "2014-02-01", pubstate = "submitted",
+      title = "Something On the {arXiv}", author = "Mathew W. McLean", eprint = "1403.2036")
+    open(testbib, entry = 1)  # eprint
 })
+
