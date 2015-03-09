@@ -59,7 +59,8 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
 
     dois <- sapply(out, SearchDOIText)
     doi.meta.ind <- !is.na(dois)
-  }
+  }else
+    doi.meta.ind <- logical(n.files)
 
   ########################################
   # search first two pages of pdf for DOI
@@ -136,8 +137,8 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
    resMeta <- lapply(out[not.done], ProcessPDFMeta, enc=.enc)
    res <- mapply(CleanAuthorTitle, res, res2, resMeta, files[not.done], SIMPLIFY = FALSE)
   }else{
-   res <- mapply(CleanAuthorTitle, res, res2, files[not.done],
-                 MoreArgs = list(resMeta=NULL), SIMPLIFY = FALSE)
+   res <- mapply(CleanAuthorTitle, res, res2, file = files[not.done],
+                 MoreArgs = list(bibMeta=NULL), SIMPLIFY = FALSE)
   }
   #               JSTOR        ReadPDF+Meta           CrossRef
   done.inds <- c(done.inds, not.done[!is.na(res)], doi.ind[CR.ind])
@@ -158,7 +159,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
 
 
   # add file names and dois as fields (if doi not done already)
-  if (length(not.done) < length(out)){
+  if (length(not.done) < length(res)){
     if (!use.crossref && length(doi.ind)){
       ind <- which(done.inds %in% doi.ind)
       ind2 <- which(doi.ind %in% done.inds)
