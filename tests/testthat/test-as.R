@@ -17,7 +17,7 @@ test_that("list to BibEntry", {
 test_that("citation to BibEntry", {
     bib <- as.BibEntry(citation())
     expect_is(bib, "BibEntry")
-    expect_equal(bib$key, "2015language")
+    expect_true(nzchar(bib$key))
 })
 
 test_that("is",
