@@ -34,6 +34,8 @@
 #' @importFrom plyr llply progress_text
 ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRUE,
                       use.metadata = TRUE, progress = FALSE) {
+  if (!nzchar(Sys.which("pdfinfo")))
+     stop("poppler does not seem to be installed")
   path <- file.path(path[1])
   if (!file.exists(path))
       stop("Specified path does not exist")
