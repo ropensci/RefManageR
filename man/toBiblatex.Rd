@@ -73,7 +73,7 @@ BibLaTeX entry types that are not supported by bibtex are converted by toBibtex 
 file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 bib <- suppressMessages(ReadBib(file.name))
 toBiblatex(bib[70:72])
-toBiblatex(bib[70:72])
+toBibtex(bib[70:72])
 }
 \author{
 McLean, M. W. \email{mathew.w.mclean@gmail.com}
