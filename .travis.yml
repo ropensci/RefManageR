@@ -10,8 +10,7 @@ warnings_are_errors: true
 #  - export PATH=$PATH:$PWD/poppler-0.32.0
 
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y poppler-utilities
+  - sudo apt-get install -qq poppler-utils
 
 # install:
 #  - wget http://poppler.freedesktop.org/poppler-0.32.0.tar.xz
