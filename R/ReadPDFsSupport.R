@@ -17,17 +17,20 @@ ReadFirstPages <- function(doc, page.one = TRUE){
       m <- regexpr('[0-9]{1,2}[[:space:]][A-Z][a-z]{2}[[:space:]][0-9]{4}', arxinfo)
 
       adate <- strptime(regmatches(arxinfo, m), format='%d %b %Y')
-      if (length(adate) && adate >= strptime('01 Apr 2007', format='%d %b %Y')){
-        m <- regexec('arXiv:([0-9]{4}[\\.][0-9]{4}v[0-9])[[:space:]]\\[([[:graph:]]+)\\]', arxinfo)
-        regm <- regmatches(arxinfo, m)
-        res$eprintclass <- regm[[1]][3]
-        res$eprint <- regm[[1]][2]
-      }else{
-        m <- regexec('arXiv:([[:graph:]]+)\\s', arxinfo)
-        regm <- regmatches(arxinfo, m)
-        res$eprint <- regm[[1]][2]
+      if (length(adate)){
+          res$date <- adate
+          if (adate >= strptime('01 Apr 2007', format='%d %b %Y')){
+            m <- regexec('arXiv:([0-9]{4}[\\.][0-9]{4}v[0-9])[[:space:]]\\[([[:graph:]]+)\\]', arxinfo)
+            regm <- regmatches(arxinfo, m)
+            res$eprintclass <- regm[[1]][3]
+            res$eprint <- regm[[1]][2]
+          }else{
+            m <- regexec('arXiv:([[:graph:]]+)\\s', arxinfo)
+            regm <- regmatches(arxinfo, m)
+            res$eprint <- regm[[1]][2]
+          }
+          res$url <- paste0('http://arxiv.org/abs/', res$eprint)
       }
-      res$url <- paste0('http://arxiv.org/abs/', res$eprint)
     }
   }
 
