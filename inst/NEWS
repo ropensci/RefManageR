@@ -1,4 +1,4 @@
-Changes in Version 0.8.57 (2014-03-09)
+Changes in Version 0.8.58 (2014-03-09)
 --------------------------------------------------------
 
 NEW FEATURES
@@ -13,6 +13,7 @@ BUG FIXES
 specified entry had a 'urldate' field, but no 'url' field
 * `open.BibEntry` will `message` and not throw error if entry cannot be opened
 * Fixes for `ReadPDFs` when argument `use.metadata` is `FALSE`
+* Fix for `ReadPDFs` when when reading *one* file which is a JSTOR pdf
 
 Changes in Version 0.8.52 (2014-01-26)
 --------------------------------------------------------

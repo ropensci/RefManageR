@@ -78,7 +78,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
   file.remove(tfile1)
 
   # check first page for JSTOR, if yes grab info from both pages, else NA
-  resJSTOR <- mapply(CheckJSTOR, txt.files1, txt.files2, files)
+  resJSTOR <- mapply(CheckJSTOR, txt.files1, txt.files2, files, SIMPLIFY = FALSE)
   JSTOR.ind <- !is.na(resJSTOR)
   done.inds <- which(JSTOR.ind)
   if(any(JSTOR.ind)){
