@@ -11,12 +11,12 @@ warnings_are_errors: true
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y libopenjp2
+  - sudo apt-get install -y poppler-utilities
 
-install:
- - wget http://poppler.freedesktop.org/poppler-0.32.0.tar.xz
- - tar -xJf poppler-0.32.0.tar.xz
- - cd poppler-0.32.0 && ./configure --prefix=/usr && make && make install
+# install:
+#  - wget http://poppler.freedesktop.org/poppler-0.32.0.tar.xz
+#  - tar -xJf poppler-0.32.0.tar.xz
+#  - cd poppler-0.32.0 && ./configure --prefix=/usr && make && make install
 
 # Use github version of testthat
 r_github_packages:
