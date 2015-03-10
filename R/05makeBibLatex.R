@@ -354,11 +354,12 @@ sortKeysV <- function(bib){
   for (i in seq_along(bib)){
     res <- bib[[i]]$volume
     if (!length(res)){
-      res <- '0000'
+      res <- "0000"
     }else{
-      tmp <- try(sprintf("%04d", as.numeric('res')), TRUE)
-      if (!inherits(tmp, 'try-error'))
-        res <- tmp
+      tmp <- suppressWarnings(as.numeric(res))
+      res <- if (!is.na(tmp))
+                 sprintf("%04d", tmp)
+             else res
     }
     result[i] <- res
   }

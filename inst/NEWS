@@ -1,4 +1,4 @@
-Changes in Version 0.8.59 (2014-03-09)
+Changes in Version 0.8.61 (2014-03-10)
 --------------------------------------------------------
 
 NEW FEATURES
@@ -15,6 +15,8 @@ specified entry had a 'urldate' field, but no 'url' field
 * `open.BibEntry` will `message` and not throw error if entry cannot be opened
 * Fixes for `ReadPDFs` when argument `use.metadata` is `FALSE`
 * Fix for `ReadPDFs` when when reading *one* file which is a JSTOR pdf
+* Fix for sorting by volume (`BibOptions(sorting = "anyvt")` and `BibOptions(sorting = "nyvt")`
+* Fix for sorting by label (`BibOptions()sorting` equal to  "anyvt" or "anyt")
 
 Changes in Version 0.8.52 (2014-01-26)
 --------------------------------------------------------
