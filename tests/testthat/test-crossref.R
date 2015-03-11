@@ -47,3 +47,36 @@ test_that("GetDOIs retrieves DOIs", {
     expect_message(GetDOIs(out[[1]]), "All entries already have DOIs")
     ## expect_message(GetDOIs(out[[2]]), "No matches.")
 })
+
+old.opts <- BibOptions(check.entries = FALSE)
+
+test_that("ReadCrossRef retrieves queries successfully", {
+    skip_on_cran()
+    if (!RCurl::url.exists("http://search.crossref.org/"))
+        skip("Couldn't connect to search.crossref.org")
+
+    out <- ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
+        min.relevance = 80)
+
+    expect_is(out, "BibEntry")
+    expect_equal(length(out), 2L)
+
+    out <- ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
+        min.relevance = 100, verbose = TRUE)
+    expect_equal(length(out), 1L)
+
+})
+
+test_that("ReadCrossRef works when given DOI", {
+    skip_on_cran()
+    if (!RCurl::url.exists("http://search.crossref.org/"))
+        skip("Couldn't connect to search.crossref.org")
+
+    out <- ReadCrossRef(query = "10.1007/978-1-4899-4477-1_13", limit = 2, sort = "relevance",
+        min.relevance = 80)
+
+    expect_is(out, "BibEntry")
+    expect_equal(length(out), 1L)
+})
+
+BibOptions(old.opts)
