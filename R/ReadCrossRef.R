@@ -74,7 +74,7 @@ ReadCrossRef <- function(query, limit = 5, sort = "relevance", year = NULL,
     }
   }  # end else for not DOI query case
   if (bad == num.res){
-      message(gettextf("no results with relavency score greater than %s successfully retrieved",
+    message(gettextf("no results with relavency score greater than %s successfully retrieved",
                        sQuote("min.relevance")))
     return()
   }

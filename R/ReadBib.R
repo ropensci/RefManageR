@@ -23,7 +23,8 @@ ReadBib <- function(file, .Encoding = "UTF-8",
   oldchk <- .BibOptions$check.entries
   .BibOptions$check.entries <- check
   if (!is.character(file)) {
-    stop("'read.bib' only supports reading from files, 'file' should be a character vector of length one")
+      stop(gettextf("%s only supports reading from files, %s should be a character vector of length one",
+                    sQuote("read.bib"), sQuote("file")))
   }
   srcfile <- switch(.Encoding, unknown = srcfile(file), srcfile(file,
                                                                encoding = .Encoding))
