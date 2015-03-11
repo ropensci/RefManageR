@@ -418,70 +418,70 @@ bibentry_list_attribute_names <- c("mheader", "mfooter", "strings")
   unlist(keys)
 }
 
-#' @keywords internal
-#' @importFrom XML xmlValue
-#' @importFrom stringr str_sub str_trim
-ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
-  if (!length(l))
-    return(list())
-  td <- l[[1L]]
+## @keywords internal
+## @importFrom XML xmlValue
+## @importFrom stringr str_sub str_trim
+## ParseGSCites <- function(l, encoding, check.entries=.BibOptions$check.entries){
+##   if (!length(l))
+##     return(list())
+##   td <- l[[1L]]
 
-  title <- xmlValue(td[[1L]], encoding)
-  author <- xmlValue(td[[3L]], encoding)
-  cited_by <- as.numeric(xmlValue(l[[2L]][[1L]], encoding))
-  if (is.na(cited_by))  # no citation yet
-    cited_by <- "0"
-  year <- as.numeric(xmlValue(l[[4L]], encoding))
-  src <- xmlValue(td[[5L]])
-  first_digit <- as.numeric(regexpr("[\\[\\(]?\\d",
-                                    src)) - 1L
-  ids <- which(first_digit < 0L)
-  first_digit <- replace(first_digit, ids, str_length(src)[ids])
-  journal <- str_trim(str_sub(src, 1L, first_digit))
-  trailing_commas <- as.numeric(regexpr(",$", journal)) - 1L
-  ids <- which(trailing_commas < 0L)
-  trailing_commas <- replace(trailing_commas, ids,
-                             str_length(journal)[ids])
-  journal <- str_sub(journal, 1L, trailing_commas)
-  numbers <- str_trim(str_sub(src, first_digit + 1L,
-                              str_length(src)))
+##   title <- xmlValue(td[[1L]], encoding)
+##   author <- xmlValue(td[[3L]], encoding)
+##   cited_by <- as.numeric(xmlValue(l[[2L]][[1L]], encoding))
+##   if (is.na(cited_by))  # no citation yet
+##     cited_by <- "0"
+##   year <- as.numeric(xmlValue(l[[4L]], encoding))
+##   src <- xmlValue(td[[5L]])
+##   first_digit <- as.numeric(regexpr("[\\[\\(]?\\d",
+##                                     src)) - 1L
+##   ids <- which(first_digit < 0L)
+##   first_digit <- replace(first_digit, ids, str_length(src)[ids])
+##   journal <- str_trim(str_sub(src, 1L, first_digit))
+##   trailing_commas <- as.numeric(regexpr(",$", journal)) - 1L
+##   ids <- which(trailing_commas < 0L)
+##   trailing_commas <- replace(trailing_commas, ids,
+##                              str_length(journal)[ids])
+##   journal <- str_sub(journal, 1L, trailing_commas)
+##   numbers <- str_trim(str_sub(src, first_digit + 1L,
+##                               str_length(src)))
 
-  # handle '...' in title, journal, or authors
-  if (!identical(check.entries, FALSE)){
-    if (is.null(title <- CheckGSDots(title, title, check.entries)) ||
-          is.null(author <- CheckGSDots(author, title, check.entries)) ||
-          is.null(journal <- CheckGSDots(journal, title, check.entries)))
-      return(NA)
-  }
+##   # handle '...' in title, journal, or authors
+##   if (!identical(check.entries, FALSE)){
+##     if (is.null(title <- CheckGSDots(title, title, check.entries)) ||
+##           is.null(author <- CheckGSDots(author, title, check.entries)) ||
+##           is.null(journal <- CheckGSDots(journal, title, check.entries)))
+##       return(NA)
+##   }
 
-  res <- list(title = title, author = author,
-              journal = journal, number = numbers, cites = cited_by,
-              year = year)
-  if (is.na(res$number) || res$number==''){  # assume book entry if no number
-    if (as.numeric(cited_by) < 10L){
-      attr(res, 'entry') <- "report"
-      res$institution <- res$journal
-      res$type <- "techreport"
-    }else{
-      attr(res, 'entry') <- "book"
-      res$publisher <- res$journal
-    }
-    res$number <- NULL
-    res$journal <- NULL
-  }else{
-    attr(res, 'entry') <- 'article'
-    numbers <- ProcessGSNumbers(res$number)
-    res$number <- numbers$number
-    res$pages <- numbers$pages
-    res$volume <- numbers$volume
-  }
+##   res <- list(title = title, author = author,
+##               journal = journal, number = numbers, cites = cited_by,
+##               year = year)
+##   if (is.na(res$number) || res$number==''){  # assume book entry if no number
+##     if (as.numeric(cited_by) < 10L){
+##       attr(res, 'entry') <- "report"
+##       res$institution <- res$journal
+##       res$type <- "techreport"
+##     }else{
+##       attr(res, 'entry') <- "book"
+##       res$publisher <- res$journal
+##     }
+##     res$number <- NULL
+##     res$journal <- NULL
+##   }else{
+##     attr(res, 'entry') <- 'article'
+##     numbers <- ProcessGSNumbers(res$number)
+##     res$number <- numbers$number
+##     res$pages <- numbers$pages
+##     res$volume <- numbers$volume
+##   }
 
-  res$author <- ProcessGSAuthors(res$author)  # format authors for MakeBibEntry
-  # create key
-  attr(res, "key") <- CreateBibKey(res$title, res$author, res$year)
+##   res$author <- ProcessGSAuthors(res$author)  # format authors for MakeBibEntry
+##   # create key
+##   attr(res, "key") <- CreateBibKey(res$title, res$author, res$year)
 
-  return(res)
-}
+##   return(res)
+## }
 
 
 #' @keywords internal
