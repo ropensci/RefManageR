@@ -18,20 +18,32 @@
 GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'), delete.file = TRUE){
   file.create(temp.file)
   on.exit(if (delete.file && file.exists(temp.file)) file.remove(temp.file))
+  successes <- logical(length(doi))
   for (i in seq_along(doi)){
-    temp <- getURLContent(url=paste0('http://dx.doi.org/', doi[i]),
+    temp <- try(getURLContent(url=paste0('http://dx.doi.org/', doi[i]),
               .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"),
-                  followLocation=TRUE))
-    if (is.raw(temp))
-      temp <- rawToChar(temp)
-    write(temp, file = temp.file, append=TRUE)
+                  followLocation=TRUE)), TRUE)
+    if (!inherits(temp, "try-error")){
+      successes[i] <- TRUE
+      if (is.raw(temp))
+        temp <- rawToChar(temp)
+      write(temp, file = temp.file, append=TRUE)
+    }
   }
-  bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
-  if (inherits(bib.res, "try-error")){
-    message(paste0("Error parsing the returned BibTeX results.  If delete.file ",
-                   "is FALSE, you can try viewing and editing the file: ", temp.file))
-    return()
+  if (!all(successes)){
+    failures <- paste(sQuote(doi[!successes]), collapse = ", ")
+    message(gettextf("Unable to retrieve bibliographic data for the following supplied DOIs: %s",
+                     failures))
   }
+  if (any(successes)){
+    bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
+    if (inherits(bib.res, "try-error")){
+      message(gettextf("Error parsing the returned BibTeX results.  If delete.file %s%s",
+                     "is FALSE, you can try viewing and editing the file: ", temp.file))
+      return()
+    }
 
-  bib.res
+    return(bib.res)
+  }
+  return()  # No results
 }
