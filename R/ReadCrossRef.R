@@ -35,7 +35,7 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL,
                          min.relevance = 80, temp.file = tempfile(fileext = '.bib'),
                          delete.file = TRUE, verbose = FALSE){
   if (is.na(query))
-    return(NA)
+    return()
   good <- 0
 
   ## file.create(temp.file)
@@ -46,14 +46,15 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL,
   }else{
     results <- try(getForm("http://search.crossref.org/dois", q=query, year=year,
                            sort=sort, rows=limit))
-    if (inherits(results, 'try-error'))
-      return(NA)
+    if (inherits(results, 'try-error')){
+      stop(gettextf("RCurl failed to GET results from CrossRef: %s", geterrmessage()))
+
 
     fromj <- RJSONIO::fromJSON(results)
     num.res <- min(limit, length(fromj))
     if(num.res == 0L){
-      message(gettextf("Query %s returned no matches", dQuote{query}))
-      return(NA)
+      message(gettextf("query %s returned no matches", dQuote{query}))
+      return()
     }
 
     if (num.res > 0L){
@@ -64,10 +65,9 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL,
      # entries <- vector('character', num.res)
       relevancies <- numeric(num.res)
       for(i in 1:num.res){
-        if (verbose){
-          message(gettextf('Including Entry: %s', fromj[[i]]$fullCitation))
-          message(gettextf('Relevancy score: %s', fromj[[i]]$normalizedScore))
-        }
+        if (verbose)
+            message(gettextf("including the following entry with relevancy score %s:\n%s",
+                             fromj[[i]]$fullCitation, fromj[[i]]$normalizedScore))
         if (fromj[[i]]$normalizedScore >= min.relevance)
           good <- good + GetCrossRefBibTeX(fromj[[i]]$doi, temp.file)
       }
@@ -90,12 +90,12 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
                      followLocation=TRUE)))
   if(is.raw(temp))
     temp <- rawToChar(temp)
-  if (inherits(temp, 'try-error') || temp[1] == "<h1>Internal Server Error</h1>" ||
+  if (inherits(temp, "try-error") || temp[1] == "<h1>Internal Server Error</h1>" ||
       !grepl("^@", temp)){  # last one for occasional non-bibtex returned by CrossRef
-    message(gettextf("Server error for doi %s, you may want to try again.", dQuote(doi)))
+    message(gettextf("server error for doi %s, you may want to try again.", dQuote(doi)))
     return(0L)
   }
-  temp <- gsub('&amp;', '&', temp)
+  temp <- gsub("&amp;", "&", temp)
   temp <- sub("^@[Dd]ata", "@online", temp)  # Crossref uses data type for some entries
   write(temp, file = tmp.file, append=TRUE)
   return(1L)
