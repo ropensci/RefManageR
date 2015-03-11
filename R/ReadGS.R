@@ -51,39 +51,41 @@
 #'   kat.bib$cites
 #' }
 ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
-                     .Encoding = 'UTF-8', check.entries = BibOptions()$check.entries){
+                     .Encoding = "UTF-8", check.entries = BibOptions()$check.entries){
   limit <- min(limit, 100)
   ps <- ifelse(limit <= 20, 20, 100)
   oldvio <- BibOptions(check.entries = check.entries)
   on.exit(BibOptions(check.entries = oldvio))
 
-  .params <- list(hl = 'en', user = scholar.id, oe = .Encoding, pagesize = ps,
-                  view_op = 'list_works', cstart = start)
+  .params <- list(hl = "en", user = scholar.id, oe = .Encoding, pagesize = ps,
+                  view_op = "list_works", cstart = start)
   if (sort.by.date)
-    .params$sortby = 'pubdate'
+    .params$sortby = "pubdate"
 
-  uri <- 'http://scholar.google.com/citations'
+  uri <- "http://scholar.google.com/citations"
   els <- mapply(function(id, val) {
       paste(curlEscape(id), curlEscape(val), sep = "=", collapse = "&")
   }, names(.params), .params)
   args <- paste(els, collapse = "&")
   uri <- paste(uri, args, sep = if (grepl("\\?", uri))
-      "&"
-  else "?")
-  # getURLContent(uri, .opts = .opts, .encoding = .encoding,
-  #     binary = binary, curl = curl)
-  doc <- htmlParse(uri)
-  # browser()
+                                  "&"
+                                else "?")
+
+  doc <- getURLContent(uri, .opts = curlOptions(httpheader =
+     c("User-Agent" = "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0")),
+     .encoding = .Encoding)  # , binary = binary, curl = curl)
+  ## doc <- htmlParse(uri)
+
   ## doc <- GetForm(uri, .params = .params, .encoding = .Encoding)
-  ## cites <- xpathApply(htmlParse(doc, encoding = .Encoding),
-  ##                     "//tr[@class=\"cit-table item\"]")
-  cites <- xpathApply(doc, "//tr[@class=\"gsc_a_tr\"]")
+  cites <- xpathApply(htmlParse(doc, encoding = .Encoding),
+                       "//tr[@class=\"gsc_a_tr\"]")  # "//tr[@class=\"cit-table item\"]")
+  ## cites <- xpathApply(doc, "//tr[@class=\"gsc_a_tr\"]")
   if(!length(cites)){
-    message('No results.')
+    message("no results")
     return()
   }
   cites <- cites[seq_len(min(limit, length(cites)))]
-#  browser()
+
   noNAwarn <- function(w) if( any( grepl( "NAs introduced", w) ) )
       invokeRestart( "muffleWarning" )
   tmp <- withCallingHandlers(lapply(cites, ParseGSCites2), warning = noNAwarn)
