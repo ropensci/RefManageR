@@ -35,7 +35,7 @@ ReadCrossRef <- function(query, limit = 5, sort = "relevance", year = NULL,
                          min.relevance = 80, temp.file = tempfile(fileext = ".bib"),
                          delete.file = TRUE, verbose = FALSE){
   if (.is_not_nonempty_text(query))
-    stop(gettextf("specify a valid %s", sQuote(query)))
+    stop(gettextf("specify a valid %s", sQuote("query")))
   bad <- 0
 
   ## file.create(temp.file)
@@ -75,7 +75,7 @@ ReadCrossRef <- function(query, limit = 5, sort = "relevance", year = NULL,
   }  # end else for not DOI query case
   if (bad == num.res){
       message(gettextf("no results with relavency score greater than %s successfully retrieved",
-                       sQuote("min.relevance"))
+                       sQuote("min.relevance")))
     return()
   }
 
