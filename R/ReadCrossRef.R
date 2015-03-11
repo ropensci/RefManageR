@@ -31,29 +31,29 @@
 #'   ReadCrossRef(query = 'carroll journal of the american statistical association',
 #'     year = 2012, limit = 2)
 #' }
-ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL,
-                         min.relevance = 80, temp.file = tempfile(fileext = '.bib'),
+ReadCrossRef <- function(query, limit = 5, sort = "relevance", year = NULL,
+                         min.relevance = 80, temp.file = tempfile(fileext = ".bib"),
                          delete.file = TRUE, verbose = FALSE){
-  if (is_not_noempty_text(query))
+  if (.is_not_nonempty_text(query))
     stop(gettextf("specify a valid %s", sQuote(query)))
   bad <- 0
 
   ## file.create(temp.file)
   ## if query is valid doi, skip search and get BibTeX entry right away
   if (!is.na(.doi <- SearchDOIText(query))){
-
-    bad <- GetCrossRefBibTeX(paste0('http://dx.doi.org/', .doi), temp.file)
+    num.res <- 1
+    bad <- GetCrossRefBibTeX(paste0("http://dx.doi.org/", .doi), temp.file)
   }else{
     results <- try(getForm("http://search.crossref.org/dois", q=query, year=year,
                            sort=sort, rows=limit))
-    if (inherits(results, 'try-error')){
+    if (inherits(results, "try-error"))
       stop(gettextf("RCurl failed to GET results from CrossRef: %s", geterrmessage()))
 
 
     fromj <- RJSONIO::fromJSON(results)
     num.res <- min(limit, length(fromj))
     if(num.res == 0L){
-      message(gettextf("query %s returned no matches", dQuote{query}))
+      message(gettextf("query %s returned no matches", dQuote(query)))
       return()
     }
 
@@ -74,13 +74,14 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL,
     }
   }  # end else for not DOI query case
   if (bad == num.res){
-    message("failed to retrieve any results")
+      message(gettextf("no results with relavency score greater than %s successfully retrieved",
+                       sQuote("min.relevance"))
     return()
   }
 
   bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
   if (inherits(bib.res, "try-error"))
-      stop(gettextf("failed to parse the returned BibTeX results.  If %s %s%s", sQuote(delete.file),
+      stop(gettextf("failed to parse the returned BibTeX results; if %s %s%s", sQuote(delete.file),
                      "is FALSE, you can try viewing and editing the file: ", temp.file))
 
   return(bib.res)
@@ -90,7 +91,7 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL,
 GetCrossRefBibTeX <- function(doi, tmp.file){
   temp <- try(getURLContent(url=doi,
                .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"),
-                     followLocation=TRUE)))
+                     followLocation=TRUE)), TRUE)
   if(is.raw(temp))
     temp <- rawToChar(temp)
   if (inherits(temp, "try-error") || temp[1] == "<h1>Internal Server Error</h1>" ||
