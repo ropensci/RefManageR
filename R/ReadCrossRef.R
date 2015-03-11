@@ -34,15 +34,15 @@
 ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL,
                          min.relevance = 80, temp.file = tempfile(fileext = '.bib'),
                          delete.file = TRUE, verbose = FALSE){
-  if (is.na(query))
-    return()
-  good <- 0
+  if (is_not_noempty_text(query))
+    stop(gettextf("specify a valid %s", sQuote(query)))
+  bad <- 0
 
   ## file.create(temp.file)
-  # if query is valid doi, skip search and get BibTeX entry right away
+  ## if query is valid doi, skip search and get BibTeX entry right away
   if (!is.na(.doi <- SearchDOIText(query))){
 
-    good <- GetCrossRefBibTeX(paste0('http://dx.doi.org/', .doi), temp.file)
+    bad <- GetCrossRefBibTeX(paste0('http://dx.doi.org/', .doi), temp.file)
   }else{
     results <- try(getForm("http://search.crossref.org/dois", q=query, year=year,
                            sort=sort, rows=limit))
@@ -69,16 +69,19 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL,
             message(gettextf("including the following entry with relevancy score %s:\n%s",
                              fromj[[i]]$fullCitation, fromj[[i]]$normalizedScore))
         if (fromj[[i]]$normalizedScore >= min.relevance)
-          good <- good + GetCrossRefBibTeX(fromj[[i]]$doi, temp.file)
+          bad <- bad + GetCrossRefBibTeX(fromj[[i]]$doi, temp.file)
       }
     }
   }  # end else for not DOI query case
-  if (good == 0L){
-    message('No results')
+  if (bad == num.res){
+    message("failed to retrieve any results")
     return()
   }
 
   bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
+  if (inherits(bib.res, "try-error"))
+      stop(gettextf("failed to parse the returned BibTeX results.  If %s %s%s", sQuote(delete.file),
+                     "is FALSE, you can try viewing and editing the file: ", temp.file))
 
   return(bib.res)
 }
@@ -93,10 +96,10 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
   if (inherits(temp, "try-error") || temp[1] == "<h1>Internal Server Error</h1>" ||
       !grepl("^@", temp)){  # last one for occasional non-bibtex returned by CrossRef
     message(gettextf("server error for doi %s, you may want to try again.", dQuote(doi)))
-    return(0L)
+    return(1L)
   }
   temp <- gsub("&amp;", "&", temp)
   temp <- sub("^@[Dd]ata", "@online", temp)  # Crossref uses data type for some entries
   write(temp, file = tmp.file, append=TRUE)
-  return(1L)
+  return(0L)
 }
