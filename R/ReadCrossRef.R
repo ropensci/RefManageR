@@ -52,7 +52,7 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL,
     fromj <- RJSONIO::fromJSON(results)
     num.res <- min(limit, length(fromj))
     if(num.res == 0L){
-      message(paste0('Query \"', query, '\" returned no matches'))
+      message(gettextf("Query %s returned no matches", dQuote{query}))
       return(NA)
     }
 
@@ -64,13 +64,12 @@ ReadCrossRef <- function(query, limit = 5, sort = 'relevance', year = NULL,
      # entries <- vector('character', num.res)
       relevancies <- numeric(num.res)
       for(i in 1:num.res){
-        if(verbose){
-          message(paste0('Including Entry: ', fromj[[i]]$fullCitation))
-          message(paste0('Relevancy score: ', fromj[[i]]$normalizedScore))
+        if (verbose){
+          message(gettextf('Including Entry: %s', fromj[[i]]$fullCitation))
+          message(gettextf('Relevancy score: %s', fromj[[i]]$normalizedScore))
         }
-        if(fromj[[i]]$normalizedScore >= min.relevance){
+        if (fromj[[i]]$normalizedScore >= min.relevance)
           good <- good + GetCrossRefBibTeX(fromj[[i]]$doi, temp.file)
-        }
       }
     }
   }  # end else for not DOI query case
@@ -93,7 +92,7 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
     temp <- rawToChar(temp)
   if (inherits(temp, 'try-error') || temp[1] == "<h1>Internal Server Error</h1>" ||
       !grepl("^@", temp)){  # last one for occasional non-bibtex returned by CrossRef
-    message(paste0('Server error for doi ', doi, ', you may want to try again.'))
+    message(gettextf("Server error for doi %s, you may want to try again.", dQuote(doi)))
     return(0L)
   }
   temp <- gsub('&amp;', '&', temp)
