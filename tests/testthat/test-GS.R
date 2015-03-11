@@ -1,6 +1,6 @@
 context("GScholar")
 
-text_that("Can retrieve by dates, keep incomplete", {
+test_that("Can retrieve by dates, keep incomplete", {
     skip_on_cran()
     if (!RCurl::url.exists("http://scholar.google.com"))
         skip("Couldn't connect to GS")
@@ -11,7 +11,7 @@ text_that("Can retrieve by dates, keep incomplete", {
     expect_equal(length(out), 1L)
 })
 
-text_that("check drop incomplete", {
+test_that("check drop incomplete", {
     skip_on_cran()
     if (!RCurl::url.exists("http://scholar.google.com"))
         skip("Couldn't connect to GS")
@@ -36,7 +36,7 @@ text_that("check drop incomplete", {
         expect_less_than(length(out), lim)
 })
 
-text_that("check read by cites", {
+test_that("check read by cites", {
     skip_on_cran()
     if (!RCurl::url.exists("http://scholar.google.com"))
         skip("Couldn't connect to GS")
