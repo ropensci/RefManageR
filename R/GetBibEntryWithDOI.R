@@ -32,13 +32,13 @@ GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'), delete
   }
   if (!all(successes)){
     failures <- paste(sQuote(doi[!successes]), collapse = ", ")
-    message(gettextf("Unable to retrieve bibliographic data for the following supplied DOIs: %s.",
+    message(gettextf("unable to retrieve bibliographic data for the following supplied DOIs: %s",
                      failures))
   }
   if (any(successes)){
     bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
     if (inherits(bib.res, "try-error"))
-      stop(gettextf("Error parsing the returned BibTeX results.  If delete.file %s%s",
+      stop(gettextf("failed to parse the returned BibTeX results; if delete.file %s%s",
                      "is FALSE, you can try viewing and editing the file: ", temp.file))
 
 
