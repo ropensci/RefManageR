@@ -1,25 +1,24 @@
-RefManageR
-========
-[![](https://travis-ci.org/mwmclean/RefManageR.svg?branch=master)](https://travis-ci.org/mwmclean/RefManageR/)
-[![Coverage Status](https://coveralls.io/repos/mwmclean/RefManageR/badge.svg?branch=master)](https://coveralls.io/r/mwmclean/RefManageR?branch=master)
+Changes in Version 0.8.62 (2014-03-11)
+--------------------------------------------------------
 
-RefManageR provides tools for importing and working with
-bibliographic references.  It greatly enhances the bibentry class by
-providing a class BibEntry which stores BibTeX and BibLaTeX references,
-supports UTF-8 encoding, and can be easily searched by any field, by date
-ranges, and by various formats for name lists (author by last names,
-translator by full names, etc.). Entries can be updated, combined, sorted,
-printed in a number of styles, and exported. BibTeX and BibLaTeX .bib files
-can be read into R and converted to BibEntry objects.  Interfaces to NCBI's
-Entrez, CrossRef, and Zotero are provided for importing references and
-references can be created from locally stored PDFs using Poppler.  Includes
-functions for citing and generating a bibliography with hyperlinks for
-documents prepared with RMarkdown or RHTML.
+NEW FEATURES
 
-Please see the [vignette](http://cran.r-project.org/web/packages/RefManageR/vignettes/manual.pdf).
+* Use `bibtex >= 0.4.9000` function `do_read_bib` to avoid `.External` call and
+`R check` note (request of HI&RH Lord Ripley of England)
+* Improve parsing of dates in `ReadPDFs`
 
-NEWS
-=====================================
+BUG FIXES
+
+* Fixed merging `BibEntry` objects by multiple fields when no duplicates
+* `open.BibEntry` fixed to not use partial matching of field names; e.g. an error would occur if the
+specified entry had a 'urldate' field, but no 'url' field
+* `open.BibEntry` will `message` and not throw error if entry cannot be opened
+* Fixes for `ReadPDFs` when argument `use.metadata` is `FALSE`
+* Fix for `ReadPDFs` when when reading *one* file which is a JSTOR pdf
+* Fix for sorting by volume (`BibOptions(sorting = "anyvt")` and `BibOptions(sorting = "nyvt")`
+* Fix for sorting by label (`BibOptions()sorting` equal to  "anyvt" or "anyt")
+* `GetBibEntryWithDOI.R` will not `stop` if an error occurs downloading any of the DOIs (e.g.,
+if one entry in the `doi` vector has a typo and the rest are valid)
 
 Changes in Version 0.8.52 (2014-01-26)
 --------------------------------------------------------
@@ -37,11 +36,10 @@ BUG FIXES
 entry will be ignored, but the rest of the file will still be processed and
 returned. In the past, this caused an error and no output would be returned.
 * 'Book' entries will now be parsed correctly by `GetPubMedByID` (h/t Dale Steele)
-* Fix error/warning messages when entry is missing required fields (introduced in
+* Fix error/warning messages when entry is missing required fields (bug introduced in
 Version 0.8.45)
 * Name lists containing a comma in braces will now be parsed correctly,
 e.g. "Buchalter, Louis and {Murder, Inc.} and Anastasia, Albert"
-
 
 Changes in Version 0.8.45 (2014-12-29)
 --------------------------------------------------------
@@ -159,4 +157,3 @@ NEW FEATURES
 * Added Vignettes including user manual and Rmd citation examples
 * Added NEWS
 * Added HTML output of Rmd and RHTML citation examples to doc/
-

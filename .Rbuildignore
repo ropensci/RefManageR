@@ -1,0 +1,11 @@
+Rmd/.*[.]html$
+Rmd/.*[.]md$
+Rmd/figure
+Rhtml/.*[.]html$
+Rhtml/.*[.]md$
+Rhtml/figure
+.*~$
+\#.*\#
+^[.]gitignore$
+^[.]travis[.]yml$
+^[.]git$

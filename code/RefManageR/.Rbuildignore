@@ -1,8 +1,0 @@
-Rmd/.*[.]html$
-Rmd/.*[.]md$
-Rmd/figure
-Rhtml/.*[.]html$
-Rhtml/.*[.]md$
-Rhtml/figure
-tests/
-.*~$

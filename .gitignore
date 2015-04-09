@@ -7,6 +7,7 @@ cache/
 *.css
 includeCSS.R
 *.pdf
+!vignettes/RefManageR.pdf
 !papers/*.pdf
 *.bcf
 framed.sty
@@ -22,11 +23,3 @@ ReadPDFex2/
 *.md
 RefManageR.Rcheck/
 *~
-
-_region_*
-*.bib.bak
-*.tex.bak
-*.bbl
-*.aux
-*.synctex
-*.log
