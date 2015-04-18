@@ -40,8 +40,9 @@ AddCite <- function(index, use.hyper = TRUE){
 #' Citep(bib, c("loh", "geer"), .opts = list(cite.style = "numeric"), before = "see e.g., ")
 #' Citet(bib, "loh", .opts = list(cite.style = "numeric", super = TRUE))
 #' AutoCite(bib, eprinttype = "arxiv", .opts = list(cite.style = "authoryear"))
+#' AutoCite(bib, eprinttype = "arxiv", .opts = list(cite.style = "pandoc"))
 #' Citep(bib, author = "kant")
-#' # shorthand field in both entries gets used for numeric and alphabetic labels
+#' ## shorthand field in both entries gets used for numeric and alphabetic labels
 #' TextCite(bib, author = "kant", .opts = list(cite.style = "alphabetic"))
 #' TextCite(bib, author = "kant", .opts = list(cite.style = "numeric"))
 #' TextCite(bib, author = "kant", .opts = list(cite.style = "alphabetic", style = "html"))
