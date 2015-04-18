@@ -8,6 +8,7 @@
 #' @param csl character; citation style language style to use to generate the bibliography;
 #' see the references.
 #' @param pandoc.opts character; additional options to pass to pandoc
+#' @importFrom knitr knit
 #' @references \url{http://johnmacfarlane.net/pandoc/README.html}
 #' @references \url{http://citationstyles.org/downloads/primer.html}
 RenderWithPandoc <- function(infile, outfile, csl="ieee.csl", pandoc.opts = ""){
@@ -27,17 +28,17 @@ RenderWithPandoc <- function(infile, outfile, csl="ieee.csl", pandoc.opts = ""){
                   temp
                 }
   pandoc.opts <- unlist(strsplit(pandoc.opts, " "))
-  ## knit.outfile <- gsub("[.]Rmd$", "[.]md", infile)
-  ## knit(infile, knit.outfile)
-  ## doc <- readLines(knit.outfile)
-  ## m <- gregexpr("(^|[[:space:][])@([[:alpha:]_][[:alnum:]:.#$%&-+?<>~/]*)", doc)
-  ## citations <- unlist(regmatches(doc, m))
-  ## citations <- sub("(^|[[:space:][])@", "", citations)
-  ## ## citations <- unlist(lapply(citations, function(x) if (length(x)) x[3]))
-  ## tfile <- tempfile(fileext = ".bib")
-  ## WriteBib(bib, tfile, biblatex = TRUE)
+  knit.outfile <- sub("[.]Rmd$", ".md", infile)
+  knit(infile, knit.outfile)
+  doc <- readLines(knit.outfile)
+  m <- gregexpr("(^|[[:space:][])@([[:alpha:]_][[:alnum:]:.#$%&-+?<>~/]*)", doc)
+  citations <- unlist(regmatches(doc, m))
+  citations <- sub("(^|[[:space:][])@", "", citations)
+  ## citations <- unlist(lapply(citations, function(x) if (length(x)) x[3]))
+  tfile <- tempfile(fileext = ".bib")
+  WriteBib(bib, tfile, biblatex = TRUE)
 
-  ## system2(pandocPath, args = c(pandoc.opts, "--biblio", "tfile", "--csl", csl, "-f",
-  ##                         knit.outfile, "-o", outfile))
-  ## unlink(tfile)
+  system2(pandocPath, args = c(pandoc.opts, "--biblio", "tfile", "--csl", csl, "-f",
+                           knit.outfile, "-o", outfile))
+  unlink(tfile)
 }

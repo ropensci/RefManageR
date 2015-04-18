@@ -4,12 +4,15 @@ output: html_document
 ---
 
 ```{r setup, include = FALSE, cache = FALSE}
-load_all('c:/Users/Matthew/Documents/biblatex/RefManageR/code/RefManageR/')
+load_all('~/RefManageR/')
 ## library(RefManageR)
 ## system.file("Bib", "biblatexExamples.bib",
 ##                           package = "RefManageR")
-bib <- ReadBib("~/biblatex/RefManageR/code/RefManageR/inst/Bib/biblatexExamples.bib",
+## bib <- ReadBib("~/biblatex/RefManageR/code/RefManageR/inst/Bib/biblatexExamples.bib",
+##  check = FALSE)
+bib <- ReadBib(system.file("Bib", "biblatexExamples.bib", package = "RefManageR"),
   check = FALSE)
+
 ## bib2 <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[[seq_len(20)]]
 BibOptions(check.entries = FALSE, style = "markdown", cite.style = "pandoc",
            bib.style = "numeric")

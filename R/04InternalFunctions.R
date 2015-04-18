@@ -189,11 +189,7 @@ ArrangeSingleAuthor <- function(y){
   len.parts <- length(parts)
   if (len.parts == 1L){
     #     parts <- "{Barnes} {and} {Noble,} {Inc.}"
-<<<<<<< HEAD:code/RefManageR/R/04InternalFunctions.R
-    if (grepl('[}]$', parts)){
-=======
     if (grepl("[^{][[:print:]][}]$", parts)){
->>>>>>> master:R/04InternalFunctions.R
       s <- unlist(strsplit(parts, ''))
       i <- length(s) - 1L
       paren <- 1
@@ -478,11 +474,7 @@ MakeCitationList <- function( x, header, footer){
 
 bibentry_attribute_names <- c("bibtype", "textVersion", "header", "footer", "key", "dateobj")
 bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "textVersion",
-<<<<<<< HEAD:code/RefManageR/R/04InternalFunctions.R
                             "R", "Biblatex", "markdown", "yaml")
-=======
-                            "R", "Biblatex", "markdown")
->>>>>>> master:R/04InternalFunctions.R
 
 # from utils:::toBibtex, good for matching by given name initials only
 #' @keywords internal
@@ -611,14 +603,9 @@ ParseGSCites2 <- function(l, encoding, check.entries=.BibOptions$check.entries){
   cited_by <- as.numeric(xmlValue(l[[2L]][[1L]], encoding))
   if (is.na(cited_by))  # no citation yet
     cited_by <- "0"
-<<<<<<< HEAD:code/RefManageR/R/04InternalFunctions.R
-  year <- as.numeric(xmlValue(l[[4L]], encoding))
-  src <- xmlValue(td[[5L]])
-=======
   src <- xmlValue(td[[3L]], encoding)
 
   year <- as.numeric(regmatches(src, regexpr("([12][0-9]{3}$)", src)))
->>>>>>> master:R/04InternalFunctions.R
   first_digit <- as.numeric(regexpr("[\\[\\(]?\\d",
                                     src)) - 1L
   ids <- which(first_digit < 0L)
@@ -631,10 +618,6 @@ ParseGSCites2 <- function(l, encoding, check.entries=.BibOptions$check.entries){
   journal <- str_sub(journal, 1L, trailing_commas)
   numbers <- str_trim(str_sub(src, first_digit + 1L,
                               str_length(src)))
-<<<<<<< HEAD:code/RefManageR/R/04InternalFunctions.R
-
-=======
->>>>>>> master:R/04InternalFunctions.R
   # handle '...' in title, journal, or authors
   if (!identical(check.entries, FALSE)){
     if (is.null(title <- CheckGSDots(title, title, check.entries)) ||
@@ -643,12 +626,7 @@ ParseGSCites2 <- function(l, encoding, check.entries=.BibOptions$check.entries){
       return(NA)
   }
 
-<<<<<<< HEAD:code/RefManageR/R/04InternalFunctions.R
-  res <- list(title = title, author = author,
-              journal = journal, number = numbers, cites = cited_by,
-=======
   res <- list(title = title, author = author, cites = cited_by,
->>>>>>> master:R/04InternalFunctions.R
               year = year)
   if (!is.na(eprint <- regmatches(src, regexec("arXiv:([0-9.]*)", src))[[1]][2])){
     res$eprinttype <- "arxiv"
@@ -666,10 +644,6 @@ ParseGSCites2 <- function(l, encoding, check.entries=.BibOptions$check.entries){
         res$publisher <- res$journal
       }
     }else{
-<<<<<<< HEAD:code/RefManageR/R/04InternalFunctions.R
-      attr(res, 'entry') <- "book"
-      res$publisher <- res$journal
-=======
       res$journal <- journal
       res$number <- numbers
       attr(res, 'entry') <- 'article'
@@ -677,7 +651,6 @@ ParseGSCites2 <- function(l, encoding, check.entries=.BibOptions$check.entries){
       res$number <- numbers$number
       res$pages <- numbers$pages
       res$volume <- numbers$volume
->>>>>>> master:R/04InternalFunctions.R
     }
   }
 
@@ -757,20 +730,6 @@ MakeBibEntry <- function(x, to.person = TRUE){
   key <- attr(x, "key")
   y <- as.list(x)
   names(y) <- tolower(names(y))
-<<<<<<< HEAD:code/RefManageR/R/04InternalFunctions.R
-
-  if (to.person){
-    lapply(.BibEntryNameList, function(fld){
-                 if (fld %in% names(y))
-                    y[[fld]] <<- ArrangeAuthors(y[[fld]])
-             })
-  }else{
-    lapply(.BibEntryNameList, function(fld){
-             if (fld %in% names(y))
-                y[[fld]] <<- as.person(y[[fld]])
-         })
-  }
-=======
   fun <- ifelse(to.person, "ArrangeAuthors", "as.person")
   name.fields <- intersect(names(y), .BibEntryNameList)
   line.no <- if (is.null(attr(x, "srcref")))
@@ -798,27 +757,11 @@ MakeBibEntry <- function(x, to.person = TRUE){
   ##               y[[fld]] <<- as.person(y[[fld]])
   ##        })
   ## }
->>>>>>> master:R/04InternalFunctions.R
 
   tdate <- NULL
   if (type != 'set')
     tdate <- ProcessDates(y)
 
-<<<<<<< HEAD:code/RefManageR/R/04InternalFunctions.R
-  res <- try(BibEntry(bibtype = type, key = key, dateobj = tdate, other = y), TRUE)
-  if (inherits(res, 'try-error')){
-    if(!is.null(y[['title']])){
-      message(paste0('Ignoring entry titled \"', y[['title']], '\" because ', strsplit(res, '\\n[[:space:]]*')[[1]][2]))
-      #message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines
-    }else{
-      message(paste0('Ignoring entry with key \"', key, '\" because ', strsplit(res, '\\n[[:space:]]*')[[1]][2]))
-      # message(strsplit(res, '\n'), '\n')  # relies on bibentry errors being two lines
-    }
-    return(NULL)
-  }
-
-  return(res)
-=======
   tryCatch(BibEntry(bibtype = type, key = key, dateobj = tdate, other = y),
             error = function(e){
                 message(sprintf("Ignoring entry '%s' %sbecause:\n\t%s\n",
@@ -827,7 +770,6 @@ MakeBibEntry <- function(x, to.person = TRUE){
                          conditionMessage(e)))
                 NULL
                 })
->>>>>>> master:R/04InternalFunctions.R
 }
 
 #' @keywords internal
@@ -855,11 +797,6 @@ ProcessDate <- function(dat, mon, searching = FALSE){
   if (!length(dat))
     return()
 
-<<<<<<< HEAD:code/RefManageR/R/04InternalFunctions.R
-  .day <- FALSE
-  .mon <- FALSE
-  if (length(grep('^(1|2)[0-9]{3}$', dat))){
-=======
   .day <- FALSE  # does entry contain valid day?
   .mon <- FALSE  # does entry contain valid month?
   if (grepl("^(1|2)[0-9]{3}((-?-|/)(1|2)[0-9]{3})?$", dat)){  # e.g. 1991, 1991--1992, or 1991/1992
@@ -867,7 +804,6 @@ ProcessDate <- function(dat, mon, searching = FALSE){
     dats <- strsplit(dat, "-?-|/")[[1]]
     if (length(dats) == 1L)
       dats <- c(dat, dat)
->>>>>>> master:R/04InternalFunctions.R
     if (!is.null(mon)){
       # Some Bibtex users, e.g. paperpile.com, format month as `"day~" # month` in bib entry; attempt to handle this
       # examples: "2~" # dec, "4--6~" # aug, jan # "/" # feb,

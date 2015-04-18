@@ -1204,18 +1204,6 @@ formatUnpublished <- function(paper){
 environment()
 })
 
-<<<<<<< HEAD:code/RefManageR/R/05makeBibLatex.R
-#' Convert BibEntry object to a fragment of Rd code.
-#'
-#' Renders references in a BibEntry object as a fragment of Rd code, which can then be rendered into text, HTML, or LaTex.
-#'
-#' @param obj - An object of class BibEntry
-#' @param style - The bibstyle to be used for converting \code{obj}; see \code{\link{print.BibEntry}}
-#' @param .sorting - the BibLaTeX sorting method to use; see \code{\link{sort.BibEntry}}
-#' @param ... - ignored
-#' @S3method toRd BibEntry
-#' @return Returns a character vector containing a fragment of Rd code that could be parsed and rendered.
-=======
 # Convert BibEntry object to a fragment of Rd code.
 #
 # Renders references in a BibEntry object as a fragment of Rd code, which can then be rendered into text, HTML, or LaTex.
@@ -1227,7 +1215,6 @@ environment()
 # @S3method toRd BibEntry
 # @return Returns a character vector containing a fragment of Rd code that could be parsed and rendered.
 # @seealso \code{\link{print.BibEntry}}, \code{\link{sort.BibEntry}}, \code{\link{BibEntry}}, \code{\link{bibstyle}}
->>>>>>> master:R/05makeBibLatex.R
 #' @keywords internal
 #' @importFrom tools getBibstyle bibstyle toRd
 toRd.BibEntry <- function(obj, ...) {
