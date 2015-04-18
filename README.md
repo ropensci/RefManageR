@@ -21,6 +21,32 @@ Please see the [vignette](http://cran.r-project.org/web/packages/RefManageR/vign
 NEWS
 =====================================
 
+Changes in Version 0.8.63 (2014-04-18)
+--------------------------------------------------------
+
+NEW FEATURES
+
+* Use `bibtex >= 0.4.9000` function `do_read_bib` to avoid `.External` call and
+`R check` note (request of HI&RH Lord Ripley of England)
+* Improve parsing of dates in `ReadPDFs`
+* Citations using `Cite` family of functions can now be `pandoc` style, e.g. `[@abibkey]`
+by setting `BibOptions(cite.style = "pandoc")` (h/t Dale Steele)
+* Added note about locales when parsing string 'month' fields to `ReadBib` help
+page (h/t Dieter Menne)
+
+BUG FIXES
+
+* Fixed merging `BibEntry` objects by multiple fields when no duplicates
+* `open.BibEntry` fixed to not use partial matching of field names; e.g. an error would occur if the
+specified entry had a 'urldate' field, but no 'url' field
+* `open.BibEntry` will `message` and not throw error if entry cannot be opened
+* Fixes for `ReadPDFs` when argument `use.metadata` is `FALSE`
+* Fix for `ReadPDFs` when when reading *one* file which is a JSTOR pdf
+* Fix for sorting by volume (`BibOptions(sorting = "anyvt")` and `BibOptions(sorting = "nyvt")`
+* Fix for sorting by label (`BibOptions()sorting` equal to  "anyvt" or "anyt")
+* `GetBibEntryWithDOI.R` will not `stop` if an error occurs downloading any of the DOIs (e.g.,
+if one entry in the `doi` vector has a typo and the rest are valid)
+
 Changes in Version 0.8.52 (2014-01-26)
 --------------------------------------------------------
 
