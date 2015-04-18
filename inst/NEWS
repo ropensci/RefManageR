@@ -8,6 +8,8 @@ NEW FEATURES
 * Improve parsing of dates in `ReadPDFs`
 * Citations using `Cite` family of functions can now be `pandoc` style, e.g. `[@abibkey]`
 by setting `BibOptions(cite.style = "pandoc")` (h/t Dale Steele)
+* Added note about locales when parsing string 'month' fields to `ReadBib` help
+page (h/t Dieter Menne)
 
 BUG FIXES
 
