@@ -127,6 +127,7 @@ GetPubMedByID <- function(id, db = 'pubmed', ...){
   if (length(fails <- setdiff(id, unlist(res$eprint))))
      message(paste0("Unable to fetch entries for id's: ",
                     paste0(fails, collapse = ", ")))
+
   return(res)
 }
 

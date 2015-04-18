@@ -20,6 +20,7 @@ Please see the [vignette](http://cran.r-project.org/web/packages/RefManageR/vign
 
 NEWS
 =====================================
+
 Changes in Version 0.8.52 (2014-01-26)
 --------------------------------------------------------
 
@@ -158,3 +159,4 @@ NEW FEATURES
 * Added Vignettes including user manual and Rmd citation examples
 * Added NEWS
 * Added HTML output of Rmd and RHTML citation examples to doc/
+

@@ -387,9 +387,94 @@ MakeCitationList <- function( x, header, footer){
   else unlist(lapply(s, paste, collapse = "\n"), use.names = FALSE)
 }
 
+.format_BibEntry_as_yaml <- function(x, collapse = FALSE){
+  if (!length(x))
+    return("bibentry()")
+  x$.index <- NULL
+  x$dateobj <- NULL
+  anames <- bibentry_attribute_names
+  manames <- c("mheader", "mfooter")
+  .clean <- MakeBibLaTeX()$cleanupLatex
+  .collapse <- MakeBibLaTeX()$collapse
+  .blanks <- function(n) paste(rep.int(" ", n), collapse = "")
+  .format_call_RR <- function(cname, cargs){
+    cargs <- as.list(cargs)
+    # cargs <- lapply(cargs, function(x) collapse(clean(x)))
+    n <- length(cargs)
+    lens <- sapply(cargs, length)
+    sums <- cumsum(lens)
+    starters <- c(sprintf("%s", cname), rep.int(.blanks(nchar(cname) +
+                                                           1L), sums[n] - 1L))
+    # trailers <- c(rep.int("", sums[n] - 1L), ")")
+    trailers <- c(rep.int("", sums[n] - 1L), "")
+    # trailers[sums[-n]] <- ","
+    sprintf("%s%s%s", starters, unlist(cargs), trailers)
+  }
+  .format_person_as_yaml <- function(x){
+    s <- lapply(unclass(x), function(e){
+      e <- e[!sapply(e, is.null)]
+      cargs <- sprintf("%s: %s", names(e), sapply(e, deparse))
+      .format_call_RR("\n    - ", cargs)
+    })
+    ## if (length(s))
+    ##   s <- paste0("\n", s, collapse = "")
+    ## if (length(s) > 1L)
+    ##  .format_call_RR("\n", s)
+    ## else unlist(s, use.names = FALSE)
+    ## c("\n", unlist(s, use.names = FALSE))
+    ## browser()
+    unlist(s, use.names = FALSE)
+  }
+  f <- function(e){
+    if (inherits(e, "person"))
+      .format_person_as_yaml(e)
+    else deparse(e)
+  }
+  g <- function(u, v){
+    if (u == "bibtype")
+      u <- "type"
+    if (u == "key")
+      u <- "id"
+    prefix <- sprintf("%s: ", u)
+    v <- .collapse(.clean(v))
+
+    n <- length(v)
+    if (n > 1L)
+      prefix <- c(prefix, rep.int(.blanks(nchar(prefix)),
+                                  n - 1L))
+    sprintf("%s%s", prefix, v)
+  }
+  s <- lapply(unclass(x), function(e){
+    a <- Filter(length, attributes(e)[anames])
+    e <- e[!sapply(e, is.null)]
+    ind <- !is.na(match(names(e), c(anames, manames, "other")))
+    if (any(ind)) {
+      other <- paste(names(e[ind]), sapply(e[ind], f),
+                     sep = " = ")
+      other <- Map(g, names(e[ind]), sapply(e[ind], f))
+      other <- .format_call_RR("list", other)
+      e <- e[!ind]
+    }
+    else {
+      other <- NULL
+    }
+    c(Map(g, names(a), sapply(a, deparse)), Map(g, names(e),
+                                                sapply(e, f)), if (length(other)) list(g("other",
+                                                                                         other)))
+  })
+  if (!is.null(mheader <- attr(x, "mheader")))
+    s[[1L]] <- c(s[[1L]], paste("mheader = ", deparse(mheader)))
+  if (!is.null(mfooter <- attr(x, "mfooter")))
+    s[[1L]] <- c(s[[1L]], paste("mfooter = ", deparse(mfooter)))
+  s <- Map(.format_call_RR, "- ", s)
+  if (collapse && (length(s) > 1L))
+    paste(.format_call_RR("", s), collapse = "\n")
+  else unlist(lapply(s, paste, collapse = "\n"), use.names = FALSE)
+}
+
 bibentry_attribute_names <- c("bibtype", "textVersion", "header", "footer", "key", "dateobj")
 bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "textVersion",
-                            "R", "Biblatex", "markdown")
+                            "R", "Biblatex", "markdown", "yaml")
 
 # from utils:::toBibtex, good for matching by given name initials only
 #' @keywords internal
