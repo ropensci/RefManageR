@@ -28,7 +28,7 @@ test_that("GetBibEntryWithDOIs continues if some DOIs not found", {
     expect_equal(length(out), 1L)
     dois.out <- setNames(unlist(out$doi), NULL)
     expect_equal(dois.out, dois[2])
-    expect_message(GetBibEntryWithDOI("crap"), "Unable to retrieve bibliographic")
+    expect_message(GetBibEntryWithDOI("crap"), "[Uu]nable to retrieve bibliographic")
 })
 
 test_that("GetDOIs retrieves DOIs", {
