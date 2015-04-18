@@ -11,6 +11,10 @@
 #' @author McLean, M. W., based on code in \code{bibtex} package by Francois, R.
 #' @importFrom bibtex do_read_bib
 #' @importFrom stringr str_trim
+#' @note Date fields are parsed using the locale specified by `Sys.getlocale("LC_TIME")`.  To
+#' read a bib file with character \sQuote{month} fields in a language other than the current
+#' locale, `Sys.setlocale` should be used to change \sQuote{LC_TIME}` to match the bib file before
+#' calling `ReadBib`.
 #' @seealso \code{\link[bibtex]{read.bib}} in package \code{bibtex}
 #' @export
 #' @examples

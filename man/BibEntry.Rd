@@ -41,6 +41,10 @@ The BibEntry objects created by BibEntry can represent an arbitrary positive num
   as with \code{bibentry}, but many additional methods are defined for building and manipulating a database
   of references.
 }
+\note{
+Date fields are parsed using the locale specified by `Sys.getlocale("LC_TIME")` (relevant
+when specifying a character \sQuote{month} field, instead of the recommended integer format)
+}
 \section{Entry Types}{
 
   bibentry creates "bibentry" objects, which are modeled after BibLaTeX and BibTeX entries. The entry should

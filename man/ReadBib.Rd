@@ -24,6 +24,12 @@ missing required fields?  \code{FALSE} means no checking is done, \dQuote{warn} 
 \description{
 Parser for bibliography databases in the bib format containing either BibLaTeX or BibTeX entries.
 }
+\note{
+Date fields are parsed using the locale specified by `Sys.getlocale("LC_TIME")`.  To
+read a bib file with character \sQuote{month} fields in a language other than the current
+locale, `Sys.setlocale` should be used to change \sQuote{LC_TIME}` to match the bib file before
+calling `ReadBib`.
+}
 \examples{
 file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 bib <- ReadBib(file.name)
