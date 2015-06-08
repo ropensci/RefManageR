@@ -37,6 +37,7 @@ test_that("head and tail", {
 })
 
 test_that("open", {
+    skip_on_cran()
     open(as.BibEntry(citation("RCurl")))  # URL
 
     testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex"))
