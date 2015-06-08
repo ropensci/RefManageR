@@ -9,33 +9,38 @@
 #' plain text (style \dQuote{text}), BibTeX (\dQuote{Bibtex}), BibLaTeX
 #' (\dQuote{Biblatex}), a mixture of plain text and BibTeX as
 #' traditionally used for citations (\dQuote{citation}), HTML (\dQuote{html}),
-#' LaTeX (\dQuote{latex}), \dQuote{markdown}, \dQuote{yaml} (see Note),
+#' LaTeX (\dQuote{latex}), \dQuote{markdown},
 #' R code (\dQuote{R}), and a simple copy of the textVersion elements
 #' (style \dQuote{textVersion}, see \code{\link{BibEntry}})
-#' \item \code{bib.style} - character string specifying BibLaTeX style to use for formatting references.  Possible values are
-#' \dQuote{numeric} (default), \dQuote{authoryear}, \dQuote{authortitle}, \dQuote{alphabetic}, \dQuote{draft}.  See
-#' section 3.3.2 of the BibLaTeX manual.
-#' \item \code{sorting} - how should the entries in \code{x} be sorted?  See \code{\link{sort.BibEntry}}.
-#' \item \code{max.names} - maximum number of names to display for name list fields before truncation with \dQuote{et al.}.
-#' \item \code{first.inits} - logical; if true only initials of given names are printed, otherwise full names are used.
-#' \item \code{dashed} - logical; for \code{.bibstyle = "authoryear"} or \code{.bibstyle = "authoryear"} only,
+#' \item \code{bib.style} - character string specifying BibLaTeX style to use for formatting
+#' references.  Possible values are \dQuote{numeric} (default), \dQuote{authoryear},
+#' \dQuote{authortitle}, \dQuote{alphabetic}, \dQuote{draft}.  See section 3.3.2 of the
+#' BibLaTeX manual.
+#' \item \code{sorting} - how should the entries in \code{x} be sorted?  See
+#' \code{\link{sort.BibEntry}}.
+#' \item \code{max.names} - maximum number of names to display for name list fields before
+#' truncation with \dQuote{et al.}.
+#' \item \code{first.inits} - logical; if true only initials of given names are printed,
+#' otherwise full names are used.
+#' \item \code{dashed} - logical; for \code{.bibstyle = "authoryear"} or
+#' \code{.bibstyle = "authoryear"} only,
 #' if \code{TRUE} duplicate author and editor lists are replaced with \dQuote{---} when printed.
-#' \item \code{no.print.fields} character vector; fields that should not be printed, e.g., doi, url, isbn, etc.
+#' \item \code{no.print.fields} character vector; fields that should not be printed,
+#' e.g., doi, url, isbn, etc.
 #' }
 #' @param ... extra parameters to pass to the renderer.
 #' @method print BibEntry
 #' @export
 #' @importFrom tools toRd
-#' @note setting max.names to \code{value} is equivalent to setting \code{maxnames=value} and \code{minnames=value} in BibLaTeX.
+#' @note setting max.names to \code{value} is equivalent to setting \code{maxnames=value} and
+#' \code{minnames=value} in BibLaTeX.
 #'
-#' Custom BibLaTeX styles may be defined using the function \code{\link{bibstyle}}.  To fully support BibLaTeX, the created
-#' environment must have functions for formatting each of the entry types decribed in \code{\link{BibEntry}}.
-#'
-#' \code{style = "yaml"} is only available if the user has downloaded a version of
-#' \code{pandoc} that includes \code{pandoc-citeproc}.  In this case, a temporary
-#' \code{.bib} file will be written and processed by \code{pandoc-citeproc}, the results
-#' of which will be outputted.
-#' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex Package. \url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+#' Custom BibLaTeX styles may be defined using the function \code{\link{bibstyle}}.  To fully
+#' support BibLaTeX, the created
+#' environment must have functions for formatting each of the entry types decribed in
+#' \code{\link{BibEntry}}.
+#' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex
+#' Package. \url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 #' @seealso \code{\link{BibEntry}}, \code{\link{ReadBib}}, \code{\link{sort.BibEntry}}
 #' @examples
 #' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
