@@ -6,7 +6,7 @@ Authors@R: person(c("Mathew", "W."), "McLean", role = c("aut", "cre"),
     email = "mathew.w.mclean@gmail.com")
 Author: Mathew W. McLean [aut, cre]
 Maintainer: Mathew W. McLean <mathew.w.mclean@gmail.com>
-Description: RefManageR provides tools for importing and working with
+Description: Provides tools for importing and working with
     bibliographic references.  It greatly enhances the bibentry class by
     providing a class BibEntry which stores BibTeX and BibLaTeX references,
     supports UTF-8 encoding, and can be easily searched by any field, by date
