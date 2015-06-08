@@ -9,3 +9,4 @@ Rhtml/figure
 ^[.]gitignore$
 ^[.]travis[.]yml$
 ^[.]git$
+RefManageR-Ex.R
