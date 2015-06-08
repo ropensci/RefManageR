@@ -13,7 +13,7 @@
 #'
 #' @param user Zotero userID for use in calls to the Zotero API.  This is not the same as your Zotero
 #'   username.  The userID for accessing user-owned libraries can be found at
-#'   \url{https://www.zotero.org/settings/keys}.
+#'   \verb{https://www.zotero.org/settings/keys} after logging in.
 #' @param group Zotero groupID for use in calls to the Zotero API.  Only one of \code{user} and \code{group} should be specified; \code{group} will be ignored if both are specified.
 #' @param .params A \emph{named} list of parameters to use in requests to the Zotero API with possible values
 #'  \itemize{
@@ -31,7 +31,7 @@
 #' @return An object of class BibEntry
 #' @export
 #' @seealso \code{\link{BibEntry}}, \code{\link{getForm}} in package \code{RCurl}
-#' @references \url{http://www.zotero.org/support/dev/server_api/v2/read_requests}
+#' @references \verb{http://www.zotero.org/support/dev/server_api/v2/read_requests}
 #' @importFrom RCurl getForm curlOptions
 #' @examples
 #' \dontrun{

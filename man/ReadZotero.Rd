@@ -10,7 +10,7 @@ ReadZotero(user, group, .params, temp.file = tempfile(fileext = ".bib"),
 \arguments{
 \item{user}{Zotero userID for use in calls to the Zotero API.  This is not the same as your Zotero
 username.  The userID for accessing user-owned libraries can be found at
-\url{https://www.zotero.org/settings/keys}.}
+\verb{https://www.zotero.org/settings/keys} after logging in.}
 
 \item{group}{Zotero groupID for use in calls to the Zotero API.  Only one of \code{user} and \code{group} should be specified; \code{group} will be ignored if both are specified.}
 
@@ -65,7 +65,7 @@ BibOptions(old.opts)
 }
 }
 \references{
-\url{http://www.zotero.org/support/dev/server_api/v2/read_requests}
+\verb{http://www.zotero.org/support/dev/server_api/v2/read_requests}
 }
 \seealso{
 \code{\link{BibEntry}}, \code{\link{getForm}} in package \code{RCurl}
