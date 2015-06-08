@@ -71,30 +71,6 @@ print.BibEntry <- function (x, .opts = list(), ...){
   }
   if (style == "R") {
     writeLines(format(x, style, collapse = TRUE, ...))
-  }else if (style == "yaml"){
-    pandocExists <- suppressWarnings(system("pandoc-citeproc -V", ignore.stdout = TRUE,
-                           ignore.stderr = TRUE, show.output.on.console = FALSE) == 0)
-    pandocPath <- if (pandocExists)
-                    "pandoc-citeproc"
-                  else{
-                    temp <- readline(prompt = paste0(
-                      "Please specify the path to the pandoc-citeproc executable",
-                                         options("prompt")))
-                    if (!length(grep("pandoc-citeproc$", temp)))
-                      temp <- paste(temp, "pandoc-citeproc", sep = "/")
-                    if (suppressWarnings(system2(temp, "-V", stdout = FALSE,
-                           stderr = FALSE) != 0))
-                      stop("pandoc-citeproc not found.")
-                    temp
-                  }
-    tmpfile <- tempfile(fileext = ".bib")
-    on.exit(unlink(tmpfile), TRUE)
-    suppressMessages(WriteBib(x, tmpfile))
-    ## writeLines(system2(pandocPath, c("-y", tmpfile), stdout = TRUE))
-    tfile <- file("temp-file", encoding = "")
-    cat(system2(pandocPath, c("-y", tmpfile), stdout = ""), file = tfile)
-    iconv(readLines(tfile, encoding = ""), from = "", to = "UTF-8")
-    close(tfile)
   }else if (length(x)) {
       y <- format(x, style = style, .BibOptions$bib.style, .sorting = sorting,
                   .sort = TRUE, ...)
