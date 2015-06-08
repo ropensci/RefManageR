@@ -10,6 +10,7 @@
 #' \dQuote{error} means the entry will not be added.  See \code{\link{BibOptions}}.
 #' @author McLean, M. W., based on code in \code{bibtex} package by Francois, R.
 ## @importFrom bibtex do_read_bib
+#' @import bibtex
 #' @importFrom stringr str_trim
 #' @note Date fields are parsed using the locale specified by `Sys.getlocale("LC_TIME")`.  To
 #' read a bib file with character \sQuote{month} fields in a language other than the current
