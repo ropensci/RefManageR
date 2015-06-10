@@ -4,19 +4,28 @@ RefManageR
 [![Coverage Status](https://coveralls.io/repos/mwmclean/RefManageR/badge.svg?branch=master)](https://coveralls.io/r/mwmclean/RefManageR?branch=master)
 
 RefManageR provides tools for importing and working with
-bibliographic references.  It greatly enhances the bibentry class by
-providing a class BibEntry which stores BibTeX and BibLaTeX references,
-supports UTF-8 encoding, and can be easily searched by any field, by date
+bibliographic references.  It greatly enhances the `bibentry` class by
+providing a class `BibEntry` which stores `BibTeX` and `BibLaTeX` references,
+supports `UTF-8` encoding, and can be easily searched by any field, by date
 ranges, and by various formats for name lists (author by last names,
 translator by full names, etc.). Entries can be updated, combined, sorted,
 printed in a number of styles, and exported. BibTeX and BibLaTeX .bib files
-can be read into R and converted to BibEntry objects.  Interfaces to NCBI's
-Entrez, CrossRef, and Zotero are provided for importing references and
-references can be created from locally stored PDFs using Poppler.  Includes
+can be read into `R` and converted to `BibEntry` objects.  Interfaces to
+`NCBI Entrez`, `CrossRef`, and `Zotero` are provided for importing references and
+references can be created from locally stored `PDF` files using `Poppler`.  Includes
 functions for citing and generating a bibliography with hyperlinks for
-documents prepared with RMarkdown or RHTML.
+documents prepared with `RMarkdown` or `RHTML`.
 
 Please see the [vignette](http://cran.r-project.org/web/packages/RefManageR/vignettes/manual.pdf).
+
+Using the latest version from `Github` requires first installing the newest version of the `bibtex` package
+from `GitHub`:
+
+```
+install.packages("devtools")
+devtools::install_github("romainfrancois/bibtex")
+devtools::install_github("mwmclean/RefManageR")
+```
 
 NEWS
 =====================================
