@@ -21,6 +21,12 @@ Please see the [vignette](http://cran.r-project.org/web/packages/RefManageR/vign
 NEWS
 =====================================
 
+Changes in Version 0.9.0 (2014-06-10)
+--------------------------------------------------------
+
+* Use `bibtex >= 0.4.0.9000` function `do_read_bib` to avoid `.External` call and
+`R check` note (request of HI&RH Lord Ripley of England)
+
 Changes in Version 0.8.63 (2014-06-08)
 --------------------------------------------------------
 
