@@ -21,13 +21,11 @@ Please see the [vignette](http://cran.r-project.org/web/packages/RefManageR/vign
 NEWS
 =====================================
 
-Changes in Version 0.8.63 (2014-04-18)
+Changes in Version 0.8.63 (2014-06-08)
 --------------------------------------------------------
 
 NEW FEATURES
 
-* Use `bibtex >= 0.4.9000` function `do_read_bib` to avoid `.External` call and
-`R check` note (request of HI&RH Lord Ripley of England)
 * Improve parsing of dates in `ReadPDFs`
 * Citations using `Cite` family of functions can now be `pandoc` style, e.g. `[@abibkey]`
 by setting `BibOptions(cite.style = "pandoc")` (h/t Dale Steele)
