@@ -95,7 +95,7 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
   if(is.raw(temp))
     temp <- rawToChar(temp)
   if (inherits(temp, "try-error") || temp[1] == "<h1>Internal Server Error</h1>" ||
-      !grepl("^@", temp)){  # last one for occasional non-bibtex returned by CrossRef
+      !grepl("^[[:space:]]*@", temp)){  # last one for occasional non-bibtex returned by CrossRef
     message(gettextf("server error for doi %s, you may want to try again.", dQuote(doi)))
     return(1L)
   }
