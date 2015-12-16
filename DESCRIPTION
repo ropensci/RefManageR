@@ -1,6 +1,6 @@
 Package: RefManageR
-Version: 0.9.0
-Date: 2015-06-10
+Version: 0.10.0
+Date: 2015-12-17
 Title: Straightforward 'BibTeX' and 'BibLaTeX' Bibliography Management
 Authors@R: person(c("Mathew", "W."), "McLean", role = c("aut", "cre"),
     email = "mathew.w.mclean@gmail.com")
