@@ -20,9 +20,10 @@
 as.data.frame.BibEntry <- function(x, row.names = NULL, optional = FALSE, ...){
   col.names <- unique(unlist(fields(x)))
   n.fields <- length(col.names)
-  y <- matrix(nrow = length(x), ncol = n.fields + 1L)
+  y <- as.data.frame(matrix(nrow = length(x), ncol = n.fields + 1L),
+                     stringsAsFactors = FALSE)
   colnames(y) <- c('bibtype', col.names)
-  rownames(y) <- names(x)
+  rownames(y) <- make.unique(names(x), sep = "-")
        
   y[, 1L] <- unlist(x$bibtype)
   for (i in seq_len(n.fields)){
