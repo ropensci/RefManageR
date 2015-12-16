@@ -21,15 +21,16 @@ as.data.frame.BibEntry <- function(x, row.names = NULL, optional = FALSE, ...){
   col.names <- unique(unlist(fields(x)))
   n.fields <- length(col.names)
   y <- as.data.frame(matrix(nrow = length(x), ncol = n.fields + 1L),
-                     stringsAsFactors = FALSE)
+                     stringsAsFactors = FALSE,
+                     row.names = make.unique(names(x), sep = "-"))
   colnames(y) <- c('bibtype', col.names)
-  rownames(y) <- make.unique(names(x), sep = "-")
        
   y[, 1L] <- unlist(x$bibtype)
   for (i in seq_len(n.fields)){
     nom <- col.names[i]
     temp <- do.call(`$.BibEntry`, list(x = x, name = nom))
     not.nulls <- !sapply(temp, is.null)
+
     if (nom %in% .BibEntryNameList){
       temp <- sapply(temp[not.nulls], format_author)
     }else{
