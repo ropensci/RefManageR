@@ -127,6 +127,8 @@ GetPubMedByID <- function(id, db = 'pubmed', ...){
   if (length(fails <- setdiff(id, unlist(res$eprint))))
      message(paste0("Unable to fetch entries for id's: ",
                     paste0(fails, collapse = ", ")))
+  
+  res <- MakeKeysUnique(res)
 
   return(res)
 }
@@ -227,6 +229,7 @@ GetPubMedRelated <- function(id, database = 'pubmed', batch.mode = TRUE, max.res
   }
   res <- c(unlist(res, recursive = FALSE))
   class(res) <- c("BibEntry", "bibentry")
+  res <- MakeKeysUnique(res)
   return(res)
 }
 

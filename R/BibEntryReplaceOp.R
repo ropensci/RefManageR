@@ -85,6 +85,7 @@
     x[[replace.ind[k]]] <- y[[k]]
   
   class(x) <- c('BibEntry', 'bibentry')
+  x <- MakeKeysUnique(x)
   return(x)
 }
 

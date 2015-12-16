@@ -29,6 +29,6 @@
   value <- unclass(value)
   x[i] <- value
   class(x) <- c('BibEntry', 'bibentry')
-
+  x <- MakeKeysUnique(x)
   return(x)
 }

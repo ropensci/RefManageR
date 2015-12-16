@@ -8,7 +8,7 @@
 #' @export
 #' @note \code{c} will remove all attributes besides \code{class}.
 #'
-#' No checking for duplicate entries is performed.
+#' No checking for duplicate entries is performed though keys will be made unique.
 #' @keywords methods
 #' @family operators
 #' @examples
@@ -25,5 +25,6 @@ c.BibEntry <- function (..., recursive = FALSE){
     args <- lapply(args, unclass)
     rval <- do.call("c", args)
     class(rval) <- c("BibEntry", "bibentry")
+    rval <- MakeKeysUnique(rval)
     rval
 }

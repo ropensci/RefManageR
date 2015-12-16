@@ -101,6 +101,7 @@ as.BibEntry <- function(x){
   }else{
     stop(paste0("Cannot coerce object of class '", class(x), "' to BibEntry"))
   }
+  x <- MakeKeysUnique(x)
   return(x)
 }
 

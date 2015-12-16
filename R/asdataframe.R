@@ -40,6 +40,5 @@ as.data.frame.BibEntry <- function(x, row.names = NULL, optional = FALSE, ...){
     y[not.nulls, nom] <- temp
   }
   
-  y <- as.data.frame(y, stringsAsFactors = FALSE)
   return(y)
 }

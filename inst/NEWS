@@ -1,3 +1,12 @@
+Changes in Version 0.10.0 (2014-12-17)
+--------------------------------------------------------
+
+* The 'key' field in `BibEntry` objects is now always enforced to be unique
+* `as.data.frame.BibEntry` is faster and now works if duplicate keys are
+present; keys in  (h/t Dale Steele)
+* Fix for `ReadCrossRef` if downloaded BibTeX had leading whitespace (h/t Carl
+Boettiger)
+
 Changes in Version 0.9.0 (2014-06-10)
 --------------------------------------------------------
 

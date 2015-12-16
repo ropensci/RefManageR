@@ -17,7 +17,7 @@
 #' file before calling \code{ReadBib}.
 #'
 #' Keys will be made unique by calling \code{\link[base]{make.unique}} with
-#' \code{sep = "-"}.
+#' \code{sep = ":"}.
 #' @seealso \code{\link[bibtex]{read.bib}} in package \code{bibtex}
 #' @export
 #' @examples
@@ -44,7 +44,7 @@ ReadBib <- function(file, .Encoding = "UTF-8",
   else out <- list()
   preamble <- at[["preamble"]]
   out <- MakeCitationList(out, header, footer)
-  out$key <- make.unique(names(out), "-")
+  out <- MakeKeysUnique(out)
   
   attr(out, "strings") <- at[["strings"]]
   .BibOptions$check.entries <- oldchk

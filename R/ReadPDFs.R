@@ -174,6 +174,6 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
         res[[ind[i]]]$doi <- comb.doi[ind2[i]]
     }
   }
-
+  res <- MakeKeysUnique(res)
   return(res)
 }

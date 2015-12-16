@@ -105,7 +105,7 @@
   if (awl){
     x <- x[[!duplicated(x)]]
   }
-  names(x) <- make.unique(names(x), sep = ":")
+  x <- MakeKeysUnique(x)
   attributes(x)[bibentry_list_attribute_names] <- mapply(function(x, y){
     res <- c(x, y)
     res[!duplicated(res)]

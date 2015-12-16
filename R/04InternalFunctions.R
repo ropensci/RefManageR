@@ -929,3 +929,10 @@ CreateBibKey <- function(ti, au, yr){
 .BibEntryTypeField <- c(mathesis = 'MA Thesis', phdthesis = 'PhD thesis', datacd = 'CD-ROM',
                         candthesis = 'Cand. thesis', techreport = 'Tech. rep.',
                         resreport = 'Research rep.', software = 'Comp. software', audiocd = 'Audio CD')
+
+
+#' @keywords internal
+MakeKeysUnique <- function(bib){
+    bib$key <- make.unique(names(bib), sep = ":")
+    bib
+}
