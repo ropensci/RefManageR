@@ -297,7 +297,7 @@ FindBibEntry <- function(bib, term, field){
   }else{
     res <- logical(length(bib))
     not.nulls <- which(!sapply(vals, is.null))
-    vals <- gsub('\\n[[:space:]]*', ' ', unlist(vals[not.nulls], useBytes = TRUE))
+    vals <- gsub('\\n[[:space:]]*', ' ', unlist(vals[not.nulls]), useBytes = TRUE)
     vals <- unlist(strsplit(cleanupLatex(vals), '\n') )
 
     if (!usereg && ignorec){
