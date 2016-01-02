@@ -1,5 +1,5 @@
 Package: RefManageR
-Version: 0.10.0
+Version: 0.10.2
 Date: 2015-12-17
 Title: Straightforward 'BibTeX' and 'BibLaTeX' Bibliography Management
 Authors@R: person(c("Mathew", "W."), "McLean", role = c("aut", "cre"),
@@ -27,7 +27,7 @@ Imports:
     plyr,
     tools,
     bibtex (>= 0.4.0.9000),
-    lubridate,
+    lubridate (>= 1.5.0),
     stringr,
     methods
 Suggests:
