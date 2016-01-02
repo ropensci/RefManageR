@@ -12,13 +12,13 @@ Boettiger)
 * Fix test in test-search.R that broke because of new year (h/t HI&RH Lord Ripley of England)
 * add additional functions from utils and stats to NAMESPACE
 
-Changes in Version 0.9.0 (2014-06-10)
+Changes in Version 0.9.0 (2015-06-10)
 --------------------------------------------------------
 
 * Use `bibtex >= 0.4.0.9000` function `do_read_bib` to avoid `.External` call and
 `R check` note (request of HI&RH Lord Ripley of England)
 
-Changes in Version 0.8.63 (2014-06-08)
+Changes in Version 0.8.63 (2015-06-08)
 --------------------------------------------------------
 
 NEW FEATURES
@@ -42,7 +42,7 @@ specified entry had a 'urldate' field, but no 'url' field
 * `GetBibEntryWithDOI.R` will not `stop` if an error occurs downloading any of the DOIs (e.g.,
 if one entry in the `doi` vector has a typo and the rest are valid)
 
-Changes in Version 0.8.52 (2014-01-26)
+Changes in Version 0.8.52 (2015-01-26)
 --------------------------------------------------------
 
 NEW FEATURES
