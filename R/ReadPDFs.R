@@ -32,6 +32,7 @@
 #' @keywords utilities
 #' @seealso \code{\link{ReadCrossRef}}, \code{\link{BibEntry}}, \code{\link{open.BibEntry}}
 #' @importFrom plyr llply progress_text
+#' @importFrom utils flush.console
 ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRUE,
                       use.metadata = TRUE, progress = FALSE) {
   if (!nzchar(Sys.which("pdfinfo")))

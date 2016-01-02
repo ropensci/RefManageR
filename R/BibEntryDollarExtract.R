@@ -9,6 +9,7 @@
 #' @note \code{name} may be \dQuote{bibtype} to extract entry types or \dQuote{key} to extract keys.
 #' @return a named list of values for the field specified by name for each entry; \code{NULL} if the field is not present for
 #' a particular entry.  The names attribute of the returned list contains the entry keys (potentially back-quoted).
+#' @importFrom stats setNames
 #' @examples
 #' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
 #' bib <- suppressMessages(ReadBib(file.name))

@@ -170,6 +170,7 @@ ResolveBibLaTeXCrossRef <- function(chi, par){
 }
 
 #' @keywords internal
+#' @importFrom utils as.personList
 ArrangeAuthors <- function (x){
   rx <- "[[:space:]]+and[[:space:]]+"
   x <- gsub('[[:space:]]{2,}', ' ', x, useBytes = TRUE)
@@ -178,6 +179,7 @@ ArrangeAuthors <- function (x){
 }
 
 #' @keywords internal
+#' @importFrom utils person
 ArrangeSingleAuthor <- function(y){
 
   if (grepl('[\\]', y)){
@@ -662,6 +664,7 @@ ParseGSCites2 <- function(l, encoding, check.entries=.BibOptions$check.entries){
 }
 
 #' @keywords internal
+#' @importFrom utils as.person
 ProcessGSAuthors <- function(authors){
   # authors <- gsub(',', ', and', authors)  # add "and" to separate authors
   # authors <- gsub('([A-Z])([A-Z])', '\\1 \\2', authors)  # add space between given name initials

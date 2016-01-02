@@ -19,6 +19,7 @@
 #' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
 #' @method open BibEntry
 #' @export
+#' @importFrom utils browseURL
 #' @examples
 #' \dontrun{
 #' testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex"))
