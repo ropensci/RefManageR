@@ -1,4 +1,4 @@
-Changes in Version 0.10.0 (2014-12-17)
+Changes in Version 0.10.5 (2016-01-03)
 --------------------------------------------------------
 
 * The 'key' field in `BibEntry` objects is now always enforced to be unique
@@ -6,6 +6,11 @@ Changes in Version 0.10.0 (2014-12-17)
 present; keys in  (h/t Dale Steele)
 * Fix for `ReadCrossRef` if downloaded BibTeX had leading whitespace (h/t Carl
 Boettiger)
+* `useBytes = TRUE` used for all calls to `grep`, `sub`, etc. (h/t HI&RH Lord Ripley of England)
+* remove use of deprecated function `lubridate::new_interval`
+* updated URL for the BibLaTeX manual
+* Fix test in test-search.R that broke because of new year (h/t HI&RH Lord Ripley of England)
+* add additional functions from utils and stats to NAMESPACE
 
 Changes in Version 0.9.0 (2014-06-10)
 --------------------------------------------------------
