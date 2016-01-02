@@ -125,6 +125,7 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 #'    .opts = list(match.date = "exact")))
 #'
 #' ## Carroll and Ruppert papers NOT in the 1990's
+#' \dontrun{
 #' length(SearchBib(bib, author='ruppert', date = "!1990/1999"))
 #' identical(SearchBib(bib, author='ruppert', date = "!1990/1999"),
 #'   SearchBib(bib, author='ruppert', year = "!1990/1999"))
@@ -139,6 +140,7 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 #' ## Carroll + Ruppert tech reports at UNC "OR" Carroll and Ruppert JASA papers
 #' length(bib[list(author='ruppert',bibtype="report",institution="north carolina"),
 #'   list(author="ruppert",journal="journal of the american statistical association")])
+#' }
 `[.BibEntry` <- function(x, i, j, ..., drop = FALSE){
 
   if (!length(x) || (missing(i) && missing(...)))

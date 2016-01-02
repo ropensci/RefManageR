@@ -94,6 +94,7 @@ length(SearchBib(bib, author='ruppert', date="1987-07/",
    .opts = list(match.date = "exact")))
 
 ## Carroll and Ruppert papers NOT in the 1990's
+\dontrun{
 length(SearchBib(bib, author='ruppert', date = "!1990/1999"))
 identical(SearchBib(bib, author='ruppert', date = "!1990/1999"),
   SearchBib(bib, author='ruppert', year = "!1990/1999"))
@@ -108,6 +109,7 @@ length(bib[author=c("Carroll, R. J. and Ruppert, D.", "Carroll, R. J. and Simpso
 ## Carroll + Ruppert tech reports at UNC "OR" Carroll and Ruppert JASA papers
 length(bib[list(author='ruppert',bibtype="report",institution="north carolina"),
   list(author="ruppert",journal="journal of the american statistical association")])
+}
 }
 \seealso{
 Other operators: \code{\link{$.BibEntry}};
