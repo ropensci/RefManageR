@@ -66,7 +66,7 @@ sort(bib, sorting = "ynt")
 BibOptions(restore.defaults = TRUE)
 }
 \references{
-Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex Package. \url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex Package. \url{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 }
 \seealso{
 \code{\link{BibEntry}}, \code{\link{print.BibEntry}}, \code{\link{order}}

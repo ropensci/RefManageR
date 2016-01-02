@@ -41,7 +41,7 @@
 #' When sorting by alphabetic label, the labels that would be generating with the \dQuote{alphabetic} bibstyle are used.
 #' First the shorthand field is considered, then label, then shortauthor, shorteditor, author, editor, and translator.
 #' Refer to the BibLaTeX manual Sections 3.1.2.1 and 3.5 and Appendix C.2 for more information.
-#' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex Package. \url{http://ctan.mirrorcatalogs.com/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+#' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex Package. \url{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 #' @seealso \code{\link{BibEntry}}, \code{\link{print.BibEntry}}, \code{\link{order}}
 #' @importFrom tools bibstyle getBibstyle
 #' @examples
