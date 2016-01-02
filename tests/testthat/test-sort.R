@@ -56,7 +56,7 @@ test_that("nyt sorting", {
 test_that("nyt with sortyear", {
     BibOptions(sorting = "nyt")
     bib2 <- BIB
-    bib2$sortyear[2] <- "2015-2"
+    bib2$sortyear[2] <- paste(format(Sys.Date(), "%Y"), "2", sep = "-")
     capture.output(bib2, file = tfile)
     expect_order(c(1, 3, 2), tfile, c("E1", "E2", "E3"))
 })
