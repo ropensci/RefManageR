@@ -67,7 +67,7 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
       paste(curlEscape(id), curlEscape(val), sep = "=", collapse = "&")
   }, names(.params), .params)
   args <- paste(els, collapse = "&")
-  uri <- paste(uri, args, sep = if (grepl("\\?", uri))
+  uri <- paste(uri, args, sep = if (grepl("\\?", uri, useBytes = TRUE))
                                   "&"
                                 else "?")
 
@@ -86,7 +86,7 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
   }
   cites <- cites[seq_len(min(limit, length(cites)))]
 
-  noNAwarn <- function(w) if( any( grepl( "NAs introduced", w) ) )
+  noNAwarn <- function(w) if( any( grepl( "NAs introduced", w, useBytes = TRUE) ) )
       invokeRestart( "muffleWarning" )
   tmp <- withCallingHandlers(lapply(cites, ParseGSCites2), warning = noNAwarn)
   out <- lapply(tmp[!is.na(tmp)], MakeBibEntry, to.person = FALSE)

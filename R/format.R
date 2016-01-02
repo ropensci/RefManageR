@@ -40,13 +40,13 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
           paste(readLines(out, encoding = 'UTF-8'), collapse = "\n")
         })
         if (style == "html"){
-          res <- sub("<code>([[:print:]]*)</code>", "<a id='bib-\\1'></a>", res)
+          res <- sub("<code>([[:print:]]*)</code>", "<a id='bib-\\1'></a>", res, useBytes = TRUE)
           res <- if (.bibstyle == "alphabetic" || .bibstyle == "numeric")
-            sub("^<p>([[:print:]]*\\])(</a>)?", "<p>\\1\\2<cite>", res)
+            sub("^<p>([[:print:]]*\\])(</a>)?", "<p>\\1\\2<cite>", res, useBytes = TRUE)
           else if (.bibstyle == "draft") sub("^<p>([[:print:]]*</B>)",
-                        "<p>\\1<cite>", res)
-          else sub("^<p>", "<p><cite>", res)
-          res <- sapply(res, function(x) if (grepl("<cite>", x))
+                        "<p>\\1<cite>", res, useBytes = TRUE)
+          else sub("^<p>", "<p><cite>", res, useBytes = TRUE)
+          res <- sapply(res, function(x) if (grepl("<cite>", x, useBytes = TRUE))
                         paste0(x, "</cite></p>")
                       else  # XData or Set
                         paste0(x, "</p>"))

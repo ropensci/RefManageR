@@ -42,7 +42,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
       stop("Specified path does not exist")
   files <- list.files(path, pattern = '.pdf$', full.names = TRUE, recursive = recursive)
   if (!length(files)){  # check if directory or file specified
-      if (!grepl("[.]pdf$", path))
+      if (!grepl("[.]pdf$", path, useBytes = TRUE))
           stop(gettextf("%s must be a valid path containing PDFs or a file name ending in %s",
                         sQuote("path"), dQuote(".pdf"), domain = NA))
     files <- path
@@ -151,7 +151,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
   res <- c(resJSTOR, res)
   if (length(res)){
     res <- withCallingHandlers( lapply(res, MakeBibEntry, to.person = FALSE), warning = function(w){
-      if( any( grepl("recycled", w$message) ) )
+      if( any( grepl("recycled", w$message, useBytes = TRUE) ) )
         invokeRestart( "muffleWarning" )
       })
     res <- MakeCitationList(res)

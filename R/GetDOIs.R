@@ -44,7 +44,7 @@ GetDOIs <- function(bib){
                        paste0(missing.dois.pos[matches], collapse = ", "), "."))
         bib$doi[missing.dois.pos[matches]] <- sub("http://dx.doi.org/", "",
                                                    sapply(json.res[[1]], "[[",
-                                                          "doi")[matches])
+                                                          "doi")[matches], useBytes = TRUE)
       }
     }
   }
@@ -69,7 +69,7 @@ FormatEntryForCrossRef <- function(bib){
           }
        }
        fmtJTitle <- function(title){
-         if (length(grep('[.?!]$', title)))
+         if (grepl('[.?!]$', title, useBytes = TRUE))
            paste0("\"", collapse(cleanupLatex(title)), "\"")
          else paste0("\"", collapse(cleanupLatex(title)), "\".")
        }

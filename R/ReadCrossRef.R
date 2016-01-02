@@ -95,12 +95,14 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
   if(is.raw(temp))
     temp <- rawToChar(temp)
   if (inherits(temp, "try-error") || temp[1] == "<h1>Internal Server Error</h1>" ||
-      !grepl("^[[:space:]]*@", temp)){  # last one for occasional non-bibtex returned by CrossRef
+      !grepl("^[[:space:]]*@", temp, useBytes = TRUE)){
+      ## last one for occasional non-bibtex returned by CrossRef
     message(gettextf("server error for doi %s, you may want to try again.", dQuote(doi)))
     return(1L)
   }
-  temp <- gsub("&amp;", "&", temp)
-  temp <- sub("^@[Dd]ata", "@online", temp)  # Crossref uses data type for some entries
+  temp <- gsub("&amp;", "&", temp, useBytes = TRUE)
+  ## Crossref uses data type for some entries
+  temp <- sub("^@[Dd]ata", "@online", temp, useBytes = TRUE)
   write(temp, file = tmp.file, append=TRUE)
   return(0L)
 }

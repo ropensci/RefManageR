@@ -51,7 +51,9 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
   if (!regx && ign.case){
     return(all(pattern %in% tolower(nom)))
   }else{
-    return(all(sapply(pattern, function(pat) any(grepl(pat, x = nom, fixed = !regx, ignore.case = ign.case)))))
+      return(all(sapply(pattern, function(pat) any(grepl(pat, x = nom, fixed = !regx,
+                                                         ignore.case = ign.case,
+                                                         useBytes = TRUE)))))
   }
 }
 
@@ -295,13 +297,14 @@ FindBibEntry <- function(bib, term, field){
   }else{
     res <- logical(length(bib))
     not.nulls <- which(!sapply(vals, is.null))
-    vals <- gsub('\\n[[:space:]]*', ' ', unlist(vals[not.nulls]))
+    vals <- gsub('\\n[[:space:]]*', ' ', unlist(vals[not.nulls], useBytes = TRUE))
     vals <- unlist(strsplit(cleanupLatex(vals), '\n') )
 
     if (!usereg && ignorec){
-      res[not.nulls[grepl(tolower(term), tolower(vals), fixed = TRUE)]] <- TRUE
+      res[not.nulls[grepl(tolower(term), tolower(vals), fixed = TRUE, useBytes = TRUE)]] <- TRUE
     }else{
-      res[not.nulls[grepl(term, vals, fixed = !.BibOptions$use.regex, ignore.case = .BibOptions$ignore.case)]] <- TRUE
+        res[not.nulls[grepl(term, vals, fixed = !.BibOptions$use.regex,
+                            ignore.case = .BibOptions$ignore.case, useBytes = TRUE)]] <- TRUE
     }
   }
   res

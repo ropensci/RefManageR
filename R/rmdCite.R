@@ -204,21 +204,26 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
             result <- paste0(auth, bibpunct[6L], " ", year)
         }
         if (make.hyper){
-          url = switch(hyperlink, to.bib = paste0("#bib-", gsub("[^_a-zA-Z0-9-]", "", keys)),
+            url = switch(hyperlink, to.bib = paste0("#bib-", gsub("[^_a-zA-Z0-9-]", "", keys,
+                                        useBytes = TRUE)),
                        to.doc = sapply(papers, GetURL,
                                        flds = c("url", "eprint", "doi"),
                                        to.bib = TRUE),
                        hyperlink)
           if (style == "html"){
             new.links <- if (any(first))
-              paste(paste("<a id='cite-", gsub("[^_a-zA-Z0-9-]", "", keys[first]), "'></a>", sep = ""), collapse = "")
+                             paste(paste("<a id='cite-", gsub("[^_a-zA-Z0-9-]", "", keys[first],
+                                                 useBytes = TRUE), "'></a>", sep = ""),
+                                   collapse = "")
                          else ""
             result <- if (numeric && super && textual)
                         paste0(auth, "<sup><a href='", url, "'>", result, "</a></sup>")
                       else paste0("<a href='", url, "'>", result, "</a>")
           }else if(style == "markdown"){
             new.links <- if(any(first))
-              paste(paste("<a name=cite-", gsub("[^_a-zA-Z0-9-]", "", keys[first]), "></a>", sep = ""), collapse = "")
+                             paste(paste("<a name=cite-", gsub("[^_a-zA-Z0-9-]", "", keys[first],
+                                                 useBytes = TRUE), "></a>", sep = ""),
+                                   collapse = "")
             else ""
             result <- if (numeric && super && textual)
                         paste0(auth, "^[", result, "](", url, ")")

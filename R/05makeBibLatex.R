@@ -14,7 +14,7 @@ fmtPrefix <- switch(docstyle, html = function(paper){
   if (length(res)){
     key <- attr(paper, "key")
     ind <- .cites$indices[key]
-    key <- gsub("[^_a-zA-Z0-9-]", "", key)
+    key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
     res <- if (!is.na(ind) && ind)
       paste0("\\code{", key, "}\\href{#cite-", key, "}{", res, "}")
     else res
@@ -25,7 +25,7 @@ fmtPrefix <- switch(docstyle, html = function(paper){
   if (length(res)){
     key <- attr(paper, "key")
     ind <- .cites$indices[key]
-    key <- gsub("[^_a-zA-Z0-9-]", "", key)
+    key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
     res <- if (!is.na(ind) && ind)
       paste0("<a name=bib-", key, "></a>[", res, "](#cite-", key, ")")
     else res
@@ -46,27 +46,27 @@ cleanupLatex <- function (x){
     if (!length(x))
         return(x)
 
-    if (any(grepl('mkbib', x))){
-      x <- gsub('mkbibquote', 'dQuote', x)
-      x <- gsub('mkbibemph', 'emph', x)
-      x <- gsub('mkbibbold', 'bold', x)
+    if (any(grepl('mkbib', x, useBytes = TRUE))){
+      x <- gsub('mkbibquote', 'dQuote', x, useBytes = TRUE)
+      x <- gsub('mkbibemph', 'emph', x, useBytes = TRUE)
+      x <- gsub('mkbibbold', 'bold', x, useBytes = TRUE)
     }
-    x <- gsub('\\\\hyphen', '-', x)
+    x <- gsub('\\\\hyphen', '-', x, useBytes = TRUE)
 
     latex <- try(tools::parseLatex(x), silent = TRUE)
     if (inherits(latex, "try-error")) {
         x
     }else {
         x <- tools::deparseLatex(tools::latexToUtf8(latex), dropBraces = TRUE)
-        if (grepl("\\\\[[:punct:]]", x)){
-          x <- gsub("\\\\'I", '\u00cd', x)
-          x <- gsub("\\\\'i", '\u00ed', x)
-          x <- gsub('\\\\"I', '\u00cf', x)
-          x <- gsub('\\\\"i', '\u00ef', x)
-          x <- gsub("\\\\\\^I", '\u00ce', x)
-          x <- gsub("\\\\\\^i", '\u00ee', x)
-          x <- gsub("\\\\`I", '\u00cc', x)
-          x <- gsub("\\\\`i", '\u00ec', x)
+        if (grepl("\\\\[[:punct:]]", x, useBytes = TRUE)){
+          x <- gsub("\\\\'I", '\u00cd', x, useBytes = TRUE)
+          x <- gsub("\\\\'i", '\u00ed', x, useBytes = TRUE)
+          x <- gsub('\\\\"I', '\u00cf', x, useBytes = TRUE)
+          x <- gsub('\\\\"i', '\u00ef', x, useBytes = TRUE)
+          x <- gsub("\\\\\\^I", '\u00ce', x, useBytes = TRUE)
+          x <- gsub("\\\\\\^i", '\u00ee', x, useBytes = TRUE)
+          x <- gsub("\\\\`I", '\u00cc', x, useBytes = TRUE)
+          x <- gsub("\\\\`i", '\u00ec', x, useBytes = TRUE)
           Encoding(x) <- 'UTF-8'
         }
         x
@@ -138,7 +138,7 @@ sentenceP <- function (..., pgs = NULL, tp = NULL, sep = ", "){
   res <- NULL
   if (length(strings))
     res <- paste(strings, collapse = sep)
-  res <- gsub('\\.$', '', res)
+  res <- gsub('\\.$', '', res, useBytes = TRUE)
   if (!is.null(pgs))
     res <- paste(res, pgs, sep = ', ')
   if (!is.null(tp))
@@ -147,7 +147,7 @@ sentenceP <- function (..., pgs = NULL, tp = NULL, sep = ", "){
 }
 
 addPeriod <- function (string){
-  sub("([^.?!])$", "\\1.", string)
+  sub("([^.?!])$", "\\1.", string, useBytes = TRUE)
 }
 
 authorList <- function(aut){
@@ -316,15 +316,17 @@ ProcessNamesLA <- function(nam, mn = .BibOptions$max.names){
       nam <- ArrangeAuthors(nam)
     if (nam.len == 1){
       res <- paste0(nam$family, collapse = '')
-      res <- regmatches(res, regexpr('[[:upper:]][[:punct:]]?[[:alpha:]][[:punct:]]?[[:alpha:]]', res))
-      res <- gsub('[[:punct:]]', '', res)
+      res <- regmatches(res, regexpr('[[:upper:]][[:punct:]]?[[:alpha:]][[:punct:]]?[[:alpha:]]',
+                                     res, useBytes = TRUE))
+      res <- gsub('[[:punct:]]', '', res, useBytes = TRUE)
     }else if (nam.len == 2 || nam.len == 3){
       res <- sapply(nam$family, paste0, collapse = '')
-      res <- paste0(regmatches(res, regexpr('[[:upper:]]', res)), collapse = '')
+      res <- paste0(regmatches(res, regexpr('[[:upper:]]', res, useBytes = TRUE)), collapse = '')
     }else{
       res <- paste0(nam$family[[1]], collapse = '')
-      res <- regmatches(res, regexpr('[[:upper:]][[:punct:]]?[[:alpha:]][[:punct:]]?[[:alpha:]]', res))
-      res <- gsub('[[:punct:]]', '', res)
+      res <- regmatches(res, regexpr('[[:upper:]][[:punct:]]?[[:alpha:]][[:punct:]]?[[:alpha:]]',
+                                     res, useBytes = TRUE))
+      res <- gsub('[[:punct:]]', '', res, useBytes = TRUE)
       res <- paste0(res, '+')
     }
     res
@@ -372,7 +374,8 @@ sortKeysV <- function(bib){
 fmtJournDate <- function(s, usevenue = FALSE){
   res <- DateFormatter(attr(s, 'dateobj'))
   if (usevenue){
-    paste0("(", paste0(c(cleanupLatex(gsub('[.?!]$', '', s[['venue']])), res), collapse = ', '), ")")
+      paste0("(", paste0(c(cleanupLatex(gsub('[.?!]$', '', s[['venue']], useBytes = TRUE)),
+                           res), collapse = ', '), ")")
   }else{
     paste0("(", paste0(c(s[['issue']], res), collapse = ' '), ")")
   }
@@ -387,13 +390,13 @@ fmtDate <- function(dat){
 fmtPages <- function(pgs, pref){
   if (length(pgs)){
     if (!length(pref)){
-      if (length(grep('-', pgs))){
+      if (grepl('-', pgs, useBytes = TRUE)){
         paste0('pp. ', pgs)
       }else{
         paste0('p. ', pgs)
       }
     }else{
-      if (length(grep('-', pgs))){
+      if (grepl('-', pgs, useBytes = TRUE)){
         paste0(switch(pref, column = 'cols. ', verse = 'vv. ', line = 'll. ',
             section = '\u00a7\u00a7 ', paragraph = 'par. ', none = '', 'pp. '), pgs)
 
@@ -468,14 +471,14 @@ fmtBAuthor <- function(doc){
     if (docstyle == "html"){
       key <- attr(doc, "key")
       ind <- .cites$indices[key]
-      key <- gsub("[^_a-zA-Z0-9-]", "", key)
+      key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
       res <- if (!is.na(ind) && ind)
                paste0("\\code{", key, "}\\href{#cite-", key, "}{", res, "}")
              else res
     }else if (docstyle == "markdown"){
       key <- attr(doc, "key")
       ind <- .cites$indices[key]
-      key <- gsub("[^_a-zA-Z0-9-]", "", key)
+      key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
       res <- if (!is.na(ind) && ind)
                paste0("<a name=bib-", key, "></a>[", res, "](#cite-", key, ")")
              else res
@@ -706,14 +709,14 @@ fmtEditor <- function(doc, editor.used.already = FALSE, prefix = NULL, suffix = 
 }
 
 fmtJTitle <- function(title){
-  if (length(grep('[.?!]$', title)))
+  if (grepl('[.?!]$', title, useBytes = TRUE))
     paste0("\\dQuote{", collapse(cleanupLatex(title)), "}")
   else paste0("\\dQuote{", collapse(cleanupLatex(title)), "}.")
 }
 
 fmtVenue <- function(venue){
   if (length(venue)){
-    venue <- gsub('[.?!]$', '', venue)
+    venue <- gsub('[.?!]$', '', venue, useBytes = TRUE)
     paste0("(", collapse(cleanupLatex(venue)), ").")
   }
 }
@@ -736,7 +739,7 @@ fmtBTitle <- function(tl, stl){
   if (length(tl)){
     if (!is.null(stl))
       tl <- paste0(c(addPeriod(tl), stl), collapse =' ')
-    if (length(grep('[.?!]$', tl))){
+    if (grepl('[.?!]$', tl, useBytes = TRUE)){
       emph(cleanupLatex(tl))
     }else{
       paste0(emph(cleanupLatex(tl)), '.')
@@ -783,12 +786,12 @@ fmtTranslator <- function(paper){
 
 fmtLangOrig <- function(lang){
   if (length(lang))
-    paste0('from the ', sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE))
+    paste0('from the ', sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE, useBytes = TRUE))
 }
 
 fmtLanguage <- function(lang){
   if (length(lang) && tolower(lang) != 'english')
-    addPeriod(sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE))
+    addPeriod(sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE, useBytes = TRUE))
 }
 
 fmtSeries <- label(prefix = '. ')

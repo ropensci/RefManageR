@@ -37,7 +37,7 @@ WriteBib <- function (bib, file = "references.bib", biblatex = TRUE, append = FA
   if (is.null(file))
     file <- stdout()
   else if (is.character(file)) {
-    if (!grepl("\\.bib$", file))
+    if (!grepl("\\.bib$", file, useBytes = TRUE))
       file <- paste(file, ".bib", sep = "")
   }
   fh <- file(file, open = if (append)
