@@ -15,8 +15,8 @@ tmpdir <- tempdir()
 exe.path <- tmpdir  # file.path(tmpdir, "bin", fsep = "\\")
 ## Sys.setenv(PATH = paste(Sys.getenv("PATH"), exe.path, sep = ":"))
 poppler.fail <- !nzchar(Sys.which("pdfinfo"))
-jss.fail <- download.file("http://www.jstatsoft.org/v56/i11/paper", file.path(exe.path, "jss.pdf"),
-                mode = "wb")
+jss.fail <- download.file("https://www.jstatsoft.org/index.php/jss/article/view/v056i11/v56i11.pdf",
+                          file.path(exe.path, "jss.pdf"), mode = "wb")
 arxiv1.fail <- download.file("http://arxiv.org/pdf/math/0703791",
               destfile = file.path(exe.path, "FIZaop.pdf"), mode = "wb")
 arxiv2.fail <- download.file("http://arxiv.org/pdf/math/0703858",
