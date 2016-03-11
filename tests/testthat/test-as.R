@@ -51,6 +51,17 @@ test_that("data.frame-BibEntry conversion", {
    expect_equal(length(bib), 2L)
 })
 
+test_that("BibEntry to data.frame when multiple authors", {
+   bib <- list(c(bibtype = "article", key = "mclean2014a", title = "My New Article",
+                 author = "McLean, Mathew W. and Ruppert, David", journaltitle = "The Journal",
+                 date = "2014-01-01"))
+   bib <- as.BibEntry(bib)
+   bib.df <- as.data.frame(bib)
+   expect_is(bib.df, "data.frame")
+   expect_equal(length(bib), 1L)
+})
+
+
 test_that("character to BibEntry", {
     bib.c <- c(bibtype = "misc", author = "Mathew W. McLean", title = "A title",
              year = 2012, key = "testkey")
