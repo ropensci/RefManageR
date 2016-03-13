@@ -1,3 +1,12 @@
+Changes in Version 0.10.7 (2016-03-14)
+--------------------------------------------------------
+
+BUG FIXES
+
+* Fix for `as.data.frame.BibEntry` with length 1 BibEntry objects
+  (h/t Dale Steele)
+* Fix broken test in test-readPDF.R (h/t Kurt Hornik)
+
 Changes in Version 0.10.5 (2016-01-03)
 --------------------------------------------------------
 
