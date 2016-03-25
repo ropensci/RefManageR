@@ -1,3 +1,14 @@
+Changes in Version 0.10.8 (2016-03-25)
+--------------------------------------------------------
+
+BUG FIXES
+
+* Fix test involving `ReadPDFs`
+* `as.data.frame.BibEntry` works for length one BibEntry with multiple
+authors  (h/t Dale Steele)
+* Use `httr::GET` to fix `ReadGS`
+
+
 Changes in Version 0.10.5 (2016-01-03)
 --------------------------------------------------------
 
