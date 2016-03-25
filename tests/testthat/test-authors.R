@@ -10,13 +10,13 @@ test_that("Smith, Jr., John", {
 test_that("Smith, Jr., John and Mary {Tyler Moore}", {
   authors <- "Smith, Jr., John and Mary {Tyler Moore}"
   parsed <- RefManageR:::ArrangeAuthors(authors)
-  expect_match(parsed$family[2], "Tyler Moore")
+  expect_match(parsed[[2]]$family, "Tyler Moore")
 })
 
 test_that("Smith, Jr., John and {MATLAB, Inc.}", {
   authors <- "Smith, Jr., John and {MATLAB, Inc.}"
   parsed <- RefManageR:::ArrangeAuthors(authors)
-  expect_match(parsed$family[2], "MATLAB, Inc.")
+  expect_match(parsed[[2]]$family, "MATLAB, Inc.")
   expect_equal(length(unlist(parsed$family[1])), 2L)
 })
 
