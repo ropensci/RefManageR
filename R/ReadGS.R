@@ -14,6 +14,7 @@
 #' with a message and continue processing the remaining entries.
 #' @importFrom RCurl getForm curlEscape
 #' @importFrom XML xpathApply htmlParse
+#' @importFrom httr GET
 #' @importFrom stringr str_length str_sub
 #' @keywords database
 #' @export
@@ -71,9 +72,7 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
                                   "&"
                                 else "?")
 
-  doc <- getURLContent(uri, .opts = curlOptions(httpheader =
-     c("User-Agent" = "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0")),
-     .encoding = .Encoding)  # , binary = binary, curl = curl)
+  doc <- GET(uri)
   ## doc <- htmlParse(uri)
 
   ## doc <- GetForm(uri, .params = .params, .encoding = .Encoding)
