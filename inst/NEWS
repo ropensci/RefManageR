@@ -3,11 +3,12 @@ Changes in Version 0.10.9 (2016-03-25)
 
 BUG FIXES
 
-* Fix broken test involving `ReadPDFs` due to changed URL
+* Fixed broken test involving `ReadPDFs` due to changed URL
 * `as.data.frame.BibEntry` works for length one BibEntry with multiple
 authors  (h/t Dale Steele)
 * Use `httr::GET` to fix `ReadGS`
-* Fix broken tests in `test-authors.R` owing to changes to `person` class
+* Fixed broken tests in `test-authors.R` owing to changes to `person` class
+* Fixed `ReadCrossRef` tests and error message
 
 
 Changes in Version 0.10.5 (2016-01-03)
