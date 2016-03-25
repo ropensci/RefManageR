@@ -1,4 +1,4 @@
-Changes in Version 0.10.9 (2016-03-25)
+Changes in Version 0.10.11 (2016-03-25)
 --------------------------------------------------------
 
 BUG FIXES
@@ -9,7 +9,7 @@ authors  (h/t Dale Steele)
 * Use `httr::GET` to fix `ReadGS`
 * Fixed broken tests in `test-authors.R` owing to changes to `person` class
 * Fixed `ReadCrossRef` tests and error message
-
+* Fixed printing for authoryear style (h/t Joseph Casillas)
 
 Changes in Version 0.10.5 (2016-01-03)
 --------------------------------------------------------

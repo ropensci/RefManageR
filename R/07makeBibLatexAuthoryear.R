@@ -678,12 +678,14 @@ fmtJTitle <- function(title){
 }
 
 fmtBTitle <- function(tl, stl){
-  if (!is.null(stl))
-    tl <- paste0(c(addPeriod(tl), stl), collapse =' ') 
-  if (grepl('[.?!]$', tl, useBytes = TRUE)){
-    emph(cleanupLatex(tl))
-  }else{
-    paste0(emph(cleanupLatex(tl)), '.')
+  if (length(tl)){    
+    if (!is.null(stl))
+      tl <- paste0(c(addPeriod(tl), stl), collapse =' ') 
+    if (grepl('[.?!]$', tl, useBytes = TRUE)){
+      emph(cleanupLatex(tl))
+    }else{
+      paste0(emph(cleanupLatex(tl)), '.')
+    }
   }
 }
 
@@ -777,7 +779,7 @@ fmtType <- function(type){
 #####################################################################################
 ## Entry types: Bibliography Drivers in BibLaTeX (Sec. 4.2.3 in manual)
 #####################################################################################
-formatArticle <- function(paper){
+  formatArticle <- function(paper){
       collapseF(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index), fmtJTitle(paper$title), 
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
