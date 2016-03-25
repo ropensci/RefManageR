@@ -945,6 +945,7 @@ CreateBibKey <- function(ti, au, yr){
 
 #' @keywords internal
 MakeKeysUnique <- function(bib){
-    bib$key <- make.unique(names(bib), sep = ":")
+    if (length(bib))
+        bib$key <- make.unique(names(bib), sep = ":")
     bib
 }
