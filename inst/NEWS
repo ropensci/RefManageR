@@ -1,4 +1,4 @@
-Changes in Version 0.10.11 (2016-03-25)
+Changes in Version 0.10.12 (2016-03-25)
 --------------------------------------------------------
 
 BUG FIXES
@@ -10,6 +10,9 @@ authors  (h/t Dale Steele)
 * Fixed broken tests in `test-authors.R` owing to changes to `person` class
 * Fixed `ReadCrossRef` tests and error message
 * Fixed printing for authoryear style (h/t Joseph Casillas)
+* Name list fields (author, editor, etc.) provided to the function `BibEntry` are
+now properly parsed when specified as they would be in BibTeX/BibLaTeX;
+e.g. `author = "Smith, Bob A. and Doe, Jane"`. 
 
 Changes in Version 0.10.5 (2016-01-03)
 --------------------------------------------------------
