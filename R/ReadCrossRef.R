@@ -65,11 +65,12 @@ ReadCrossRef <- function(query, limit = 5, sort = "relevance", year = NULL,
      # entries <- vector('character', num.res)
       relevancies <- numeric(num.res)
       for(i in 1:num.res){
-        if (verbose)
-            message(gettextf("including the following entry with relevancy score %s:\n%s",
-                             fromj[[i]]$fullCitation, fromj[[i]]$normalizedScore))
-        if (fromj[[i]]$normalizedScore >= min.relevance)
-          bad <- bad + GetCrossRefBibTeX(fromj[[i]]$doi, temp.file)
+          if (fromj[[i]]$normalizedScore >= min.relevance){
+              bad <- bad + GetCrossRefBibTeX(fromj[[i]]$doi, temp.file)
+              if (verbose)
+                  message(gettextf("including the following entry with relevancy score %s:\n%s",
+                               fromj[[i]]$fullCitation, fromj[[i]]$normalizedScore))
+          }
       }
     }
   }  # end else for not DOI query case
@@ -81,7 +82,7 @@ ReadCrossRef <- function(query, limit = 5, sort = "relevance", year = NULL,
 
   bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
   if (inherits(bib.res, "try-error"))
-      stop(gettextf("failed to parse the returned BibTeX results; if %s %s%s", sQuote(delete.file),
+      stop(gettextf("failed to parse the returned BibTeX results; if \'delete.file\' %s%s",
                      "is FALSE, you can try viewing and editing the file: ", temp.file))
 
   return(bib.res)
