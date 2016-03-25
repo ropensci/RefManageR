@@ -55,17 +55,26 @@ test_that("ReadCrossRef retrieves queries successfully", {
     if (!RCurl::url.exists("http://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
-    out <- ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
+    BibOptions(check.entries = FALSE, sorting = "none")    
+    out <- ReadCrossRef(query = 'gelman bayesian', limit = 2, sort = "relevance",
         min.relevance = 80)
 
     expect_is(out, "BibEntry")
     expect_equal(length(out), 2L)
-
-    out <- ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
-        min.relevance = 100, verbose = TRUE)
-    expect_equal(length(out), 1L)
-
 })
+
+test_that("ReadCrossRef min.relevance and verbose args work", {
+    skip_on_cran()
+    if (!RCurl::url.exists("http://search.crossref.org/"))
+        skip("Couldn't connect to search.crossref.org")
+
+    BibOptions(check.entries = FALSE, sorting = "none")    
+    expect_message(ReadCrossRef(query = 'ruppert semiparametric regression',
+                                       limit = 2, sort = "relevance",
+                                       min.relevance = 100, verbose = TRUE),
+                          regexp = "100\\n$")
+})
+
 
 test_that("ReadCrossRef works when given DOI", {
     skip_on_cran()
