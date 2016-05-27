@@ -1,6 +1,5 @@
 #' @keywords internal
-MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) local({
-docstyle <- get("docstyle", parent.frame(2))
+MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
 ##################################################################
 ## Formatting functions
 
@@ -1205,7 +1204,7 @@ formatUnpublished <- function(paper){
 }
 
 environment()
-})
+}
 
 # Convert BibEntry object to a fragment of Rd code.
 #
