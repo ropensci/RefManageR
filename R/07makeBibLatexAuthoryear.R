@@ -1,6 +1,5 @@
 #' @keywords internal
-MakeAuthorYear <- function(docstyle = "text") local({
-  docstyle <- get("docstyle", parent.frame(2))
+MakeAuthorYear <- function(docstyle = "text"){
 ##################################################################
 ## Formatting functions
 
@@ -1144,4 +1143,4 @@ formatUnpublished <- function(paper){
 }
 
 environment()
-})
+}
