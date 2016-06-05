@@ -1,3 +1,11 @@
+Changes in Version 0.10.15 (2016-03-25)
+--------------------------------------------------------
+
+BUG FIXES
+
+* Removed unnecessary use of local/parent.frame; fixes execution with
+bytecode compiler (h/t Tomas Kalibera)
+
 Changes in Version 0.10.12 (2016-03-25)
 --------------------------------------------------------
 
