@@ -1225,7 +1225,7 @@ toRd.BibEntry <- function(obj, ...) {
 
   if (is.null(.style)){
     .style <- .BibOptions$bib.style <- 'numeric'
-    style <- MakeBibLaTeX(docstyle = doc.style)
+    style.env <- MakeBibLaTeX(docstyle = doc.style)
   }else if (.style %in% tools::getBibstyle(TRUE)){
     .BibOptions$bib.style <- .style
     style.env <- tools::bibstyle(.style)
