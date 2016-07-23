@@ -1,4 +1,12 @@
-Changes in Version 0.10.15 (2016-03-25)
+Changes in Version 0.10.16 (2016-07-24)
+--------------------------------------------------------
+
+BUG FIXES
+
+* Fix generation of entry key when the word used from the title contains
+a non-ascii character (h/t Mark Johnson)
+
+Changes in Version 0.10.15 (2016-06-06)
 --------------------------------------------------------
 
 BUG FIXES

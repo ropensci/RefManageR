@@ -920,8 +920,14 @@ ProcessDate <- function(dat, mon, searching = FALSE){
 
 #' @keywords internal
 CreateBibKey <- function(ti, au, yr){
-  m <- regexpr("\\w{4,}", ti, useBytes = TRUE)
-  key.title <- tolower(regmatches(ti, m))  # will be character(0) if no matches or if ti is NULL
+  ## useBytes = TRUE can cause error to be thrown by tolower if non-ASCII character match
+  ##   because regmatches will return a string with "bytes" encoding
+  key.title <- try({
+        m <- regexpr("\\w{4,}", ti, useBytes = FALSE, perl = FALSE)
+        tolower(regmatches(ti, m))  # will be character(0) if no matches or if ti is NULL
+  }, TRUE)
+  if (inherits(key.title, "try-error"))
+      key.title <- ""
   if (inherits(au, 'person')){
     au <- gsub('[^a-z]', '', tolower(au[1L]$family[1L]))
     res <- paste0(au, yr, key.title)

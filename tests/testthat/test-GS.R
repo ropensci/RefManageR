@@ -47,3 +47,11 @@ test_that("check read by cites", {
     expect_is(out, "BibEntry")
     expect_match(out[[1]]$title, "Measurement error")
 })
+
+test_that("CreateBibKey works with non-ascii characters", {
+    skip_on_cran()
+    if (!RCurl::url.exists("http://scholar.google.com"))
+        skip("Couldn't connect to GS")
+    out <- ReadGS(scholar.id = "KfQwll4AAAAJ", limit = 7, sort.by.date = TRUE) 
+    expect_is(out, "BibEntry")
+})
