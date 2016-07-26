@@ -183,8 +183,17 @@ ArrangeSingleAuthor <- function(y){
 
   if (grepl('[\\]', y, useBytes = TRUE)){
     tmp <- try(parseLatex(y), TRUE)
-    if (!inherits(tmp, 'try-error'))
-      y <- deparseLatex(latexToUtf8(tmp))
+    if (!inherits(tmp, 'try-error')){
+        tmp <- tryCatch({
+            setTimeLimit(cpu = .5, elapsed = .5, transient = TRUE)
+            on.exit(setTimeLimit(cpu = Inf, elapsed = Inf, transient = FALSE))
+            tools::latexToUtf8(tmp)
+        }, error = function(e){
+            message(gettextf("Unrecognized macro in %s", y))
+                    tmp
+                })        
+      y <- deparseLatex(tmp)
+    }
   }
   parts <- unlist(strsplit(y, ", ?(?![^{}]*})", perl = TRUE))  # split on commas not in braces
   len.parts <- length(parts)
@@ -281,7 +290,15 @@ cleanupLatex <- function (x){
   if (inherits(latex, "try-error")) {
     x
   }else {
-    x <- tools::deparseLatex(tools::latexToUtf8(latex), dropBraces = TRUE)
+    latex <- tryCatch({
+            on.exit(setTimeLimit(cpu = Inf, elapsed = Inf, transient = FALSE))
+            setTimeLimit(cpu = .5, elapsed = .5, transient = TRUE)
+            tools::latexToUtf8(latex)
+        }, error = function(e){
+            ## message(gettextf("Unrecognized macro in %s", x))
+                    latex
+                })
+    x <- tools::deparseLatex(latex, dropBraces = TRUE)
     if (grepl("\\\\[[:punct:]]", x, useBytes = TRUE)){
       x <- gsub("\\\\'I", '\u00cd', x, useBytes = TRUE)
       x <- gsub("\\\\'i", '\u00ed', x, useBytes = TRUE)

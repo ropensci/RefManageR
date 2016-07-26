@@ -1,10 +1,13 @@
-Changes in Version 0.10.16 (2016-07-24)
+Changes in Version 0.10.17 (2016-07-27)
 --------------------------------------------------------
 
 BUG FIXES
 
-* Fix generation of entry key when the word used from the title contains
-a non-ascii character (h/t Mark Johnson)
+* Fix generation of entry keys when the word used from the title for key
+generation contains a non-ascii character (h/t Mark Johnson)
+* RefManageR will no longer hang due to a bug in `tools::latexToUtf8` that
+is occasionally encountered when that function processes an unknown
+macro (h/t Eric Bryant)
 
 Changes in Version 0.10.15 (2016-06-06)
 --------------------------------------------------------
