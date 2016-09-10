@@ -81,13 +81,16 @@
 #' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
 #' @note Date fields are parsed using the locale specified by `Sys.getlocale("LC_TIME")` (relevant
 #' when specifying a character \sQuote{month} field, instead of the recommended integer format)
+#'
+#' Name list fields (author, editor, etc.) should be specified as they would be for
+#' BibTeX/BibLaTeX; e.g. \code{author = "Doe, Jane and Smith, Bob A."}.
 #' @references BibLaTeX manual \url{http://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}
 #' @details The BibEntry objects created by BibEntry can represent an arbitrary positive number of references,
 #'   as with \code{bibentry}, but many additional methods are defined for building and manipulating a database
 #'   of references.
 #' @examples
 #' BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title",
-#'   author = "Mathew W. McLean", journaltitle = "The Journal Title",
+#'   author = " McLean, Mathew W. and Wand, Matt P.", journaltitle = "The Journal Title",
 #'   date = "2014-02-06", pubstate = "forthcoming")
 #' bib <- BibEntry(bibtype = "XData", key = "arxiv_data", eprinttype = "arxiv",
 #' eprintclass = "stat.ME", year = 2013, urldate = "2014-02-01", pubstate = "submitted")
@@ -139,7 +142,8 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
     pos <- fields %in% .BibEntryNameList
     if (any(pos)) {
       for (i in which(pos))
-        rval[[i]] <- as.person(rval[[i]])
+          if (!inherits(rval[[i]], "person"))
+              rval[[i]] <- ArrangeAuthors(rval[[i]])
     }
     pos <- fields %in% c("dateobj") | pos
     if (any(!pos)) {

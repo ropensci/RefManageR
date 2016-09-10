@@ -250,8 +250,8 @@ ProcessPubMedResult <- function(article){
   first.names <- unlist(xpathApply(tdoc,
                 '//PubmedArticle/MedlineCitation/Article/AuthorList/Author/ForeName',
                          xmlValue))
-  res$author <- as.personList(paste(first.names, last.names))
-  if (is.null(res$author)){
+  res$author <- as.person(paste(first.names, last.names))
+  if (!length(res$author)){
       last.names <- unlist(xpathApply(tdoc,
                 '//PubmedArticle/MedlineCitation/Article/AuthorList/Author/CollectiveName',
                                   xmlValue))
@@ -357,7 +357,7 @@ ProcessPubMedBookResult <- function(article){
   first.names <- unlist(xpathApply(tdoc,
                 '//PubmedBookArticle/BookDocument/Book/AuthorList/Author/ForeName',
                          xmlValue))
-  res$author <- as.personList(paste(first.names, last.names))
+  res$author <- as.person(paste(first.names, last.names))
 
   res$year <- unlist(xpathApply(tdoc,
                        '//PubmedBookArticle/BookDocument/Book/PubDate/Year', xmlValue))

@@ -50,22 +50,46 @@ test_that("GetDOIs retrieves DOIs", {
 
 old.opts <- BibOptions(check.entries = FALSE)
 
-test_that("ReadCrossRef retrieves queries successfully", {
+test_that("ReadCrossRef *old* API retrieves queries successfully", {
     skip_on_cran()
     if (!RCurl::url.exists("http://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
-    out <- ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
-        min.relevance = 80)
+    BibOptions(check.entries = FALSE, sorting = "none")    
+    out <- ReadCrossRef(query = 'gelman bayesian', limit = 2, sort = "relevance",
+        min.relevance = 80, use.old.api = TRUE)
 
     expect_is(out, "BibEntry")
     expect_equal(length(out), 2L)
-
-    out <- ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
-        min.relevance = 100, verbose = TRUE)
-    expect_equal(length(out), 1L)
-
 })
+
+test_that("ReadCrossRef *new* API retrieves queries successfully", {
+    skip_on_cran()
+    if (!RCurl::url.exists("http://search.crossref.org/"))
+        skip("Couldn't connect to search.crossref.org")
+
+    BibOptions(check.entries = FALSE, sorting = "none")    
+    out <- ReadCrossRef("regression", filter = list(prefix="10.1198"), limit = 2,
+                        offset = 1)
+
+    expect_is(out, "BibEntry")
+    expect_equal(length(out), 2L)
+})
+
+
+test_that("ReadCrossRef *old* API min.relevance and verbose args work", {
+    skip_on_cran()
+    if (!RCurl::url.exists("http://search.crossref.org/"))
+        skip("Couldn't connect to search.crossref.org")
+
+    BibOptions(check.entries = FALSE, sorting = "none")    
+    expect_message(ReadCrossRef(query = 'ruppert semiparametric regression',
+                                       limit = 2, sort = "relevance",
+                                min.relevance = 100, verbose = TRUE,
+                                use.old.api = TRUE),
+                          regexp = "100\\n$")
+})
+
 
 test_that("ReadCrossRef works when given DOI", {
     skip_on_cran()

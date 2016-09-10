@@ -170,12 +170,11 @@ ResolveBibLaTeXCrossRef <- function(chi, par){
 }
 
 #' @keywords internal
-#' @importFrom utils as.personList
 ArrangeAuthors <- function (x){
   rx <- "[[:space:]]+and[[:space:]]+"
   x <- gsub('[[:space:]]{2,}', ' ', x, useBytes = TRUE)
   authors <- lapply(strsplit(x, rx)[[1]], ArrangeSingleAuthor)
-  as.personList(authors)
+  do.call("c", authors)
 }
 
 #' @keywords internal
@@ -184,8 +183,17 @@ ArrangeSingleAuthor <- function(y){
 
   if (grepl('[\\]', y, useBytes = TRUE)){
     tmp <- try(parseLatex(y), TRUE)
-    if (!inherits(tmp, 'try-error'))
-      y <- deparseLatex(latexToUtf8(tmp))
+    if (!inherits(tmp, 'try-error')){
+        tmp <- tryCatch({
+            setTimeLimit(cpu = .5, elapsed = .5, transient = TRUE)
+            on.exit(setTimeLimit(cpu = Inf, elapsed = Inf, transient = FALSE))
+            tools::latexToUtf8(tmp)
+        }, error = function(e){
+            message(gettextf("Unrecognized macro in %s", y))
+                    tmp
+                })        
+      y <- deparseLatex(tmp)
+    }
   }
   parts <- unlist(strsplit(y, ", ?(?![^{}]*})", perl = TRUE))  # split on commas not in braces
   len.parts <- length(parts)
@@ -282,7 +290,15 @@ cleanupLatex <- function (x){
   if (inherits(latex, "try-error")) {
     x
   }else {
-    x <- tools::deparseLatex(tools::latexToUtf8(latex), dropBraces = TRUE)
+    latex <- tryCatch({
+            on.exit(setTimeLimit(cpu = Inf, elapsed = Inf, transient = FALSE))
+            setTimeLimit(cpu = .5, elapsed = .5, transient = TRUE)
+            tools::latexToUtf8(latex)
+        }, error = function(e){
+            ## message(gettextf("Unrecognized macro in %s", x))
+                    latex
+                })
+    x <- tools::deparseLatex(latex, dropBraces = TRUE)
     if (grepl("\\\\[[:punct:]]", x, useBytes = TRUE)){
       x <- gsub("\\\\'I", '\u00cd', x, useBytes = TRUE)
       x <- gsub("\\\\'i", '\u00ed', x, useBytes = TRUE)
@@ -921,8 +937,14 @@ ProcessDate <- function(dat, mon, searching = FALSE){
 
 #' @keywords internal
 CreateBibKey <- function(ti, au, yr){
-  m <- regexpr("\\w{4,}", ti, useBytes = TRUE)
-  key.title <- tolower(regmatches(ti, m))  # will be character(0) if no matches or if ti is NULL
+  ## useBytes = TRUE can cause error to be thrown by tolower if non-ASCII character match
+  ##   because regmatches will return a string with "bytes" encoding
+  key.title <- try({
+        m <- regexpr("\\w{4,}", ti, useBytes = FALSE, perl = FALSE)
+        tolower(regmatches(ti, m))  # will be character(0) if no matches or if ti is NULL
+  }, TRUE)
+  if (inherits(key.title, "try-error"))
+      key.title <- ""
   if (inherits(au, 'person')){
     au <- gsub('[^a-z]', '', tolower(au[1L]$family[1L]))
     res <- paste0(au, yr, key.title)
@@ -945,6 +967,7 @@ CreateBibKey <- function(ti, au, yr){
 
 #' @keywords internal
 MakeKeysUnique <- function(bib){
-    bib$key <- make.unique(names(bib), sep = ":")
+    if (length(bib))
+        bib$key <- make.unique(names(bib), sep = ":")
     bib
 }

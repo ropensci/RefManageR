@@ -1,39 +1,7 @@
 #' @keywords internal
-MakeAuthorYear <- function(docstyle = "text") local({
-  docstyle <- get("docstyle", parent.frame(2))
+MakeAuthorYear <- function(docstyle = "text"){
 ##################################################################
 ## Formatting functions
-
-cleanupLatex <- function (x){
-  if (!length(x)) 
-    return(x)
-  
-  if (any(grepl('mkbib', x, useBytes = TRUE))){
-    x <- gsub('mkbibquote', 'dQuote', x, useBytes = TRUE)
-    x <- gsub('mkbibemph', 'emph', x, useBytes = TRUE)
-    x <- gsub('mkbibbold', 'bold', x, useBytes = TRUE)
-  }
-  x <- gsub('\\\\hyphen', '-', x, useBytes = TRUE)
-  
-  latex <- try(tools::parseLatex(x), silent = TRUE)
-  if (inherits(latex, "try-error")) {
-    x
-  }else{
-    x <- tools::deparseLatex(tools::latexToUtf8(latex), dropBraces = TRUE)
-    if (grepl("\\\\[[:punct:]]", x, useBytes = TRUE)){
-      x <- gsub("\\\\'I", '\u00cd', x, useBytes = TRUE)
-      x <- gsub("\\\\'i", '\u00ed', x, useBytes = TRUE)
-      x <- gsub('\\\\"I', '\u00cf', x, useBytes = TRUE)
-      x <- gsub('\\\\"i', '\u00ef', x, useBytes = TRUE)
-      x <- gsub("\\\\\\^I", '\u00ce', x, useBytes = TRUE)
-      x <- gsub("\\\\\\^i", '\u00ee', x, useBytes = TRUE)
-      x <- gsub("\\\\`I", '\u00cc', x, useBytes = TRUE)
-      x <- gsub("\\\\`i", '\u00ec', x, useBytes = TRUE)
-      Encoding(x) <- 'UTF-8'
-    }
-    x
-  }
-}
 
 collapse <- function(strings){ 
   paste(strings, collapse = "\n")
@@ -678,12 +646,14 @@ fmtJTitle <- function(title){
 }
 
 fmtBTitle <- function(tl, stl){
-  if (!is.null(stl))
-    tl <- paste0(c(addPeriod(tl), stl), collapse =' ') 
-  if (grepl('[.?!]$', tl, useBytes = TRUE)){
-    emph(cleanupLatex(tl))
-  }else{
-    paste0(emph(cleanupLatex(tl)), '.')
+  if (length(tl)){    
+    if (!is.null(stl))
+      tl <- paste0(c(addPeriod(tl), stl), collapse =' ') 
+    if (grepl('[.?!]$', tl, useBytes = TRUE)){
+      emph(cleanupLatex(tl))
+    }else{
+      paste0(emph(cleanupLatex(tl)), '.')
+    }
   }
 }
 
@@ -777,7 +747,7 @@ fmtType <- function(type){
 #####################################################################################
 ## Entry types: Bibliography Drivers in BibLaTeX (Sec. 4.2.3 in manual)
 #####################################################################################
-formatArticle <- function(paper){
+  formatArticle <- function(paper){
       collapseF(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'), paper$.index), fmtJTitle(paper$title), 
                fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
                fmtTranslator(paper), fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
@@ -1142,4 +1112,4 @@ formatUnpublished <- function(paper){
 }
 
 environment()
-})
+}
