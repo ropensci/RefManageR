@@ -638,11 +638,12 @@ fmtEditor <- function(doc, editor.used.already = FALSE, prefix = NULL, suffix = 
 }
 
 fmtJTitle <- function(title){
-  if (grepl('[.?!]$', title, useBytes = TRUE)){
-    paste0("\\dQuote{", collapse(cleanupLatex(title)), "}")
-  }else{
-    paste0("\\dQuote{", collapse(cleanupLatex(title)), "}.")
-  }
+  if (!is.null(title))  
+    if (grepl('[.?!]$', title, useBytes = TRUE)){
+      paste0("\\dQuote{", collapse(cleanupLatex(title)), "}")
+    }else{
+      paste0("\\dQuote{", collapse(cleanupLatex(title)), "}.")
+    }
 }
 
 fmtBTitle <- function(tl, stl){
