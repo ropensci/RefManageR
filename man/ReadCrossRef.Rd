@@ -4,54 +4,100 @@
 \alias{ReadCrossRef}
 \title{Search CrossRef for citations.}
 \usage{
-ReadCrossRef(query, limit = 5, sort = "relevance", year = NULL,
-  min.relevance = 80, temp.file = tempfile(fileext = ".bib"),
-  delete.file = TRUE, verbose = FALSE)
+ReadCrossRef(query = "", filter = list(), limit = 5, offset = 0,
+  sort = "relevance", year = NULL, min.relevance = 2,
+  temp.file = tempfile(fileext = ".bib"), delete.file = TRUE,
+  verbose = FALSE, use.old.api = FALSE)
 }
 \arguments{
 \item{query}{string; search term}
 
+\item{filter}{named list of possible filters; see \code{Details} and \code{References};
+ignored if \code{use.old.api = TRUE}}
+
 \item{limit}{numeric; maximum number of entries to return}
 
-\item{sort}{string; how should the results from CrossRef be returned.}
+\item{offset}{numeric; CrossRef will not return the
+first \code{offset} results (default 0); ignored if \code{use.old.api = TRUE}}
+
+\item{sort}{string; how specifying how the results from CrossRef should be sorted.  Possible
+values when \code{use.old.api = FALSE} are \code{"score"} (default; same as \code{"relevance"}),
+\code{"updated"}, \code{"deposited"}, \code{"indexed"}, or \code{"published"};
+see the references}
 
 \item{year}{numeric; if specified, only results from this year will be returned.}
 
-\item{min.relevance}{numeric; only results with a CrossRef-assigned relevance score at least this high will be returned.}
+\item{min.relevance}{numeric; only results with a CrossRef-assigned relevance score at
+least this high will be returned.}
 
 \item{temp.file}{string; file name to use for storing Bibtex information returned by CrossRef.}
 
 \item{delete.file}{boolean; should the bib file be deleted on exit?}
 
-\item{verbose}{boolean; if \code{TRUE}, additional messages are output regarding the results of the query.}
+\item{verbose}{boolean; if \code{TRUE}, additional messages are output regarding the
+results of the query.}
 }
 \value{
-An object of class BibEntry.
+An object of class \code{BibEntry}.
 }
 \description{
 Provides an interface to the CrossRef API, searching for citations given a string query.  Results are written to a
 bib file, read back into \code{R} using \code{\link{WriteBib}}, and returned as a BibEntry object.
 }
 \details{
-CrossRef assigns a score between 0 and 100 based on how relevant a reference seems to be
-to your query.  The API documentation warns that while false negatives are unlikely, the search can be prone
-to false positives.  Hence, setting \code{min.revelance} to a high value may be necessary.
+CrossRef assigns a score between 0 and 100 based on how relevant a reference seems
+to be to your query.  The \emph{old} API documentation warns that while false
+negatives are unlikely, the search can be prone to false positives.  Hence, setting
+\code{min.revelance} to a high value may be necessary if \code{use.old.api = TRUE}.
+
+Possible values for the \emph{names} in \code{filter} are \code{"has-funder"}, \code{"funder"},
+\code{"prefix"}, \code{"member"}, \code{"from-index-date"}, \code{"until-index-date"},
+\code{"from-deposit-date"}, \code{"until-deposit-date"}, \code{"from-update-date"},
+\code{"until-update-date"}, \code{"from-created-date"}, \code{"until-created-date"},
+\code{"from-pub-date"}, \code{"until-pub-date"}, \code{"has-license"}, \code{"license.url"},
+\code{"license.version"}, \code{"license.delay"}, \code{"has-full-text"},
+\code{"full-text.version"}, \code{"full-text.type"}, \code{"public-references"},
+\code{"has-references"}, \code{"has-archive"}, \code{"archive"}, \code{"has-orcid"},
+\code{"orcid"}, \code{"issn"}, \code{"type"}, \code{"directory"}, \code{"doi"},
+\code{"updates"}, \code{"is-update"}, \code{"has-update-policy"}, \code{"container-title"},
+\code{"publisher-name"}, \code{"category-name"}, \code{"type-name"}, \code{"award.number"},
+\code{"award.funder"}, \code{"assertion-group"}, \code{"assertion"}, \code{"affiliation"},
+\code{"has-affiliation"}, \code{"alternative-id"}, and \code{"article-number"}.  See the first
+reference for a description of their meanings.
+}
+\note{
+The entries returned by Crossref are frequently missing fields required by BibTeX, if
+you want the entries to be returned anyway, set \code{BibOptions()$check.entries} to
+\code{FALSE} or \code{"warn"}
 }
 \examples{
 if (interactive() && url.exists("http://search.crossref.org/")){
   BibOptions(check.entries = FALSE)
+  ## 3 results from the American Statistical Association involving "regression"
+  ReadCrossRef("regression", filter = list(prefix="10.1198"), limit = 3)
+
+  ## Some JRSS-B papers published in 2010 or later, note the quotes for filter
+  ##   names with hypens
+  ReadCrossRef(filter = list(issn = "1467-9868", "from-pub-date" = 2010),
+               limit = 2, min.relevance = 0)
+                                                       ), limit = 2)
+  ReadCrossRef(filter = list(prefix = "10.5555"), limit = 5, min.relevance = 0)
+
+  ## old API
   ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
-    min.relevance = 80)
+    min.relevance = 80, use.old.api = TRUE)
 
   ReadCrossRef(query = 'carroll journal of the american statistical association',
-    year = 2012, limit = 2)
+    year = 2012, limit = 2, use.old.api = TRUE)
 }
 }
 \references{
-\url{http://search.crossref.org/help/api}
+Newer API: \url{https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md},
+Older API: \url{http://search.crossref.org/help/api}
 }
 \seealso{
-\code{\link{ReadZotero}}, \code{\link{BibEntry}}, \code{\link{GetDOIs}}
+\code{\link{ReadZotero}}, \code{\link{BibEntry}}, \code{\link{GetDOIs}},
+package \code{rcrossref} for larger queries and deep paging
 
 Other pubmed: \code{\link{GetDOIs}},
   \code{\link{GetPubMedByID}},
