@@ -26,7 +26,15 @@
 #' @note The entries returned by Crossref are frequently missing fields required by BibTeX, if
 #' you want the entries to be returned anyway, set \code{BibOptions()$check.entries} to
 #' \code{FALSE} or \code{"warn"}
-#' @details CrossRef assigns a score between 0 and 100 based on how relevant a reference seems
+#'
+#' Fields \code{"score"} (the relevancy score) and \code{"license"} will be returned when
+#' \code{use.old.api = FALSE}.
+#' @details When \code{use.old.api = TRUE}, the query HTTP request only returns DOIs,
+#' which are then used to make HTTP requests for the corresponding BibTeX entries from
+#' CrossRef; when \code{use.old.api = FALSE}, the query HTTP request is parsed to create
+#' the \code{BibEntry} object (i.e. there are less HTTP requests when using the new API).
+#'
+#' CrossRef assigns a score between 0 and 100 based on how relevant a reference seems
 #' to be to your query.  The \emph{old} API documentation warns that while false
 #' negatives are unlikely, the search can be prone to false positives.  Hence, setting
 #' \code{min.revelance} to a high value may be necessary if \code{use.old.api = TRUE}.
@@ -87,23 +95,23 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
     num.res <- 1
     bad <- GetCrossRefBibTeX(paste0("http://dx.doi.org/", .doi), temp.file)
   }else{
-      if (use.old.api){
-        if (.is_not_nonempty_text(query))
-            stop(gettextf("specify a valid %s", sQuote("query")))
-        results <- try(getForm("http://search.crossref.org/dois", q=query, year=year,
-                             sort=sort, rows=limit))        
-      }else{
-        params <- list(rows = limit, sort = sort, offset = offset)
-        if (!.is_not_nonempty_text(query))
-          params$query <- query  # stop(gettextf("specify a valid %s", sQuote("query")))
+    if (use.old.api){
+      if (.is_not_nonempty_text(query))
+          stop(gettextf("specify a valid %s", sQuote("query")))
+      results <- try(getForm("http://search.crossref.org/dois", q=query, year=year,
+                           sort=sort, rows=limit))        
+    }else{
+      params <- list(rows = limit, sort = sort, offset = offset)
+      if (!.is_not_nonempty_text(query))
+        params$query <- query  # stop(gettextf("specify a valid %s", sQuote("query")))
 
-        if (length(year))
-            suppressWarnings(filter$"from-pub-date" <- filter$"until-pub-date" <- year)
+      if (length(year))
+          suppressWarnings(filter$"from-pub-date" <- filter$"until-pub-date" <- year)
 
-        if (length(filter))
-            params$filter <- paste(paste0(names(filter),":",filter), collapse = ",")          
-        results <- try(getForm("http://api.crossref.org/works", .params=params))
-      }
+      if (length(filter))
+          params$filter <- paste(paste0(names(filter),":",filter), collapse = ",")          
+      results <- try(getForm("http://api.crossref.org/works", .params=params))
+    }
     if (inherits(results, "try-error"))
       stop(gettextf("RCurl failed to GET results from CrossRef: %s", geterrmessage()))
 
@@ -119,22 +127,40 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
     }
 
     if (num.res > 0L){
-      file.create(temp.file)
-      if (delete.file)
-        on.exit(unlink(temp.file, force = TRUE))
-
-     # entries <- vector('character', num.res)
-      relevancies <- numeric(num.res)
-      if (use.old.api){
-          score.str <- "normalizedScore"
-          doi.str <- "doi"
-          entry.str <- "fullCitation"
+      if (!use.old.api && is.na(.doi)){
+          res <- lapply(fromj, ParseCrossRef)
+          good <- which(sapply(res, function(e){
+              good <- e$score >= min.relevance
+              if (good && verbose)
+                 message(gettextf("including the following entry with relevancy score %s:\n%s",
+                                  e$title, e$score[[i]]))
+              good
+          }))
+          res <- res[good]
+          if (!length(res)){
+              message("no results with relavency score greater than ",
+                      gettextf("%s successfully retrieved",
+                           sQuote("min.relevance")))
+            return()
+          }
+          class(res) <- c("BibEntry", "bibentry")
+          return(res)
       }else{
-          score.str <- "score"
-          doi.str <- "DOI"
-          entry.str <- "title"
-      }
-      for(i in 1:num.res){
+        file.create(temp.file)
+        if (delete.file)
+          on.exit(unlink(temp.file, force = TRUE))
+
+        relevancies <- numeric(num.res)
+        if (use.old.api){
+            score.str <- "normalizedScore"
+            doi.str <- "doi"
+            entry.str <- "fullCitation"
+        }else{
+            score.str <- "score"
+            doi.str <- "DOI"
+            entry.str <- "title"
+        }
+        for(i in 1:num.res){
           if (fromj[[i]][[score.str]] >= min.relevance){
               bad <- bad + GetCrossRefBibTeX(paste0(if (!use.old.api) "http://dx.doi.org/",
                                                     fromj[[i]][[doi.str]]), temp.file)
@@ -142,9 +168,10 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
                   message(gettextf("including the following entry with relevancy score %s:\n%s",
                                fromj[[i]][[entry.str]], fromj[[i]][[score.str]]))
           }
-      }
+        }
+      }  # end else for old API processing
     }
-  }  # end else for not DOI query case
+  }  # end else for case when query is not a DOI
   if (bad == num.res){
     message(gettextf("no results with relavency score greater than %s successfully retrieved",
                        sQuote("min.relevance")))
@@ -156,7 +183,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
       stop(gettextf("failed to parse the returned BibTeX results; if \'delete.file\' %s%s",
                      "is FALSE, you can try viewing and editing the file: ", temp.file))
 
-  return(bib.res)
+  return(bib.res)  
 }
 
 #' @keywords internal
@@ -179,4 +206,69 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
   temp <- sub("^@[Dd]ata", "@online", temp, useBytes = TRUE)
   write(temp, file = tmp.file, append=TRUE)
   return(0L)
+}
+
+#' @keywords internal
+ParseCrossRef <- function(e){
+    name.fields <- intersect(names(e), .BibEntryNameList)
+    for (fld in name.fields)
+        e[[fld]] <- ToPersonCR(e[[fld]])
+    e <- ProcessDatesCR(e)
+    out <- if (length(name.fields))
+               e[name.fields]
+           else list()
+    out <- c(out, title = e$title, subtitle = e$subtitle, date = e$date,
+             volume = e$volume, number = e$issue, pages = e$page,
+             url = e$URL, doi = e$DOI, issn = e$ISSN[1],
+             license = e$license[[1]]$"content-version", score = e$score,
+             journaltitle = e$"container-title"[1])
+
+    key <- CreateBibKey(e$title, e$author,
+                        sub("^([0-9]{4})[0-9-]*", "\\1", e$date))
+    bibtype <- e$type
+    bibtype <- if (grepl("journal", bibtype))
+                   "Article"
+               else if (grepl("book-chapter", bibtype, exact = TRUE))
+                   "InCollection"
+               else if (grepl("book", bibtype))
+                   "Book"
+               else
+                   "Misc"
+    attr(out, "bibtype") <- bibtype
+    attr(out, "key") <- key
+    attr(out, "dateobj") <- attr(e, "dateobj")
+    out
+}
+
+#' @keywords internal
+ToPersonCR <- function(x){
+    x <- lapply(x, function(y){
+                   y$affiliation <- NULL
+                   c(y, role = list(NULL), email = list(NULL), comment = list(NULL))
+                   })
+    # out <- do.call("c", x)
+    class(x) <- "person"
+    x
+}
+
+ProcessDatesCR <- function(e){
+    for (s in c("published-print", "issued", "created", "deposited")){
+        tdate <- unlist(e[[s]][[1]])
+        if (!is.null(tdate))
+            break
+    }
+    if (is.null(tdate))
+        return(e)
+
+    daymon <- length(tdate) - 1
+    tdate <- paste(tdate, collapse = "-")
+    if (daymon == 1)
+        tdate <- paste0(tdate, "-01")
+    else if (daymon == 0)
+        tdate <- paste0(tdate, "-01-01")
+    e$date <- tdate
+    tdate <- as.POSIXct(tdate)
+    attr(tdate, "day.mon") <- daymon
+    attr(e, "dateobj") <- tdate
+    e
 }

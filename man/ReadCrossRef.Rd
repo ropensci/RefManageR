@@ -48,6 +48,11 @@ Results are written to a
 bib file, read back into \code{R} using \code{\link{WriteBib}}, and returned as a BibEntry object.
 }
 \details{
+When \code{use.old.api = TRUE}, the query HTTP request only returns DOIs,
+which are then used to make HTTP requests for the corresponding BibTeX entries from
+CrossRef; when \code{use.old.api = FALSE}, the query HTTP request is parsed to create
+the \code{BibEntry} object (i.e. there are less HTTP requests when using the new API).
+
 CrossRef assigns a score between 0 and 100 based on how relevant a reference seems
 to be to your query.  The \emph{old} API documentation warns that while false
 negatives are unlikely, the search can be prone to false positives.  Hence, setting
@@ -72,6 +77,9 @@ reference for a description of their meanings.
 The entries returned by Crossref are frequently missing fields required by BibTeX, if
 you want the entries to be returned anyway, set \code{BibOptions()$check.entries} to
 \code{FALSE} or \code{"warn"}
+
+Fields \code{"score"} (the relevancy score) and \code{"license"} will be returned when
+\code{use.old.api = FALSE}.
 }
 \examples{
 if (interactive() && url.exists("http://search.crossref.org/")){
