@@ -3,7 +3,8 @@ Changes in Version 0.11.0 (2016-09-10)
 
 NEW FEATURES
 
-* `ReadCrossRef` now uses the [newer CrossRef API](https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md) and gains arguments `filter` and `offset` to use with the new API; an
+* `ReadCrossRef` now uses the [newer CrossRef API](https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md) and gains arguments
+`filter` and `offset` to use with the new API; an
 additional argument `use.old.api` is added if the user wishes to use the old API
 (h/t Carl Boettiger)
 * `ReadCrossRef` now parses the results returned by CrossRef to
