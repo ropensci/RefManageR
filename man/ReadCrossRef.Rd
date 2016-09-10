@@ -36,12 +36,15 @@ least this high will be returned.}
 
 \item{verbose}{boolean; if \code{TRUE}, additional messages are output regarding the
 results of the query.}
+
+\item{use.old.api}{boolean; should the older CrossRef API be used for the search?}
 }
 \value{
 An object of class \code{BibEntry}.
 }
 \description{
-Provides an interface to the CrossRef API, searching for citations given a string query.  Results are written to a
+Provides an interface to the CrossRef API, searching for citations given a string query.
+Results are written to a
 bib file, read back into \code{R} using \code{\link{WriteBib}}, and returned as a BibEntry object.
 }
 \details{
@@ -80,7 +83,7 @@ if (interactive() && url.exists("http://search.crossref.org/")){
   ##   names with hypens
   ReadCrossRef(filter = list(issn = "1467-9868", "from-pub-date" = 2010),
                limit = 2, min.relevance = 0)
-                                                       ), limit = 2)
+
   ReadCrossRef(filter = list(prefix = "10.5555"), limit = 5, min.relevance = 0)
 
   ## old API

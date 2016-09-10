@@ -21,6 +21,7 @@
 #' @param delete.file boolean; should the bib file be deleted on exit?
 #' @param verbose boolean; if \code{TRUE}, additional messages are output regarding the
 #' results of the query.
+#' @param use.old.api boolean; should the older CrossRef API be used for the search?
 #' @return An object of class \code{BibEntry}.
 #' @note The entries returned by Crossref are frequently missing fields required by BibTeX, if
 #' you want the entries to be returned anyway, set \code{BibOptions()$check.entries} to
