@@ -228,7 +228,7 @@ ParseCrossRef <- function(e){
     bibtype <- e$type
     bibtype <- if (grepl("journal", bibtype))
                    "Article"
-               else if (grepl("book-chapter", bibtype, exact = TRUE))
+               else if (grepl("book-chapter", bibtype, fixed = TRUE))
                    "InCollection"
                else if (grepl("book", bibtype))
                    "Book"
