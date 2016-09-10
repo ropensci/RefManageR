@@ -1,6 +1,7 @@
 #' Search CrossRef for citations.
 #'
-#' Provides an interface to the CrossRef API, searching for citations given a string query.  Results are written to a
+#' Provides an interface to the CrossRef API, searching for citations given a string query.
+#' Results are written to a
 #' bib file, read back into \code{R} using \code{\link{WriteBib}}, and returned as a BibEntry object.
 #'
 #' @param query string; search term
@@ -62,7 +63,7 @@
 #'   ##   names with hypens
 #'   ReadCrossRef(filter = list(issn = "1467-9868", "from-pub-date" = 2010),
 #'                limit = 2, min.relevance = 0)
-#'                                                        ), limit = 2)
+#' 
 #'   ReadCrossRef(filter = list(prefix = "10.5555"), limit = 5, min.relevance = 0)
 #'
 #'   ## old API
