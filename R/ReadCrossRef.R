@@ -31,8 +31,8 @@
 #'   ReadCrossRef(query = 'carroll journal of the american statistical association',
 #'     year = 2012, limit = 2)
 #' }
-ReadCrossRef <- function(query, limit = 5, sort = "relevance", year = NULL,
-                         min.relevance = 80, temp.file = tempfile(fileext = ".bib"),
+ReadCrossRef <- function(query, filter = list(), limit = 5, sort = "relevance", year = NULL,
+                         min.relevance = 2, temp.file = tempfile(fileext = ".bib"),
                          delete.file = TRUE, verbose = FALSE){
   if (.is_not_nonempty_text(query))
     stop(gettextf("specify a valid %s", sQuote("query")))
@@ -40,17 +40,23 @@ ReadCrossRef <- function(query, limit = 5, sort = "relevance", year = NULL,
 
   ## file.create(temp.file)
   ## if query is valid doi, skip search and get BibTeX entry right away
+  params <- list(query = query, rows = limit, sort = sort)
+  if (length(year))
+      suppressWarnings(filter$"from-pub-date" <- filter$"until-pub-date" <- year)
+
+  if (length(filter))
+      params$filter <- paste(paste0(names(filter),":",filter), collapse = ",")
   if (!is.na(.doi <- SearchDOIText(query))){
     num.res <- 1
     bad <- GetCrossRefBibTeX(paste0("http://dx.doi.org/", .doi), temp.file)
   }else{
-    results <- try(getForm("http://search.crossref.org/dois", q=query, year=year,
-                           sort=sort, rows=limit))
+    ## results <- try(getForm("http://api.crossref.org/works?", q=query, year=year,
+      ##                        sort=sort, rows=limit))
+      results <- try(getForm("http://api.crossref.org/works", .params=params))
     if (inherits(results, "try-error"))
       stop(gettextf("RCurl failed to GET results from CrossRef: %s", geterrmessage()))
 
-
-    fromj <- RJSONIO::fromJSON(results)
+    fromj <- RJSONIO::fromJSON(results)$message$items
     num.res <- min(limit, length(fromj))
     if(num.res == 0L){
       message(gettextf("query %s returned no matches", dQuote(query)))
@@ -65,11 +71,12 @@ ReadCrossRef <- function(query, limit = 5, sort = "relevance", year = NULL,
      # entries <- vector('character', num.res)
       relevancies <- numeric(num.res)
       for(i in 1:num.res){
-          if (fromj[[i]]$normalizedScore >= min.relevance){
-              bad <- bad + GetCrossRefBibTeX(fromj[[i]]$doi, temp.file)
+          if (fromj[[i]]$score >= min.relevance){
+              bad <- bad + GetCrossRefBibTeX(paste0("http://dx.doi.org/",
+                                                    fromj[[i]]$DOI), temp.file)
               if (verbose)
                   message(gettextf("including the following entry with relevancy score %s:\n%s",
-                               fromj[[i]]$fullCitation, fromj[[i]]$normalizedScore))
+                               fromj[[i]]$title, fromj[[i]]$score))
           }
       }
     }
@@ -91,10 +98,11 @@ ReadCrossRef <- function(query, limit = 5, sort = "relevance", year = NULL,
 #' @keywords internal
 GetCrossRefBibTeX <- function(doi, tmp.file){
   temp <- try(getURLContent(url=doi,
-               .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"),
+                 ## .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"),
+                  .opts = curlOptions(httpheader = c(Accept = "text/bibliography; style=bibtex"),
                      followLocation=TRUE)), TRUE)
   if(is.raw(temp))
-    temp <- rawToChar(temp)
+      temp <- rawToChar(temp)
   if (inherits(temp, "try-error") || temp[1] == "<h1>Internal Server Error</h1>" ||
       !grepl("^[[:space:]]*@", temp, useBytes = TRUE)){
       ## last one for occasional non-bibtex returned by CrossRef
