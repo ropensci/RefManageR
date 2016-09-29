@@ -285,6 +285,7 @@ cleanupLatex <- function (x){
     x <- gsub('mkbibbold', 'bold', x, useBytes = TRUE)
   }
   x <- gsub('\\\\hyphen', '-', x, useBytes = TRUE)
+  x <- gsub("\\\\textquotesingle", "'", x, useBytes = TRUE)  
 
   latex <- try(tools::parseLatex(x), silent = TRUE)
   if (inherits(latex, "try-error")) {

@@ -1,3 +1,10 @@
+Changes in Version 0.11.1 (2016-09-29)
+--------------------------------------------------------
+
+BUG FIXES
+
+* `LaTeX` macro `\textquotesingle` is now replaced by a single quote (h/t Mark Johnson)
+
 Changes in Version 0.11.0 (2016-09-10)
 --------------------------------------------------------
 
