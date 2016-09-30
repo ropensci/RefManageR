@@ -15,14 +15,22 @@ tmpdir <- tempdir()
 exe.path <- tmpdir  # file.path(tmpdir, "bin", fsep = "\\")
 ## Sys.setenv(PATH = paste(Sys.getenv("PATH"), exe.path, sep = ":"))
 poppler.fail <- !nzchar(Sys.which("pdfinfo"))
-jss.fail <- download.file("https://www.jstatsoft.org/index.php/jss/article/view/v056i11/v56i11.pdf",
-                          file.path(exe.path, "jss.pdf"), mode = "wb")
-arxiv1.fail <- download.file("http://arxiv.org/pdf/math/0703791",
-              destfile = file.path(exe.path, "FIZaop.pdf"), mode = "wb")
-arxiv2.fail <- download.file("http://arxiv.org/pdf/math/0703858",
-              destfile = file.path(exe.path, "PBHTaos.pdf"), mode = "wb")
-biomet.fail <- download.file("http://biomet.oxfordjournals.org/content/83/4/715.full.pdf",
-                          destfile = file.path(exe.path, "ADVb.pdf"), mode = "wb")
+jss.fail <- try(download.file("https://www.jstatsoft.org/index.php/jss/article/view/v056i11/v56i11.pdf",
+                              file.path(exe.path, "jss.pdf"), mode = "wb"))
+if (inherits(jss.fail, "try-error"))
+    jss.fail <- TRUE
+arxiv1.fail <- try(download.file("http://arxiv.org/pdf/math/0703791",
+                                 destfile = file.path(exe.path, "FIZaop.pdf"), mode = "wb"))
+if (inherits(arxiv1.fail, "try-error"))
+    arxiv1.fail <- TRUE
+arxiv2.fail <- try(download.file("http://arxiv.org/pdf/math/0703858",
+                                 destfile = file.path(exe.path, "PBHTaos.pdf"), mode = "wb"))
+if (inherits(arxiv2.fail, "try-error"))
+    arxiv2.fail <- TRUE
+biomet.fail <- try(download.file("http://biomet.oxfordjournals.org/content/83/4/715.full.pdf",
+                                 destfile = file.path(exe.path, "ADVb.pdf"), mode = "wb"))
+if (inherits(biomet.fail, "try-error"))
+    biomet.fail <- TRUE
 
 jstor.fail <- !file.copy(system.file("pdf", "jstor.pdf", package = "RefManageR"), exe.path)
 ## jstor.fail <- if (capabilities("libcurl"))
