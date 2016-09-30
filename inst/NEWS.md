@@ -1,9 +1,16 @@
-Changes in Version 0.11.1 (2016-09-29)
+Changes in Version 0.12.0 (2016-09-30)
 --------------------------------------------------------
+
+NEW FEATURES
+
+* Some `LaTeX` macros unknown to R are now defined as macros in the package, and will
+be parsed using `macros` arg in `tools::parse_Rd` (assuming `getRversion() >= "3.2.0"`)
 
 BUG FIXES
 
-* `LaTeX` macro `\textquotesingle` is now replaced by a single quote (h/t Mark Johnson)
+* Parse `LaTeX` macro `\textquotesingle` in author names (h/t Bill Denney)
+* Avoid "Request-URI too large" errors in GetPubMedByID if requesting a large number
+of IDs (h/t Maurits Evers)
 
 Changes in Version 0.11.0 (2016-09-10)
 --------------------------------------------------------

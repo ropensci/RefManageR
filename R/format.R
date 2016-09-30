@@ -6,7 +6,7 @@
 # @param style
 # @return character vector containing formatted BibEntry object.
 # @seealso \code{\link{print.BibEntry}}, \code{\link{BibEntry}}
-#' @importFrom tools Rd2txt_options Rd2txt Rd2HTML Rd2latex
+#' @importFrom tools Rd2txt_options Rd2txt Rd2HTML Rd2latex loadPkgRdMacros
 #' @S3method format BibEntry
 #' @keywords internal
 format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOptions$bib.style,
@@ -36,7 +36,16 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
           rd <- toRd.BibEntry(y, .style = .bibstyle, .sorting = 'none')
           con <- textConnection(rd)
           on.exit(close(con))
-          f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8', ...)
+          ## macro.env <- tools::loadRdMacros(file.path(R.home("share"), "Rd",
+          ##                                            "macros", "system.Rd"))
+          if (getRversion() >= "3.2.0"){
+              ## prevent use of devtools::system.file
+              macro.env <- tools::loadPkgRdMacros(base::system.file(package = "RefManageR"))
+              f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8', macros = macro.env,
+                ...)
+          }else
+              f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8', ...)
+              
           paste(readLines(out, encoding = 'UTF-8'), collapse = "\n")
         })
         if (style == "html"){

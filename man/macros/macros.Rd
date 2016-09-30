@@ -1,0 +1,16 @@
+\newcommand{\textquotesingle}{'}
+\newcommand{\hypen}{-}
+\newcommand{\mkbibquote}{\dQuote{#1}}
+\newcommand{\mkbibemph}{\emph{#1}}
+\newcommand{\mkbibbold}{\bold{#1}}
+\newcommand{\'I}{\u00cd}
+\newcommand{\'i}{\u00ed}
+\newcommand{\"I}{\u00cf}
+\newcommand{\"i}{\u00ef}
+\newcommand{\^I}{\u00ce}
+\newcommand{\^i}{\u00ee}
+\newcommand{\`I}{\u00cc}
+\newcommand{\`i}{\u00ec}
+\newcommand{\`\i}{\u00ec}
+\newcommand{\a`}{\u00e0}
+\newcommand{\a'}{\u00e1}
