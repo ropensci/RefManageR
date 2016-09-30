@@ -47,7 +47,7 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
   }else{
     nom <- sapply(nom$family, paste0, collapse = '')
   }
-
+  nom <- cleanupLatexSearch(nom)
   if (!regx && ign.case){
     return(all(pattern %in% tolower(nom)))
   }else{
@@ -300,7 +300,7 @@ FindBibEntry <- function(bib, term, field){
     res <- logical(length(bib))
     not.nulls <- which(!sapply(vals, is.null))
     vals <- gsub('\\n[[:space:]]*', ' ', unlist(vals[not.nulls]), useBytes = TRUE)
-    vals <- unlist(strsplit(cleanupLatex(vals), '\n') )
+    vals <- unlist(strsplit(cleanupLatexSearch(vals), '\n') )
 
     if (!usereg && ignorec){
       res[not.nulls[grepl(tolower(term), tolower(vals), fixed = TRUE, useBytes = TRUE)]] <- TRUE
@@ -310,4 +310,44 @@ FindBibEntry <- function(bib, term, field){
     }
   }
   res
+}
+
+
+cleanupLatexSearch <- function (x){
+  if (!length(x))
+    return(x)
+  if (any(grepl('mkbib', x, useBytes = TRUE))){
+    x <- gsub('\\\\mkbibquote[{]([^}]+)[}]', "\\1", x, useBytes = TRUE)
+    x <- gsub('\\\\mkbibemph[{]([^}]+)[}]', "\\1", x, useBytes = TRUE)
+    x <- gsub('\\\\mkbibbold[{]([^}]+)[}]', "\\1", x, useBytes = TRUE)
+  }
+  x <- gsub('\\\\hyphen', '-', x, useBytes = TRUE)
+  x <- gsub("\\\\textquotesingle", "'", x, useBytes = TRUE)
+
+  latex <- try(tools::parseLatex(x), silent = TRUE)
+  if (inherits(latex, "try-error")) {
+    x
+  }else {
+    latex <- tryCatch({
+            on.exit(setTimeLimit(cpu = Inf, elapsed = Inf, transient = FALSE))
+            setTimeLimit(cpu = .5, elapsed = .5, transient = TRUE)
+            tools::latexToUtf8(latex)
+        }, error = function(e){
+            ## message(gettextf("Unrecognized macro in %s", x))
+                    latex
+                })
+    x <- tools::deparseLatex(latex, dropBraces = TRUE)
+    if (grepl("\\\\[[:punct:]]", x, useBytes = TRUE)){
+      x <- gsub("\\\\'I", '\u00cd', x, useBytes = TRUE)
+      x <- gsub("\\\\'i", '\u00ed', x, useBytes = TRUE)
+      x <- gsub('\\\\"I', '\u00cf', x, useBytes = TRUE)
+      x <- gsub('\\\\"i', '\u00ef', x, useBytes = TRUE)
+      x <- gsub("\\\\\\^I", '\u00ce', x, useBytes = TRUE)
+      x <- gsub("\\\\\\^i", '\u00ee', x, useBytes = TRUE)
+      x <- gsub("\\\\`I", '\u00cc', x, useBytes = TRUE)
+      x <- gsub("\\\\`i", '\u00ec', x, useBytes = TRUE)
+      Encoding(x) <- 'UTF-8'
+    }
+    x
+  }
 }

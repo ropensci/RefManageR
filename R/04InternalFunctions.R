@@ -180,7 +180,11 @@ ArrangeAuthors <- function (x){
 #' @keywords internal
 #' @importFrom utils person
 ArrangeSingleAuthor <- function(y){
-
+  ## To ensure names are parsed as accurately as possible,
+  ##  LaTeX macros are removed with gsub in calls to cleanupLatexSearch
+  ##  and braces are removed by UnlistSplitClean
+  ##  this behaviour is not the same as for other fields, which only have
+  ##  the LaTeX stripped when using SearchBib
   if (grepl('[\\]', y, useBytes = TRUE)){
     tmp <- try(parseLatex(y), TRUE)
     if (!inherits(tmp, 'try-error')){
@@ -215,7 +219,7 @@ ArrangeSingleAuthor <- function(y){
       first <- NULL
       if (i > 0)
         first <- paste0(s[seq_len(i-1)], collapse = '')
-      person(UnlistSplitClean(first), cleanupLatex(last))  # Mathew {McLean IX}
+      person(UnlistSplitClean(first), cleanupLatexSearch(last))  # Mathew {McLean IX}
     }else{
       vonrx <- "(^|[[:space:]])([[:lower:]+[:space:]?]+)[[:space:]]"
       m <- regexec(vonrx, parts, useBytes = TRUE)
@@ -223,9 +227,10 @@ ArrangeSingleAuthor <- function(y){
       if (!is.na(von)){
         name <- unlist(strsplit(parts, vonrx))
         if (length(name) == 1L){  # von Bommel
-          person(family=c(cleanupLatex(von), cleanupLatex(name)))
+          person(family=c(cleanupLatexSearch(von), cleanupLatexSearch(name)))
         }else{  # Mark von Bommel
-          person(given = UnlistSplitClean(name[1L]), family=c(cleanupLatex(von), cleanupLatex(name[2L])))
+            person(given = UnlistSplitClean(name[1L]), family = c(cleanupLatexSearch(von),
+                                                           cleanupLatexSearch(name[2L])))
         }
       }else{  # George Bernard Shaw
         name <- UnlistSplitClean(parts)
@@ -245,10 +250,10 @@ ArrangeSingleAuthor <- function(y){
       m <- regexec(vonrx, parts[1L], useBytes = TRUE)
       von <- unlist(regmatches(parts[1L], m))[2]
       if (is.na(von)){  # e.g. Smith, John Paul
-        person(UnlistSplitClean(parts[2L]), cleanupLatex(parts[1L]))
+        person(UnlistSplitClean(parts[2L]), cleanupLatexSearch(parts[1L]))
       }else{  # e.g. de la Soul, John
-          person(UnlistSplitClean(parts[2L]), c(cleanupLatex(von),
-                                                cleanupLatex(sub(vonrx, '', parts[1L],
+          person(UnlistSplitClean(parts[2L]), c(cleanupLatexSearch(von),
+                                                cleanupLatexSearch(sub(vonrx, '', parts[1L],
                                                                  useBytes = TRUE))))
       }
     }
@@ -257,11 +262,13 @@ ArrangeSingleAuthor <- function(y){
     m <- regexec(vonrx, parts[1L], useBytes = TRUE)
     von <- unlist(regmatches(parts[1L], m))[2]
     if (is.na(von)){  # e.g. White, Jr., Walter
-      person(UnlistSplitClean(parts[3L]), c(cleanupLatex(parts[1L]), cleanupLatex(parts[2L])))
+        person(UnlistSplitClean(parts[3L]), c(cleanupLatexSearch(parts[1L]),
+                                              cleanupLatexSearch(parts[2L])))
     }else{  # e.g. des White, Jr., Walter
       person(UnlistSplitClean(parts[3L]),
-             c(cleanupLatex(von), cleanupLatex(sub(vonrx, '', parts[1L], useBytes = TRUE)),
-               cleanupLatex(parts[2L])))
+             c(cleanupLatexSearch(von), cleanupLatexSearch(sub(vonrx, '', parts[1L],
+                                                               useBytes = TRUE)),
+               cleanupLatexSearch(parts[2L])))
     }
   }else{
     stop('Invalid format.')
@@ -270,7 +277,7 @@ ArrangeSingleAuthor <- function(y){
 
 #' @keywords internal
 UnlistSplitClean <- function(s){
-  #cleanupLatex(str_trim(s))
+  ## cleanupLatex(str_trim(s))
   unlist(strsplit(gsub("[{}]", "", str_trim(s), useBytes = TRUE), " "))
 }
 
@@ -278,14 +285,15 @@ UnlistSplitClean <- function(s){
 cleanupLatex <- function (x){
   if (!length(x))
     return(x)
-
-  if (any(grepl('mkbib', x, useBytes = TRUE))){
-    x <- gsub('mkbibquote', 'dQuote', x, useBytes = TRUE)
-    x <- gsub('mkbibemph', 'emph', x, useBytes = TRUE)
-    x <- gsub('mkbibbold', 'bold', x, useBytes = TRUE)
+  if (getRversion() < "3.2.0"){
+    if (any(grepl('mkbib', x, useBytes = TRUE))){
+      x <- gsub('mkbibquote', 'dQuote', x, useBytes = TRUE)
+      x <- gsub('mkbibemph', 'emph', x, useBytes = TRUE)
+      x <- gsub('mkbibbold', 'bold', x, useBytes = TRUE)
+    }
+    x <- gsub('\\\\hyphen', '-', x, useBytes = TRUE)
+    x <- gsub("\\\\textquotesingle", "'", x, useBytes = TRUE)
   }
-  x <- gsub('\\\\hyphen', '-', x, useBytes = TRUE)
-  x <- gsub("\\\\textquotesingle", "'", x, useBytes = TRUE)  
 
   latex <- try(tools::parseLatex(x), silent = TRUE)
   if (inherits(latex, "try-error")) {
@@ -299,17 +307,19 @@ cleanupLatex <- function (x){
             ## message(gettextf("Unrecognized macro in %s", x))
                     latex
                 })
-    x <- tools::deparseLatex(latex, dropBraces = TRUE)
-    if (grepl("\\\\[[:punct:]]", x, useBytes = TRUE)){
-      x <- gsub("\\\\'I", '\u00cd', x, useBytes = TRUE)
-      x <- gsub("\\\\'i", '\u00ed', x, useBytes = TRUE)
-      x <- gsub('\\\\"I', '\u00cf', x, useBytes = TRUE)
-      x <- gsub('\\\\"i', '\u00ef', x, useBytes = TRUE)
-      x <- gsub("\\\\\\^I", '\u00ce', x, useBytes = TRUE)
-      x <- gsub("\\\\\\^i", '\u00ee', x, useBytes = TRUE)
-      x <- gsub("\\\\`I", '\u00cc', x, useBytes = TRUE)
-      x <- gsub("\\\\`i", '\u00ec', x, useBytes = TRUE)
-      Encoding(x) <- 'UTF-8'
+    x <- tools::deparseLatex(latex, dropBraces = FALSE)
+    if (getRversion() < "3.2.0"){
+      if (grepl("\\\\[[:punct:]]", x, useBytes = TRUE)){
+        x <- gsub("\\\\'I", '\u00cd', x, useBytes = TRUE)
+        x <- gsub("\\\\'i", '\u00ed', x, useBytes = TRUE)
+        x <- gsub('\\\\"I', '\u00cf', x, useBytes = TRUE)
+        x <- gsub('\\\\"i', '\u00ef', x, useBytes = TRUE)
+        x <- gsub("\\\\\\^I", '\u00ce', x, useBytes = TRUE)
+        x <- gsub("\\\\\\^i", '\u00ee', x, useBytes = TRUE)
+        x <- gsub("\\\\`I", '\u00cc', x, useBytes = TRUE)
+        x <- gsub("\\\\`i", '\u00ec', x, useBytes = TRUE)
+        Encoding(x) <- 'UTF-8'
+      }
     }
     x
   }
