@@ -88,7 +88,7 @@ ReadPubMed <- function(query, database = 'PubMed', ...){
 #' unless a collection title is present -- in which case the \code{bibtype} will be
 #' \dQuote{InBook} -- or there is no journal information returned for an article -- in
 #' which case the \code{bibtype} will be \dQuote{Misc}.
-#' @importFrom RCurl getForm
+#' @importFrom RCurl postForm
 #' @importFrom XML xmlParse getNodeSet
 #' @keywords database
 #' @export
@@ -107,7 +107,7 @@ GetPubMedByID <- function(id, db = 'pubmed', ...){
   parms$rettype <- 'medline'
 
   base.url <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?"
-  temp <- getForm(base.url, .params = parms)
+  temp <- postForm(base.url, .params = parms)
   tdoc <- xmlParse(temp)
 
   # Note: directly using xpathApply on tdoc won't work if some results are missing certain fields
