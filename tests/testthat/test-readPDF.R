@@ -19,11 +19,11 @@ jss.fail <- try(download.file("https://www.jstatsoft.org/index.php/jss/article/v
                               file.path(exe.path, "jss.pdf"), mode = "wb"))
 if (inherits(jss.fail, "try-error"))
     jss.fail <- TRUE
-arxiv1.fail <- try(download.file("http://arxiv.org/pdf/math/0703791",
+arxiv1.fail <- try(download.file("https://arxiv.org/pdf/math/0703791",
                                  destfile = file.path(exe.path, "FIZaop.pdf"), mode = "wb"))
 if (inherits(arxiv1.fail, "try-error"))
     arxiv1.fail <- TRUE
-arxiv2.fail <- try(download.file("http://arxiv.org/pdf/math/0703858",
+arxiv2.fail <- try(download.file("https://arxiv.org/pdf/math/0703858",
                                  destfile = file.path(exe.path, "PBHTaos.pdf"), mode = "wb"))
 if (inherits(arxiv2.fail, "try-error"))
     arxiv2.fail <- TRUE
