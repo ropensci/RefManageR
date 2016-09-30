@@ -8,46 +8,54 @@ test_that("Smith, Jr., John", {
 })
 
 test_that("Smith, Jr., John and Mary {Tyler Moore}", {
-  authors <- "Smith, Jr., John and Mary {Tyler Moore}"
-  parsed <- RefManageR:::ArrangeAuthors(authors)
-  expect_match(parsed[[2]]$family, "Tyler Moore")
+  bib <- BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title",
+             author = "Smith, Jr., John and Mary {Tyler Moore}",
+             journaltitle = "The Journal Title", date = "2014-02-06",
+             pubstate = "forthcoming")    
+  expect_match(bib$author[[2]]$family, "Tyler Moore")
 })
 
 test_that("Smith, Jr., John and {MATLAB, Inc.}", {
-  authors <- "Smith, Jr., John and {MATLAB, Inc.}"
-  parsed <- RefManageR:::ArrangeAuthors(authors)
-  expect_match(parsed[[2]]$family, "MATLAB, Inc.")
-  expect_equal(length(unlist(parsed$family[1])), 2L)
+  bib <- BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title",
+             author = "Smith, Jr., John and {MATLAB, Inc.}",
+             journaltitle = "The Journal Title", date = "2014-02-06")    
+  expect_match(bib$author[[2]]$family, "MATLAB, Inc.")
+  expect_equal(length(bib$author[[1]]$family), 2L)
 })
 
 test_that("Smith, John Paul and {MATLAB, Inc.}", {
-  authors <- "Smith, John Paul and {MATLAB, Inc.}"
-  parsed <- RefManageR:::ArrangeAuthors(authors)
-  expect_equal(length(unlist(parsed$given[1])), 2L)
+  bib <- BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title",
+             author = "Smith, John Paul and {MATLAB, Inc.}",
+             journaltitle = "The Journal Title", date = "2014-02-06")    
+  expect_equal(length(bib$author$given[[1]]), 2L)
 })
 
 test_that("{de Gama}, Vasco", {
-  authors <- "{de Gama}, Vasco"
-  parsed <- RefManageR:::ArrangeSingleAuthor(authors)
-  expect_equal(length(parsed$family), 2L)
+  bib <- BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title",
+                  author = "{de Gama}, Vasco",
+             journaltitle = "The Journal Title", date = "2014-02-06")    
+  expect_equal(length(bib$author[[1]]$family), 2L)
 })
 
 test_that("Mark von Bommel", {
-  authors <- "Mark von Bommel"
-  parsed <- RefManageR:::ArrangeSingleAuthor(authors)
-  expect_equal(length(parsed$family), 2L)
+  bib <- BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title",
+                  author = "Mark von Bommel",
+             journaltitle = "The Journal Title", date = "2014-02-06")    
+  expect_equal(length(bib$author[[1]]$family), 2L)
 })
 
 test_that("de la Soul, Posdnous", {
-  authors <- "de la Soul, Posdnous"
-  parsed <- RefManageR:::ArrangeSingleAuthor(authors)
-  expect_equal(length(parsed$family), 2L)
+  bib <- BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title",
+                    author = "de la Soul, Posdnous",
+             journaltitle = "The Journal Title", date = "2014-02-06")    
+  expect_equal(length(bib$author[[1]]$family), 2L)
 })
 
 test_that("des White, Jr., Walter", {
-  authors <- "des White, Jr., Walter"
-  parsed <- RefManageR:::ArrangeSingleAuthor(authors)
-  expect_equal(length(parsed$family), 3L)
+  bib <- BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title",
+                    author = "des White, Jr., Walter",
+             journaltitle = "The Journal Title", date = "2014-02-06")    
+  expect_equal(length(bib$author[[1]]$family), 3L)
 })
 
 test_that("{Herm{\\`e}s International S.A.} and Katzfu{\\ss}, Matthias", {
