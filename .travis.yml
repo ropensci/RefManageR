@@ -24,8 +24,9 @@ r_github_packages:
  - romainfrancois/bibtex
  - jimhester/covr
 
-r_check_args:
+r_build_args:
  - --compact-vignettes=gs+qpdf
+ 
 # remove default --as-cran so testthat tests are run (also avoids to useless check notes)
 r_check_args:
 
