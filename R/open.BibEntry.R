@@ -58,7 +58,7 @@ GetURL <- function(entry, flds, to.bib = FALSE){
       if (length(eprinttype)){
         base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
                            arxiv = "http://arxiv.org/abs/",
-                           pubmed = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=")
+                           pubmed = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=")
         if (!is.null(base.url)){
           url <- paste0(base.url, entry[["eprint"]])
           opened <- TRUE

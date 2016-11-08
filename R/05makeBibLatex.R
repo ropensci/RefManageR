@@ -571,7 +571,7 @@ fmtEprint <- switch(docstyle, html = function(paper){
       if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
         base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
                            arxiv = "http://arxiv.org/abs/",
-                           pubmed = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=",
+                           pubmed = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=",
                            "")
         res <- paste0(res, "\\href{", base.url, paper$eprint, "}{",
                       paper$eprint)
