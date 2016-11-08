@@ -1,3 +1,13 @@
+Changes in Version 0.13.0 (2016-11-09)
+--------------------------------------------------------
+
+BUG FIXES
+
+* Updated calls to NCBI Entrez for functions `ReadPubMed`, `GetPubMedByID`, etc.
+to use https as now required by NCBI (h/t Dale Steele and Anthony Crane)
+* Change reference to www.omegahat.org to www.omegahat.net (h/t Kurt Hornik)
+
+
 Changes in Version 0.12.0 (2016-09-30)
 --------------------------------------------------------
 
