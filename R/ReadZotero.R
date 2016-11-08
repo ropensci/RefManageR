@@ -6,7 +6,7 @@
 # names(getCurlOptionsConstants())
 # http://www.zotero.org/support/dev/server_api/v2/write_requests
 #
-# http://www.omegahat.org/RCurl/philosophy.html
+# http://www.omegahat.net/RCurl/philosophy.html
 # .opts explained: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
 
 #' Get Bibliography Information From a Zotero Library.
