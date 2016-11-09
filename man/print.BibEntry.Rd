@@ -62,7 +62,7 @@ BibOptions(oldopts)
 }
 \references{
 Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex
-Package. \url{https://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+Package. \url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 }
 \seealso{
 \code{\link{BibEntry}}, \code{\link{ReadBib}}, \code{\link{sort.BibEntry}}
