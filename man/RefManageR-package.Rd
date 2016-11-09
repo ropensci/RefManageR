@@ -73,7 +73,7 @@ Hornik, K., D. Murdoch, and A. Zeileis (2012).
 Who Did What? The Roles of R Package Authors and How to Refer to Them. The R Journal \bold{4}, 1.
 \url{https://journal.r-project.org/archive/2012-1/RJournal_2012-1_Hornik~et~al.pdf}
 
-Patashnik, O (1988). Bibtexing. \url{https://ctan.sharelatex.com/tex-archive/biblio/bibtex/base/btxdoc.pdf}.
+Patashnik, O (1988). Bibtexing. \url{https://mirror.pregi.net/tex-archive/biblio/bibtex/contrib/doc/btxdoc.pdf}.
 }
 \keyword{package}
 

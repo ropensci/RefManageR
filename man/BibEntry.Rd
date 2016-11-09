@@ -124,7 +124,7 @@ toBiblatex(bib)
 McLean, M. W. \email{mathew.w.mclean@gmail.com}
 }
 \references{
-BibLaTeX manual \url{https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}
+BibLaTeX manual \url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}
 }
 \seealso{
 \code{\link{bibentry}}
