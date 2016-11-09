@@ -84,7 +84,7 @@
 #'
 #' Name list fields (author, editor, etc.) should be specified as they would be for
 #' BibTeX/BibLaTeX; e.g. \code{author = "Doe, Jane and Smith, Bob A."}.
-#' @references BibLaTeX manual \url{http://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}
+#' @references BibLaTeX manual \url{https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}
 #' @details The BibEntry objects created by BibEntry can represent an arbitrary positive number of references,
 #'   as with \code{bibentry}, but many additional methods are defined for building and manipulating a database
 #'   of references.
@@ -96,7 +96,7 @@
 #' eprintclass = "stat.ME", year = 2013, urldate = "2014-02-01", pubstate = "submitted")
 #' bib <- c(bib, BibEntry(bibtype = "Misc", key = "mclean2014b",
 #'   title = "Something On the {arXiv}", author = "Mathew W. McLean", eprint = "1312.9999",
-#'   xdata = "arxiv_data", url = "http://arxiv.org/abs/1310.5811"))
+#'   xdata = "arxiv_data", url = "https://arxiv.org/abs/1310.5811"))
 #' bib
 #' toBiblatex(bib)
 BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,

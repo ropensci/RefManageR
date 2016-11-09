@@ -56,11 +56,11 @@
 #' \code{\link{Cite}}.  Its interface is similar to \code{\link{options}}.
 #' @keywords package
 #' @references McLean, M. W. (2014). Straightforward Bibliography Management in R Using the RefManageR Package.
-#' \href{http://arxiv.org/abs/1403.2036}{arXiv: 1403.2036 [cs.DL]}. Submitted.
+#' \href{https://arxiv.org/abs/1403.2036}{arXiv: 1403.2036 [cs.DL]}. Submitted.
 #' @references Lehman, P., P. Kime, A. Boruvka, and J. Wright (2013). The biblatex Package.
-#' \url{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+#' \url{https://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 #' @references Hornik, K., D. Murdoch, and A. Zeileis (2012). 
 #' Who Did What? The Roles of R Package Authors and How to Refer to Them. The R Journal \bold{4}, 1.
-#' \url{http://journal.r-project.org/archive/2012-1/RJournal_2012-1_Hornik~et~al.pdf}
-#' @references Patashnik, O (1988). Bibtexing. \url{http://ctan.sharelatex.com/tex-archive/biblio/bibtex/base/btxdoc.pdf}.
+#' \url{https://journal.r-project.org/archive/2012-1/RJournal_2012-1_Hornik~et~al.pdf}
+#' @references Patashnik, O (1988). Bibtexing. \url{https://ctan.sharelatex.com/tex-archive/biblio/bibtex/base/btxdoc.pdf}.
 NULL

@@ -2,8 +2,8 @@ RefManageR
 ========
 [![](https://travis-ci.org/mwmclean/RefManageR.svg?branch=master)](https://travis-ci.org/mwmclean/RefManageR/)
 [![Coverage Status](https://coveralls.io/repos/mwmclean/RefManageR/badge.svg?branch=master)](https://coveralls.io/r/mwmclean/RefManageR?branch=master)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RefManageR)](http://cran.r-project.org/package=RefManageR)
-[![CRAN_Download_Badge](http://cranlogs.r-pkg.org/badges/RefManageR)](http://cran.r-project.org/package=RefManageR)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RefManageR)](https://cran.r-project.org/package=RefManageR)
+[![CRAN_Download_Badge](http://cranlogs.r-pkg.org/badges/RefManageR)](https://cran.r-project.org/package=RefManageR)
 
 `RefManageR` provides tools for importing and working with
 bibliographic references.  It greatly enhances the `bibentry` class by

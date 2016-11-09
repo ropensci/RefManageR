@@ -40,7 +40,7 @@
 #' environment must have functions for formatting each of the entry types decribed in
 #' \code{\link{BibEntry}}.
 #' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex
-#' Package. \url{http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+#' Package. \url{https://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 #' @seealso \code{\link{BibEntry}}, \code{\link{ReadBib}}, \code{\link{sort.BibEntry}}
 #' @examples
 #' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
