@@ -67,7 +67,7 @@ McLean, M. W. (2014). Straightforward Bibliography Management in R Using the Ref
 \href{https://arxiv.org/abs/1403.2036}{arXiv: 1403.2036 [cs.DL]}. Submitted.
 
 Lehman, P., P. Kime, A. Boruvka, and J. Wright (2013). The biblatex Package.
-\url{https://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+\url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 
 Hornik, K., D. Murdoch, and A. Zeileis (2012). 
 Who Did What? The Roles of R Package Authors and How to Refer to Them. The R Journal \bold{4}, 1.
