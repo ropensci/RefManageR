@@ -28,11 +28,11 @@ unless a collection title is present -- in which case the \code{bibtype} will be
 which case the \code{bibtype} will be \dQuote{Misc}.
 }
 \examples{
-if (interactive() && url.exists("http://eutils.ncbi.nlm.nih.gov/"))
+if (interactive() && url.exists("https://eutils.ncbi.nlm.nih.gov/"))
   GetPubMedByID(c("11209037", "21245076"))
 }
 \references{
-\url{http://www.ncbi.nlm.nih.gov/books/NBK25500/}
+\url{https://www.ncbi.nlm.nih.gov/books/NBK25500/}
 }
 \seealso{
 Other pubmed: \code{\link{GetDOIs}},

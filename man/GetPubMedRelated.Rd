@@ -37,7 +37,7 @@ an object of class BibEntry.
 Searches PubMed for articles related to a set of PubMed ID's using NCBI's E-Utilities.
 }
 \examples{
-if (interactive() && url.exists("http://eutils.ncbi.nlm.nih.gov/")){
+if (interactive() && url.exists("https://eutils.ncbi.nlm.nih.gov/")){
   file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
   bib <- ReadBib(file.name)
   bib <- LookupPubMedID(bib[[101:102]])
@@ -47,7 +47,7 @@ if (interactive() && url.exists("http://eutils.ncbi.nlm.nih.gov/")){
 }
 }
 \references{
-\url{http://www.ncbi.nlm.nih.gov/books/NBK25500/}
+\url{https://www.ncbi.nlm.nih.gov/books/NBK25500/}
 }
 \seealso{
 Other pubmed: \code{\link{GetDOIs}},
