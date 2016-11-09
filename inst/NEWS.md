@@ -6,7 +6,8 @@ BUG FIXES
 * Updated calls to NCBI Entrez for functions `ReadPubMed`, `GetPubMedByID`, etc.
 to use https as now required by NCBI (h/t Dale Steele and Anthony Crane)
 * Change reference to www.omegahat.org to www.omegahat.net (h/t Kurt Hornik)
-
+* Documentation for `ReadPubMed` is updated to reflect that the default number of
+entries returned (controlled by the argument `retmax`)  is 20 (h/t Dale Steele)
 
 Changes in Version 0.12.0 (2016-09-30)
 --------------------------------------------------------
