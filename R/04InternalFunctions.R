@@ -285,7 +285,7 @@ UnlistSplitClean <- function(s){
 cleanupLatex <- function (x){
   if (!length(x))
     return(x)
-  if (getRversion() < "3.2.0"){
+  if (getRversion() < "3.3.0"){
     if (any(grepl('mkbib', x, useBytes = TRUE))){
       x <- gsub('mkbibquote', 'dQuote', x, useBytes = TRUE)
       x <- gsub('mkbibemph', 'emph', x, useBytes = TRUE)
@@ -308,7 +308,7 @@ cleanupLatex <- function (x){
                     latex
                 })
     x <- tools::deparseLatex(latex, dropBraces = FALSE)
-    if (getRversion() < "3.2.0"){
+    if (getRversion() < "3.3.0"){
       if (grepl("\\\\[[:punct:]]", x, useBytes = TRUE)){
         x <- gsub("\\\\'I", '\u00cd', x, useBytes = TRUE)
         x <- gsub("\\\\'i", '\u00ed', x, useBytes = TRUE)

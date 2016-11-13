@@ -38,7 +38,7 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
           on.exit(close(con))
           ## macro.env <- tools::loadRdMacros(file.path(R.home("share"), "Rd",
           ##                                            "macros", "system.Rd"))
-          if (getRversion() >= "3.2.0"){
+          if (getRversion() >= "3.3.0"){
               ## prevent use of devtools::system.file
               macro.env <- tools::loadPkgRdMacros(base::system.file(package = "RefManageR"))
               f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8', macros = macro.env,

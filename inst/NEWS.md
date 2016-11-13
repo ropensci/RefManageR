@@ -1,3 +1,12 @@
+Changes in Version 0.13.1 (2016-11-14)
+--------------------------------------------------------
+
+BUG FIXES
+
+* Feature involving `LaTeX` macros added in package version 0.12.0 can only be used
+for R 3.3.z and higher; this corrects cause of failed checks on R 3.2.z
+
+
 Changes in Version 0.13.0 (2016-11-09)
 --------------------------------------------------------
 
@@ -15,7 +24,8 @@ Changes in Version 0.12.0 (2016-09-30)
 NEW FEATURES
 
 * Some `LaTeX` macros unknown to R are now defined as macros in the package, and will
-be parsed using `macros` arg in `tools::parse_Rd` (assuming `getRversion() >= "3.2.0"`)
+be parsed using `macros` arg in `tools::parse_Rd` (assuming `getRversion() >= "3.2.0"`
+Note: corrected in 0.13.1 to be `getRversion() >= "3.3.0"`)
 
 BUG FIXES
 
