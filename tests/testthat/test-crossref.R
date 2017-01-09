@@ -43,7 +43,7 @@ test_that("GetDOIs retrieves DOIs", {
     expect_is(out, "BibEntry")
     expect_equal(length(out), 2L)
     dois.out <- setNames(unlist(out$doi), NULL)
-    expect_equal(dois.out, "10.1093/bioinformatics/btt608")
+    expect_equal(dois.out[1], "10.1093/bioinformatics/btt608")
     expect_message(GetDOIs(out[[1]]), "All entries already have DOIs")
     ## expect_message(GetDOIs(out[[2]]), "No matches.")
 })
