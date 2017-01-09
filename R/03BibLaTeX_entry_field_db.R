@@ -84,12 +84,12 @@ BibLaTeX_entry_field_db$XData <- character(0)
 
 ######################
 # custom types # not supported by standard bib. styles, for which they will be treated as 'misc' type
-BibLaTeX_entry_field_db$`Custom[a]` <- character(0)
-BibLaTeX_entry_field_db$`Custom[b]` <- character(0)
-BibLaTeX_entry_field_db$`Custom[c]` <- character(0)
-BibLaTeX_entry_field_db$`Custom[d]` <- character(0)
-BibLaTeX_entry_field_db$`Custom[e]` <- character(0)
-BibLaTeX_entry_field_db$`Custom[f]` <- character(0)
+BibLaTeX_entry_field_db$Customa <- character(0)
+BibLaTeX_entry_field_db$Customb <- character(0)
+BibLaTeX_entry_field_db$Customc <- character(0)
+BibLaTeX_entry_field_db$Customd <- character(0)
+BibLaTeX_entry_field_db$Custome <- character(0)
+BibLaTeX_entry_field_db$Customf <- character(0)
 
 #######################################
 # aliases for compatibility with BibTeX
