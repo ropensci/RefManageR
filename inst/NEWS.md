@@ -1,3 +1,10 @@
+Changes in Version 0.13.3 (2016-01-09)
+--------------------------------------------------------
+
+BUG FIXES
+
+* Remove square brackets from custom entry type names (h/t Hugh Parsonage)
+
 Changes in Version 0.13.1 (2016-11-14)
 --------------------------------------------------------
 
