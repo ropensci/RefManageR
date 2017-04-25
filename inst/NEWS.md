@@ -1,8 +1,9 @@
-Changes in Version 0.13.3 (2017-01-09)
+Changes in Version 0.13.4 (2017-04-25)
 --------------------------------------------------------
 
 BUG FIXES
 
+* Unescape special characters in URL fields returned by CrossRef (h/t Michael Schubert) 
 * Remove square brackets from custom entry type names (h/t Hugh Parsonage)
 
 Changes in Version 0.13.1 (2016-11-14)
