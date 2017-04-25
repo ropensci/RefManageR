@@ -204,6 +204,7 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
   }
 
   temp <- gsub("&amp;", "&", temp, useBytes = TRUE)
+  temp <- gsub("%2F", "/", temp, useBytes = TRUE)
   ## Crossref uses data type for some entries
   temp <- sub("^@[Dd]ata", "@online", temp, useBytes = TRUE)
   write(temp, file = tmp.file, append=TRUE)
