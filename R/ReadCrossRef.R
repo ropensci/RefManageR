@@ -54,7 +54,7 @@
 #' \code{"has-affiliation"}, \code{"alternative-id"}, and \code{"article-number"}.  See the first
 #' reference for a description of their meanings.
 #' @importFrom RJSONIO fromJSON
-#' @importFrom RCurl getForm getURLContent url.exists
+#' @importFrom RCurl getForm getURLContent url.exists curlUnescape
 #' @export
 #' @keywords database
 #' @seealso \code{\link{ReadZotero}}, \code{\link{BibEntry}}, \code{\link{GetDOIs}},
@@ -179,6 +179,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
   }
 
   bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
+  bib.res$url <- RCurl::curlUnescape(bib.res$url)
   if (inherits(bib.res, "try-error"))
       stop(gettextf("failed to parse the returned BibTeX results; if \'delete.file\' %s%s",
                      "is FALSE, you can try viewing and editing the file: ", temp.file))
@@ -201,6 +202,7 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
     message(gettextf("server error for doi %s, you may want to try again.", dQuote(doi)))
     return(1L)
   }
+
   temp <- gsub("&amp;", "&", temp, useBytes = TRUE)
   ## Crossref uses data type for some entries
   temp <- sub("^@[Dd]ata", "@online", temp, useBytes = TRUE)
