@@ -1,0 +1,23 @@
+{
+  "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
+  "@type": "Code",
+  "author": [
+    {
+      "@id": "http://orcid.org/0000-0002-7891-9645",
+      "@type": "Person",
+      "email": "mathew.w.mclean@gmail.com",
+      "name": "Mathew W. McLean",
+      "affiliation": "University of Technology Sydney"
+    }
+  ],
+  "identifier": "",
+  "codeRepository": "https://github.com/mwmclean/RefManageR/",
+  "datePublished": "2017-05-25",
+  "dateModified": "2017-05-25",
+  "dateCreated": "2017-05-25",
+  "description": "Straightforward 'BibTeX' and 'BibLaTeX' Bibliography Management in R",
+  "keywords": "R, reference management, document generation, bibtex, biblatex",
+  "license": "BSD 3-Clause",
+  "title": "RefManageR",
+  "version": "0.13.4"
+}
