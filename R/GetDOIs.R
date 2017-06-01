@@ -5,7 +5,6 @@
 #' @param bib a \code{BibEntry} object
 #' @return \code{bib} with any found DOI's added in the \sQuote{doi} field
 #' @importFrom jsonlite toJSON fromJSON
-## @importFrom RCurl postForm
 #' @importFrom httr POST content http_error
 #' @keywords database
 #' @export

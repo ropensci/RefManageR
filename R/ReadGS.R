@@ -12,9 +12,8 @@
 #' @param check.entries What should be done with incomplete entries (those containing \dQuote{...} due to long fields)?
 #' Either \code{FALSE} to add them anyway, \code{"warn"} to add with a warning, or any other value to drop the entry
 #' with a message and continue processing the remaining entries.
-#' @importFrom RCurl getForm curlEscape
-#' @importFrom XML xpathApply htmlParse
-#' @importFrom httr GET
+#' @importFrom xml2 xml_find_all xml_text
+#' @importFrom httr GET content http_error
 #' @importFrom stringr str_length str_sub
 #' @keywords database
 #' @export
@@ -40,7 +39,7 @@
 #' It is not possible to automatically import BibTeX entries directly from Google
 #' Scholar as no API is available and this violates their Terms of Service.
 #' @examples
-#' if (interactive() && url.exists("http://scholar.google.com")){
+#' if (interactive() && !http_error("http://scholar.google.com")){
 #'   ## R. J. Carroll's ten newest publications
 #'   ReadGS(scholar.id = "CJOHNoQAAAAJ", limit = 10, sort.by.date = TRUE)
 #'
@@ -64,30 +63,44 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
     .params$sortby = "pubdate"
 
   uri <- "http://scholar.google.com/citations"
-  els <- mapply(function(id, val) {
-      paste(curlEscape(id), curlEscape(val), sep = "=", collapse = "&")
-  }, names(.params), .params)
-  args <- paste(els, collapse = "&")
-  uri <- paste(uri, args, sep = if (grepl("\\?", uri, useBytes = TRUE))
-                                  "&"
-                                else "?")
+  ## els <- mapply(function(id, val) {
+  ##     paste(id, val, sep = "=", collapse = "&")
+  ## }, names(.params), .params)
 
-  doc <- GET(uri)
+  ## args <- paste(els, collapse = "&")
+  ## uri <- paste(uri, args, sep = if (grepl("\\?", uri, useBytes = TRUE))
+  ##                                 "&"
+  ##                               else "?")
+
+  ## doc <- GET(uri)
   ## doc <- htmlParse(uri)
+  doc <- GET(uri, query = .params)
+  doc <- content(doc, type = "text/html", encoding = "UTF-8")
+  cites <- xml_find_all(doc, "//tr[@class=\"gsc_a_tr\"]")
 
   ## doc <- GetForm(uri, .params = .params, .encoding = .Encoding)
-  cites <- xpathApply(htmlParse(doc, encoding = .Encoding),
-                       "//tr[@class=\"gsc_a_tr\"]")  # "//tr[@class=\"cit-table item\"]")
+  ## cites <- xpathApply(htmlParse(doc, encoding = .Encoding),
+  ##                     "//tr[@class=\"gsc_a_tr\"]")  # "//tr[@class=\"cit-table item\"]")
+  
   ## cites <- xpathApply(doc, "//tr[@class=\"gsc_a_tr\"]")
   if(!length(cites)){
     message("no results")
     return()
   }
+
   cites <- cites[seq_len(min(limit, length(cites)))]
+  titles <- xml_text(xml_find_all(cites, "//td/a[@class=\"gsc_a_at\"]"))
+  years <- xml_text(xml_find_all(cites, "//tr[@class=\"gsc_a_tr\"]/td[@class=\"gsc_a_y\"]/span"))
+  srcs <- xml_text(xml_find_all(cites, "//td[@class=\"gsc_a_t\"]/div[@class=\"gs_gray\"]"))
+  authors <- srcs[seq(1, length(srcs), by = 2)]
+  journals <- srcs[seq(2, length(srcs), by = 2)]
+  citeby <- xml_text(xml_find_all(cites, "//tr/td[@class=\"gsc_a_c\"]/a[@class=\"gsc_a_ac\"]"))
 
   noNAwarn <- function(w) if( any( grepl( "NAs introduced", w, useBytes = TRUE) ) )
       invokeRestart( "muffleWarning" )
-  tmp <- withCallingHandlers(lapply(cites, ParseGSCites2), warning = noNAwarn)
+  ## tmp <- withCallingHandlers(lapply(cites, ParseGSCites2), warning = noNAwarn)
+  tmp <- withCallingHandlers(mapply(ParseGSCitesNew, titles, authors, years,
+                                    journals, citeby), warning = noNAwarn)
   out <- lapply(tmp[!is.na(tmp)], MakeBibEntry, to.person = FALSE)
   out <- MakeCitationList(out)
 
