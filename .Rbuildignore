@@ -10,3 +10,6 @@ Rhtml/figure
 ^[.]travis[.]yml$
 ^[.]git$
 RefManageR-Ex.R
+^paper.bib$
+^paper.md$
+^codemeta.json$
