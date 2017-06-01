@@ -32,7 +32,7 @@
 #' @export
 #' @seealso \code{\link{BibEntry}}, \code{\link{getForm}} in package \code{RCurl}
 #' @references \verb{http://www.zotero.org/support/dev/server_api/v2/read_requests}
-#' @importFrom RCurl getForm curlOptions
+#' @importFrom httr GET
 #' @examples
 #' \dontrun{
 #' ## first two entries in library with bayesian in title
@@ -61,17 +61,19 @@
 #' BibOptions(old.opts)
 #' }
 #' @keywords database
-ReadZotero <- function(user, group, .params, temp.file = tempfile(fileext = '.bib'), delete.file = TRUE){
+ReadZotero <- function(user, group, .params, temp.file = tempfile(fileext = ".bib"),
+                       delete.file = TRUE){
   if (delete.file)
     on.exit(unlink(temp.file, force = TRUE))
 
-  bad.ind <- which(!names(.params) %in% c('q', 'itemType', 'tag', 'collection', 'key', 'limit', 'start', 'qmode'))
+  bad.ind <- which(!names(.params) %in% c("q", "itemType", "tag", "collection",
+                                          "key", "limit", "start", "qmode"))
   .parms <- .params
   if (length(bad.ind)){
     warning("Invalid .params specified and will be ignored")
     .parms <- .parms[-bad.ind]
   }
-  .parms$format <- 'bibtex'
+  .parms$format <- "bibtex"
   if (is.null(.parms$limit))
     .parms$limit <- 99L
 
@@ -83,31 +85,25 @@ ReadZotero <- function(user, group, .params, temp.file = tempfile(fileext = '.bi
                         paste0("users/", user) else paste0("groups/", group),
                        coll, "/items")
 
-  cert <- try(system.file("CurlSSL/cacert.pem", package = "RCurl"))
-  .parms$.opts <- if (class(cert)=='try-error')
-      curlOptions(ssl.verifypeer=FALSE, httpheader='Zotero-API-Version: 2',
-                  forbid.reuse=TRUE)
-  else
-    curlOptions(ssl.verifypeer=TRUE, httpheader='Zotero-API-Version: 2',
-               forbid.reuse=TRUE, cainfo=cert)
+  ## cert <- try(system.file("CurlSSL/cacert.pem", package = "RCurl"))
+  uri <- paste0("https://api.zotero.org/", if (!missing(user))
+                        paste0("users/", user) else paste0("groups/", group),
+                       coll, "/items")
+  res <- GET(uri, query = .parms)  #, config = list(ssl.verifypeer=TRUE,
+                                   #             httpheader="Zotero-API-Version: 2",
+                                   # forbid.reuse=TRUE, cainfo=cert))
+  res <- rawToChar(res$content)
 
-  res <- do.call(getForm, .parms)
-  ## not sure why this happens. happens with getForm sometimes, but
-  ##   not with getURL for same uri
-  if (class(res)=='raw')
-    res <- rawToChar(res)
-
-  if (res == ''){
-    print('No results.')
+  if (.is_not_nonempty_text(res)){
+    print("No results.")
     return()
   }
   write(res, file=temp.file, append = TRUE)
 
-  bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
+  bib.res <- try(ReadBib(file=temp.file, .Encoding="UTF-8"), TRUE)
   if (inherits(bib.res, "try-error")){
-    message(paste0("Error parsing the returned BibTeX results.  If delete.file ",
+    stop(gettextf("Could not parse the returned BibTeX results.  If 'delete.file' %s%s",
                    "is FALSE, you can try viewing and editing the file: ", temp.file))
-    return()
   }
   bib.res
 }
