@@ -68,6 +68,6 @@ BibOptions(old.opts)
 \verb{http://www.zotero.org/support/dev/server_api/v2/read_requests}
 }
 \seealso{
-\code{\link{BibEntry}}, \code{\link{getForm}} in package \code{RCurl}
+\code{\link{BibEntry}}
 }
 \keyword{database}

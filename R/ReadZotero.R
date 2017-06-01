@@ -30,7 +30,7 @@
 #' @param delete.file boolean; should \code{temp.file} be removed on exit?
 #' @return An object of class BibEntry
 #' @export
-#' @seealso \code{\link{BibEntry}}, \code{\link{getForm}} in package \code{RCurl}
+#' @seealso \code{\link{BibEntry}}
 #' @references \verb{http://www.zotero.org/support/dev/server_api/v2/read_requests}
 #' @importFrom httr GET
 #' @examples
