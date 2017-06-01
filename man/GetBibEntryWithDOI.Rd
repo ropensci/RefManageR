@@ -34,4 +34,3 @@ if (interactive() && !http_error("http://dx.doi.org/"))
 \seealso{
 \code{\link{ReadCrossRef}}, \code{\link{BibEntry}}
 }
-

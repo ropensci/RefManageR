@@ -30,4 +30,3 @@ toBiblatex(bib)
 }
 \keyword{manip}
 \keyword{utilities}
-

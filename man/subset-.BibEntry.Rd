@@ -60,4 +60,3 @@ Other operators: \code{\link{$.BibEntry}},
 }
 \keyword{manip}
 \keyword{methods}
-

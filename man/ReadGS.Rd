@@ -69,4 +69,3 @@ if (interactive() && !http_error("http://scholar.google.com")){
 \code{\link{BibEntry}}
 }
 \keyword{database}
-

@@ -36,12 +36,11 @@ testbib$file <- file.path(R.home("doc/manual"), "R-intro.pdf")
 open(testbib)
 }
 }
-\author{
-McLean, M. W. \email{mathew.w.mclean@gmail.com}
-}
 \seealso{
 \code{\link{browseURL}}
 }
+\author{
+McLean, M. W. \email{mathew.w.mclean@gmail.com}
+}
 \keyword{connection}
 \keyword{utilities}
-

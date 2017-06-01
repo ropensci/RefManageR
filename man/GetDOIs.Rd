@@ -40,4 +40,3 @@ Other pubmed: \code{\link{GetPubMedByID}},
   \code{\link{ReadPubMed}}
 }
 \keyword{database}
-

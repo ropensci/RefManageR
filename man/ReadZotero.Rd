@@ -71,4 +71,3 @@ BibOptions(old.opts)
 \code{\link{BibEntry}}, \code{\link{getForm}} in package \code{RCurl}
 }
 \keyword{database}
-

@@ -108,6 +108,7 @@ BibTeX/BibLaTeX; e.g. \code{author = "Doe, Jane and Smith, Bob A."}.
     styles.
  }
 }
+
 \examples{
 BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title",
   author = " McLean, Mathew W. and Wand, Matt P.", journaltitle = "The Journal Title",
@@ -120,14 +121,13 @@ bib <- c(bib, BibEntry(bibtype = "Misc", key = "mclean2014b",
 bib
 toBiblatex(bib)
 }
-\author{
-McLean, M. W. \email{mathew.w.mclean@gmail.com}
-}
 \references{
 BibLaTeX manual \url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}
 }
 \seealso{
 \code{\link{bibentry}}
 }
+\author{
+McLean, M. W. \email{mathew.w.mclean@gmail.com}
+}
 \keyword{database}
-

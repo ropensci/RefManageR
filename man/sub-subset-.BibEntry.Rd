@@ -31,4 +31,3 @@ Other operators: \code{\link{$.BibEntry}},
   \code{\link{[[.BibEntry}}, \code{\link{c.BibEntry}}
 }
 \keyword{methods}
-

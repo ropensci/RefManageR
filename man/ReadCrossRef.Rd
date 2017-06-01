@@ -116,4 +116,3 @@ Other pubmed: \code{\link{GetDOIs}},
   \code{\link{LookupPubMedID}}, \code{\link{ReadPubMed}}
 }
 \keyword{database}
-

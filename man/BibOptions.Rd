@@ -125,4 +125,3 @@ BibOptions(restore.defaults = TRUE)
 \seealso{
 \code{\link{print.BibEntry}}, \code{\link{BibEntry}}, \code{\link{options}}
 }
-

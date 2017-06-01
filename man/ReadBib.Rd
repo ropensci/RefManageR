@@ -37,10 +37,9 @@ Keys will be made unique by calling \code{\link[base]{make.unique}} with
 file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 bib <- ReadBib(file.name)
 }
-\author{
-McLean, M. W., based on code in \code{bibtex} package by Francois, R.
-}
 \seealso{
 \code{\link[bibtex]{read.bib}} in package \code{bibtex}
 }
-
+\author{
+McLean, M. W., based on code in \code{bibtex} package by Francois, R.
+}

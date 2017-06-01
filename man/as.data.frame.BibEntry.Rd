@@ -33,4 +33,3 @@ as.data.frame(bib)
 \seealso{
 \code{\link{BibEntry}}, \code{\link{as.BibEntry}}
 }
-

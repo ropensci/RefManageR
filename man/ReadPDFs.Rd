@@ -54,4 +54,3 @@ If the keywords metadata field is available, it will be added to the bib entry i
 \code{\link{ReadCrossRef}}, \code{\link{BibEntry}}, \code{\link{open.BibEntry}}
 }
 \keyword{utilities}
-

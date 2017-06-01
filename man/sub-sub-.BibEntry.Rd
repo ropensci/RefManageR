@@ -47,4 +47,3 @@ Other operators: \code{\link{$.BibEntry}},
 \keyword{database}
 \keyword{list}
 \keyword{manip}
-

@@ -3,6 +3,7 @@
 \name{+.BibEntry}
 \alias{+.BibEntry}
 \alias{merge.BibEntry}
+\alias{+.BibEntry}
 \title{Merge two BibEntry objects while discarding duplicates}
 \usage{
 \method{+}{BibEntry}(e1, e2)
@@ -65,9 +66,6 @@ rjc.new.pubs <- bib1 + bib2
 BibOptions(oldopt)
 }
 }
-\author{
-McLean, M. W. \email{mathew.w.mclean@gmail.com}
-}
 \seealso{
 \code{\link{duplicated}}, \code{\link{unique}}
 
@@ -76,5 +74,7 @@ Other operators: \code{\link{$.BibEntry}},
   \code{\link{[<-.BibEntry}}, \code{\link{[[.BibEntry}},
   \code{\link{[[<-.BibEntry}}, \code{\link{c.BibEntry}}
 }
+\author{
+McLean, M. W. \email{mathew.w.mclean@gmail.com}
+}
 \keyword{methods}
-

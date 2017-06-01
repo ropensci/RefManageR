@@ -3,6 +3,7 @@
 \name{RelistBibEntry}
 \alias{RelistBibEntry}
 \alias{unlist.BibEntry}
+\alias{RelistBibEntry}
 \title{Flatten and unflatten BibEntry objects}
 \usage{
 RelistBibEntry(flesh, skeleton = NULL)
@@ -52,4 +53,3 @@ RelistBibEntry(unlist(bib))
 \keyword{database}
 \keyword{list}
 \keyword{manip}
-

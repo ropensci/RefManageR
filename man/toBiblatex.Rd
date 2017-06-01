@@ -2,6 +2,7 @@
 % Please edit documentation in R/toBiblatex.R, R/toBibtex.R
 \name{toBiblatex}
 \alias{toBiblatex}
+\alias{toBibtex.BibEntry}
 \alias{toBibtex}
 \alias{toBibtex.BibEntry}
 \title{Convert BibEntry objects to BibTeX or BibLaTeX}
@@ -75,13 +76,12 @@ bib <- suppressMessages(ReadBib(file.name))
 toBiblatex(bib[70:72])
 toBibtex(bib[70:72])
 }
-\author{
-McLean, M. W. \email{mathew.w.mclean@gmail.com}
-}
 \seealso{
 \code{\link{toBibtex}}, \code{\link{BibEntry}}, \code{\link{print.BibEntry}}
+}
+\author{
+McLean, M. W. \email{mathew.w.mclean@gmail.com}
 }
 \keyword{IO}
 \keyword{database}
 \keyword{utilities}
-

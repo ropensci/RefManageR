@@ -10,4 +10,3 @@ FindBibEntry(bib, term, field)
 Workhorse function for SearchBib
 }
 \keyword{internal}
-

@@ -2,8 +2,8 @@
 % Please edit documentation in R/RefManageR-package.R
 \docType{package}
 \name{RefManageR-package}
-\alias{RefManageR}
 \alias{RefManageR-package}
+\alias{RefManageR}
 \alias{refmanager}
 \title{Import and Manage BibTeX and BibLaTeX references with RefManageR}
 \description{
@@ -59,9 +59,6 @@ The convenience function \code{\link{BibOptions}} is provided for setting defaul
 functions such as \code{\link{print.BibEntry}}, \code{\link{[.BibEntry}}, and 
 \code{\link{Cite}}.  Its interface is similar to \code{\link{options}}.
 }
-\author{
-McLean, M. W. \email{mathew.w.mclean@gmail.com}
-}
 \references{
 McLean, M. W. (2014). Straightforward Bibliography Management in R Using the RefManageR Package.
 \href{https://arxiv.org/abs/1403.2036}{arXiv: 1403.2036 [cs.DL]}. Submitted.
@@ -75,5 +72,7 @@ Who Did What? The Roles of R Package Authors and How to Refer to Them. The R Jou
 
 Patashnik, O (1988). Bibtexing. \url{https://mirror.pregi.net/tex-archive/biblio/bibtex/contrib/doc/btxdoc.pdf}.
 }
+\author{
+McLean, M. W. \email{mathew.w.mclean@gmail.com}
+}
 \keyword{package}
-

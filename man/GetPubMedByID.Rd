@@ -41,4 +41,3 @@ Other pubmed: \code{\link{GetDOIs}},
   \code{\link{ReadPubMed}}
 }
 \keyword{database}
-

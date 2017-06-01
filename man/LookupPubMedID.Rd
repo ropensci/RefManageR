@@ -40,4 +40,3 @@ Other pubmed: \code{\link{GetDOIs}},
   \code{\link{ReadCrossRef}}, \code{\link{ReadPubMed}}
 }
 \keyword{database}
-

@@ -67,4 +67,3 @@ Package. \url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex
 \seealso{
 \code{\link{BibEntry}}, \code{\link{ReadBib}}, \code{\link{sort.BibEntry}}
 }
-

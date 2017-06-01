@@ -41,12 +41,11 @@ if (length(bib)){
   unlink(tfile)
 }
 }
-\author{
-McLean, M. W. based on \code{\link{write.bib}} by Gaujoux, R. in package \code{bibtex}.
-}
 \seealso{
 \code{\link{write.bib}}, \code{\link{ReadBib}}, \code{\link{toBibtex.BibEntry}},
 \code{\link{toBiblatex}}, \code{\link{BibEntry}}
 }
+\author{
+McLean, M. W. based on \code{\link{write.bib}} by Gaujoux, R. in package \code{bibtex}.
+}
 \keyword{IO}
-
