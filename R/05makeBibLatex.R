@@ -591,7 +591,8 @@ fmtEprint <- switch(docstyle, html = function(paper){
         res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
       }else if(length(paper$primaryclass)){
         res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
-      }
+      }else
+        res <- paste0('eprint: ', paper$eprint)
     }else{
       res <- paste0('eprint: ', paper$eprint)
     }
@@ -627,7 +628,8 @@ fmtEprint <- switch(docstyle, html = function(paper){
         res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
       }else if(length(paper$primaryclass)){
         res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
-      }
+      }else
+        res <- paste0('eprint: ', paper$eprint)
     }else{
       res <- paste0('eprint: ', paper$eprint)
     }
@@ -651,7 +653,8 @@ fmtEprint <- switch(docstyle, html = function(paper){
         res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
       }else if(length(paper$primaryclass)){
         res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
-      }
+      }else
+        res <- paste0('eprint: ', paper$eprint)
     }else{
       res <- paste0('eprint: ', paper$eprint)
     }
