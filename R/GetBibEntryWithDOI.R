@@ -23,8 +23,8 @@ GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'), delete
   for (i in seq_along(doi)){
     temp <- try(GET(paste0('http://dx.doi.org/', doi[i]), config = list(followlocation = TRUE),
                       add_headers(Accept = "application/x-bibtex")), TRUE)
+    if (!inherits(temp, "try-error") && !temp$status_code == 404){
     temp <- try(content(temp, as = "text", encoding = "UTF-8"), TRUE)
-    if (!inherits(temp, "try-error")){
       successes[i] <- TRUE
       ## if (is.raw(temp))
       ##   temp <- rawToChar(temp)
