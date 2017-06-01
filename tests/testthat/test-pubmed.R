@@ -31,7 +31,7 @@ test_that("LookupPubMedID successfully retrieves and add ID's'", {
     skip_on_cran()
     file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
     bib <- ReadBib(file.name)
-    if (!RCurl::url.exists("http://eutils.ncbi.nlm.nih.gov/"))
+    if (httr::http_error("http://eutils.ncbi.nlm.nih.gov/"))
         skip("Couldn't connect to Entrez")
     out <- LookupPubMedID(bib[[101:102]])
     expect_equal(length(out), 2L)

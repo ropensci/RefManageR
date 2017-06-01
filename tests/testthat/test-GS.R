@@ -2,7 +2,7 @@ context("GScholar")
 
 test_that("Can retrieve by dates, keep incomplete", {
     skip_on_cran()
-    if (!RCurl::url.exists("http://scholar.google.com"))
+    if (httr::http_error("http://scholar.google.com"))
         skip("Couldn't connect to GS")
 
     out <- ReadGS(scholar.id = "vqW0UqUAAAAJ", sort.by.date = TRUE,
@@ -13,7 +13,7 @@ test_that("Can retrieve by dates, keep incomplete", {
 
 test_that("check drop incomplete", {
     skip_on_cran()
-    if (!RCurl::url.exists("http://scholar.google.com"))
+    if (httr::http_error("http://scholar.google.com"))
         skip("Couldn't connect to GS")
     Sys.sleep(3)
 
@@ -38,7 +38,7 @@ test_that("check drop incomplete", {
 
 test_that("check read by cites", {
     skip_on_cran()
-    if (!RCurl::url.exists("http://scholar.google.com"))
+    if (httr::http_error("http://scholar.google.com"))
         skip("Couldn't connect to GS")
 
     Sys.sleep(5)
@@ -50,7 +50,7 @@ test_that("check read by cites", {
 
 test_that("CreateBibKey works with non-ascii characters", {
     skip_on_cran()
-    if (!RCurl::url.exists("http://scholar.google.com"))
+    if (httr::http_error("http://scholar.google.com"))
         skip("Couldn't connect to GS")
     out <- ReadGS(scholar.id = "KfQwll4AAAAJ", limit = 7, sort.by.date = TRUE) 
     expect_is(out, "BibEntry")

@@ -6,7 +6,7 @@ context("Crossref")
 
 test_that("GetBibEntryWithDOIs retrieves DOIs", {
     skip_on_cran()
-    if (!RCurl::url.exists("http://dx.doi.org/"))
+    if (httr::http_error("http://dx.doi.org/"))
         skip("Couldn't connect to dx.doi.org")
 
     dois <- c("10.1016/j.iheduc.2003.11.004", "10.3998/3336451.0004.203")
@@ -19,7 +19,7 @@ test_that("GetBibEntryWithDOIs retrieves DOIs", {
 
 test_that("GetBibEntryWithDOIs continues if some DOIs not found", {
     skip_on_cran()
-    if (!RCurl::url.exists("http://dx.doi.org/"))
+    if (httr::http_error("http://dx.doi.org/"))
         skip("Couldn't connect to dx.doi.org")
 
     dois <- c("NotADOI", "10.3998/3336451.0004.203")
@@ -33,7 +33,7 @@ test_that("GetBibEntryWithDOIs continues if some DOIs not found", {
 
 test_that("GetDOIs retrieves DOIs", {
     skip_on_cran()
-    if (!RCurl::url.exists("http://search.crossref.org"))
+    if (httr::http_error("http://search.crossref.org"))
         skip("Couldn't connect to search.crossref.org")
 
     BibOptions(check.entries = FALSE, sorting = "none")
@@ -52,7 +52,7 @@ old.opts <- BibOptions(check.entries = FALSE)
 
 test_that("ReadCrossRef *old* API retrieves queries successfully", {
     skip_on_cran()
-    if (!RCurl::url.exists("http://search.crossref.org/"))
+    if (httr::http_error("http://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
     BibOptions(check.entries = FALSE, sorting = "none")    
@@ -65,7 +65,7 @@ test_that("ReadCrossRef *old* API retrieves queries successfully", {
 
 test_that("ReadCrossRef *new* API retrieves queries successfully", {
     skip_on_cran()
-    if (!RCurl::url.exists("http://search.crossref.org/"))
+    if (httr::http_error("http://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
     BibOptions(check.entries = FALSE, sorting = "none")    
