@@ -107,7 +107,7 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
       invokeRestart( "muffleWarning" )
   ## tmp <- withCallingHandlers(lapply(cites, ParseGSCites2), warning = noNAwarn)
   tmp <- withCallingHandlers(mapply(ParseGSCitesNew, titles, authors, years,
-                                    journals, citeby), warning = noNAwarn)
+                                    journals, citeby, SIMPLIFY = FALSE), warning = noNAwarn)
   out <- lapply(tmp[!is.na(tmp)], MakeBibEntry, to.person = FALSE)
   out <- MakeCitationList(out)
 
