@@ -160,7 +160,7 @@ GetPubMedByID <- function(id, db = "pubmed", ...){
 #' field called \sQuote{PMIDrelated}.
 #' @return an object of class BibEntry.
 #' @importFrom httr GET
-#' @importFrom xml2 read_xml xml_get_all xml_text
+#' @importFrom xml2 read_xml xml_find_all xml_text
 #' @references \url{https://www.ncbi.nlm.nih.gov/books/NBK25500/}
 #' @family pubmed
 #' @keywords database
