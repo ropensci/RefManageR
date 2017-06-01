@@ -99,9 +99,9 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
     if (use.old.api){
       if (.is_not_nonempty_text(query))
           stop(gettextf("specify a valid %s", sQuote("query")))
-      headers <- list('Accept' = 'application/json', 'Content-Type' = 'application/json')
-      results <- try(GET("http://search.labs.crossref.org/dois", q=query, year=year,
-                           sort=sort, rows=limit, config = list(add_headers = headers)), TRUE)        
+
+      results <- try(GET("http://search.crossref.org/dois", query = list(q=query, year=year,
+                         sort=sort, rows=limit)), TRUE)
     }else{
       params <- list(rows = limit, sort = sort, offset = offset)
       if (!.is_not_nonempty_text(query))
@@ -181,7 +181,8 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
   }
 
   bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
-  bib.res$url <- URLdecode(bib.res$url)
+
+  bib.res$url <- sapply(bib.res$url, function(x) if (!is.null(x)) URLdecode(x)) 
   if (inherits(bib.res, "try-error"))
       stop(gettextf("failed to parse the returned BibTeX results; if \'delete.file\' %s%s",
                      "is FALSE, you can try viewing and editing the file: ", temp.file))
