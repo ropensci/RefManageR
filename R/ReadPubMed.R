@@ -36,8 +36,8 @@
 #' The language of the entry will be returned in the field \dQuote{language} and the abstract will be returned in the field \dQuote{abstract}, if they are available.
 #' @references \url{https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
 #' @family pubmed
-#' @importFrom httr GET read_xml
-#' @importFrom xml2 xml_find_all xml_text
+#' @importFrom httr GET
+#' @importFrom xml2 read_xml xml_find_all xml_text
 #' @examples
 #' if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/"))
 #'   ReadPubMed(query = "raymond carroll measurement error", retmax = 5, mindate = 1990)
@@ -92,8 +92,8 @@ ReadPubMed <- function(query, database = "PubMed", ...){
 #' unless a collection title is present -- in which case the \code{bibtype} will be
 #' \dQuote{InBook} -- or there is no journal information returned for an article -- in
 #' which case the \code{bibtype} will be \dQuote{Misc}.
-#' @importFrom httr POST read_xml
-#' @importFrom xml2 xml_text xml_find_all
+#' @importFrom httr POST
+#' @importFrom xml2 xml_text xml_find_all read_xml
 #' @keywords database
 #' @export
 #' @references \url{https://www.ncbi.nlm.nih.gov/books/NBK25500/}
