@@ -53,8 +53,9 @@
 #' \code{"award.funder"}, \code{"assertion-group"}, \code{"assertion"}, \code{"affiliation"},
 #' \code{"has-affiliation"}, \code{"alternative-id"}, and \code{"article-number"}.  See the first
 #' reference for a description of their meanings.
-#' @importFrom RJSONIO fromJSON
-#' @importFrom RCurl getForm getURLContent url.exists curlUnescape
+#' @importFrom jsonlite fromJSON
+#' @importFrom httr GET content http_error add_headers
+#' @importFrom utils URLdecode
 #' @export
 #' @keywords database
 #' @seealso \code{\link{ReadZotero}}, \code{\link{BibEntry}}, \code{\link{GetDOIs}},
@@ -63,7 +64,7 @@
 #' @references Newer API: \url{https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md},
 #' Older API: \url{http://search.crossref.org/help/api}
 #' @examples
-#' if (interactive() && url.exists("http://search.crossref.org/")){
+#' if (interactive() && !http_error("http://search.crossref.org/")){
 #'   BibOptions(check.entries = FALSE)
 #'   ## 3 results from the American Statistical Association involving "regression"
 #'   ReadCrossRef("regression", filter = list(prefix="10.1198"), limit = 3)
@@ -98,8 +99,9 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
     if (use.old.api){
       if (.is_not_nonempty_text(query))
           stop(gettextf("specify a valid %s", sQuote("query")))
-      results <- try(getForm("http://search.crossref.org/dois", q=query, year=year,
-                           sort=sort, rows=limit))        
+      headers <- list('Accept' = 'application/json', 'Content-Type' = 'application/json')
+      results <- try(GET("http://search.labs.crossref.org/dois", q=query, year=year,
+                           sort=sort, rows=limit, config = list(add_headers = headers)), TRUE)        
     }else{
       params <- list(rows = limit, sort = sort, offset = offset)
       if (!.is_not_nonempty_text(query))
@@ -110,12 +112,12 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
 
       if (length(filter))
           params$filter <- paste(paste0(names(filter),":",filter), collapse = ",")          
-      results <- try(getForm("http://api.crossref.org/works", .params=params))
+      results <- try(GET("http://api.crossref.org/works", query=params))
     }
     if (inherits(results, "try-error"))
-      stop(gettextf("RCurl failed to GET results from CrossRef: %s", geterrmessage()))
+      stop(gettextf("httr failed to GET results from CrossRef: %s", geterrmessage()))
 
-      fromj <- RJSONIO::fromJSON(results)
+    fromj <- content(results, type = "application/json", encoding = "UTF-8")
     if (!use.old.api)
         fromj <- fromj$message$items
     num.res <- min(limit, length(fromj))
@@ -127,7 +129,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
     }
 
     if (num.res > 0L){
-      if (!use.old.api && is.na(.doi)){
+        if (!use.old.api && is.na(.doi)){
           res <- lapply(fromj, ParseCrossRef)
           good <- which(sapply(res, function(e){
               good <- e$score >= min.relevance
@@ -179,7 +181,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
   }
 
   bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
-  bib.res$url <- RCurl::curlUnescape(bib.res$url)
+  bib.res$url <- URLdecode(bib.res$url)
   if (inherits(bib.res, "try-error"))
       stop(gettextf("failed to parse the returned BibTeX results; if \'delete.file\' %s%s",
                      "is FALSE, you can try viewing and editing the file: ", temp.file))
@@ -189,25 +191,26 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
 
 #' @keywords internal
 GetCrossRefBibTeX <- function(doi, tmp.file){
-  temp <- try(getURLContent(url=doi,
-                  .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"),
-                     followLocation=TRUE)), TRUE)
-  ## .opts = curlOptions(httpheader = c(Accept = "text/bibliography; style=bibtex"),
+    ## temp <- try(getURLContent(url=doi,
+    ##                 .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"),
+    ##                    followLocation=TRUE)), TRUE)
+    temp <- try(GET(doi, config = list(followlocation = TRUE),
+                      add_headers(Accept = "application/x-bibtex")), TRUE)
+    temp <- try(content(temp, as = "text", encoding = "UTF-8"), TRUE)
+    ## if(is.raw(temp))
+    ##     temp <- rawToChar(temp)
+    if (inherits(temp, "try-error") || temp[1] == "<h1>Internal Server Error</h1>" ||
+        !grepl("^[[:space:]]*@", temp, useBytes = TRUE)){
+        ## last one for occasional non-bibtex returned by CrossRef
+      message(gettextf("server error for doi %s, you may want to try again.", dQuote(doi)))
+      return(1L)
+    }
 
-  if(is.raw(temp))
-      temp <- rawToChar(temp)
-  if (inherits(temp, "try-error") || temp[1] == "<h1>Internal Server Error</h1>" ||
-      !grepl("^[[:space:]]*@", temp, useBytes = TRUE)){
-      ## last one for occasional non-bibtex returned by CrossRef
-    message(gettextf("server error for doi %s, you may want to try again.", dQuote(doi)))
-    return(1L)
-  }
-
-  temp <- gsub("&amp;", "&", temp, useBytes = TRUE)
-  ## Crossref uses data type for some entries
-  temp <- sub("^@[Dd]ata", "@online", temp, useBytes = TRUE)
-  write(temp, file = tmp.file, append=TRUE)
-  return(0L)
+    temp <- gsub("&amp;", "&", temp, useBytes = TRUE)
+    ## Crossref uses data type for some entries
+    temp <- sub("^@[Dd]ata", "@online", temp, useBytes = TRUE)
+    write(temp, file = tmp.file, append=TRUE)
+    return(0L)
 }
 
 #' @keywords internal

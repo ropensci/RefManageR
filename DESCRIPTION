@@ -22,7 +22,7 @@ License: GPL-2 | GPL-3 | BSD_3_clause + file LICENSE
 Imports:
     XML,
     RCurl,
-    RJSONIO,
+    jsonlite,
     utils,
     plyr,
     tools,
