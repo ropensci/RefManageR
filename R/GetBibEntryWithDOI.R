@@ -11,7 +11,7 @@
 #' The bibliographic information returned by the search of the \url{http://dx.doi.org} API is temporarily
 #' written to a file and then read back into \code{R} and return as a \code{BibEntry} object.
 #' @references \url{http://www.doi.org/tools.html}
-#' @importFrom httr http_error
+#' @importFrom httr http_error GET content
 #' @seealso \code{\link{ReadCrossRef}}, \code{\link{BibEntry}}
 #' @examples
 #' if (interactive() && !http_error("http://dx.doi.org/"))
@@ -21,13 +21,13 @@ GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'), delete
   on.exit(if (delete.file && file.exists(temp.file)) file.remove(temp.file))
   successes <- logical(length(doi))
   for (i in seq_along(doi)){
-    temp <- try(getURLContent(url=paste0('http://dx.doi.org/', doi[i]),
-              .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"),
-                  followLocation=TRUE)), TRUE)
+    temp <- try(GET(paste0('http://dx.doi.org/', doi[i]), config = list(followlocation = TRUE),
+                      add_headers(Accept = "application/x-bibtex")), TRUE)
+    temp <- try(content(temp, as = "text", encoding = "UTF-8"), TRUE)
     if (!inherits(temp, "try-error")){
       successes[i] <- TRUE
-      if (is.raw(temp))
-        temp <- rawToChar(temp)
+      ## if (is.raw(temp))
+      ##   temp <- rawToChar(temp)
       write(temp, file = temp.file, append=TRUE)
     }
   }
