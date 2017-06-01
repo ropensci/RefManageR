@@ -88,13 +88,20 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
     return()
   }
 
-  cites <- cites[seq_len(min(limit, length(cites)))]
   titles <- xml_text(xml_find_all(cites, "//td/a[@class=\"gsc_a_at\"]"))
   years <- xml_text(xml_find_all(cites, "//tr[@class=\"gsc_a_tr\"]/td[@class=\"gsc_a_y\"]/span"))
   srcs <- xml_text(xml_find_all(cites, "//td[@class=\"gsc_a_t\"]/div[@class=\"gs_gray\"]"))
   authors <- srcs[seq(1, length(srcs), by = 2)]
   journals <- srcs[seq(2, length(srcs), by = 2)]
   citeby <- xml_text(xml_find_all(cites, "//tr/td[@class=\"gsc_a_c\"]/a[@class=\"gsc_a_ac\"]"))
+  if (length(titles) > limit){
+      idx <- seq_len(limit)
+      titles <- titles[idx]
+      years <- years[idx]
+      authors <- authors[idx]
+      journals <- journals[idx]
+      citeby <- citeby[idx]
+  }
 
   noNAwarn <- function(w) if( any( grepl( "NAs introduced", w, useBytes = TRUE) ) )
       invokeRestart( "muffleWarning" )
