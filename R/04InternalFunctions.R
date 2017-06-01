@@ -624,77 +624,79 @@ ProcessArxiv <- function(arxinfo){
       res
 }
 
+## @keywords internal
+## @importFrom stringr str_sub str_trim
+## ParseGSCites2 <- function(l, encoding, check.entries=.BibOptions$check.entries){
+##   if (!length(l))
+##     return(list())
+##   td <- l[[1L]]
+
+##   title <- td[[1L]][[1L]]  # xmlValue(td[[1L]], encoding)
+##   author <- td[[2L]][[1L]]  # xmlValue(td[[2L]], encoding)
+##   cited_by <- as.numeric(l[[2L]][[1L]][[1]])
+##   if (is.na(cited_by))  # no citation yet
+##     cited_by <- "0"
+##   src <- td[[3L]][[1L]]  # xmlValue(td[[3L]], encoding)
+
+##   year <- as.numeric(regmatches(td[[3L]][[2L]][[1]], regexpr("([12][0-9]{3}$)", src, useBytes = TRUE)))
+##   first_digit <- as.numeric(regexpr("[\\[\\(]?\\d",
+##                                     src, useBytes = TRUE)) - 1L
+##   ids <- which(first_digit < 0L)
+##   first_digit <- replace(first_digit, ids, str_length(src)[ids])
+##   journal <- str_trim(str_sub(src, 1L, first_digit))
+##   trailing_commas <- as.numeric(regexpr(",$", journal, useBytes = TRUE)) - 1L
+##   ids <- which(trailing_commas < 0L)
+##   trailing_commas <- replace(trailing_commas, ids,
+##                              str_length(journal)[ids])
+##   journal <- str_sub(journal, 1L, trailing_commas)
+##   numbers <- str_trim(str_sub(src, first_digit + 1L,
+##                               str_length(src)))
+##   # handle '...' in title, journal, or authors
+##   if (!identical(check.entries, FALSE)){
+##     if (is.null(title <- CheckGSDots(title, title, check.entries)) ||
+##           is.null(author <- CheckGSDots(author, title, check.entries)) ||
+##           is.null(journal <- CheckGSDots(journal, title, check.entries)))
+##       return(NA)
+##   }
+
+##   res <- list(title = title, author = author, cites = cited_by,
+##               year = year)
+##   if (!is.na(eprint <- regmatches(src, regexec("arXiv:([0-9.]*)", src,
+##                                                useBytes = TRUE))[[1]][2])){
+##     res$eprinttype <- "arxiv"
+##     res$eprint <- eprint
+##     res$url <- paste0("http://arxiv.org/abs/", eprint)
+##     attr(res, "entry") <- "misc"
+##   }else{
+##     if (is.na(numbers) || numbers == "" || as.character(year) == numbers){
+##       if (as.numeric(cited_by) < 10L){
+##         attr(res, "entry") <- "report"
+##         res$institution <- journal
+##         res$type <- "techreport"
+##       }else{
+##         attr(res, "entry") <- "book"
+##         res$publisher <- res$journal
+##       }
+##     }else{
+##       res$journal <- journal
+##       res$number <- numbers
+##       attr(res, 'entry') <- 'article'
+##       numbers <- ProcessGSNumbers(res$number)
+##       res$number <- numbers$number
+##       res$pages <- numbers$pages
+##       res$volume <- numbers$volume
+##     }
+##   }
+
+##   res$author <- ProcessGSAuthors(res$author)  # format authors for MakeBibEntry
+##   # create key
+##   attr(res, "key") <- CreateBibKey(res$title, res$author, res$year)
+
+##   return(res)
+## }
+
 #' @keywords internal
 #' @importFrom stringr str_sub str_trim
-ParseGSCites2 <- function(l, encoding, check.entries=.BibOptions$check.entries){
-  if (!length(l))
-    return(list())
-  td <- l[[1L]]
-
-  title <- td[[1L]][[1L]]  # xmlValue(td[[1L]], encoding)
-  author <- td[[2L]][[1L]]  # xmlValue(td[[2L]], encoding)
-  cited_by <- as.numeric(l[[2L]][[1L]][[1]])
-  if (is.na(cited_by))  # no citation yet
-    cited_by <- "0"
-  src <- td[[3L]][[1L]]  # xmlValue(td[[3L]], encoding)
-
-  year <- as.numeric(regmatches(td[[3L]][[2L]][[1]], regexpr("([12][0-9]{3}$)", src, useBytes = TRUE)))
-  first_digit <- as.numeric(regexpr("[\\[\\(]?\\d",
-                                    src, useBytes = TRUE)) - 1L
-  ids <- which(first_digit < 0L)
-  first_digit <- replace(first_digit, ids, str_length(src)[ids])
-  journal <- str_trim(str_sub(src, 1L, first_digit))
-  trailing_commas <- as.numeric(regexpr(",$", journal, useBytes = TRUE)) - 1L
-  ids <- which(trailing_commas < 0L)
-  trailing_commas <- replace(trailing_commas, ids,
-                             str_length(journal)[ids])
-  journal <- str_sub(journal, 1L, trailing_commas)
-  numbers <- str_trim(str_sub(src, first_digit + 1L,
-                              str_length(src)))
-  # handle '...' in title, journal, or authors
-  if (!identical(check.entries, FALSE)){
-    if (is.null(title <- CheckGSDots(title, title, check.entries)) ||
-          is.null(author <- CheckGSDots(author, title, check.entries)) ||
-          is.null(journal <- CheckGSDots(journal, title, check.entries)))
-      return(NA)
-  }
-
-  res <- list(title = title, author = author, cites = cited_by,
-              year = year)
-  if (!is.na(eprint <- regmatches(src, regexec("arXiv:([0-9.]*)", src,
-                                               useBytes = TRUE))[[1]][2])){
-    res$eprinttype <- "arxiv"
-    res$eprint <- eprint
-    res$url <- paste0("http://arxiv.org/abs/", eprint)
-    attr(res, "entry") <- "misc"
-  }else{
-    if (is.na(numbers) || numbers == "" || as.character(year) == numbers){
-      if (as.numeric(cited_by) < 10L){
-        attr(res, "entry") <- "report"
-        res$institution <- journal
-        res$type <- "techreport"
-      }else{
-        attr(res, "entry") <- "book"
-        res$publisher <- res$journal
-      }
-    }else{
-      res$journal <- journal
-      res$number <- numbers
-      attr(res, 'entry') <- 'article'
-      numbers <- ProcessGSNumbers(res$number)
-      res$number <- numbers$number
-      res$pages <- numbers$pages
-      res$volume <- numbers$volume
-    }
-  }
-
-  res$author <- ProcessGSAuthors(res$author)  # format authors for MakeBibEntry
-  # create key
-  attr(res, "key") <- CreateBibKey(res$title, res$author, res$year)
-
-  return(res)
-}
-
 ParseGSCitesNew <- function(title, author, year, src, cited_by, encoding,
                             check.entries=.BibOptions$check.entries){
   ## if (!length(l))
@@ -739,14 +741,18 @@ ParseGSCitesNew <- function(title, author, year, src, cited_by, encoding,
     attr(res, "entry") <- "misc"
   }else{
     if (is.na(numbers) || numbers == "" || as.character(year) == numbers){
-      if (as.numeric(cited_by) < 10L){
-        attr(res, "entry") <- "report"
-        res$institution <- journal
-        res$type <- "techreport"
-      }else{
-        attr(res, "entry") <- "book"
-        res$publisher <- res$journal
-      }
+        if (.is_not_nonempty_text(journal))
+            attr(res, "entry") <- "misc"
+        else{
+          if (as.numeric(cited_by) < 10L){
+            attr(res, "entry") <- "report"
+            res$institution <- journal
+            res$type <- "techreport"
+          }else{
+            attr(res, "entry") <- "book"
+            res$publisher <- res$journal
+          }
+        }
     }else{
       res$journal <- journal
       res$number <- numbers
