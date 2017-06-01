@@ -53,7 +53,7 @@ It is not possible to automatically import BibTeX entries directly from Google
 Scholar as no API is available and this violates their Terms of Service.
 }
 \examples{
-if (interactive() && url.exists("http://scholar.google.com")){
+if (interactive() && !http_error("http://scholar.google.com")){
   ## R. J. Carroll's ten newest publications
   ReadGS(scholar.id = "CJOHNoQAAAAJ", limit = 10, sort.by.date = TRUE)
 

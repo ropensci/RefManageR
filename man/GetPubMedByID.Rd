@@ -28,7 +28,7 @@ unless a collection title is present -- in which case the \code{bibtype} will be
 which case the \code{bibtype} will be \dQuote{Misc}.
 }
 \examples{
-if (interactive() && url.exists("https://eutils.ncbi.nlm.nih.gov/"))
+if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/"))
   GetPubMedByID(c("11209037", "21245076"))
 }
 \references{

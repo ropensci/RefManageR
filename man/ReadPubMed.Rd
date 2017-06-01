@@ -42,7 +42,7 @@ See the Entrez documentation listed in the \emph{References}.
 The language of the entry will be returned in the field \dQuote{language} and the abstract will be returned in the field \dQuote{abstract}, if they are available.
 }
 \examples{
-if (interactive() && url.exists("https://eutils.ncbi.nlm.nih.gov/"))
+if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/"))
   ReadPubMed(query = "raymond carroll measurement error", retmax = 5, mindate = 1990)
 }
 \references{

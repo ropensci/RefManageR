@@ -25,7 +25,7 @@ The bibliographic information returned by the search of the \url{http://dx.doi.o
 written to a file and then read back into \code{R} and return as a \code{BibEntry} object.
 }
 \examples{
-if (interactive() && url.exists("http://dx.doi.org/"))
+if (interactive() && !http_error("http://dx.doi.org/"))
   GetBibEntryWithDOI(c("10.1016/j.iheduc.2003.11.004", "10.3998/3336451.0004.203"))
 }
 \references{
