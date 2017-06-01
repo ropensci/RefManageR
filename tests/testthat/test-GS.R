@@ -33,7 +33,7 @@ test_that("check drop incomplete", {
 
     expect_is(out, "BibEntry")
     if (num.dropped > 0)
-        expect_less_than(length(out), lim)
+        expect_lt(length(out), lim)
 })
 
 test_that("check read by cites", {
