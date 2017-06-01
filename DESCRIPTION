@@ -20,9 +20,7 @@ Description: Provides tools for importing and working with bibliographic
     'RMarkdown' or 'RHTML'.
 License: GPL-2 | GPL-3 | BSD_3_clause + file LICENSE
 Imports:
-    XML,
     xml2,
-    RCurl,
     jsonlite,
     utils,
     plyr,
@@ -40,4 +38,4 @@ Depends:
     R (>= 3.0)
 VignetteBuilder: knitr
 BugReports: https://github.com/mwmclean/RefManageR/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
