@@ -1,9 +1,12 @@
-Changes in Version 0.14.0 (2017-06-02)
+Changes in Version 0.14.3 (2017-06-02)
 --------------------------------------------------------
 NEW FEATURES
 
 * Package now uses httr, xml2, jsonlite packages instead of RCurl, XML, RJSONIO
 for scaffolding
+
+BUG FIXES
+* fix printing when `BibOptions(style = 'yaml)`
 
 Changes in Version 0.13.4 (2017-04-25)
 --------------------------------------------------------
