@@ -34,41 +34,6 @@ MakeAuthorYear <- function(docstyle = "text"){
       sub("([^.?!])$", "\\dQuote{\\1.}", string, useBytes = TRUE)
     }
 
-    sortKeysLA <- function(bib, yrs){
-        result <- character(length(bib))
-        for (i in seq_along(bib)) {
-            res <- bib[[i]]$shorthand
-            if (!length(res)){ 
-              res <- bib[[i]]$label
-              if (!length(res)) 
-                res <- ProcessNamesLA(bib[[i]]$shortauthor)
-              if (!length(res)) 
-                res <- ProcessNamesLA(bib[[i]]$shorteditor)
-              if (!length(res)) 
-                res <- ProcessNamesLA(bib[[i]]$author)
-              if (!length(res)) 
-                res <- ProcessNamesLA(bib[[i]]$editor)
-              if (!length(res)) 
-                res <- ProcessNamesLA(bib[[i]]$translator)          
-              res <- paste0(res, substr(yrs[i], 3, 4))
-            }
-            result[i] <- res
-        }
-        result
-    }
-
-    ProcessNamesLA <- function(nam){
-      if (length(nam)){
-        if (!inherits(nam, 'person'))
-          nam <- ArrangeAuthors(nam)
-        nam <- nam$family
-        res <- substr(nam, start = 1L, stop = 1L)
-        switch(as.character(length(res)), '0'= NULL, '1' = substr(nam, 1, 3),
-               '2' = paste0(res[seq_len(2)], collapse =''),
-               paste0(res[seq_len(3)], collapse =''))
-      }
-    }
-
     GetLastNames <- function(bib){
         result <- character(length(bib))
         for (i in seq_along(bib)) {
