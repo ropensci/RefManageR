@@ -54,20 +54,21 @@
 #' BibOptions(restore.defaults = TRUE)
 sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
                           .bibstyle = BibOptions()$bib.style, ...){
+  sort.fun.env <- GetFormatFunctions(DateFormatter = I)
   if (is.null(sorting))
     sorting <- "nty"
   if (sorting == 'debug' || .bibstyle == 'draft')
     return(x[order(names(x))])
   if (sorting != "none"  || .bibstyle == "alphabetic"){
-    aut <- MakeBibLaTeX()$sortKeys(x)
-    yr <- MakeBibLaTeX()$sortKeysY(x)
-    ps <- MakeBibLaTeX()$sortKeysPS(x)
-    ttl <- MakeBibLaTeX()$sortKeysT(x)
+    aut <- sort.fun.env$sortKeys(x)
+    yr <- sort.fun.env$sortKeysY(x)
+    ps <- sort.fun.env$sortKeysPS(x)
+    ttl <- sort.fun.env$sortKeysT(x)
     if (sorting %in% c('nyvt', 'anyvt'))
-      vol <- MakeBibLaTeX()$sortKeysV(x)
+      vol <- sort.fun.env$sortKeysV(x)
   }
   if (.bibstyle == 'alphabetic' || sorting == 'anyt' || sorting == 'anyvt')
-    alabs <- MakeBibLaTeX()$sortKeysLA(x, yr)
+    alabs <- sort.fun.env$sortKeysLA(x, yr)
 
   if (sorting != "none"){
     ord <- switch(sorting, nyt = order(ps, aut, yr, ttl, decreasing = decreasing),
@@ -95,14 +96,14 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
   if (hasArg(return.labs) && !length(unlist(x$.index))){
     if (.bibstyle %in% c("authoryear", "authortitle")){
       if (sorting == "none")
-        aut <- MakeBibLaTeX()$sortKeys(x)
+        aut <- sort.fun.env$sortKeys(x)
       suppressWarnings({
         ind <- nchar(aut) == 0L & !x$bibtype %in% c("XData", "Set")
         aut[ind] <- x$title[ind]
         x$.duplicated <- duplicated(aut)
       })
       if (.bibstyle == "authoryear"){
-        tmp <- MakeAuthorYear()$GetLastNames(x)
+        tmp <- sort.fun.env$GetLastNames(x)
 
         # sortyear could mess things up, so can't reuse yr
         yr <- sapply(unclass(x), function(dat)
