@@ -96,6 +96,9 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     fmtAddOn <- cleanap
     fmtHowPublished <- cleanap
     fmtOtherField <- cleanap
+    fmtVolumes <- label(suffix = ' vols.')
+    fmtOrganization <- label(suffix = '.')
+
     
     fmtJTitle <- function(title){
       if (!is.null(title))  
@@ -492,8 +495,56 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
       result
     }
 
-    fmtVolumes <- label(suffix = ' vols.')
-    fmtOrganization <- label(suffix = '.')
+    sortKeysLA <- function(bib, yrs){
+        result <- character(length(bib))
+        max.names <- .BibOptions$max.names
+        for (i in seq_along(bib)) {
+            res <- bib[[i]]$shorthand
+            if (!length(res)){
+              res <- bib[[i]]$label
+              if (!length(res))
+                res <- ProcessNamesLA(bib[[i]]$shortauthor, max.names)
+              if (!length(res))
+                res <- ProcessNamesLA(bib[[i]]$shorteditor, max.names)
+              if (!length(res))
+                res <- ProcessNamesLA(bib[[i]]$author, max.names)
+              if (!length(res))
+                res <- ProcessNamesLA(bib[[i]]$editor, max.names)
+              if (!length(res))
+                res <- ProcessNamesLA(bib[[i]]$translator, max.names)
+              res <- paste0(res, substr(yrs[i], 3, 4))
+            }
+            result[i] <- res
+        }
+        result
+    }
 
+    ProcessNamesLA <- function(nam, mn = .BibOptions$max.names){
+      nam.len <- length(nam)
+      if (nam.len){
+        if (!inherits(nam, 'person'))
+          nam <- ArrangeAuthors(nam)
+        if (nam.len == 1){
+          res <- paste0(nam$family, collapse = '')
+          res <- regmatches(res,
+                            regexpr('[[:upper:]][[:punct:]]?[[:alpha:]][[:punct:]]?[[:alpha:]]',
+                                         res, useBytes = TRUE))
+          res <- gsub('[[:punct:]]', '', res, useBytes = TRUE)
+        }else if (nam.len == 2 || nam.len == 3){
+          res <- sapply(nam$family, paste0, collapse = '')
+          res <- paste0(regmatches(res, regexpr('[[:upper:]]', res, useBytes = TRUE)),
+                        collapse = '')
+        }else{
+          res <- paste0(nam$family[[1]], collapse = '')
+          res <- regmatches(res,
+                            regexpr('[[:upper:]][[:punct:]]?[[:alpha:]][[:punct:]]?[[:alpha:]]',
+                                         res, useBytes = TRUE))
+          res <- gsub('[[:punct:]]', '', res, useBytes = TRUE)
+          res <- paste0(res, '+')
+        }
+        res
+      }
+    }
+    
     environment()
 }

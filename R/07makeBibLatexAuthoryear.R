@@ -34,47 +34,14 @@ MakeAuthorYear <- function(docstyle = "text"){
       sub("([^.?!])$", "\\dQuote{\\1.}", string, useBytes = TRUE)
     }
 
-    GetLastNames <- function(bib){
-        result <- character(length(bib))
-        for (i in seq_along(bib)) {
-          authors <- paste0(unlist(bib[[i]]$author$family), collapse = '')
-          if (authors == "")
-            authors <- paste0(unlist(bib[[i]]$editor$family), collapse = '')
-          if (authors == "")
-            authors <- paste0(unlist(bib[[i]]$translator$family), collapse = '')
-          if (authors == "")
-            authors <- cleanupLatex(bib[[i]]$title)
-          if (!length(authors))
-            authors <- ""
-          result[i] <- authors
-        }
-        result
-    }
-    
-    sortKeysV <- function(bib){
-      result <- numeric(length(bib))
-      for (i in seq_along(bib)){
-        res <- bib[[i]]$volume
-        if (!length(res)){
-          res <- '0000'
-        }else{
-          tmp <- try(sprintf("%04d", as.numeric('res')), TRUE)
-          if (!inherits(tmp, 'try-error'))
-            res <- tmp
-        }
-        result[i] <- res
-      }
-      result
-    }  
-
     #####################################################################################
     ## FIELDS: 
     #####################################################################################
 
     fmtDate <- function(dat, ind = ''){
-     if (length(dat)){
-       paste0('(', DateFormatter(dat), ind, ').')
-     }
+      if (length(dat)){
+        paste0('(', DateFormatter(dat), ind, ').')
+      }
     }
 
     fmtPages <- function(pgs, pref){
