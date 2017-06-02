@@ -77,23 +77,6 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
     addPeriod(res)
   }
 
-  sortKeysV <- function(bib){
-    result <- numeric(length(bib))
-    for (i in seq_along(bib)){
-      res <- bib[[i]]$volume
-      if (!length(res)){
-        res <- "0000"
-      }else{
-        tmp <- suppressWarnings(as.numeric(res))
-        res <- if (!is.na(tmp))
-                   sprintf("%04d", tmp)
-               else res
-      }
-      result[i] <- res
-    }
-    result
-  }
-
   #####################################################################################
   ## FIELDS:
   #####################################################################################
