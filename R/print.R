@@ -9,7 +9,7 @@
 #' plain text (style \dQuote{text}), BibTeX (\dQuote{Bibtex}), BibLaTeX
 #' (\dQuote{Biblatex}), a mixture of plain text and BibTeX as
 #' traditionally used for citations (\dQuote{citation}), HTML (\dQuote{html}),
-#' LaTeX (\dQuote{latex}), \dQuote{markdown},
+#' LaTeX (\dQuote{latex}), \dQuote{markdown}, \dQuote{yaml}, 
 #' R code (\dQuote{R}), and a simple copy of the textVersion elements
 #' (style \dQuote{textVersion}, see \code{\link{BibEntry}})
 #' \item \code{bib.style} - character string specifying BibLaTeX style to use for formatting
