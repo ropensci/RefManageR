@@ -1,5 +1,6 @@
 #' @keywords internal
-GetFormatFunctions <- function(docstyle = "text"){
+GetFormatFunctions <- function(docstyle = "text", DateFormatter){
+    force(DateFormatter)
     collapse <- function(strings){
       paste(strings, collapse = "\n")
     }
@@ -56,6 +57,24 @@ GetFormatFunctions <- function(docstyle = "text"){
         strings <- c(...)
         if (length(strings)) {
             addPeriod(paste(strings, collapse = sep))
+        }
+    }
+
+    shortName <- function(pers){
+        if (length(pers$family)) {
+            res <- cleanupLatex(pers$family)
+            if (length(pers$given)){ 
+              if (.BibOptions$first.inits){
+                paste0(c(substr(sapply(pers$given, cleanupLatex), 
+                    start = 1L, stop = 1L), res), collapse = ". ")
+              }else{
+                cleanupLatex(as.character(pers))
+              }
+            }else{
+              res
+            }
+        }else{
+          paste(cleanupLatex(pers$given), collapse = " ")
         }
     }
     
@@ -188,13 +207,15 @@ GetFormatFunctions <- function(docstyle = "text"){
         if (length(paper$eprinttype)){
           eprinttype <- tolower(paper$eprinttype)
           res <- paste0(switch(eprinttype, 'arxiv'='arXiv', 'pubmed' = 'PMID',
-                               'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype),
+                               'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL',
+                               paper$eprinttype),
                         ': ')
 
           if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
             base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
                                arxiv = "http://arxiv.org/abs/",
-                               pubmed = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=",
+                               pubmed = paste0("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/",
+                                         "elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id="),
                                "")
             res <- paste0(res, "\\href{", base.url, paper$eprint, "}{",
                           paper$eprint)
@@ -226,13 +247,15 @@ GetFormatFunctions <- function(docstyle = "text"){
         if (length(paper$eprinttype)){
           eprinttype <- tolower(paper$eprinttype)
           res <- paste0(switch(eprinttype, 'arxiv'='arXiv', 'pubmed' = 'PMID',
-                               'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype),
+                               'googlebooks' = 'Google Books', 'jstor' = 'JSTOR',
+                               'hdl' = 'HDL', paper$eprinttype),
                         ': ')
 
           if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
             base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
                                arxiv = "http://arxiv.org/abs/",
-                               pubmed = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=",
+                               pubmed = paste0("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/",
+                                         "elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id="),
                                "")
             res <- paste0(res, "[", paper$eprint)
             if (eprinttype == "arxiv"){
@@ -262,7 +285,8 @@ GetFormatFunctions <- function(docstyle = "text"){
       if (length(paper$eprint)){
         if (length(paper$eprinttype)){
           res <- paste0(switch(tolower(paper$eprinttype), 'arxiv'='arXiv', 'pubmed' = 'PMID',
-                               'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype),
+                               'googlebooks' = 'Google Books', 'jstor' = 'JSTOR',
+                               'hdl' = 'HDL', paper$eprinttype),
                         ': ', paper$eprint)
           if (tolower(paper$eprinttype) == 'arxiv'){
             if (length(paper$eprintclass)){
@@ -362,8 +386,9 @@ GetFormatFunctions <- function(docstyle = "text"){
       if (length(nom)){
         if(length(job)){
           res <- paste0(switch(tolower(job), 'compiler' = 'Comp. by ', 'editor' = 'Ed. by ',
-                        'founder' = 'Found. by ', 'continuator' = 'Cont. by ', 'redactor' = 'Red. by ',
-                        'reviser' = 'Rev. by ', 'collaborator' = 'In collab. with ', job), nom)
+                               'founder' = 'Found. by ', 'continuator' = 'Cont. by ',
+                               'redactor' = 'Red. by ', 'reviser' = 'Rev. by ',
+                               'collaborator' = 'In collab. with ', job), nom)
         }else{
           res <- paste0('Ed. by ', nom)
         }
@@ -386,7 +411,8 @@ GetFormatFunctions <- function(docstyle = "text"){
               res <- paste0(paste(res, paste(substr(sapply(pers$given, cleanupLatex),
                   1L, 1L), collapse = ". "), sep=', '), '.')
             }else{
-              res <- paste(res, paste(sapply(pers$given, cleanupLatex), collapse = ' '), sep = ', ')
+                res <- paste(res, paste(sapply(pers$given, cleanupLatex), collapse = ' '),
+                             sep = ', ')
             }
           }
           if (von)

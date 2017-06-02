@@ -1,6 +1,27 @@
 #' @keywords internal
 MakeAuthorYear <- function(docstyle = "text"){
-  with(GetFormatFunctions(docstyle), {
+  DF <- function(dat, field = 'date'){
+    if (!is.null(dat)){
+      if (field == 'date'){
+        fmt <- '%Y'
+      }else if (field == 'url'){
+          fmt <- switch(as.character(attr(dat, 'day.mon')), '2' = '%m/%d/%Y',
+                        '1' ='%m/%Y', '0' ='%Y')
+      }else{  # eventdate
+          fmt <- switch(as.character(attr(dat, 'day.mon')), '2' = '%b. %d, %Y',
+                        '1' = '%b. %Y', '0' = '%Y')
+      }
+      if (is.interval(dat)){
+        begind <- int_start(dat)
+        endd <- int_end(dat)
+        paste(format(begind, fmt), format(endd, fmt), sep ='-')
+      }else{
+        format(dat, fmt)
+      }
+    }
+  }
+
+  with(GetFormatFunctions(docstyle, DF), {
     ##################################################################
     ## Formatting functions
 
@@ -11,45 +32,6 @@ MakeAuthorYear <- function(docstyle = "text"){
 
     addPeriodTitle <- function (string){ 
       sub("([^.?!])$", "\\dQuote{\\1.}", string, useBytes = TRUE)
-    }
-
-    shortName <- function(pers){
-        if (length(pers$family)) {
-            res <- cleanupLatex(pers$family)
-            if (length(pers$given)){ 
-              if (.BibOptions$first.inits){
-                paste0(c(substr(sapply(pers$given, cleanupLatex), 
-                    start = 1L, stop = 1L), res), collapse = ". ")
-              }else{
-                cleanupLatex(as.character(pers))
-              }
-            }else{
-              res
-            }
-        }else{
-          paste(cleanupLatex(pers$given), collapse = " ")
-        }
-    }
-
-    DateFormatter <- function(dat, field = 'date'){
-      if (!is.null(dat)){
-        if (field == 'date'){
-          fmt <- '%Y'
-        }else if (field == 'url'){
-            fmt <- switch(as.character(attr(dat, 'day.mon')), '2' = '%m/%d/%Y',
-                          '1' ='%m/%Y', '0' ='%Y')
-        }else{  # eventdate
-            fmt <- switch(as.character(attr(dat, 'day.mon')), '2' = '%b. %d, %Y',
-                          '1' = '%b. %Y', '0' = '%Y')
-        }
-        if (is.interval(dat)){
-          begind <- int_start(dat)
-          endd <- int_end(dat)
-          paste(format(begind, fmt), format(endd, fmt), sep ='-')
-        }else{
-          format(dat, fmt)
-        }
-      }
     }
 
     sortKeysLA <- function(bib, yrs){
@@ -289,11 +271,6 @@ MakeAuthorYear <- function(docstyle = "text"){
       if (length(addr))
         return(cleanupLatex(addPeriod(addr)))
     }
-
-    fmtAddendum <- cleanap
-    fmtAddOn <- cleanap
-    fmtHowPublished <- cleanap
-    fmtOtherField <- cleanap
 
     #####################################################################################
     ## Entry types: Bibliography Drivers in BibLaTeX (Sec. 4.2.3 in manual)
