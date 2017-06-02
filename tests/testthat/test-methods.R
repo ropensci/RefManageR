@@ -8,6 +8,19 @@ bib <- ReadBib(system.file("Bib", "biblatexExamples.bib",
                            package = "RefManageR"), check = FALSE)
 
 
+test_that("yaml printing with authoryear", {
+    BibOptions(check.entries = FALSE)
+    print(bib[47:92], .opts = list(bib.style = "authoryear",
+                                                sorting = "anyvt", style = "yaml"))
+})
+
+test_that("R style printing with authoryear", {
+    print(bib[1:46], .opts = list(bib.style = "authoryear",
+                                                sorting = "anyt", style = "R"))
+
+})
+
+
 test_that("addition operator", {
     res <- bib[1:3] + bib[3:4]
     expect_length(res, 4L)
@@ -73,4 +86,3 @@ test_that("list extraction", {
     expect_length(bib[[c("westfahl:space", "angenendt")]], 2L)
     expect_length(bib[[6:10]], 5L)
 })
-
