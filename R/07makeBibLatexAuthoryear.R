@@ -182,6 +182,28 @@ MakeAuthorYear <- function(docstyle = "text"){
       }
     }
 
+    fmtBAuthor <- function(doc){
+      res <- fmtBAuthorSimple(doc, .BibOptions$max.names)
+      if (length(res)){
+        if (docstyle == "html"){
+          key <- attr(doc, "key")
+          ind <- .cites$indices[key]
+          key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
+          res <- if (!is.na(ind) && ind)
+            paste0("\\code{", key, "}\\href{#cite-", key, "}{", res, "}")
+          else res    
+        }else if (docstyle == "markdown"){
+          key <- attr(doc, "key")
+          ind <- .cites$indices[key]
+          key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
+          res <- if (!is.na(ind) && ind){
+            paste0("<a name=bib-", key, "></a>[", res, "](#cite-", key, ")")
+          }else res    
+        }  
+      }
+      res
+    }
+    
     fmtBAuthorSimple <- function(doc, max.n){
       if (doc$.duplicated)
         return(switch(docstyle, html = "---", markdown = "\\-\\-\\-",
