@@ -426,8 +426,8 @@ MakeCitationList <- function( x, header, footer){
   x$dateobj <- NULL
   anames <- bibentry_attribute_names
   manames <- c("mheader", "mfooter")
-  .clean <- MakeBibLaTeX()$cleanupLatex
-  .collapse <- MakeBibLaTeX()$collapse
+  .clean <- cleanupLatex
+  .collapse <- GetFormatFunctions("text", I)$collapse
   .blanks <- function(n) paste(rep.int(" ", n), collapse = "")
   .format_call_RR <- function(cname, cargs){
     cargs <- as.list(cargs)
