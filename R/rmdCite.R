@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @noRd
 AddCite <- function(index, use.hyper = TRUE){
   new.ind <- logical(length(index))
              if (use.hyper)
@@ -356,6 +357,7 @@ TextCite <- function(bib, ..., before = NULL, after = NULL,
 }
 
 #' @keywords internal
+#' @noRd
 ClearLabs <- function(sty){
   .cites$labs <- character(0)
   .cites$sty <- sty

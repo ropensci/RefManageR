@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @noRd
 .BibEntryCheckBibEntry1 <- function (x, force = FALSE, check = .BibOptions$check.entries) {
   if (identical(check, FALSE))
     return(NULL)
@@ -28,6 +29,7 @@
 }
 
 #' @keywords internal
+#' @noRd
 .BibEntry_match_format_style <- function (style){
     ind <- pmatch(tolower(style), tolower(bibentry_format_styles),
         nomatch = 0L)
@@ -39,6 +41,7 @@
 }
 
 #' @keywords internal
+#' @noRd
 .BibEntry_expand_crossrefs <- function (x, more = list(), to.bibtex = FALSE){
   if (!length(x))
     return(NULL)
@@ -96,6 +99,7 @@
 }
 
 #' @keywords internal
+#' @noRd
 ResolveBibLaTeXCrossRef <- function(chi, par){
   add <- setdiff(names(par), names(chi))
 
@@ -170,6 +174,7 @@ ResolveBibLaTeXCrossRef <- function(chi, par){
 }
 
 #' @keywords internal
+#' @noRd
 ArrangeAuthors <- function (x){
   rx <- "[[:space:]]+and[[:space:]]+"
   x <- gsub('[[:space:]]{2,}', ' ', x, useBytes = TRUE)
@@ -179,6 +184,7 @@ ArrangeAuthors <- function (x){
 
 #' @keywords internal
 #' @importFrom utils person
+#' @noRd
 ArrangeSingleAuthor <- function(y){
   ## To ensure names are parsed as accurately as possible,
   ##  LaTeX macros are removed with gsub in calls to cleanupLatexSearch
@@ -276,12 +282,14 @@ ArrangeSingleAuthor <- function(y){
 }
 
 #' @keywords internal
+#' @noRd
 UnlistSplitClean <- function(s){
   ## cleanupLatex(str_trim(s))
   unlist(strsplit(gsub("[{}]", "", str_trim(s), useBytes = TRUE), " "))
 }
 
 #' @keywords internal
+#' @noRd
 cleanupLatex <- function (x){
   if (!length(x))
     return(x)
@@ -326,6 +334,7 @@ cleanupLatex <- function (x){
 }
 
 #' @keywords internal
+#' @noRd
 MakeCitationList <- function( x, header, footer){
     rval <- list()
     for (i in seq_along(x)){
@@ -337,11 +346,13 @@ MakeCitationList <- function( x, header, footer){
 }
 
 #' @keywords internal
+#' @noRd
 .is_not_nonempty_text <- function(x){
   is.null(x) || any(is.na(x)) || all(grepl("^[[:space:]]*$", x, useBytes = TRUE))
 }
 
 #' @keywords internal
+#' @noRd
 .listify <- function (x){
   if (inherits(x, "list"))
     x
@@ -349,6 +360,7 @@ MakeCitationList <- function( x, header, footer){
 }
 
 #' @keywords internal
+#' @noRd
 .format_BibEntry_as_R_code <- function(x, collapse = FALSE){
   if (!length(x))
     return("bibentry()")
@@ -510,6 +522,7 @@ bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "text
 
 # from utils:::toBibtex, good for matching by given name initials only
 #' @keywords internal
+#' @noRd
 format_author <- function(author) paste(sapply(author, function(p) {
   fnms <- p$family
   only_given_or_family <- is.null(fnms) || is.null(p$given)
@@ -527,6 +540,7 @@ format_author <- function(author) paste(sapply(author, function(p) {
 bibentry_list_attribute_names <- c("mheader", "mfooter", "strings")
 
 #' @keywords internal
+#' @noRd
 .BibEntry_get_key <- function (x){
   if (!length(x))
     return(character())
@@ -602,6 +616,7 @@ bibentry_list_attribute_names <- c("mheader", "mfooter", "strings")
 
 
 #' @keywords internal
+#' @noRd
 ProcessArxiv <- function(arxinfo){
       res <- list(eprinttype = 'arxiv')
       # need to check date since arXiv identifier format changed in Apr-07
@@ -696,6 +711,7 @@ ProcessArxiv <- function(arxinfo){
 ## }
 
 #' @keywords internal
+#' @noRd
 #' @importFrom stringr str_sub str_trim
 ParseGSCitesNew <- function(title, author, year, src, cited_by, encoding,
                             check.entries=.BibOptions$check.entries){
@@ -772,6 +788,7 @@ ParseGSCitesNew <- function(title, author, year, src, cited_by, encoding,
 }
 
 #' @keywords internal
+#' @noRd
 #' @importFrom utils as.person
 ProcessGSAuthors <- function(authors){
   # authors <- gsub(',', ', and', authors)  # add "and" to separate authors
@@ -796,6 +813,7 @@ ProcessGSAuthors <- function(authors){
 }
 
 #' @keywords internal
+#' @noRd
 ProcessGSNumbers <- function(numbers){
   pages <- volume <- number <- NULL
 

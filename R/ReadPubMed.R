@@ -243,6 +243,7 @@ GetPubMedRelated <- function(id, database = "pubmed", batch.mode = TRUE, max.res
 
 #' @keywords internal
 #' @importFrom xml2 xml_text xml_find_all xml_attr
+#' @noRd
 ProcessPubMedResult <- function(tdoc){
   if (!length(tdoc))
      return()
@@ -470,6 +471,7 @@ LookupPubMedID <- function(bib, index){
 }
 
 #' @keywords internal
+#' @noRd
 #' @importFrom lubridate year
 #' @importFrom utils URLencode
 MakeCitationString <- function(bib.entry){

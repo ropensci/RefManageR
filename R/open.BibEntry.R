@@ -44,6 +44,7 @@ open.BibEntry <- function(con, entry = 1L, open.field = c("file", "url", "eprint
 }
 
 #' @keywords internal
+#' @noRd
 GetURL <- function(entry, flds, to.bib = FALSE){
   url <- ""
   opened <- FALSE

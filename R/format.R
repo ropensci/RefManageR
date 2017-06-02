@@ -1,15 +1,16 @@
-# Encode in a common format
-#
-# Format a BibEntry object in a pretty format.
-#
-# @param x - an object of class BibEntry
-# @param style
-# @return character vector containing formatted BibEntry object.
-# @seealso \code{\link{print.BibEntry}}, \code{\link{BibEntry}}
+#' Encode in a common format
+#'
+#' Format a BibEntry object in a pretty format.
+#'
+#' @param x an object of class BibEntry
+#' @param style see \code{\link[RefManageR]{print.BibEntry}}
+#' @return character vector containing formatted BibEntry object.
+#' @seealso \code{\link{print.BibEntry}}, \code{\link{BibEntry}}
 #' @importFrom tools Rd2txt_options Rd2txt Rd2HTML Rd2latex loadPkgRdMacros
 ## @S3method format BibEntry
 #' @export
 #' @keywords internal
+#' @noRd
 format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOptions$bib.style,
                              citation.bibtex.max = getOption("citation.bibtex.max", 1), .sort = TRUE,
                             .sorting = 'nty', enc = 'UTF-8', ...){

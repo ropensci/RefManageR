@@ -191,6 +191,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
 }
 
 #' @keywords internal
+#' @noRd
 GetCrossRefBibTeX <- function(doi, tmp.file){
     ## temp <- try(getURLContent(url=doi,
     ##                 .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"),
@@ -215,6 +216,7 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
 }
 
 #' @keywords internal
+#' @noRd
 ParseCrossRef <- function(e){
     name.fields <- intersect(names(e), .BibEntryNameList)
     for (fld in name.fields)
@@ -247,6 +249,7 @@ ParseCrossRef <- function(e){
 }
 
 #' @keywords internal
+#' @noRd
 ToPersonCR <- function(x){
     x <- lapply(x, function(y){
                    y$affiliation <- NULL
@@ -257,6 +260,8 @@ ToPersonCR <- function(x){
     x
 }
 
+#' @keywords internal
+#' @noRd
 ProcessDatesCR <- function(e){
     for (s in c("published-print", "issued", "created", "deposited")){
         tdate <- unlist(e[[s]][[1]])

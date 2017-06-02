@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @noRd
 MakeAuthorYear <- function(docstyle = "text"){
   DF <- function(dat, field = 'date'){
     if (!is.null(dat)){

@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @noRd
 GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     force(DateFormatter)
     collapse <- function(strings){

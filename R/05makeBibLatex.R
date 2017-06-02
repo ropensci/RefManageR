@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @noRd
 MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
   DF <- function(dat, other = FALSE){
     if (!is.null(dat)){

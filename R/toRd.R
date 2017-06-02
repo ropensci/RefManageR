@@ -10,6 +10,7 @@
 # @return Returns a character vector containing a fragment of Rd code that could be parsed and rendered.
 # @seealso \code{\link{print.BibEntry}}, \code{\link{sort.BibEntry}}, \code{\link{BibEntry}}, \code{\link{bibstyle}}
 #' @keywords internal
+#' @noRd
 #' @importFrom tools getBibstyle bibstyle toRd
 toRd.BibEntry <- function(obj, ...) {
   .style <- .BibOptions$bib.style

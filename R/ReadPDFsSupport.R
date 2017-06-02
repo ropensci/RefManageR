@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @noRd
 ReadFirstPages <- function(doc, page.one = TRUE){
   doc <- unlist(doc)
   res <- list()
@@ -118,6 +119,7 @@ ReadFirstPages <- function(doc, page.one = TRUE){
 }
 
 #' @keywords internal
+#' @noRd
 CheckJSTOR <- function(doc1, doc2, file){
   ind <- grep('http://www\\.jstor\\.org/stable/([0-9]+)', doc1, useBytes = TRUE)[1]
   if (!is.na(ind)){
@@ -174,6 +176,7 @@ CheckJSTOR <- function(doc1, doc2, file){
 }
 
 #' @keywords internal
+#' @noRd
 GetJSTOR <- function(doc){  # take extra caution for long title, author list, or journal info
   aut.ind <- grep('Author\\(s\\): ', doc, useBytes = TRUE)
   if (!length(aut.ind)){  # old format for JSTOR papers.
@@ -244,6 +247,7 @@ GetJSTOR <- function(doc){  # take extra caution for long title, author list, or
 }
 
 #' @keywords internal
+#' @noRd
 GetAuthorTitle <- function(doc, found.abstract, kw){
   if (!identical(found.abstract, TRUE)){
     abst.ind <- grep('^A[Bb][Ss][Tt][Rr][Aa][Cc][Tt]|^S[Uu][Mm][Mm][Aa][Rr][Yy]|^S[Yy][Nn][Oo][Pp][Ss][Ii][Ss][:.]?\\>', doc, useBytes = TRUE)
@@ -364,6 +368,7 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
 
 
 #' @keywords internal
+#' @noRd
 CleanAuthorTitle <- function(bib1, bib2, bibMeta, file){
   # browser()
   if (!is.null(bibMeta)){ # Don't let Metadata date overwrite year from pdf text
@@ -409,6 +414,7 @@ CleanAuthorTitle <- function(bib1, bib2, bibMeta, file){
 }
 
 #' @keywords internal
+#' @noRd
 SearchDOIText <- function(txt){
   pattern  <- "\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'])\\S)+)\\b"
   m <- regexpr(pattern, txt, perl = TRUE, useBytes = TRUE)
@@ -420,6 +426,7 @@ SearchDOIText <- function(txt){
 }
 
 #' @keywords internal
+#' @noRd
 ProcessPDFMeta <- function(x, enc = 'UTF-8'){
   res <- list()
   a.check <- t.check <- NULL
@@ -487,6 +494,7 @@ ProcessPDFMeta <- function(x, enc = 'UTF-8'){
 }
 
 #' @keywords internal
+#' @noRd
 ProcessPDFSubject <- function(subj){
   res <- list()
 
@@ -526,6 +534,7 @@ ProcessPDFSubject <- function(subj){
 }
 
 #' @keywords internal
+#' @noRd
 AddListToList <- function(list1, list2){
   c1 <- is.na(list1) || length(list1)==0
   c2 <- is.na(list2) || length(list2)==0
