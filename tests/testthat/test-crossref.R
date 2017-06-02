@@ -79,7 +79,7 @@ test_that("ReadCrossRef *new* API retrieves queries successfully", {
 
 test_that("ReadCrossRef *old* API min.relevance and verbose args work", {
     skip_on_cran()
-    if (!RCurl::url.exists("http://search.crossref.org/"))
+    if (httr::http_error("http://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
     BibOptions(check.entries = FALSE, sorting = "none")    
@@ -93,7 +93,7 @@ test_that("ReadCrossRef *old* API min.relevance and verbose args work", {
 
 test_that("ReadCrossRef works when given DOI", {
     skip_on_cran()
-    if (!RCurl::url.exists("http://search.crossref.org/"))
+    if (httr::http_error("http://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
     out <- ReadCrossRef(query = "10.1007/978-1-4899-4477-1_13", limit = 2, sort = "relevance",
