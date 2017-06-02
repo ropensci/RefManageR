@@ -1,9 +1,14 @@
 #' @keywords internal
 MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
-##################################################################
-## Formatting functions
+    penv <- GetFormatFunctions(docstyle)
+    assign("authortitle", authortitle, penv)
+  with(penv, {
+    force(authortitle)
+    ##################################################################
+    ## Formatting functions
 
-fmtPrefixSimple <- function(paper) switch(.BibOptions$bib.style, numeric = paste0("[", fmtNumPre(paper), "]"),
+    fmtPrefixSimple <- function(paper) switch(.BibOptions$bib.style,
+                                              numeric = paste0("[", fmtNumPre(paper), "]"),
                                           alphabetic = paste0("[", paper$.index, "]"),
                                           draft = paste0('\\bold{', attr(paper, 'key'), '}'),
                                           NULL)
@@ -41,66 +46,6 @@ fmtNumPre <- function(doc){
   res
 }
 
-collapse <- function(strings){
-  paste(strings, collapse = "\n")
-}
-
-labelclean <- function(prefix = NULL, suffix = NULL, style = plain){
-    f <- label(prefix, suffix, style)
-    function(s) f(cleanupLatex(s))
-}
-
-label <- function(prefix = NULL, suffix = NULL, style = plain){
-    force(prefix)
-    force(suffix)
-    force(style)
-    function(s) if (length(s))
-        style(paste0(prefix, collapse(s), suffix))
-}
-
-labelPersons <- function(prefix = NULL, suffix = NULL, style = plain){
-    force(prefix)
-    force(suffix)
-    force(style)
-    function(s) if (length(s))
-        style(paste0(prefix, authorList(s), suffix))
-}
-
-
-emphclean <- function (s){
-  emph(cleanupLatex(s))
-}
-
-emphcleanap <- function (s){
-  emph(addPeriod(cleanupLatex(s)))
-}
-
-emph <- function (s){
-  if (length(s))
-    paste0("\\emph{", collapse(s), "}")
-}
-
-plainclean <- function (s){
-  plain(cleanupLatex(s))
-}
-
-cleanap <- function(s){
-  if (length(s))
-    cleanupLatex(addPeriod(s))
-}
-
-plain <- function (pages){
-  if (length(pages))
-    collapse(pages)
-}
-
-sentence <- function (..., sep = ", "){
-    strings <- c(...)
-    if (length(strings)) {
-        addPeriod(paste(strings, collapse = sep))
-    }
-}
-
 sentenceP <- function (..., pgs = NULL, tp = NULL, sep = ", "){
   strings <- c(...)
   res <- NULL
@@ -114,59 +59,6 @@ sentenceP <- function (..., pgs = NULL, tp = NULL, sep = ", "){
   addPeriod(res)
 }
 
-addPeriod <- function (string){
-  sub("([^.?!])$", "\\1.", string, useBytes = TRUE)
-}
-
-authorList <- function(aut){
-    names <- sapply(aut, shortName)
-    if (length(names) > 1L){
-        result <- paste(paste(names[-length(names)], collapse = ", "),
-            "and", names[length(names)])
-    }else{
-      result <- names
-    }
-    result
-}
-
-fmtSingleEditor <- function(nom, job, prefix = NULL, suffix = '.'){
-  if (length(nom)){
-    if(length(job)){
-      res <- paste0(switch(tolower(job), 'compiler' = 'Comp. by ', 'editor' = 'Ed. by ',
-                    'founder' = 'Found. by ', 'continuator' = 'Cont. by ', 'redactor' = 'Red. by ',
-                    'reviser' = 'Rev. by ', 'collaborator' = 'In collab. with ', job), nom)
-    }else{
-      res <- paste0('Ed. by ', nom)
-    }
-    paste0(prefix, res, suffix)
-  }
-}
-
-shortNameLF <- function(pers){
-  fam <- pers$family
-  lfam <- length(fam)
-  if (lfam) {
-      von <- lfam > 1L && substr(fam[1L], 1L, 1L) %in% letters
-      if (von){
-        res <- cleanupLatex(fam[2L:lfam])
-      }else{
-        res <- cleanupLatex(fam)
-      }
-      if (length(pers$given)){
-        if (.BibOptions$first.inits){
-          res <- paste0(paste(res, paste(substr(sapply(pers$given, cleanupLatex),
-              1L, 1L), collapse = ". "), sep=', '), '.')
-        }else{
-          res <- paste(res, paste(sapply(pers$given, cleanupLatex), collapse = ' '), sep = ', ')
-        }
-      }
-      if (von)
-          res <- paste(res, cleanupLatex(fam[1L]))
-      res
-  }else{
-    paste(cleanupLatex(pers$given), collapse = " ")
-  }
-}
 
 shortName <- function(pers){
     if (length(pers$family)) {
@@ -189,9 +81,11 @@ shortName <- function(pers){
 DateFormatter <- function(dat, other = FALSE){
   if (!is.null(dat)){
     if (other){
-      fmt <- switch(as.character(attr(dat, 'day.mon')), '2' = '%m/%d/%Y', '1' ='%m/%Y', '0' ='%Y')
+        fmt <- switch(as.character(attr(dat, 'day.mon')), '2' = '%m/%d/%Y',
+                      '1' ='%m/%Y', '0' ='%Y')
     }else{
-      fmt <- switch(as.character(attr(dat, 'day.mon')), '2' = '%b. %d, %Y', '1' = '%b. %Y', '0' = '%Y')
+        fmt <- switch(as.character(attr(dat, 'day.mon')), '2' = '%b. %d, %Y',
+                      '1' = '%b. %Y', '0' = '%Y')
     }
     if (is.interval(dat)){
       begind <- int_start(dat)
@@ -203,55 +97,7 @@ DateFormatter <- function(dat, other = FALSE){
   }
 }
 
-sortKeys <- function(bib){
-    result <- character(length(bib))
-    for (i in seq_along(bib)) {
-      authors <- bib[[i]]$sortname
-      if (!length(authors))
-        authors <- paste0(sapply(bib[[i]]$author, shortNameLF), collapse = '')
-      if (authors == ''){
-        authors <- paste0(sapply(bib[[i]]$editor, shortNameLF), collapse = '')
-        if (authors == '')
-          authors <- paste0(sapply(bib[[i]]$translator, shortNameLF), collapse = '')
-      }
-      result[i] <- authors
-    }
-    result
-}
 
-sortKeysY <- function(bib){
-    result <- character(length(bib))
-    bib <- unclass(bib)
-    for (i in seq_along(bib)) {
-      res <- bib[[i]]$sortyear
-      if (!length(res)){
-        res <- attr(bib[[i]], 'dateobj')
-        if (is.null(res)){
-          res <- 9999
-        }else if (inherits(res, 'Interval')){
-          res <- year(int_start(res))
-        }else{
-          res <- year(res)
-        }
-      }
-      result[i] <- res
-    }
-    result
-}
-
-sortKeysPS <- function(bib){
-    result <- character(length(bib))
-    for (i in seq_along(bib)) {
-        res <- bib[[i]]$presort
-        if (!length(res)){
-          res <- bib[[i]]$sortkey
-          if (!length(res))
-            res <- "mm"
-        }
-        result[i] <- res
-    }
-    result
-}
 
 sortKeysLA <- function(bib, yrs){
     result <- character(length(bib))
@@ -301,23 +147,6 @@ ProcessNamesLA <- function(nam, mn = .BibOptions$max.names){
   }
 }
 
-sortKeysT <- function(bib){
-  result <- character(length(bib))
-  for (i in seq_along(bib)){
-    res <- bib[[i]]$sorttitle
-    if (!length(res))
-      res <- bib[[i]]$title
-    if (!length(res)){
-      res <- bib[[i]]$maintitle
-      if (!length(res))
-        res <- bib[[i]]$booktitle
-      if (!length(res))
-        res <- ""
-    }
-    result[i] <- res
-  }
-  result
-}
 
 sortKeysV <- function(bib){
   result <- numeric(length(bib))
@@ -396,31 +225,6 @@ fmtTotalPages <- function(pgs, pref){
   }
 }
 
-fmtNote <- function(note, prefix = NULL, suffix = '.'){
-  if (length(note))
-    paste0(prefix, cleanupLatex(note), suffix)
-}
-
-fmtJournal <- function(s){
-  if (length(s$journaltitle)){
-    res <- paste0('In: ', emph(cleanupLatex(s$journaltitle)))
-    if (length(s$journalsubtitle))
-      res <- paste(addPeriod(res), emph(cleanupLatex(s$journalsubtitle)))
-    return(res)
-  }else if(!is.null(s$journal)){
-    paste0('In: ', emph(cleanupLatex(s$journal)))
-  }
-}
-
-fmtVolume <- function(vol, num){
-  if (length(vol)){
-    res <- vol
-    if (length(num))
-      res <- paste(vol, num, sep='.')
-    res
-  }
-}
-
 fmtBVolume <- function(vol, num){
   if (length(vol)){
     res <- paste0('Vol. ', vol)
@@ -429,9 +233,6 @@ fmtBVolume <- function(vol, num){
     res
   }
 }
-
-fmtVolumes <- label(suffix = ' vols.')
-fmtOrganization <- label(suffix = '.')
 
 fmtBAuthor <- function(doc){
   res <- fmtBAuthorSimple(doc, .BibOptions$max.names)
@@ -488,10 +289,12 @@ fmtBAuthorSimple <- function(doc, max.n){
         if (max.n <= 1L){
           out <- paste0(out, ', et al.')
         }else{
-          out <- paste0(paste(out, paste0(sapply(res[2L:max.n], shortName), collapse = ", "), sep = ', '), ', et al.')
+            out <- paste0(paste(out, paste0(sapply(res[2L:max.n], shortName),
+                                            collapse = ", "), sep = ', '), ', et al.')
         }
       }else{
-        out <- paste(paste(out, paste0(sapply(res[-c(1L, length(res))], shortName), collapse = ", "), sep = ', '),
+          out <- paste(paste(out, paste0(sapply(res[-c(1L, length(res))], shortName),
+                                         collapse = ", "), sep = ', '),
                      shortName(res[length(res)]), sep = ' and ')
       }
     }
@@ -501,7 +304,8 @@ fmtBAuthorSimple <- function(doc, max.n){
     if (!length(doc$editortype)){
       out <- paste0(out, ', ed.')
     }else{
-      out <- paste0(out, switch(tolower(doc$editortype), 'compiler' = ', comp.', 'editor' = ', ed.',
+        out <- paste0(out, switch(tolower(doc$editortype), 'compiler' = ', comp.',
+                                  'editor' = ', ed.',
                                 'founder' = ', found.', 'continuator' = ', cont.',
                                 'redactor' = ', red.', 'reviser' = ', rev.',
                    'collaborator' = ', collab.', doc$editortype))
@@ -525,220 +329,6 @@ fmtPublisher <- function(pub, loc, addr){
   }
 }
 
-fmtChapter <- label(prefix = '. Chap. ')
-
-fmtISSN <- label(prefix = 'ISSN: ', suffix = '.')
-fmtISBN <- label(prefix = 'ISBN: ', suffix = '.')
-fmtISRN <- label(prefix = 'ISRN: ', suffix = '.')
-fmtDOI <- switch(docstyle, html = function(doi){
-                        if (length(doi)){
-                          paste0("DOI: \\href{http://dx.doi.org/",
-                                 doi, "}{", doi, "}.")
-                        }
-                      }, markdown = function(doi){
-                          if (length(doi)){
-                            paste0("DOI: [", doi, "](http://dx.doi.org/", doi, ").")
-                          }
-                        }, label(prefix = 'DOI: ', suffix = '.'))
-
-fmtURL <- function(paper){
-  if (length(paper[['url']])){
-    res <- paper$url
-    res <- switch(docstyle, html = paste0("URL: \\url{", res, "}"),
-                  markdown = paste0("URL: [", res, "](", res, ")"),
-                  paste0('\\url{', res, '}'))
-    if (length(paper$urldate)){
-      fDate <- try(ProcessDate(paper$urldate, NULL), TRUE)
-      if (!is.null(fDate) && !inherits(fDate, 'try-error'))
-        res <- paste0(res, ' (visited on ', DateFormatter(fDate, TRUE), ')')
-    }
-    addPeriod(res)
-  }else if (length(paper$urldate)){
-    fDate <- try(ProcessDate(paper$urldate, NULL), TRUE)
-    if (!is.null(fDate) && !inherits(fDate, 'try-error'))
-      paste0('(Visited on ', DateFormatter(fDate, TRUE), ').')
-  }
-}
-
-fmtEprint <- switch(docstyle, html = function(paper){
-  if (length(paper$eprint)){
-    if (length(paper$eprinttype)){
-      eprinttype <- tolower(paper$eprinttype)
-      res <- paste0(switch(eprinttype, 'arxiv'='arXiv', 'pubmed' = 'PMID',
-                           'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype),
-                    ': ')
-
-      if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
-        base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
-                           arxiv = "http://arxiv.org/abs/",
-                           pubmed = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=",
-                           "")
-        res <- paste0(res, "\\href{", base.url, paper$eprint, "}{",
-                      paper$eprint)
-        if (eprinttype == "arxiv"){
-          if(length(paper$eprintclass)){
-            res <- paste0(res, " [", paper$eprintclass, ']')
-          }else if (length(paper$primaryclass)){
-            res <- paste0(res, " [", paper$primaryclass, ']')
-          }
-        }
-        res <- paste0(res, "}")
-      }else{
-        res <- paste0(res, paper$eprinttype)
-      }
-    }else if (length(paper$archiveprefix)){
-      if (length(paper$eprintclass)){
-        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
-      }else if(length(paper$primaryclass)){
-        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
-      }else
-        res <- paste0('eprint: ', paper$eprint)
-    }else{
-      res <- paste0('eprint: ', paper$eprint)
-    }
-    addPeriod(res)
-  }
-}, markdown = function(paper){
-  if (length(paper$eprint)){
-    if (length(paper$eprinttype)){
-      eprinttype <- tolower(paper$eprinttype)
-      res <- paste0(switch(eprinttype, 'arxiv'='arXiv', 'pubmed' = 'PMID',
-                           'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype),
-                    ': ')
-
-      if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
-        base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
-                           arxiv = "http://arxiv.org/abs/",
-                           pubmed = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id=",
-                           "")
-        res <- paste0(res, "[", paper$eprint)
-        if (eprinttype == "arxiv"){
-          if(length(paper$eprintclass)){
-            res <- paste0(res, " [", paper$eprintclass, ']')
-          }else if (length(paper$primaryclass)){
-            res <- paste0(res, " [", paper$primaryclass, ']')
-          }
-        }
-        res <- paste0(res, "](", base.url, paper$eprint, ")")
-      }else{
-        res <- paste0(res, paper$eprinttype)
-      }
-    }else if (length(paper$archiveprefix)){
-      if (length(paper$eprintclass)){
-        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
-      }else if(length(paper$primaryclass)){
-        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
-      }else
-        res <- paste0('eprint: ', paper$eprint)
-    }else{
-      res <- paste0('eprint: ', paper$eprint)
-    }
-    addPeriod(res)
-  }
-}, function(paper){
-  if (length(paper$eprint)){
-    if (length(paper$eprinttype)){
-      res <- paste0(switch(tolower(paper$eprinttype), 'arxiv'='arXiv', 'pubmed' = 'PMID',
-                           'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL', paper$eprinttype),
-                    ': ', paper$eprint)
-      if (tolower(paper$eprinttype) == 'arxiv'){
-        if (length(paper$eprintclass)){
-          res <- paste0(res, ' [', paper$eprintclass, ']')
-        }else if(length(paper$primaryclass)){
-          res <- paste0(res, ' [', paper$primaryclass, ']')
-        }
-      }
-    }else if (length(paper$archiveprefix)){
-      if (length(paper$eprintclass)){
-        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
-      }else if(length(paper$primaryclass)){
-        res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
-      }else
-        res <- paste0('eprint: ', paper$eprint)
-    }else{
-      res <- paste0('eprint: ', paper$eprint)
-    }
-    addPeriod(res)
-  }
-})
-
-fmtEditor <- function(doc, editor.used.already = FALSE, prefix = NULL, suffix = '.'){
-  res <- NULL
-  if (length(doc$editor)  && !editor.used.already){
-    res <- c(res, fmtSingleEditor(authorList(doc$editor), doc$editortype, prefix, suffix))
-  }
-  if (length(doc$editora)){
-    res <- c(res, fmtSingleEditor(authorList(doc$editora), doc$editoratype, prefix, suffix))
-  }
-  if (length(doc$editorb)){
-    res <- c(res, fmtSingleEditor(authorList(doc$editorb), doc$editorbtype, prefix, suffix))
-  }
-  if (length(doc$editorc)){
-    res <- c(res, fmtSingleEditor(authorList(doc$editorc), doc$editorctype, prefix, suffix))
-  }
-  paste0(res)
-}
-
-fmtJTitle <- function(title){
-  if (!is.null(title))  
-    if (grepl('[.?!]$', title, useBytes = TRUE))
-      paste0("\\dQuote{", collapse(cleanupLatex(title)), "}")
-    else paste0("\\dQuote{", collapse(cleanupLatex(title)), "}.")
-}
-
-fmtVenue <- function(venue){
-  if (length(venue)){
-    venue <- gsub('[.?!]$', '', venue, useBytes = TRUE)
-    paste0("(", collapse(cleanupLatex(venue)), ").")
-  }
-}
-
-fmtEventTitle <- cleanap
-
-fmtIBTitle <- function(tl, stl, bib){
-  if (bib)
-    fmtBTitle(tl, stl)
-  else{
-    if (!is.null(stl)){
-      fmtJTitle(paste0(c(addPeriod(tl), stl), collapse =' '))
-    }else{
-      fmtJTitle(tl)
-    }
-  }
-}
-
-fmtBTitle <- function(tl, stl){
-  if (length(tl)){
-    if (!is.null(stl))
-      tl <- paste0(c(addPeriod(tl), stl), collapse =' ')
-    if (grepl('[.?!]$', tl, useBytes = TRUE)){
-      emph(cleanupLatex(tl))
-    }else{
-      paste0(emph(cleanupLatex(tl)), '.')
-    }
-  }
-}
-
-fmtAnnotator <- labelPersons(prefix = 'With annots. by ', suffix = '.')
-fmtCommentator <- labelPersons(prefix = 'With a comment. by ', suffix = '.')
-fmtIntroduction <- labelPersons(prefix = 'With an intro. by ', suffix = '.')
-fmtForeword <- labelPersons(prefix = 'With a forew. by ', suffix = '.')
-fmtAfterword <- labelPersons(prefix = 'With an afterw. by ', suffix = '.')
-fmtHolder <- labelPersons(suffix = '.')
-fmtIBAuthor <- labelPersons(suffix ='.')
-
-fmtVersion <- label(prefix = 'Version ', suffix = '.')
-
-fmtEdition <- function(ed){
-  if (length(ed)){
-    if (!is.na(suppressWarnings(as.integer(ed)))){
-      paste0(ed, switch(ed, '1'='st', '2'='nd', '3'='rd', 'th'), ' ed.')
-    }else{
-      paste0(ed, '.')
-    }
-  }
-}
-
 fmtEventDate <- function(ed, ven){
   if (length(ed) || length(ven)){
     fDate <- try(ProcessDate(ed, NULL), TRUE)
@@ -747,47 +337,6 @@ fmtEventDate <- function(ed, ven){
         paste0('(', cleanupLatex(ven), ')')
     }else{
       paste0('(', paste0(c(cleanupLatex(ven), DateFormatter(fDate)), collapse = ', '), ')')
-    }
-  }
-}
-
-fmtTranslator <- function(paper){
-  if (length(paper$translator))
-    paste0('Trans. ', fmtLangOrig(paper$origlanguage), ' by ', authorList(paper$translator), '.')
-}
-
-fmtLangOrig <- function(lang){
-  if (length(lang))
-    paste0('from the ', sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE, useBytes = TRUE))
-}
-
-fmtLanguage <- function(lang){
-  if (length(lang) && tolower(lang) != 'english')
-    addPeriod(sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE, useBytes = TRUE))
-}
-
-fmtSeries <- label(prefix = '. ')
-
-fmtPubstate <- function(ps){
-  if (length(ps)){
-    cleanupLatex(addPeriod(switch(ps, inpreparation = 'In preparation.', submitted = 'Submitted.',
-                forthcoming = 'Forthcoming.', inpress = 'In press.', prepublished = 'Pre-published.', ps)))
-  }
-}
-
-fmtPLocation <- labelclean(prefix = '(', suffix = ')')
-fmtAddendum <- cleanap
-fmtAddOn <- cleanap
-fmtHowPublished <- cleanap
-fmtOtherField <- cleanap
-
-fmtType <- function(type){
-  if (length(type)){
-    ind <- match(type, names(.BibEntryTypeField))
-    if (is.na(ind)){
-      cleanupLatex(type)
-    }else{
-      .BibEntryTypeField[ind]
     }
   }
 }
@@ -1176,107 +725,7 @@ formatUnpublished <- function(paper){
                ))
 }
 
-environment()
+    environment()
+    })
 }
 
-# Convert BibEntry object to a fragment of Rd code.
-#
-# Renders references in a BibEntry object as a fragment of Rd code, which can then be rendered into text, HTML, or LaTex.
-#
-# @param obj - An object of class BibEntry
-# @param style - The bibstyle to be used for converting \code{obj}; see \code{\link{print.BibEntry}}
-# @param .sorting - the BibLaTeX sorting method to use; see \code{\link{sort.BibEntry}}
-# @param ... - ignored
-# @S3method toRd BibEntry
-# @return Returns a character vector containing a fragment of Rd code that could be parsed and rendered.
-# @seealso \code{\link{print.BibEntry}}, \code{\link{sort.BibEntry}}, \code{\link{BibEntry}}, \code{\link{bibstyle}}
-#' @keywords internal
-#' @importFrom tools getBibstyle bibstyle toRd
-toRd.BibEntry <- function(obj, ...) {
-  .style <- .BibOptions$bib.style
-  doc.style <- .BibOptions$style
-
-  if (is.null(.style)){
-    .style <- .BibOptions$bib.style <- 'numeric'
-    style.env <- MakeBibLaTeX(docstyle = doc.style)
-  }else if (.style %in% tools::getBibstyle(TRUE)){
-    .BibOptions$bib.style <- .style
-    style.env <- tools::bibstyle(.style)
-  }else if (.style == "authoryear"){
-    style.env <- MakeAuthorYear(docstyle = doc.style)
-  }else if (.style %in% c('authortitle', 'alphabetic', 'numeric', 'draft')){
-    #.style <- 'BibLaTeX'
-    style.env <- MakeBibLaTeX(docstyle = doc.style, .style == "authortitle")
-  }
-
-  env <- new.env(hash = FALSE, parent = style.env)
-
-  if (!(.style == 'authoryear' || .style == 'authortitle') || !.BibOptions$dashed ||
-        is.null(obj$.duplicated))
-    obj$.duplicated <- FALSE
-  assign("bibstyle", .style, style.env)
-#   maxnames <- .BibOptions$max.names  # for R CMD Check
-#   assign("max.n", maxnames, style.env)
-
-  bib <- unclass(obj)
-  result <- character(length(bib))
-  #browser()
-  for (i in seq_along(bib)) {
-    assign('paper', bib[[i]], env)
-
-  	result[i] <- with(env,
-  	  switch(attr(paper, "bibtype"),
-  	    Article = formatArticle(paper),
-  	    Book = formatBook(paper),
-        MVBook = formatBook(paper, collection = FALSE),
-  	    InBook = formatInBook(paper),
-        BookInBook = formatInBook(paper, TRUE),
-        SuppBook = formatInBook(paper),
-        Booklet = formatBooklet(paper),
-        Collection = formatBook(paper, TRUE),
-        MVCollection = formatBook(paper, collection = TRUE),
-  	    InCollection = formatInCollection(paper),
-        SuppCollection = formatInCollection(paper),
-        Manual = formatManual(paper),
-  	    Misc = formatMisc(paper),
-        Online = formatOnline(paper),
-        Patent = formatPatent(paper),
-        Periodical = formatPeriodical(paper),
-        SuppPeriodical = formatArticle(paper),
-        Proceedings = formatProceedings(paper),
-        MVProceedings = formatProceedings(paper),
-        InProceedings = formatInProceedings(paper),
-        Reference = formatBook(paper, TRUE),  # alias for collection
-        MVReference = formatBook(paper, collection = TRUE),
-        InReference = formatInCollection(paper),
-        Report = formatReport(paper),
-        Thesis = formatThesis(paper),
-  	    Unpublished = formatUnpublished(paper),
-        Set = paste0('Set: ', attr(paper, 'key')),
-        XData = paste0('XData: ', attr(paper, 'key')),
-# Aliases
-        TechReport = {
-                      typ <-  if (is.null(paper$type))
-                               "techreport"
-                              else NULL
-                      formatReport(paper, typ)
-                      },
-        PhdThesis = {
-                     typ <-  if (is.null(paper$type))
-                               "phdthesis"
-                             else NULL
-                     formatThesis(paper, typ)
-                    },
-        MastersThesis = {
-                         typ <-  if (is.null(paper$type))
-                                   "mathesis"
-                                 else NULL
-                         formatThesis(paper, typ)
-                        },
-        Www = formatOnline(paper),
-        Electronic = formatOnline(paper),
-        Conference = formatInProceedings(paper),
-  	    paste("bibtype", attr(paper, "bibtype"), "not implemented") ))
-  }
-  result
-}
