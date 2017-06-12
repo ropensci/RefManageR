@@ -10,8 +10,8 @@
 #' @param suppress.messages boolean; should the head/tail entries be printed via \code{\link{message}}?   
 #' @param ... arguments to be passed to or from other methods.   
 #' @details If \code{suppress.messages} is \code{FALSE}, the head/tail entries are output to the console along
-#'   with some additional formatting for the \sQuote{bibtype} and \sQuote{key}, in addition to invisibling
-#'   returning the entries.
+#'   with some additional formatting for the \sQuote{bibtype} and \sQuote{key}, in addition to
+#' invisibly returning the entries.
 #' @return an object of class BibEntry.  
 #' @importFrom utils head tail
 #' @rdname head.BibEntry

@@ -39,7 +39,7 @@
 #' BibTeX.  \code{\link{toBiblatex}} converts the BibEntry object to a character vector containing lines of 
 #' the corresponding BibLaTeX file.  The results can be written to a file using \code{\link{WriteBib}}.
 #' 
-#' Citations can be gerenated in a number of styles using one of the available functions for 
+#' Citations can be generated in a number of styles using one of the available functions for 
 #' citations.  A list of references can be printed based on the works the user has cited thus far
 #' in their document.  See \code{\link{Cite}}.  The citations and bibliography can be printed 
 #' including hyperlinks using either the R Markdown or R HTML formats.

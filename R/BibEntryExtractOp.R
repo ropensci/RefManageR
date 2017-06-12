@@ -60,11 +60,11 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.c
 #' Search BibEntry objects by field
 #'
 #' Allows for searching and indexing a BibEntry object by fields, including names and dates.  The extraction operator and
-#' the SearchBib function simplying provide different interfaces to the same search functionality.
+#' the \code{SearchBib} function simply provide different interfaces to the same search functionality.
 #'
 #' @param x an object of class BibEntry
 #' @param i A named list or character vector of search terms with names corresponding to the field to search for the
-#' search term.  Alternatively, a vector of entry key values or numeric or logical indices specifying which bibentries to exctract.
+#' search term.  Alternatively, a vector of entry key values or numeric or logical indices specifying which entries to extract.
 #' @param j A named list or character vector, as \code{i}.  Entries matching the search specified by i \emph{OR} matching
 #' the query specified by \code{j} will be return
 #' @param ... arguments in the form \code{bib.field = search.term}, or as \code{j} list\emph{s} or character vector\emph{s}

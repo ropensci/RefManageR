@@ -23,7 +23,7 @@ the sorted BibEntry object
 }
 \description{
 Sorts a \code{BibEntry} object by specified fields.  The possible fields used for sorting and
-the order they are used in correspond with the options avaiable in BibLaTeX.
+the order they are used in correspond with the options available in BibLaTeX.
 }
 \details{
 The possible values for argument \code{sorting} are

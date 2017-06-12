@@ -46,7 +46,7 @@ setting max.names to \code{value} is equivalent to setting \code{maxnames=value}
 
 Custom BibLaTeX styles may be defined using the function \code{\link{bibstyle}}.  To fully
 support BibLaTeX, the created
-environment must have functions for formatting each of the entry types decribed in
+environment must have functions for formatting each of the entry types described in
 \code{\link{BibEntry}}.
 }
 \examples{

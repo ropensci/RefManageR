@@ -12,7 +12,7 @@
 \item{i}{- a numeric index or a string entry key}
 
 \item{value}{- a single entry BibEntry object or an object that can be 
-coereced to BibEntry using \code{\link{as.BibEntry}}}
+coerced to BibEntry using \code{\link{as.BibEntry}}}
 }
 \value{
 an object of class BibEntry

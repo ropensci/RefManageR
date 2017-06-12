@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{a BibEntry object}
 
-\item{i}{numeric indices of entries to exctract, or a character vector of keys corresponding to the entries to be
+\item{i}{numeric indices of entries to extract, or a character vector of keys corresponding to the entries to be
 extracted.}
 
 \item{drop}{logical, should attributes besides class be dropped from result?}

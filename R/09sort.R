@@ -1,7 +1,7 @@
 #' Sort a BibEntry Object
 #'
 #' Sorts a \code{BibEntry} object by specified fields.  The possible fields used for sorting and
-#' the order they are used in correspond with the options avaiable in BibLaTeX.
+#' the order they are used in correspond with the options available in BibLaTeX.
 #'
 #' @param x an object of class BibEntry
 #' @param decreasing logical; should the sort be increasing or decreasing?

@@ -23,8 +23,8 @@
 #' \item \code{retstart} - index of the first retrieved ID that should be included in the results.
 #' \item \code{retmax} - maximum number of IDs the server will return (default 20). 
 #' \item \code{field} - limits the query to search only the specified field (e.g. \dQuote{title}).
-#' \item \code{datetype} - type of date to use when limiting search by dates. E.g. \dQuote{mdat} for
-#' modification date or \dQuote{pdat} for publication date.
+#' \item \code{datetype} - type of date to use when limiting search by dates. E.g. \dQuote{mdat}
+#' for modification date or \dQuote{pdat} for publication date.
 #' \item \code{reldate} - integer; only items that have (\code{datetype}) date values within \code{reldate} \emph{days}
 #' of the current date will be returned.
 #' \item \code{mindate}, \code{maxdate} - date ranges to restrict search results.  Possible formats are

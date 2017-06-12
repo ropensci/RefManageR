@@ -4,7 +4,7 @@
 #' @param x - a BibEntry object
 #' @param i - a numeric index or a string entry key
 #' @param value - a single entry BibEntry object or an object that can be 
-#' coereced to BibEntry using \code{\link{as.BibEntry}}
+#' coerced to BibEntry using \code{\link{as.BibEntry}}
 #' @return an object of class BibEntry
 #' @details
 #' This function will replace the specified entry in \code{x} with the entry given

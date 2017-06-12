@@ -30,6 +30,6 @@ Prints the first or last entries of a BibEntry object (via \code{\link{message}}
 }
 \details{
 If \code{suppress.messages} is \code{FALSE}, the head/tail entries are output to the console along
-  with some additional formatting for the \sQuote{bibtype} and \sQuote{key}, in addition to invisibling
-  returning the entries.
+  with some additional formatting for the \sQuote{bibtype} and \sQuote{key}, in addition to
+invisibly returning the entries.
 }

@@ -33,7 +33,7 @@ an object of class BibEntry
 }
 \description{
 Provides a new class \code{BibEntry} which builds on \code{\link{bibentry}} to provide enhanced
-  functionalilty for representing, manipulating, importing, etc. bibliographic information in BibTeX or
+  functionality for representing, manipulating, importing, etc. bibliographic information in BibTeX or
   BibLaTeX style.
 }
 \details{
@@ -42,7 +42,7 @@ The BibEntry objects created by BibEntry can represent an arbitrary positive num
   of references.
 }
 \note{
-Date fields are parsed using the locale specified by `Sys.getlocale("LC_TIME")` (relevant
+Date fields are parsed using the locale specified by \code{Sys.getlocale("LC_TIME")} (relevant
 when specifying a character \sQuote{month} field, instead of the recommended integer format)
 
 Name list fields (author, editor, etc.) should be specified as they would be for

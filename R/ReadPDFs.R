@@ -3,7 +3,7 @@
 #' This function creates bibliographic information by reading the Metadata and text of PDFs stored in a user
 #' specified directory using Poppler (\url{http://poppler.freedesktop.org/}).  IF requested, the function
 #' first searches for DOIs and downloads \code{BibTeX} entries from \code{\link{ReadCrossRef}} if DOIs are
-#' found.  If this is not requrested or a DOI is not found for an entry, an attempt is made to build a BibTeX
+#' found.  If this is not requested or a DOI is not found for an entry, an attempt is made to build a BibTeX
 #' entry from the metadata and text.
 #' @param path character; path to directory containing pdfs or filename of one pdf. \code{normalizePath} is
 #'   used on the specified path

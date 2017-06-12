@@ -37,7 +37,7 @@
 #'
 #' Custom BibLaTeX styles may be defined using the function \code{\link{bibstyle}}.  To fully
 #' support BibLaTeX, the created
-#' environment must have functions for formatting each of the entry types decribed in
+#' environment must have functions for formatting each of the entry types described in
 #' \code{\link{BibEntry}}.
 #' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex
 #' Package. \url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}.

@@ -1,7 +1,7 @@
 #' Enhanced Bibliographic Entries
 #'
 #' Provides a new class \code{BibEntry} which builds on \code{\link{bibentry}} to provide enhanced
-#'   functionalilty for representing, manipulating, importing, etc. bibliographic information in BibTeX or
+#'   functionality for representing, manipulating, importing, etc. bibliographic information in BibTeX or
 #'   BibLaTeX style.
 #' @param bibtype a character string with a BibTeX entry type. See Entry Types for details.
 #' @param textVersion a character string with a text representation of the reference to optionally be employed for printing.
@@ -79,7 +79,7 @@
 #'     styles.
 #'  }
 #' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
-#' @note Date fields are parsed using the locale specified by `Sys.getlocale("LC_TIME")` (relevant
+#' @note Date fields are parsed using the locale specified by \code{Sys.getlocale("LC_TIME")} (relevant
 #' when specifying a character \sQuote{month} field, instead of the recommended integer format)
 #'
 #' Name list fields (author, editor, etc.) should be specified as they would be for
