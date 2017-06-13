@@ -18,7 +18,6 @@
 #' @export
 #' @seealso \code{\link{bibentry}}
 #' @keywords database
-#' @import methods
 #' @importFrom utils bibentry
 #' @section Entry Types:
 #'   bibentry creates "bibentry" objects, which are modeled after BibLaTeX and BibTeX entries. The entry should
