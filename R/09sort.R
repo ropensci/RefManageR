@@ -12,6 +12,7 @@
 #' @method sort BibEntry
 #' @export
 #' @keywords manip methods
+#' @importFrom methods hasArg
 #' @details The possible values for argument \code{sorting} are
 #' \itemize{
 #' \item nty - sort by name, then by title, then by year
