@@ -127,7 +127,7 @@ CheckJSTOR <- function(doc1, doc2, file){
     if (inherits(res, 'try-catch'))
       return(NA)
     res$eprint <- gsub('[^0-9]+', '', doc1[ind], useBytes = TRUE)
-    res$eprinttype = 'jstor'
+    res$eprinttype <- 'jstor'
     res$url <- paste0('http://www.jstor.org/stable/', res$eprint)
     res$file <- normalizePath(file)
 

@@ -60,7 +60,7 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
   .params <- list(hl = "en", user = scholar.id, oe = .Encoding, pagesize = ps,
                   view_op = "list_works", cstart = start)
   if (sort.by.date)
-    .params$sortby = "pubdate"
+    .params$sortby <- "pubdate"
 
   uri <- "http://scholar.google.com/citations"
   ## els <- mapply(function(id, val) {

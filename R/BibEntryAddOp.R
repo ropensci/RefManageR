@@ -49,7 +49,7 @@
 #' }
 #' @keywords methods
 `+.BibEntry` <- function(e1, e2){
-  fields.to.check = .BibOptions$merge.fields.to.check
+  fields.to.check <- .BibOptions$merge.fields.to.check
   awl <- "all" %in% fields.to.check
   att1 <- attributes(e1)[bibentry_list_attribute_names]
   att2 <- attributes(e2)[bibentry_list_attribute_names]

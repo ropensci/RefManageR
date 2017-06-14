@@ -205,7 +205,7 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
             result <- paste0(auth, bibpunct[6L], " ", year)
         }
         if (make.hyper){
-            url = switch(hyperlink, to.bib = paste0("#bib-", gsub("[^_a-zA-Z0-9-]", "", keys,
+            url <- switch(hyperlink, to.bib = paste0("#bib-", gsub("[^_a-zA-Z0-9-]", "", keys,
                                         useBytes = TRUE)),
                        to.doc = sapply(papers, GetURL,
                                        flds = c("url", "eprint", "doi"),

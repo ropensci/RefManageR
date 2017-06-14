@@ -57,7 +57,7 @@ ReadPubMed <- function(query, database = "PubMed", ...){
 
   .parms$term <- query
   .parms$db <- database
-  .parms$usehistory = "y"
+  .parms$usehistory <- "y"
   ## results <- try(getForm(base.url, .params = .parms))
   results <- try(GET(base.url, query = .parms), TRUE)
 
