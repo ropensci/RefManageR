@@ -71,6 +71,7 @@ test_that("open", {
 test_that("c", {
    expect_length(c(bib[1], bib[2]), 2L)
    expect_error(c(bib[1], unlist(bib[2])))
+   expect_is(c(bib[1], NULL), "BibEntry")
 })
 
 test_that("levels", {
