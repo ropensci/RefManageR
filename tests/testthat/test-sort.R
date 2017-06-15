@@ -20,7 +20,7 @@ context("Sorting")
 ## @return numeric vector with length \code{length(strs)}
 grep.o <- function(fname, strs){
     txt <- readLines(fname)
-    order(apply(vapply(strs, grepl, FALSE, x = txt), 2, which))
+    order(apply(vapply(strs, grepl, logical(length(txt)), x = txt), 2, which))
 }
 
 expect_order <- function(ord, fname, strs)
