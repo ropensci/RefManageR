@@ -19,8 +19,8 @@
 #'   date = "2014-02"))
 c.BibEntry <- function (..., recursive = FALSE){
     args <- list(...)
-    if (!all(sapply(args, inherits, "bibentry")))
-        warning(gettextf("method is only applicable to %s objects",
+    if (!all(vapply(args, inherits, FALSE, "bibentry")))
+        stop(gettextf("method is only applicable to %s objects",
             sQuote("BibEntry")), domain = NA)
     args <- lapply(args, unclass)
     rval <- do.call("c", args)

@@ -70,7 +70,7 @@ test_that("open", {
 
 test_that("c", {
    expect_length(c(bib[1], bib[2]), 2L)
-   expect_warning(c(bib[1], unlist(bib[2])))
+   expect_error(c(bib[1], unlist(bib[2])))
 })
 
 test_that("levels", {
