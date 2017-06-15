@@ -300,8 +300,8 @@ ProcessPubMedResult <- function(tdoc){
     if (length(doi.pos <- grep("doi", id.types, ignore.case = TRUE, useBytes = TRUE)))
        doi[doi.pos[1L]]
     else{
-      doi <- sapply(doi, SearchDOIText)
-      if (any(doi.pos <- !is.na(doi)))
+      doi <- vapply(doi, SearchDOIText, "")
+      if (any(doi.pos <- vapply(doi, nzchar, FALSE)))
         doi[doi.pos[1L]]
       else
         NULL
@@ -386,8 +386,8 @@ ProcessPubMedBookResult <- function(tdoc){
   res$doi <- if (length(doi.pos <- grep("doi", id.types, ignore.case = TRUE, useBytes = TRUE)))
                doc.ids[doi.pos[1L]]
              else{
-               doc.ids <- sapply(doc.ids, SearchDOIText)
-               if (any(doi.pos <- !is.na(doc.ids)))
+               doc.ids <- vapply(doc.ids, SearchDOIText, "")
+               if (any(doi.pos <- vapply(doc.ids, nzchar, FALSE)))
                  doc.ids[doi.pos[1L]]
                else
                  NULL

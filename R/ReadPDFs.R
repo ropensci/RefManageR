@@ -55,13 +55,16 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
   # read metadata and search for DOI                                      #
   #########################################################################
   if (use.metadata){
-    message(paste0('Getting Metadata for ',length(files), ' pdfs...'))
+    message(paste0('Getting Metadata for ', length(files), ' pdfs...'))
     flush.console()
-    out <- lapply(files, function(x) system2("pdfinfo", paste(shQuote('-enc'), shQuote(.enc),
-                                              shQuote(normalizePath(x))), stdout = TRUE, stderr = TRUE))
+    out <- lapply(files, function(x)
+                           system2("pdfinfo", paste(shQuote('-enc'), shQuote(.enc),
+                                                    shQuote(normalizePath(x))),
+                                   stdout = TRUE, stderr = TRUE))
+    
 
-    dois <- sapply(out, SearchDOIText)
-    doi.meta.ind <- !is.na(dois)
+    dois <- vapply(out, SearchDOIText, "")
+    doi.meta.ind <- vapply(dois, nzchar, FALSE)  # !is.na(dois)
   }else
     doi.meta.ind <- logical(n.files)
 
@@ -96,15 +99,16 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
       SearchDOIText(c(p1,p2))
       }, txt.files1[tind], txt.files2[tind])
 
-    doi.text.ind <- which(tind)[!is.na(more.dois)]
+    doi.text.ind <- which(tind)[vapply(more.dois,
+                                       nzchar, FALSE)]  # !is.na(more.dois)
   }
 
-  # don't call CrossRef if JSTOR already got info (need to check if DOI from metadata and JSTOR)
+  ## don't call CrossRef if JSTOR already got info (need to check if DOI from metadata and JSTOR)
   metadoi.pos <- which(doi.meta.ind)
   doi.ind <- c(metadoi.pos[!metadoi.pos %in% JSTOR.ind], doi.text.ind)
   comb.doi <- c(dois[!JSTOR.ind & doi.meta.ind], more.dois[!is.na(more.dois)])
 
-  # get bib info from CrossRef
+  ## get bib info from CrossRef
   resCR <- CR.ind <- badCR.ind <- NULL
   if (use.crossref && length(doi.ind)){
     message(paste0('Getting ', length(comb.doi), ' BibTeX entries from CrossRef...'))
@@ -118,8 +122,9 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
      tmpbib <- tempfile(fileext = ".bib", tmpdir=getwd())
      resCR <- llply(as.list(comb.doi), ReadCrossRef, temp.file = tmpbib, delete.file = TRUE,
                     .progress = progress)
-    message('Done')
-    CR.ind <- !sapply(resCR, is.null)  # on very rare instances CrossRef doesn't have record for particular DOI
+    message("Done")
+    ## on very rare instances CrossRef doesn't have record for particular DOI
+    CR.ind <- !vapply(resCR, is.null, FALSE)  
     badCR.ind <- doi.ind[!CR.ind]
     if(any(CR.ind)){
        for (i in which(CR.ind))
@@ -127,12 +132,13 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE, use.crossref = TRU
       not.done <- not.done[!not.done %in% doi.ind[CR.ind]]
     }
 
-    resCR <- MakeCitationList(resCR[CR.ind])  # llply returns a list of BibEntry objs, NOT single BibEntry obj
+    ## llply returns a list of BibEntry objs, NOT single BibEntry obj
+    resCR <- MakeCitationList(resCR[CR.ind])  
   }
 
-  # get bib info from first page. if dont find abstract on first page, use second page too
+  ## get bib info from first page. if dont find abstract on first page, use second page too
   res <- lapply(txt.files1[not.done], ReadFirstPages, page.one = TRUE)
-  # not.done <- not.done[is.na(res) || !res$found.abstract]
+  ## not.done <- not.done[is.na(res) || !res$found.abstract]
   res2 <- lapply(txt.files2[not.done], ReadFirstPages, page.one = FALSE)
 
   resMeta <- NULL
