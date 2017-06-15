@@ -23,7 +23,7 @@
 GetDOIs <- function(bib){
   missing.dois.pos <- which(if (length(bib) == 1)
                         is.null(bib$doi)
-                      else sapply(bib$doi, is.null))
+                      else vapply(bib$doi, is.null, FALSE))
   if (!length(missing.dois.pos))
     message("All entries already have DOIs")
   else{
@@ -39,14 +39,14 @@ GetDOIs <- function(bib){
     if (inherits(json.res, "try-error") || !json.res[[2L]])
       message("Failed to retrieve any DOIs.")
     else{
-      matches <- sapply(json.res[[1L]], "[[", "match")
+      matches <- vapply(json.res[[1L]], "[[", FALSE, "match")
       if (!any(matches))
         message("No matches.")
       else{
         message(paste0("Matches for entries at positions ",
                        paste0(missing.dois.pos[matches], collapse = ", "), "."))
         bib$doi[missing.dois.pos[matches]] <- sub("http://dx.doi.org/", "",
-                                                   sapply(json.res[[1L]], "[[",
+                                                   vapply(json.res[[1L]], "[[", "",
                                                           "doi")[matches], useBytes = TRUE)
       }
     }
@@ -97,9 +97,9 @@ FormatEntryForCrossRef <- function(bib){
       }
       oldopts <- BibOptions(max.names = 99, first.inits = TRUE)
       on.exit(BibOptions(oldopts))
-      sapply(unclass(bib), function(doc){
+      vapply(unclass(bib), function(doc){
             doc$.duplicated <- FALSE
             formatArticle(doc)
-          })
+          }, "")
       })
 }

@@ -28,5 +28,5 @@
   }
   if (length(res) == 1L) 
     return(res[[1L]])
-  setNames(res, sapply(unclass(x), attr, "key"))
+  setNames(res, vapply(unclass(x), attr, "", "key"))
 }

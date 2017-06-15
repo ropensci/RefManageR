@@ -58,7 +58,7 @@
     possible.dup <- seq_along(e2)
     temp <- c("key", "bibtype") %in% fields.to.check
     if (all(temp)){
-      possible.dup <- which(sapply(e2,
+      possible.dup <- which(vapply(e2,
                                     function(x, y){
                                       ykeys <- unlist(y$key)
                                       ytypes <- unlist(y$bibtype)
@@ -69,7 +69,7 @@
                                           return(TRUE)
                                       }
                                       return(FALSE)
-                                    }, y = e1))
+                                    }, FALSE, y = e1))
     }else if (temp[1L]){
       possible.dup <- which(names(e2) %in% names(e1))
     }else if (temp[2L]){
@@ -77,7 +77,7 @@
     }
     remain.dup.f <- setdiff(fields.to.check, c('bibtype', 'key'))
     if (length(remain.dup.f)){
-      dup.ind <- sapply(unclass(e2[possible.dup]),
+      dup.ind <- vapply(unclass(e2[possible.dup]),
                       function(x, y, flds){
                         x <- x[flds]
                         for (i in seq_along(y)){
@@ -85,7 +85,7 @@
                             return(TRUE)
                         }
                         return(FALSE)
-                    }, y = unclass(e1), flds = remain.dup.f)
+                    }, FALSE, y = unclass(e1), flds = remain.dup.f)
       if (length(dup.ind))
           dup.ind <- which(dup.ind)
     }else{

@@ -10,19 +10,21 @@
   rfields <- strsplit(BibLaTeX_entry_field_db[[bibtype]],
                       "|", fixed = TRUE)
   if (length(rfields) > 0L) {
-    ok <- sapply(rfields, function(f) any(f %in% fields))
+    ok <- vapply(rfields, function(f) any(f %in% fields), FALSE)
     if (any(!ok)){
       if (check == 'warn'){
-        warning(sprintf(ngettext(sum(!ok), "A bibentry of bibtype %s has to specify the field: %s",
-                              "A bibentry of bibtype %s has to specify the fields: %s"),
-                     sQuote(bibtype), paste(rfields[!ok], collapse = ", ")),
-             domain = NA)
+          warning(sprintf(ngettext(sum(!ok),
+                                   "A bibentry of bibtype %s has to specify the field: %s",
+                                   "A bibentry of bibtype %s has to specify the fields: %s"),
+                          sQuote(bibtype), paste(rfields[!ok], collapse = ", ")),
+                  domain = NA)
         return(NULL)
       }else{
-        stop(sprintf(ngettext(sum(!ok), "A bibentry of bibtype %s has to specify the field: %s",
-                              "A bibentry of bibtype %s has to specify the fields: %s"),
-                     sQuote(bibtype), paste(rfields[!ok], collapse = ", ")),
-             domain = NA)
+          stop(sprintf(ngettext(sum(!ok),
+                                "A bibentry of bibtype %s has to specify the field: %s",
+                                "A bibentry of bibtype %s has to specify the fields: %s"),
+                       sQuote(bibtype), paste(rfields[!ok], collapse = ", ")),
+               domain = NA)
       }
     }
   }
@@ -53,7 +55,7 @@
   xrefs <- lapply(x, '[[', "xdata")
   px <- which(vapply(xrefs, length, 0L) > 0L)
   if (length(px)){
-    xk <- sapply(xrefs[px], strsplit, ',')
+    xk <- lapply(xrefs[px], strsplit, ",")
     # xdata field can be comma-separated list of keys
     x[px] <- Map(function(entry, xdat.keys, full.bib){
       pos <- match(xdat.keys, .BibEntry_get_key(full.bib))
@@ -372,7 +374,7 @@ MakeCitationList <- function( x, header, footer){
   .format_call_RR <- function(cname, cargs){
     cargs <- as.list(cargs)
     n <- length(cargs)
-    lens <- sapply(cargs, length)
+    lens <- vapply(cargs, length, 0L)
     sums <- cumsum(lens)
     starters <- c(sprintf("%s(", cname), rep.int(.blanks(nchar(cname) +
                                                            1L), sums[n] - 1L))
@@ -382,8 +384,8 @@ MakeCitationList <- function( x, header, footer){
   }
   .format_person_as_R_code <- function(x){
     s <- lapply(unclass(x), function(e){
-      e <- e[!sapply(e, is.null)]
-      cargs <- sprintf("%s = %s", names(e), sapply(e, deparse))
+      e <- e[!vapply(e, is.null, FALSE)]
+      cargs <- sprintf("%s = %s", names(e), vapply(e, deparse, ""))
       .format_call_RR("person", cargs)
     })
     if (length(s) > 1L)
@@ -405,21 +407,22 @@ MakeCitationList <- function( x, header, footer){
   }
   s <- lapply(unclass(x), function(e){
     a <- Filter(length, attributes(e)[anames])
-    e <- e[!sapply(e, is.null)]
+    e <- e[!vapply(e, is.null, FALSE)]
     ind <- !is.na(match(names(e), c(anames, manames, "other")))
     if (any(ind)) {
-      other <- paste(names(e[ind]), sapply(e[ind], f),
+      other <- paste(names(e[ind]), vapply(e[ind], f, ""),
                      sep = " = ")
-      other <- Map(g, names(e[ind]), sapply(e[ind], f))
+      other <- Map(g, names(e[ind]), vapply(e[ind], f, ""))
       other <- .format_call_RR("list", other)
       e <- e[!ind]
     }
     else {
       other <- NULL
     }
-    c(Map(g, names(a), sapply(a, deparse)), Map(g, names(e),
-                                                sapply(e, f)), if (length(other)) list(g("other",
-                                                                                         other)))
+    c(Map(g, names(a), vapply(a, deparse, "")), Map(g, names(e),
+                                                    lapply(e, f)),
+      if (length(other))
+          list(g("other", other)))
   })
   if (!is.null(mheader <- attr(x, "mheader")))
     s[[1L]] <- c(s[[1L]], paste("mheader = ", deparse(mheader)))
@@ -445,7 +448,7 @@ MakeCitationList <- function( x, header, footer){
     cargs <- as.list(cargs)
     # cargs <- lapply(cargs, function(x) collapse(clean(x)))
     n <- length(cargs)
-    lens <- sapply(cargs, length)
+    lens <- vapply(cargs, length, 0L)
     sums <- cumsum(lens)
     starters <- c(sprintf("%s", cname), rep.int(.blanks(nchar(cname) +
                                                            1L), sums[n] - 1L))
@@ -456,8 +459,8 @@ MakeCitationList <- function( x, header, footer){
   }
   .format_person_as_yaml <- function(x){
     s <- lapply(unclass(x), function(e){
-      e <- e[!sapply(e, is.null)]
-      cargs <- sprintf("%s: %s", names(e), sapply(e, deparse))
+      e <- e[!vapply(e, is.null, FALSE)]
+      cargs <- sprintf("%s: %s", names(e), vapply(e, deparse, ""))
       .format_call_RR("\n    - ", cargs)
     })
     ## if (length(s))
@@ -490,21 +493,22 @@ MakeCitationList <- function( x, header, footer){
   }
   s <- lapply(unclass(x), function(e){
     a <- Filter(length, attributes(e)[anames])
-    e <- e[!sapply(e, is.null)]
+    e <- e[!vapply(e, is.null, FALSE)]
     ind <- !is.na(match(names(e), c(anames, manames, "other")))
     if (any(ind)) {
-      other <- paste(names(e[ind]), sapply(e[ind], f),
+      other <- paste(names(e[ind]), vapply(e[ind], f, ""),
                      sep = " = ")
-      other <- Map(g, names(e[ind]), sapply(e[ind], f))
+      other <- Map(g, names(e[ind]), vapply(e[ind], f, ""))
       other <- .format_call_RR("list", other)
       e <- e[!ind]
     }
     else {
       other <- NULL
     }
-    c(Map(g, names(a), sapply(a, deparse)), Map(g, names(e),
-                                                sapply(e, f)), if (length(other)) list(g("other",
-                                                                                         other)))
+    c(Map(g, names(a), vapply(a, deparse, "")), Map(g, names(e),
+                                                    lapply(e, f)),
+      if (length(other))
+          list(g("other", other)))
   })
   if (!is.null(mheader <- attr(x, "mheader")))
     s[[1L]] <- c(s[[1L]], paste("mheader = ", deparse(mheader)))
@@ -523,7 +527,7 @@ bibentry_format_styles <- c("text", "Bibtex", "citation", "html", "latex", "text
 # from utils:::toBibtex, good for matching by given name initials only
 #' @keywords internal
 #' @noRd
-format_author <- function(author) paste(sapply(author, function(p) {
+format_author <- function(author) paste(vapply(author, function(p) {
   fnms <- p$family
   only_given_or_family <- is.null(fnms) || is.null(p$given)
   fbrc <- if (length(fnms) > 1L || any(grepl("[[:space:]]",
@@ -535,7 +539,7 @@ format_author <- function(author) paste(sapply(author, function(p) {
   else ""
   format(p, include = c("given", "family"), braces = list(given = gbrc,
                                                           family = fbrc))
-}), collapse = " and ")
+}, ""), collapse = " and ")
 
 bibentry_list_attribute_names <- c("mheader", "mfooter", "strings")
 

@@ -300,8 +300,8 @@ ProcessPubMedResult <- function(tdoc){
     if (length(doi.pos <- grep("doi", id.types, ignore.case = TRUE, useBytes = TRUE)))
        doi[doi.pos[1L]]
     else{
-      doi <- sapply(doi, SearchDOIText)
-      if (any(doi.pos <- !is.na(doi)))
+      doi <- vapply(doi, SearchDOIText, "")
+      if (any(doi.pos <- vapply(doi, nzchar, FALSE)))
         doi[doi.pos[1L]]
       else
         NULL
@@ -321,7 +321,7 @@ ProcessPubMedResult <- function(tdoc){
       abstract.labs <- xml_attr(xml_find_all(tdoc,
                     ".//MedlineCitation/Article/Abstract/AbstractText"),
                                     attr = "Label", default = "")
-      res$abstract <- if (!any(sapply(abstract.labs, .is_not_nonempty_text)))
+      res$abstract <- if (!any(vapply(abstract.labs, .is_not_nonempty_text, FALSE)))
                            paste0(paste(abstract.labs, res$abstract, sep = ": "), collapse = "\n")
                       else paste0(res$abstract, collapse = "\n")
   }
@@ -386,8 +386,8 @@ ProcessPubMedBookResult <- function(tdoc){
   res$doi <- if (length(doi.pos <- grep("doi", id.types, ignore.case = TRUE, useBytes = TRUE)))
                doc.ids[doi.pos[1L]]
              else{
-               doc.ids <- sapply(doc.ids, SearchDOIText)
-               if (any(doi.pos <- !is.na(doc.ids)))
+               doc.ids <- vapply(doc.ids, SearchDOIText, "")
+               if (any(doi.pos <- vapply(doc.ids, nzchar, FALSE)))
                  doc.ids[doi.pos[1L]]
                else
                  NULL
@@ -398,13 +398,15 @@ ProcessPubMedBookResult <- function(tdoc){
   res$language <- xml_text(xml_find_all(tdoc,
                            "//PubmedBookArticle/BookDocument/Language"))
   res$abstract <- xml_text(xml_find_all(tdoc,
-                    "//PubmedBookArticle/BookDocument/Abstract/AbstractText"))
-  if (length(res$abstract) > 1L){  # some abstracts are separated into sections: methods, conclusion, etc.
+                                        "//PubmedBookArticle/BookDocument/Abstract/AbstractText"))
+  ## some abstracts are separated into sections: methods, conclusion, etc.
+  if (length(res$abstract) > 1L){  
       abstract.labs <- xml_attr(xml_find_all(tdoc,
                     "//PubmedBookArticle/BookDocument/Abstract/AbstractText"),
                                     attr = "Label", default = "")
-      res$abstract <- if (!any(sapply(abstract.labs, .is_not_nonempty_text)))
-                           paste0(paste(abstract.labs, res$abstract, sep = ": "), collapse = "\n")
+      res$abstract <- if (!any(vapply(abstract.labs, .is_not_nonempty_text, FALSE)))
+                          paste0(paste(abstract.labs, res$abstract, sep = ": "),
+                                 collapse = "\n")
                       else paste0(res$abstract, collapse = "\n")
   }
 
@@ -449,7 +451,7 @@ LookupPubMedID <- function(bib, index){
     index <- seq_along(bib)
 
   base.url <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ecitmatch.cgi?db=pubmed&retmode=xml&bdata="
-  cit.strings <- sapply(bib[index], MakeCitationString)
+  cit.strings <- vapply(bib[index], MakeCitationString, "")
 
   .url <- paste0(base.url,
                 paste0(cit.strings, collapse = "%0D"))

@@ -35,25 +35,25 @@ MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
 # Find name in a name field of a BibEntry object
 #
 #' @keywords internal
-MatchName <- function(nom, pattern, match.author=.BibOptions$match.author, ign.case = .BibOptions$ignore.case,
-                      regx = .BibOptions$use.regex){
+MatchName <- function(nom, pattern, match.author=.BibOptions$match.author,
+                      ign.case = .BibOptions$ignore.case, regx = .BibOptions$use.regex){
   if (is.null(nom))
     return(FALSE)
   if (identical(match.author, "exact")){
     nom <- as.character(nom)
   }else if (identical(match.author, 'family.with.initials')){
-    nom <- sapply(nom, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''),
-                                          paste0(x$family, collapse = '')))
+    nom <- vapply(nom, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''),
+                                          paste0(x$family, collapse = '')), "")
   }else{
-    nom <- sapply(nom$family, paste0, collapse = '')
+    nom <- vapply(nom$family, paste0, "", collapse = '')
   }
   nom <- cleanupLatexSearch(nom)
   if (!regx && ign.case){
     return(all(pattern %in% tolower(nom)))
   }else{
-      return(all(sapply(pattern, function(pat) any(grepl(pat, x = nom, fixed = !regx,
+      return(all(vapply(pattern, function(pat) any(grepl(pat, x = nom, fixed = !regx,
                                                          ignore.case = ign.case,
-                                                         useBytes = TRUE)))))
+                                                         useBytes = TRUE)), FALSE)))
   }
 }
 
@@ -258,18 +258,19 @@ FindBibEntry <- function(bib, term, field){
       if (match.aut == 'exact'){
         term <- as.character(term)
       }else if (match.aut == 'family.with.initials'){
-        term <- sapply(term, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''),
-                                                paste0(x$family, collapse = '')))
+        term <- vapply(term, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''),
+                                                paste0(x$family, collapse = '')), "")
       }else{
-        term <- sapply(term$family, paste0, collapse = ' ')
+        term <- vapply(term$family, paste0, "", collapse = ' ')
       }
     }
     if (ignorec)
       term <- tolower(term)
-    res <- sapply(vals, MatchName, pattern = term, match.author = match.aut, regx = usereg, ign.case = ignorec)
+    res <- vapply(vals, MatchName, FALSE, pattern = term, match.author = match.aut,
+                  regx = usereg, ign.case = ignorec)
   }else if (field %in% .BibEntryDateField){
     if (field == 'month'){
-      res <- sapply(vals, pmatch, table = term, nomatch = FALSE)
+      res <- vapply(vals, pmatch, FALSE, table = term, nomatch = FALSE)
     }else{
       if (d.yr){
         match.dat <- ifelse(field == 'year', 'year.only', .BibOptions$match.date)
@@ -286,7 +287,7 @@ FindBibEntry <- function(bib, term, field){
       if (is.null(term) || inherits(term, 'try-error')){
         res <- logical(length(bib))
       }else{
-        res <- sapply(vals, MatchDate, pattern = term, match.date = match.dat)
+        res <- vapply(vals, MatchDate, FALSE, pattern = term, match.date = match.dat)
       }
     }
   }else if (field == "dateobj"){
@@ -294,19 +295,21 @@ FindBibEntry <- function(bib, term, field){
       vals <- lapply(vals, year)
       term <- year(term)
     }
-    res <- sapply(vals, `==`, term)
-    res[sapply(res, length)==0] <- FALSE
+    res <- vapply(vals, `==`, FALSE, term)
+    res[vapply(res, length, 0L) == 0] <- FALSE
   }else{
     res <- logical(length(bib))
-    not.nulls <- which(!sapply(vals, is.null))
+    not.nulls <- which(!vapply(vals, is.null, FALSE))
     vals <- gsub('\\n[[:space:]]*', ' ', unlist(vals[not.nulls]), useBytes = TRUE)
     vals <- unlist(strsplit(cleanupLatexSearch(vals), '\n') )
 
     if (!usereg && ignorec){
-      res[not.nulls[grepl(tolower(term), tolower(vals), fixed = TRUE, useBytes = TRUE)]] <- TRUE
+        res[not.nulls[grepl(tolower(term), tolower(vals), fixed = TRUE,
+                            useBytes = TRUE)]] <- TRUE
     }else{
         res[not.nulls[grepl(term, vals, fixed = !.BibOptions$use.regex,
-                            ignore.case = .BibOptions$ignore.case, useBytes = TRUE)]] <- TRUE
+                            ignore.case = .BibOptions$ignore.case,
+                            useBytes = TRUE)]] <- TRUE
     }
   }
   res

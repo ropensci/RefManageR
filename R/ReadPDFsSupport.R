@@ -419,7 +419,7 @@ SearchDOIText <- function(txt){
   pattern  <- "\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'])\\S)+)\\b"
   m <- regexpr(pattern, txt, perl = TRUE, useBytes = TRUE)
   if(all(m == -1)){
-    return(NA)
+    return("")
   }else{
     return(regmatches(txt, m)[1])
   }

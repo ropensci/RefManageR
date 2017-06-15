@@ -31,7 +31,7 @@
   if (length(value) <= 1)
     value <- rep(.listify(value), length.out = length(x))
   if (name == "bibtype") {
-    stopifnot(all(sapply(value, length) == 1L))
+    stopifnot(all(vapply(value, length, 0L) == 1L))
     BibTeX_names <- names(BibLaTeX_entry_field_db)
     value <- unlist(value)
     pos <- match(tolower(value), tolower(BibTeX_names))

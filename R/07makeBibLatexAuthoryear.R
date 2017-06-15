@@ -147,11 +147,12 @@ MakeAuthorYear <- function(docstyle = "text"){
             if (max.n <= 1L){
               out <- paste0(out, ', et al.')
             }else{
-                out <- paste0(paste(out, paste0(sapply(res[2L:max.n], shortName),
+                out <- paste0(paste(out, paste0(vapply(res[2L:max.n], shortName, ""),
                                                 collapse = ", "), sep = ', '), ', et al.')    
             }
           }else{
-              out <- paste(paste(out, paste0(sapply(res[-c(1L, length(res))], shortName),
+              out <- paste(paste(out, paste0(vapply(res[-c(1L, length(res))], shortName,
+                                                    ""),
                                              collapse = ", "), sep = ', '),  
                          shortName(res[length(res)]), sep = ' and ')
           }

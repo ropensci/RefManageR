@@ -92,7 +92,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
   ## file.create(temp.file)
   ## if query is valid doi, skip search and get BibTeX entry right away
 
-  if (!is.na(.doi <- SearchDOIText(query))){
+  if (nzchar(.doi <- SearchDOIText(query))){
     num.res <- 1
     bad <- GetCrossRefBibTeX(paste0("http://dx.doi.org/", .doi), temp.file)
   }else{
@@ -131,13 +131,13 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
     if (num.res > 0L){
         if (!use.old.api && is.na(.doi)){
           res <- lapply(fromj, ParseCrossRef)
-          good <- which(sapply(res, function(e){
+          good <- which(vapply(res, function(e){
               good <- e$score >= min.relevance
               if (good && verbose)
                  message(gettextf("including the following entry with relevancy score %s:\n%s",
                                   e$title, e$score[[i]]))
               good
-          }))
+          }, FALSE))
           res <- res[good]
           if (!length(res)){
               message("no results with relavency score greater than ",
@@ -182,7 +182,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
 
   bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
 
-  bib.res$url <- sapply(bib.res$url, function(x) if (!is.null(x)) URLdecode(x)) 
+  bib.res$url <- vapply(bib.res$url, function(x) if (!is.null(x)) URLdecode(x), "") 
   if (inherits(bib.res, "try-error"))
       stop(gettextf("failed to parse the returned BibTeX results; if \'delete.file\' %s%s",
                      "is FALSE, you can try viewing and editing the file: ", temp.file))

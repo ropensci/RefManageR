@@ -102,13 +102,13 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
             else paste(cleanupLatex(person$given), collapse = " ")
         }
         authorList <- function(paper){
-          names <- sapply(paper$author, shortName)
+          names <- vapply(paper$author, shortName, "")
           if (!length(names))
-            names <- sapply(paper$editor, shortName)
+            names <- vapply(paper$editor, shortName, "")
           if (!length(names))
             names <- paper$label
           if (!length(names))
-            names <- sapply(paper$translator, shortName)
+            names <- vapply(paper$translator, shortName, "")
           names
         }
 
@@ -155,7 +155,7 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
         if (alphabetic || numeric){
           year <- structure(.labs, names = NULL)
         }else{
-          year <- structure(unlist(sapply(papers$dateobj,
+          year <- structure(unlist(lapply(papers$dateobj,
                                           MakeAuthorYear()$DateFormatter)), names = NULL)
 
           if (any(.labs %in% letters)) # make sure labels are authoryear labels
@@ -207,7 +207,7 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
         if (make.hyper){
             url <- switch(hyperlink, to.bib = paste0("#bib-", gsub("[^_a-zA-Z0-9-]", "", keys,
                                         useBytes = TRUE)),
-                       to.doc = sapply(papers, GetURL,
+                       to.doc = vapply(papers, GetURL, "", 
                                        flds = c("url", "eprint", "doi"),
                                        to.bib = TRUE),
                        hyperlink)

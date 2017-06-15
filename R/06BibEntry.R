@@ -104,75 +104,77 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
   args <- c(list(...), other)
   if (!length(args))
     return(structure(list(), class = "bibentry"))
-  if (any(sapply(names(args), .is_not_nonempty_text)))
+  if (any(vapply(names(args), .is_not_nonempty_text, FALSE)))
     stop("all fields have to be named")
   args <- c(list(bibtype = bibtype, textVersion = textVersion,
                  header = header, footer = footer, key = key), list(...))
   args <- lapply(args, .listify)
   other <- lapply(other, .listify)
-  max_length <- max(sapply(c(args, other), length))
-  args_length <- sapply(args, length)
+  max_length <- max(vapply(c(args, other), length, 0L))
+  args_length <- vapply(args, length, 0L)
   if (!all(args_length_ok <- args_length %in% c(1L, max_length)))
-    warning(gettextf("Not all arguments are of the same length, the following need to be recycled: %s",
-                     paste(names(args)[!args_length_ok], collapse = ", ")),
-            domain = NA)
+      warning(gettextf("Not all arguments are of the same length, %s: %s",
+                       "the following need to be recycled",
+                       paste(names(args)[!args_length_ok], collapse = ", ")),
+              domain = NA)
   args <- lapply(args, function(x) rep(x, length.out = max_length))
-  other_length <- sapply(other, length)
+  other_length <- vapply(other, length, 0L)
   if (!all(other_length_ok <- other_length %in% c(1L, max_length)))
-    warning(gettextf("Not all arguments are of the same length, the following need to be recycled: %s",
-                     paste(names(other)[!other_length_ok], collapse = ", ")),
-            domain = NA)
+      warning(gettextf("Not all arguments are of the same length, %s: %s",
+                       "the following need to be recycled",
+                       paste(names(other)[!other_length_ok], collapse = ", ")),
+              domain = NA)
   other <- lapply(other, function(x) rep(x, length.out = max_length))
   bibentry1 <- function(bibtype, textVersion, header = NULL,
                         footer = NULL, key = NULL, ..., other = list()) {
-    bibtype <- as.character(bibtype)
-    stopifnot(length(bibtype) == 1L)
-    pos <- match(tolower(bibtype), tolower(BibTeX_names))
-    if (is.na(pos))
-      stop(gettextf("%s has to be one of %s", sQuote("bibtype"),
-                    paste(BibTeX_names, collapse = ", ")), domain = NA)
-    bibtype <- BibTeX_names[pos]
-    rval <- c(list(...), other)
-    rval <- rval[!sapply(rval, .is_not_nonempty_text)]
-    fields <- tolower(names(rval))
-    names(rval) <- fields
-    attr(rval, "bibtype") <- bibtype
-    .BibEntryCheckBibEntry1(rval)
-    pos <- fields %in% .BibEntryNameList
-    if (any(pos)) {
-      for (i in which(pos))
-          if (!inherits(rval[[i]], "person"))
-              rval[[i]] <- ArrangeAuthors(rval[[i]])
-    }
-    pos <- fields %in% c("dateobj") | pos
-    if (any(!pos)) {
-      for (i in which(!pos))
-        rval[[i]] <- as.character(rval[[i]])
-    }
-    attr(rval, "key") <- if (is.null(key))
-      NULL
-    else as.character(key)
-    if (is.null(rval[['dateobj']])){
-      tdate <- try(ProcessDates(rval), TRUE)
-      if (!inherits(tdate, "try-error"))
-        attr(rval, 'dateobj') <- tdate
-    }else{
-      attr(rval, 'dateobj') <- rval[['dateobj']]
-      rval[['dateobj']] <- NULL
-    }
+                bibtype <- as.character(bibtype)
+                stopifnot(length(bibtype) == 1L)
+                pos <- match(tolower(bibtype), tolower(BibTeX_names))
+                if (is.na(pos))
+                  stop(gettextf("%s has to be one of %s", sQuote("bibtype"),
+                                paste(BibTeX_names, collapse = ", ")), domain = NA)
+                bibtype <- BibTeX_names[pos]
+                rval <- c(list(...), other)
+                rval <- rval[!vapply(rval, .is_not_nonempty_text, FALSE)]
+                fields <- tolower(names(rval))
+                names(rval) <- fields
+                attr(rval, "bibtype") <- bibtype
+                .BibEntryCheckBibEntry1(rval)
+                pos <- fields %in% .BibEntryNameList
+                if (any(pos)) {
+                  for (i in which(pos))
+                      if (!inherits(rval[[i]], "person"))
+                          rval[[i]] <- ArrangeAuthors(rval[[i]])
+                }
+                pos <- fields %in% c("dateobj") | pos
+                if (any(!pos)) {
+                  for (i in which(!pos))
+                    rval[[i]] <- as.character(rval[[i]])
+                }
+                attr(rval, "key") <- if (is.null(key))
+                  NULL
+                else as.character(key)
+                if (is.null(rval[['dateobj']])){
+                  tdate <- try(ProcessDates(rval), TRUE)
+                  if (!inherits(tdate, "try-error"))
+                    attr(rval, 'dateobj') <- tdate
+                }else{
+                  attr(rval, 'dateobj') <- rval[['dateobj']]
+                  rval[['dateobj']] <- NULL
+                }
 
-    if (!is.null(textVersion))
-      attr(rval, "textVersion") <- as.character(textVersion)
-    if (!.is_not_nonempty_text(header))
-      attr(rval, "header") <- paste(header, collapse = "\n")
-    if (!.is_not_nonempty_text(footer))
-      attr(rval, "footer") <- paste(footer, collapse = "\n")
-    return(rval)
-  }
+                if (!is.null(textVersion))
+                  attr(rval, "textVersion") <- as.character(textVersion)
+                if (!.is_not_nonempty_text(header))
+                  attr(rval, "header") <- paste(header, collapse = "\n")
+                if (!.is_not_nonempty_text(footer))
+                  attr(rval, "footer") <- paste(footer, collapse = "\n")
+                return(rval)
+              }
 
-  rval <- lapply(seq_along(args$bibtype), function(i) do.call("bibentry1",
-                                                              c(lapply(args, "[[", i),
-                                                                list(other = lapply(other, "[[", i)))))
+  rval <- lapply(seq_along(args$bibtype),
+                 function(i) do.call("bibentry1", c(lapply(args, "[[", i),
+                                                    list(other = lapply(other, "[[", i)))))
 
   if (!.is_not_nonempty_text(mheader))
     attr(rval, "mheader") <- paste(mheader, collapse = "\n")

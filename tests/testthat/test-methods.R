@@ -52,7 +52,7 @@ test_that("head and tail", {
 test_that("open", {
     skip_on_cran()
     skip_on_travis()
-    open(as.BibEntry(citation("RCurl")))  # URL
+    open(as.BibEntry(citation("httr")))  # URL
 
     testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex"))
     testbib$file <- file.path(R.home("doc/manual"), "R-intro.pdf")
@@ -70,7 +70,8 @@ test_that("open", {
 
 test_that("c", {
    expect_length(c(bib[1], bib[2]), 2L)
-   expect_warning(c(bib[1], unlist(bib[2])))
+   expect_error(c(bib[1], unlist(bib[2])))
+   expect_is(c(bib[1], NULL), "BibEntry")
 })
 
 test_that("levels", {
