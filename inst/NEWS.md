@@ -1,4 +1,4 @@
-Changes in Version 0.14.3 (2017-06-02)
+Changes in Version 0.14.7 (2017-06-16)
 --------------------------------------------------------
 NEW FEATURES
 
@@ -6,7 +6,12 @@ NEW FEATURES
 for scaffolding
 
 BUG FIXES
+
 * fix printing when `BibOptions(style = 'yaml)`
+* remove invalid character in inst/Bib/RJC.bib
+* correct parsing of interval dates when creating unique labels for authoryear style
+citations
+* `c.BibEntry` throws an error if not all objects are `bibentry` objects
 
 Changes in Version 0.13.4 (2017-04-25)
 --------------------------------------------------------
