@@ -32,10 +32,10 @@ as.data.frame.BibEntry <- function(x, row.names = NULL, optional = FALSE, ...){
     nom <- col.names[i]
     temp <- do.call(`$.BibEntry`, list(x = x, name = nom))
     if (n.entries > 1L)
-      not.nulls <- !sapply(temp, is.null)
+      not.nulls <- !vapply(temp, is.null, FALSE)
 
     if (nom %in% .BibEntryNameList){
-      temp <- sapply(temp[not.nulls], format_author)
+      temp <- vapply(temp[not.nulls], format_author, "")
     }else{
       temp <- unlist(temp)
     }

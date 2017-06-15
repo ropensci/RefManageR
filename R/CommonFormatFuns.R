@@ -66,7 +66,7 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
             res <- cleanupLatex(pers$family)
             if (length(pers$given)){ 
               if (.BibOptions$first.inits){
-                paste0(c(substr(sapply(pers$given, cleanupLatex), 
+                paste0(c(substr(vapply(pers$given, cleanupLatex, ""), 
                     start = 1L, stop = 1L), res), collapse = ". ")
               }else{
                 cleanupLatex(as.character(pers))
@@ -376,7 +376,7 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     }
 
     authorList <- function(aut){
-        names <- sapply(aut, shortName)
+        names <- vapply(aut, shortName, "")
         if (length(names) > 1L){
             result <- paste(paste(names[-length(names)], collapse = ", "),
                 "and", names[length(names)])
@@ -412,11 +412,12 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
           }
           if (length(pers$given)){
             if (.BibOptions$first.inits){
-              res <- paste0(paste(res, paste(substr(sapply(pers$given, cleanupLatex),
-                  1L, 1L), collapse = ". "), sep=', '), '.')
+              res <- paste0(paste(res, paste(substr(vapply(pers$given, cleanupLatex, ""),
+                                                    1L, 1L), collapse = ". "), sep = ", "), ".")
+              
             }else{
-                res <- paste(res, paste(sapply(pers$given, cleanupLatex), collapse = ' '),
-                             sep = ', ')
+                res <- paste(res, paste(vapply(pers$given, cleanupLatex, ""),
+                                        collapse = " "), sep = ", ")
             }
           }
           if (von)
@@ -432,11 +433,11 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
         for (i in seq_along(bib)) {
           authors <- bib[[i]]$sortname
           if (!length(authors))
-            authors <- paste0(sapply(bib[[i]]$author, shortNameLF), collapse = '')
+            authors <- paste0(vapply(bib[[i]]$author, shortNameLF, ""), collapse = '')
           if (authors == ''){
-            authors <- paste0(sapply(bib[[i]]$editor, shortNameLF), collapse = '')
+            authors <- paste0(vapply(bib[[i]]$editor, shortNameLF, ""), collapse = '')
             if (authors == '')
-                authors <- paste0(sapply(bib[[i]]$translator, shortNameLF),
+                authors <- paste0(vapply(bib[[i]]$translator, shortNameLF, ""),
                                   collapse = '')
           }
           result[i] <- authors
@@ -549,7 +550,7 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
                                          res, useBytes = TRUE))
           res <- gsub('[[:punct:]]', '', res, useBytes = TRUE)
         }else if (nam.len == 2 || nam.len == 3){
-          res <- sapply(nam$family, paste0, collapse = '')
+          res <- vapply(nam$family, paste0, "", collapse = '')
           res <- paste0(regmatches(res, regexpr('[[:upper:]]', res, useBytes = TRUE)),
                         collapse = '')
         }else{

@@ -19,7 +19,7 @@
 #'   date = "2014-02"))
 c.BibEntry <- function (..., recursive = FALSE){
     args <- list(...)
-    if (!all(vapply(args, inherits, FALSE, "bibentry")))
+    if (!all(vapply(args, function(x) !length(x) || inherits(x, "bibentry"), FALSE)))
         stop(gettextf("method is only applicable to %s objects",
             sQuote("BibEntry")), domain = NA)
     args <- lapply(args, unclass)

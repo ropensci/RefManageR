@@ -106,9 +106,16 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
       if (.bibstyle == "authoryear"){
         tmp <- sort.fun.env$GetLastNames(x)
 
-        # sortyear could mess things up, so can't reuse yr
-        yr <- sapply(unclass(x), function(dat)
-          tryCatch(year(attr(dat, "dateobj")), error = function(e) ""))
+        ## can't call sortKeysY because need to ignore sortyear field
+        YearLab <- function(date){
+                       if (inherits(date, "POSIXct"))
+                           as.character(year(date))
+                       else if (inherits(date, "Interval"))
+                           as.character(year(int_start(date)))
+                       else
+                           ""
+                   }
+        yr <- vapply(x$dateobj, YearLab, "")
         tmp <- paste0(tmp, yr)
 
         lab.ord <- order(tmp)

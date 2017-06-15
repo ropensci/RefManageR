@@ -2,7 +2,9 @@
 #' @method toBibtex BibEntry
 #' @importFrom utils toBibtex
 #' @export
-toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate", "addendum"), extra.fields = NULL, ...){
+toBibtex.BibEntry <- function(object,
+                              note.replace.field = c('urldate', "pubsate", "addendum"),
+                              extra.fields = NULL, ...){
   format_bibentry1 <- function(object){
     object <- unclass(object)[[1L]]
     bibtype <- tolower(attr(object, "bibtype"))
@@ -93,8 +95,8 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
     }
     
     rval <- paste0("@", bibtype, "{", attr(object, "key"), ",")
-    rval <- c(rval, sapply(names(object)[names(object) %in% c(.Bibtex_fields, extra.fields)], function(n) paste0("  ", 
-                                                                                                                 n, " = {", object[[n]], "},")), "}", "")
+    rval <- c(rval, vapply(names(object)[names(object) %in% c(.Bibtex_fields, extra.fields)],
+                           function(n) paste0("  ", n, " = {", object[[n]], "},"), ""), "}", "")
     return(rval)
   }
   
@@ -109,6 +111,8 @@ toBibtex.BibEntry <- function(object, note.replace.field = c('urldate', "pubsate
   rval
 }
 
-.Bibtex_fields <- c("address", "author", "annote", "booktitle", "chapter", "crossref", "edition", "editor", "eprint", "year",
-                    "howpublished", "institution", "journal", "month", "key", "note", "primaryclass", "archiveprefix", "doi",
-                    "number", "organization", "pages", "publisher", "school", "series", "title", "type", "url", "volume")
+.Bibtex_fields <- c("address", "author", "annote", "booktitle", "chapter", "crossref",
+                    "edition", "editor", "eprint", "year", "howpublished", "institution",
+                    "journal", "month", "key", "note", "primaryclass", "archiveprefix", "doi",
+                    "number", "organization", "pages", "publisher", "school", "series",
+                    "title", "type", "url", "volume")
