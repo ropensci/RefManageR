@@ -26,11 +26,11 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
     ##################################################################
     ## Formatting functions
 
-    fmtPrefixSimple <- function(paper) switch(.BibOptions$bib.style,
-                                              numeric = paste0("[", fmtNumPre(paper), "]"),
-                                          alphabetic = paste0("[", paper$.index, "]"),
-                                          draft = paste0('\\bold{', attr(paper, 'key'), '}'),
-                                          NULL)
+    fmtPrefixSimple <- function(paper)
+        switch(.BibOptions$bib.style,
+               numeric = paste0("[", fmtNumPre(paper), "]"),
+               alphabetic = paste0("[", paper$.index, "]"),
+               draft = paste0('\\bold{', attr(paper, 'key'), '}'), NULL)
 
   fmtPrefix <- switch(docstyle, html = function(paper){
     res <- fmtPrefixSimple(paper)
@@ -78,13 +78,14 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
     addPeriod(res)
   }
 
-  #####################################################################################
+  #############################################################################
   ## FIELDS:
-  #####################################################################################
+  #############################################################################
   fmtJournDate <- function(s, usevenue = FALSE){
     res <- DateFormatter(attr(s, 'dateobj'))
     if (usevenue){
-        paste0("(", paste0(c(cleanupLatex(gsub('[.?!]$', '', s[['venue']], useBytes = TRUE)),
+        paste0("(", paste0(c(cleanupLatex(gsub('[.?!]$', '', s[['venue']],
+                                               useBytes = TRUE)),
                              res), collapse = ', '), ")")
     }else{
       paste0("(", paste0(c(s[['issue']], res), collapse = ' '), ")")
@@ -108,11 +109,13 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       }else{
         if (grepl('-', pgs, useBytes = TRUE)){
           paste0(switch(pref, column = 'cols. ', verse = 'vv. ', line = 'll. ',
-              section = '\u00a7\u00a7 ', paragraph = 'par. ', none = '', 'pp. '), pgs)
+                        section = '\u00a7\u00a7 ', paragraph = 'par. ',
+                        none = '', 'pp. '), pgs)
 
         }else{
           paste0(switch(pref, column = 'col. ', verse = 'v. ', line = 'l. ',
-                      section = '\u00a7 ', paragraph = 'par. ', none = '', 'p. '), pgs)
+                        section = '\u00a7 ', paragraph = 'par. ',
+                        none = '', 'p. '), pgs)
         }
       }
     }
@@ -129,10 +132,13 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       }else{
         if (pgs == 1){
           paste0(pgs, switch(pref, column = ' col', verse = ' v', line = ' l',
-                      section = ' \u00a7', paragraph = ' par', none = '', ' p'))
+                             section = ' \u00a7', paragraph = ' par',
+                             none = '', ' p'))
         }else{
-          paste0(pgs, switch(pref, column = ' cols', verse = ' vv', line = ' ll',
-                      section = ' \u00a7\u00a7', paragraph = ' par', none = '', ' pp'))
+          paste0(pgs, switch(pref, column = ' cols', verse = ' vv',
+                             line = ' ll',
+                             section = ' \u00a7\u00a7', paragraph = ' par',
+                             none = '', ' pp'))
         }
       }
     }
@@ -162,7 +168,8 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
         ind <- .cites$indices[key]
         key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
         res <- if (!is.na(ind) && ind)
-                 paste0("<a name=bib-", key, "></a>[", res, "](#cite-", key, ")")
+                 paste0("<a name=bib-", key, "></a>[", res, "](#cite-",
+                        key, ")")
                else res
       }
     }
@@ -202,11 +209,14 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
           if (max.n <= 1L){
             out <- paste0(out, ', et al.')
           }else{
-              out <- paste0(paste(out, paste0(vapply(res[2L:max.n], shortName, ""),
-                                              collapse = ", "), sep = ', '), ', et al.')
+              out <- paste0(paste(out, paste0(vapply(res[2L:max.n],
+                                                     shortName, ""),
+                                              collapse = ", "), sep = ', '),
+                            ', et al.')
           }
         }else{
-            out <- paste(paste(out, paste0(vapply(res[-c(1L, length(res))], shortName, ""),
+            out <- paste(paste(out, paste0(vapply(res[-c(1L, length(res))],
+                                                  shortName, ""),
                                            collapse = ", "), sep = ', '),
                        shortName(res[length(res)]), sep = ' and ')
         }
@@ -217,11 +227,16 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       if (!length(doc$editortype)){
         out <- paste0(out, ', ed.')
       }else{
-          out <- paste0(out, switch(tolower(doc$editortype), 'compiler' = ', comp.',
+          out <- paste0(out, switch(tolower(doc$editortype),
+                                    'compiler' = ', comp.',
                                     'editor' = ', ed.',
-                                  'founder' = ', found.', 'continuator' = ', cont.',
-                                  'redactor' = ', red.', 'reviser' = ', rev.',
-                     'collaborator' = ', collab.', doc$editortype))
+                                    'founder' = ', found.',
+                                    'continuator' = ', cont.',
+                                    'redactor' = ', red.',
+                                    'reviser' = ', rev.',
+                                    'collaborator' = ', collab.',
+                                    doc$editortype))
+          
       }
     }else{
       out <- addPeriod(out)
@@ -249,28 +264,33 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
         if (length(ven))
           paste0('(', cleanupLatex(ven), ')')
       }else{
-        paste0('(', paste0(c(cleanupLatex(ven), DateFormatter(fDate)), collapse = ', '), ')')
+        paste0('(', paste0(c(cleanupLatex(ven), DateFormatter(fDate)),
+                           collapse = ', '), ')')
       }
     }
   }
 
-  #####################################################################################
+  #############################################################################
   ## Entry types: Bibliography Drivers in BibLaTeX (Sec. 4.2.3 in manual)
-  #####################################################################################
+  #############################################################################
   formatArticle <- function(paper){
         collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtJTitle(paper$title),
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
                  fmtTranslator(paper), fmtCommentator(paper$commentator),
                  fmtAnnotator(paper$annotator), fmtVersion(paper$version),
-                 sentenceP(paste0(c(paste0(c(fmtJournal(paper), fmtSeries(paper$series)),
-                                           collapse = ''), fmtVolume(paper$volume, paper$number),
+                 sentenceP(paste0(c(paste0(c(fmtJournal(paper),
+                                             fmtSeries(paper$series)),
+                                           collapse = ''),
+                                    fmtVolume(paper$volume, paper$number),
                                     fmtJournDate(paper)), collapse =' '),
                            fmtBTitle(paper$issuetitle, paper$issuesubtitle),
                            fmtEditor(paper, suffix = NULL, prefix = '. '),
                            fmtNote(paper$note, prefix ='. ', suffix = NULL),
-                           pgs = fmtPages(paper$pages, paper$pagination), sep = ''),
+                           pgs = fmtPages(paper$pages, paper$pagination),
+                           sep = ''),
                  fmtISSN(paper$issn), fmtDOI(paper$doi), fmtEprint(paper),
-                 fmtURL(paper), fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+                 fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtPubstate(paper$pubstate)
                  ))
   }
   # if main title fields are missing, title fields are moved before
@@ -279,47 +299,58 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       paper$author <- NULL
 
     if (length(paper$maintitle)){
-        collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$maintitle,
-                                                                  paper$mainsubtitle),
+        collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
+                   fmtBTitle(paper$maintitle, paper$mainsubtitle),
                  fmtAddOn(paper$maintitleaddon),
                  paste0(c(fmtBVolume(paper$volume, paper$part),
-                          fmtBTitle(paper$title, paper$subtitle)), collapse = ': '),
-                          fmtAddOn(paper$titleaddon),
-                 fmtLanguage(paper$language), fmtEditor(paper, !length(paper$author)),
+                          fmtBTitle(paper$title, paper$subtitle)),
+                        collapse = ': '), fmtAddOn(paper$titleaddon),
+                 fmtLanguage(paper$language),
+                 fmtEditor(paper, !length(paper$author)),
                  fmtTranslator(paper), fmtCommentator(paper$commentator),
-                 fmtAnnotator(paper$annotator), fmtIntroduction(paper$introduction),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
                  fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                  fmtEdition(paper$edition), fmtVolumes(paper$volumes),
                  sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
-                 fmtNote(paper$note), sentence(fmtPublisher(paper$publisher, paper$location,
+                 fmtNote(paper$note),
+                 sentence(fmtPublisher(paper$publisher, paper$location,
                                                             paper$address),
-                                               fmtDate(attr(paper, 'dateobj')),
-                                               fmtChapter(paper$chapter),
-                                               fmtPages(paper$pages, paper$bookpagination),
-                                               fmtTotalPages(paper$pagetotal,
-                                                             paper$bookpagination), sep = ''),
-                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
-                 fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+                          fmtDate(attr(paper, 'dateobj')),
+                          fmtChapter(paper$chapter),
+                          fmtPages(paper$pages, paper$bookpagination),
+                          fmtTotalPages(paper$pagetotal, paper$bookpagination),
+                          sep = ''),
+                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper),
+                 fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtPubstate(paper$pubstate)
                  ))
     }else{
-      collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$title, paper$subtitle),
+        collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
+                   fmtBTitle(paper$title, paper$subtitle),
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
                  fmtEditor(paper, !length(paper$author)), fmtTranslator(paper),
-                 fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
-                 fmtIntroduction(paper$introduction), fmtForeword(paper$foreword),
-                 fmtAfterword(paper$afterword), fmtEdition(paper$edition),
-                 addPeriod(fmtBVolume(paper$volume, paper$part)), fmtVolumes(paper$volumes),
+                 fmtCommentator(paper$commentator),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
+                 fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
+                 fmtEdition(paper$edition),
+                 addPeriod(fmtBVolume(paper$volume, paper$part)),
+                 fmtVolumes(paper$volumes),
                  sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
                  fmtNote(paper$note), sentenceP(fmtPublisher(paper$publisher,
-                                                             paper$location, paper$address),
-                                                fmtDate(attr(paper, 'dateobj')),
-                                                fmtChapter(paper$chapter),
-                                                pgs = fmtPages(paper$pages, paper$bookpagination),
-                                                tp = fmtTotalPages(paper$pagetotal,
-                                                                   paper$bookpagination),
-                                                sep = ''),
-                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
-                 fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+                                                             paper$location,
+                                                             paper$address),
+                                          fmtDate(attr(paper, 'dateobj')),
+                                          fmtChapter(paper$chapter),
+                                          pgs = fmtPages(paper$pages,
+                                                         paper$bookpagination),
+                                          tp = fmtTotalPages(paper$pagetotal,
+                                                         paper$bookpagination),
+                                          sep = ''),
+                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper),
+                 fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtPubstate(paper$pubstate)
                  ))
     }
   }
@@ -337,17 +368,22 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
                         collapse = ': '), fmtAddOn(paper$booktitleaddon),
                  fmtEditor(paper, !length(paper$author)),
                  fmtTranslator(paper), fmtCommentator(paper$commentator),
-                 fmtAnnotator(paper$annotator), fmtIntroduction(paper$introduction),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
                  fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                  fmtEdition(paper$edition), fmtVolumes(paper$volumes),
                  sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
                                               fmtNote(paper$note),
                  sentenceP(fmtPublisher(paper$publisher, paper$location,
-                                        paper$address), fmtDate(attr(paper, 'dateobj')),
-                 fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination),
-                 tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''),
-                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
-                 fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+                                        paper$address), fmtDate(attr(paper,
+                                                                    'dateobj')),
+                           fmtChapter(paper$chapter),
+                           pgs = fmtPages(paper$pages, paper$bookpagination),
+                           tp = fmtTotalPages(paper$pagetotal,
+                                              paper$bookpagination), sep = ''),
+                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper),
+                 fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtPubstate(paper$pubstate)
                  ))
     }else{
       if (length(paper$maintitle)){
@@ -360,22 +396,28 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
                  paste0(c('In: ', fmtIBAuthor(paper$bookauthor),
                           fmtBTitle(paper$booktitle, paper$booksubtitle))),
-                 fmtAddOn(paper$booktitleaddon), fmtEditor(paper, !length(paper$author)),
+                 fmtAddOn(paper$booktitleaddon),
+                 fmtEditor(paper, !length(paper$author)),
                  fmtTranslator(paper), fmtCommentator(paper$commentator),
-                 fmtAnnotator(paper$annotator), fmtIntroduction(paper$introduction),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
                  fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
-                 fmtEdition(paper$edition), addPeriod(fmtBVolume(paper$volume, paper$part)),
+                 fmtEdition(paper$edition), addPeriod(fmtBVolume(paper$volume,
+                                                                 paper$part)),
                  fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series),
                                                      paper$number, sep = ' '),
-                 fmtNote(paper$note), sentenceP(fmtPublisher(paper$publisher, paper$location,
+                 fmtNote(paper$note), sentenceP(fmtPublisher(paper$publisher,
+                                                             paper$location,
                                                              paper$address),
-                                                fmtDate(attr(paper, 'dateobj')),
-                                                fmtChapter(paper$chapter),
-                                                pgs = fmtPages(paper$pages, paper$bookpagination),
-                                                tp = fmtTotalPages(paper$pagetotal,
-                                                                   paper$bookpagination),
-                                                sep = ''), fmtISBN(paper$isbn),
-                 fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum),
+                                        fmtDate(attr(paper, 'dateobj')),
+                                        fmtChapter(paper$chapter),
+                                        pgs = fmtPages(paper$pages,
+                                                       paper$bookpagination),
+                                        tp = fmtTotalPages(paper$pagetotal,
+                                                         paper$bookpagination),
+                                        sep = ''), fmtISBN(paper$isbn),
+                 fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
+                 fmtAddendum(paper$addendum),
                  fmtPubstate(paper$pubstate)
              ))
 
@@ -383,17 +425,23 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
   }
 
   formatBooklet <- function(paper){
-      collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$title, paper$subtitle),
+      collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
+                 fmtBTitle(paper$title, paper$subtitle),
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
                  fmtEditor(paper, !length(paper$author)), fmtTranslator(paper),
-                 fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
-                 fmtIntroduction(paper$introduction), fmtForeword(paper$foreword),
-                 fmtAfterword(paper$afterword), fmtHowPublished(paper$howpublished),
-                 fmtNote(paper$note), sentenceP(fmtPublisher(NULL, paper$location, paper$address),
-                                                       fmtDate(attr(paper, 'dateobj')),
-                 fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination),
-                 tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''),
-                 fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtCommentator(paper$commentator),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
+                 fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
+                 fmtHowPublished(paper$howpublished), fmtNote(paper$note),
+                 sentenceP(fmtPublisher(NULL, paper$location, paper$address),
+                           fmtDate(attr(paper, 'dateobj')),
+                           fmtChapter(paper$chapter),
+                           pgs = fmtPages(paper$pages, paper$bookpagination),
+                           tp = fmtTotalPages(paper$pagetotal,
+                                              paper$bookpagination), sep = ''),
+                 fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
+                 fmtAddendum(paper$addendum),
                  fmtPubstate(paper$pubstate)
                  ))
   }
@@ -403,25 +451,29 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
                  fmtIBTitle(paper$title, paper$subtitle, FALSE),
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
-                 paste0(c('In: ', fmtBTitle(paper$maintitle, paper$mainsubtitle))),
+                 paste0(c('In: ', fmtBTitle(paper$maintitle,
+                                            paper$mainsubtitle))),
                  fmtAddOn(paper$maintitleaddon),
-                 paste0(c(fmtBVolume(paper$volume, paper$part), fmtBTitle(paper$booktitle,
-                                                                          paper$booksubtitle)),
+                 paste0(c(fmtBVolume(paper$volume, paper$part),
+                          fmtBTitle(paper$booktitle, paper$booksubtitle)),
                         collapse = ': '), fmtAddOn(paper$booktitleaddon),
                  fmtEditor(paper, !length(paper$author)),
                  fmtTranslator(paper), fmtCommentator(paper$commentator),
-                 fmtAnnotator(paper$annotator), fmtIntroduction(paper$introduction),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
                  fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                  fmtEdition(paper$edition), fmtVolumes(paper$volumes),
                  sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
-                 fmtNote(paper$note), sentenceP(fmtPublisher(paper$publisher, paper$location,
+                 fmtNote(paper$note), sentenceP(fmtPublisher(paper$publisher,
+                                                             paper$location,
                                                              paper$address),
-                                                fmtDate(attr(paper, 'dateobj')),
-                                                fmtChapter(paper$chapter),
-                                                pgs = fmtPages(paper$pages, paper$bookpagination),
-                                                tp = fmtTotalPages(paper$pagetotal,
-                                                                   paper$bookpagination),
-                                                sep = ''), fmtISBN(paper$isbn),
+                                        fmtDate(attr(paper, 'dateobj')),
+                                        fmtChapter(paper$chapter),
+                                        pgs = fmtPages(paper$pages,
+                                                       paper$bookpagination),
+                                        tp = fmtTotalPages(paper$pagetotal,
+                                                         paper$bookpagination),
+                                        sep = ''), fmtISBN(paper$isbn),
                  fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
                  fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
       ))
@@ -434,22 +486,28 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
                  fmtIBTitle(paper$title, paper$subtitle, FALSE),
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
-                 paste0(c('In: ', fmtBTitle(paper$booktitle, paper$booksubtitle))),
-                 fmtAddOn(paper$booktitleaddon), fmtEditor(paper, !length(paper$author)),
+                 paste0(c('In: ', fmtBTitle(paper$booktitle,
+                                            paper$booksubtitle))),
+                 fmtAddOn(paper$booktitleaddon),
+                 fmtEditor(paper, !length(paper$author)),
                  fmtTranslator(paper), fmtCommentator(paper$commentator),
-                 fmtAnnotator(paper$annotator), fmtIntroduction(paper$introduction),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
                  fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
-                 fmtEdition(paper$edition), addPeriod(fmtBVolume(paper$volume, paper$part)),
-                 fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series), paper$number,
-                                                     sep = ' '),
-                 fmtNote(paper$note), sentenceP(fmtPublisher(paper$publisher, paper$location,
+                 fmtEdition(paper$edition),
+                 addPeriod(fmtBVolume(paper$volume, paper$part)),
+                 fmtVolumes(paper$volumes),
+                 sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
+                 fmtNote(paper$note), sentenceP(fmtPublisher(paper$publisher,
+                                                             paper$location,
                                                              paper$address),
-                                                fmtDate(attr(paper, 'dateobj')),
-                                                fmtChapter(paper$chapter),
-                                                pgs = fmtPages(paper$pages, paper$bookpagination),
-                                                tp = fmtTotalPages(paper$pagetotal,
-                                                                   paper$bookpagination),
-                                                sep = ''), fmtISBN(paper$isbn),
+                                        fmtDate(attr(paper, 'dateobj')),
+                                        fmtChapter(paper$chapter),
+                                        pgs = fmtPages(paper$pages,
+                                                       paper$bookpagination),
+                                        tp = fmtTotalPages(paper$pagetotal,
+                                                         paper$bookpagination),
+                                        sep = ''), fmtISBN(paper$isbn),
                  fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
                  fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
       ))
@@ -458,41 +516,54 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
   }
 
   formatManual <- function(paper){
-      collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$title, paper$subtitle),
+      collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
+                 fmtBTitle(paper$title, paper$subtitle),
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
-                 fmtEditor(paper, !length(paper$author)), fmtEdition(paper$edition),
+                 fmtEditor(paper, !length(paper$author)),
+                 fmtEdition(paper$edition),
                  sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
                  addPeriod(fmtType(paper$type)), fmtVersion(paper$version),
                  fmtNote(paper$note), fmtOrganization(paper$organization),
-                 sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
-                                                       fmtDate(attr(paper, 'dateobj')),
-                 fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination),
-                 tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''),
-                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
-                 fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
-                 ))
-  }
-
-  formatMisc <- function(paper){
-      collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$title, paper$subtitle),
-                 fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
-                 fmtEditor(paper, !length(paper$author)), fmtHowPublished(paper$howpublished),
-                 addPeriod(fmtType(paper$type)), fmtVersion(paper$version),
-                 fmtNote(paper$note), sentence(fmtPublisher(paper$organization, paper$location,
-                                                            paper$address),
-                                               fmtDate(attr(paper, 'dateobj')), sep = ''),
-                 fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum),
+                 sentenceP(fmtPublisher(paper$publisher, paper$location,
+                                        paper$address),
+                           fmtDate(attr(paper, 'dateobj')),
+                           fmtChapter(paper$chapter),
+                           pgs = fmtPages(paper$pages, paper$bookpagination),
+                           tp = fmtTotalPages(paper$pagetotal,
+                                              paper$bookpagination),
+                           sep = ''),
+                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper),
+                 fmtURL(paper), fmtAddendum(paper$addendum),
                  fmtPubstate(paper$pubstate)
                  ))
   }
 
+  formatMisc <- function(paper){
+      collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
+                 fmtBTitle(paper$title, paper$subtitle),
+                 fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
+                 fmtEditor(paper, !length(paper$author)),
+                 fmtHowPublished(paper$howpublished),
+                 addPeriod(fmtType(paper$type)), fmtVersion(paper$version),
+                 fmtNote(paper$note), sentence(fmtPublisher(paper$organization,
+                                                            paper$location,
+                                                            paper$address),
+                                               fmtDate(attr(paper, 'dateobj')),
+                                               sep = ''),
+                 fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
+                 fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+                 ))
+  }
+
   formatOnline <- function(paper){
-      collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$title, paper$subtitle),
+      collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
+                 fmtBTitle(paper$title, paper$subtitle),
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
                  fmtEditor(paper, !length(paper$author)),
                  fmtNote(paper$note), fmtOtherField(paper$organization),
                  addPeriod(fmtDate(attr(paper, 'dateobj'))), fmtEprint(paper),
-                 fmtURL(paper), fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+                 fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtPubstate(paper$pubstate)
                  ))
   }
 
@@ -500,8 +571,9 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
                  fmtIBTitle(paper$title, paper$subtitle, FALSE),
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
-                 sentence(fmtType(paper$type), paper$number, fmtPLocation(paper$location),
-                          sep = ' '), fmtHolder(paper$holder), fmtNote(paper$note),
+                 sentence(fmtType(paper$type), paper$number,
+                          fmtPLocation(paper$location), sep = ' '),
+                 fmtHolder(paper$holder), fmtNote(paper$note),
                  addPeriod(fmtDate(attr(paper, 'dateobj'))), fmtDOI(paper$doi),
                  fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum),
                  fmtPubstate(paper$pubstate)
@@ -513,28 +585,38 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       paper$author <- NULL
 
     if (length(paper$issuetitle)){
-      collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$title, paper$subtitle),
+      collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
+                 fmtBTitle(paper$title, paper$subtitle),
                  paste0(c(paste0(c(cleanupLatex(paper$series),
                                    fmtVolume(paper$volume, paper$number),
                                    fmtJournDate(paper, TRUE)), collapse = ' '),
                           fmtBTitle(paper$issuetitle, paper$issuesubtitle)),
                         collapse = ': '),
-                 fmtLanguage(paper$language), fmtEditor(paper, !length(paper$author)),
+                 fmtLanguage(paper$language),
+                 fmtEditor(paper, !length(paper$author)),
                  fmtTranslator(paper), fmtCommentator(paper$commentator),
-                 fmtAnnotator(paper$annotator), fmtIntroduction(paper$introduction),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
                  fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
-                 fmtNote(paper$note), fmtISSN(paper$issn), fmtDOI(paper$doi), fmtEprint(paper),
-                 fmtURL(paper), fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+                 fmtNote(paper$note), fmtISSN(paper$issn), fmtDOI(paper$doi),
+                 fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtPubstate(paper$pubstate)
                  ))
     }else{
-      collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$title, paper$subtitle),
-                 sentence(cleanupLatex(paper$series), fmtVolume(paper$volume, paper$number),
-                          fmtJournDate(paper), sep = ' '), fmtLanguage(paper$language),
+      collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
+                 fmtBTitle(paper$title, paper$subtitle),
+                 sentence(cleanupLatex(paper$series),
+                          fmtVolume(paper$volume, paper$number),
+                          fmtJournDate(paper), sep = ' '),
+                 fmtLanguage(paper$language),
                  fmtEditor(paper, !length(paper$author)), fmtTranslator(paper),
-                 fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
-                 fmtIntroduction(paper$introduction), fmtForeword(paper$foreword),
-                 fmtAfterword(paper$afterword), fmtNote(paper$note), fmtISSN(paper$issn),
-                 fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtCommentator(paper$commentator),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
+                 fmtForeword(paper$foreword),
+                 fmtAfterword(paper$afterword), fmtNote(paper$note),
+                 fmtISSN(paper$issn), fmtDOI(paper$doi), fmtEprint(paper),
+                 fmtURL(paper), fmtAddendum(paper$addendum),
                  fmtPubstate(paper$pubstate)
                  ))
     }
@@ -545,47 +627,62 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       paper$author <- NULL
 
     if (length(paper$maintitle)){
-        collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$maintitle,
-                                                                  paper$mainsubtitle),
+        collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
+                   fmtBTitle(paper$maintitle, paper$mainsubtitle),
                  fmtAddOn(paper$maintitleaddon), fmtLanguage(paper$language),
                  paste0(c(fmtBVolume(paper$volume, paper$part),
-                          fmtBTitle(paper$title, paper$subtitle)), collapse = ': '),
+                          fmtBTitle(paper$title, paper$subtitle)),
+                        collapse = ': '),
                  fmtAddOn(paper$titleaddon), fmtEventTitle(paper$eventtitle),
                  sentence(paper$eventtitleaddon,
-                          fmtEventDate(paper$eventdate, paper$venue), sep = ' '),
+                          fmtEventDate(paper$eventdate, paper$venue),
+                          sep = ' '),
                  fmtEditor(paper, !length(paper$author)),
                  fmtTranslator(paper), fmtCommentator(paper$commentator),
-                 fmtAnnotator(paper$annotator), fmtIntroduction(paper$introduction),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
                  fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
-                 fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series), paper$number,
-                                                     sep = ' '),
+                 fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series),
+                                                     paper$number, sep = ' '),
                  fmtOrganization(paper$organization), fmtNote(paper$note),
-                 sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
+                 sentenceP(fmtPublisher(paper$publisher, paper$location,
+                                        paper$address),
                            fmtDate(attr(paper, 'dateobj')),
-                           fmtChapter(paper$chapter), pgs = fmtPages(paper$pages,
-                                                                     paper$bookpagination),
-                           tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''),
-                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
-                 fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+                           fmtChapter(paper$chapter),
+                           pgs = fmtPages(paper$pages, paper$bookpagination),
+                           tp = fmtTotalPages(paper$pagetotal,
+                                              paper$bookpagination), sep = ''),
+                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper),
+                 fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtPubstate(paper$pubstate)
                  ))
     }else{
-      collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$title, paper$subtitle),
+      collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
+                 fmtBTitle(paper$title, paper$subtitle),
                  fmtAddOn(paper$titleaddon), fmtEventTitle(paper$eventtitle),
-                 fmtAddOn(paper$eventtitleaddon), fmtEventDate(paper$eventdate, paper$venue),
-                 fmtLanguage(paper$language), fmtEditor(paper, !length(paper$author)),
+                 fmtAddOn(paper$eventtitleaddon), fmtEventDate(paper$eventdate,
+                                                               paper$venue),
+                 fmtLanguage(paper$language),
+                 fmtEditor(paper, !length(paper$author)),
                  fmtTranslator(paper), fmtCommentator(paper$commentator),
-                 fmtAnnotator(paper$annotator), fmtIntroduction(paper$introduction),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
                  fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
-                 fmtEdition(paper$edition), addPeriod(fmtBVolume(paper$volume, paper$part)),
-                 fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series), paper$number,
-                                                     sep = ' '),
+                 fmtEdition(paper$edition), addPeriod(fmtBVolume(paper$volume,
+                                                                 paper$part)),
+                 fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series),
+                                                     paper$number, sep = ' '),
                  fmtNote(paper$note), fmtOrganization(paper$organization),
-                 sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
-                                                       fmtDate(attr(paper, 'dateobj')),
-                 fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination),
-                 tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''),
-                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
-                 fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+                 sentenceP(fmtPublisher(paper$publisher, paper$location,
+                                        paper$address),
+                           fmtDate(attr(paper, 'dateobj')),
+                           fmtChapter(paper$chapter),
+                           pgs = fmtPages(paper$pages, paper$bookpagination),
+                           tp = fmtTotalPages(paper$pagetotal,
+                                              paper$bookpagination), sep = ''),
+                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper),
+                 fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtPubstate(paper$pubstate)
                  ))
     }
   }
@@ -595,26 +692,34 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
                  fmtIBTitle(paper$title, paper$subtitle, FALSE),
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
-                 paste0(c('In: ', fmtBTitle(paper$maintitle, paper$mainsubtitle))),
+                 paste0(c('In: ', fmtBTitle(paper$maintitle,
+                                            paper$mainsubtitle))),
                  fmtAddOn(paper$maintitleaddon),
-                 paste0(c(fmtBVolume(paper$volume, paper$part), fmtBTitle(paper$booktitle,
-                                                                          paper$booksubtitle)),
+                 paste0(c(fmtBVolume(paper$volume, paper$part),
+                          fmtBTitle(paper$booktitle, paper$booksubtitle)),
                         collapse = ': '), fmtAddOn(paper$booktitleaddon),
-                 fmtEventTitle(paper$eventtitle), sentence(paper$eventtitleaddon,
-                                                           fmtEventDate(paper$eventdate,
-                                                                        paper$venue), sep = ' '),
+                 fmtEventTitle(paper$eventtitle),
+                 sentence(paper$eventtitleaddon, fmtEventDate(paper$eventdate,
+                                                              paper$venue),
+                          sep = ' '),
                  fmtEditor(paper, !length(paper$author)), fmtTranslator(paper),
-                 fmtCommentator(paper$commentator), fmtAnnotator(paper$annotator),
-                 fmtIntroduction(paper$introduction), fmtForeword(paper$foreword),
+                 fmtCommentator(paper$commentator),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
+                 fmtForeword(paper$foreword),
                  fmtAfterword(paper$afterword), fmtVolumes(paper$volumes),
                  sentence(cleanupLatex(paper$series), paper$number, sep = ' '),
                  fmtNote(paper$note), fmtOrganization(paper$organization),
-                 sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
-                                                       fmtDate(attr(paper, 'dateobj')),
-                 fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination),
-                 tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''),
-                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
-                 fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+                 sentenceP(fmtPublisher(paper$publisher, paper$location,
+                                        paper$address),
+                           fmtDate(attr(paper, 'dateobj')),
+                           fmtChapter(paper$chapter),
+                           pgs = fmtPages(paper$pages, paper$bookpagination),
+                           tp = fmtTotalPages(paper$pagetotal,
+                                              paper$bookpagination), sep = ''),
+                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper),
+                 fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtPubstate(paper$pubstate)
                  ))
     }else{
       if (length(paper$maintitle)){
@@ -625,24 +730,32 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
                  fmtIBTitle(paper$title, paper$subtitle, FALSE),
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
-                 paste0(c('In: ', fmtBTitle(paper$booktitle, paper$booksubtitle))),
-                 fmtAddOn(paper$booktitleaddon), fmtEventTitle(paper$eventtitle),
-                 sentence(paper$eventtitleaddon, fmtEventDate(paper$eventdate, paper$venue),
+                 paste0(c('In: ', fmtBTitle(paper$booktitle,
+                                            paper$booksubtitle))),
+                 fmtAddOn(paper$booktitleaddon),fmtEventTitle(paper$eventtitle),
+                 sentence(paper$eventtitleaddon,
+                          fmtEventDate(paper$eventdate, paper$venue),
                           sep = ' '),
                  fmtEditor(paper, !length(paper$author)),
                  fmtTranslator(paper), fmtCommentator(paper$commentator),
-                 fmtAnnotator(paper$annotator), fmtIntroduction(paper$introduction),
+                 fmtAnnotator(paper$annotator),
+                 fmtIntroduction(paper$introduction),
                  fmtForeword(paper$foreword), fmtAfterword(paper$afterword),
                  addPeriod(fmtBVolume(paper$volume, paper$part)),
-                 fmtVolumes(paper$volumes), sentence(cleanupLatex(paper$series),
-                                                     paper$number, sep = ' '),
+                 fmtVolumes(paper$volumes),
+                 sentence(cleanupLatex(paper$series),
+                          paper$number, sep = ' '),
                  fmtNote(paper$note), fmtOrganization(paper$organization),
-                 sentenceP(fmtPublisher(paper$publisher, paper$location, paper$address),
-                                                       fmtDate(attr(paper, 'dateobj')),
-                 fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination),
-                 tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''),
-                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
-                 fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+                 sentenceP(fmtPublisher(paper$publisher, paper$location,
+                                        paper$address),
+                           fmtDate(attr(paper, 'dateobj')),
+                           fmtChapter(paper$chapter),
+                           pgs = fmtPages(paper$pages, paper$bookpagination),
+                           tp = fmtTotalPages(paper$pagetotal,
+                                              paper$bookpagination), sep = ''),
+                 fmtISBN(paper$isbn), fmtDOI(paper$doi), fmtEprint(paper),
+                 fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtPubstate(paper$pubstate)
              ))
 
     }
@@ -655,17 +768,21 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
     if (!is.null(paper$school) && is.null(paper$institution))
       paper$institution <- paper$school
 
-      collapse(c(fmtPrefix(paper), fmtBAuthor(paper), fmtBTitle(paper$title, paper$subtitle),
+      collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
+                 fmtBTitle(paper$title, paper$subtitle),
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
                  sentence(fmtType(paper$type), paper$number, sep = ' '),
                  fmtVersion(paper$version), fmtNote(paper$note),
-                 sentenceP(fmtPublisher(paper$institution, paper$location, paper$address),
-                                                       fmtDate(attr(paper, 'dateobj')),
+                 sentenceP(fmtPublisher(paper$institution, paper$location,
+                                        paper$address),
+                           fmtDate(attr(paper, 'dateobj')),
                            fmtChapter(paper$chapter),
                            pgs = fmtPages(paper$pages, paper$bookpagination),
-                           tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''),
-                 fmtISRN(paper$isrn), fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
-                 fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+                           tp = fmtTotalPages(paper$pagetotal,
+                                              paper$bookpagination), sep = ''),
+                 fmtISRN(paper$isrn), fmtDOI(paper$doi), fmtEprint(paper),
+                 fmtURL(paper), fmtAddendum(paper$addendum),
+                 fmtPubstate(paper$pubstate)
                  ))
   }
 
@@ -676,16 +793,20 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       paper$institution <- paper$school
 
     collapse(c(fmtPrefix(paper), fmtBAuthor(paper),
-               fmtIBTitle(paper$title, paper$subtitle, FALSE), fmtAddOn(paper$titleaddon),
-                 fmtLanguage(paper$language), addPeriod(fmtType(paper$type)),
-                 fmtNote(paper$note),
-                 sentenceP(fmtPublisher(paper$institution, paper$location, paper$address),
-                                                       fmtDate(attr(paper, 'dateobj')),
-                 fmtChapter(paper$chapter), pgs = fmtPages(paper$pages, paper$bookpagination),
-                 tp = fmtTotalPages(paper$pagetotal, paper$bookpagination), sep = ''),
-                 fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper), fmtAddendum(paper$addendum),
-                 fmtPubstate(paper$pubstate)
-                 ))
+               fmtIBTitle(paper$title, paper$subtitle, FALSE),
+               fmtAddOn(paper$titleaddon),
+               fmtLanguage(paper$language), addPeriod(fmtType(paper$type)),
+               fmtNote(paper$note),
+               sentenceP(fmtPublisher(paper$institution, paper$location,
+                                      paper$address),
+                         fmtDate(attr(paper, 'dateobj')),
+                         fmtChapter(paper$chapter),
+                         pgs = fmtPages(paper$pages, paper$bookpagination),
+                         tp = fmtTotalPages(paper$pagetotal,
+                                            paper$bookpagination), sep = ''),
+               fmtDOI(paper$doi), fmtEprint(paper), fmtURL(paper),
+               fmtAddendum(paper$addendum), fmtPubstate(paper$pubstate)
+               ))
   }
 
   formatUnpublished <- function(paper){
@@ -694,7 +815,7 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
                  fmtAddOn(paper$titleaddon), fmtLanguage(paper$language),
                  fmtHowPublished(paper$howpublished), fmtNote(paper$note),
                  sentence(fmtPublisher(NULL, paper$location, paper$address),
-                                                       fmtDate(attr(paper, 'dateobj')), sep = ''),
+                          fmtDate(attr(paper, 'dateobj')), sep = ''),
                  fmtDOI(paper$doi), fmtURL(paper), fmtAddendum(paper$addendum),
                  fmtPubstate(paper$pubstate)
                  ))

@@ -7,9 +7,9 @@
 #' @param j - see \code{\link{[.BibEntry}}
 #' @param ... - see \code{\link{[.BibEntry}}
 #' @param value - values to be assigned to \code{x}.  To update one entry only,
-#' should be a named character vector with names corresponding to fields.  To update
-#' multiple entries, should be a list of named character vectors.  Can also be an object of 
-#' class BibEntry.
+#' should be a named character vector with names corresponding to fields.  To
+#' update multiple entries, should be a list of named character vectors.  Can
+#' also be an object of class BibEntry.
 #' @return an object of class BibEntry.
 #' @details Date and name list fields should be in the format expected
 #' by Biblatex (see \code{\link{BibEntry}}).
@@ -65,7 +65,8 @@
     
     ind <- rep_len(seq_len(N.replacements), N.to.replace)
     if (N.to.replace%%N.replacements != 0L)
-      warning('Number of items to replace is not a multiple of replacement length.')
+      warning("Number of items to replace is not a multiple ",
+              "of replacement length.")
     y <- value[ind]
   }else if (is.character(value) || is.list(value)){
     if(is.character(value))
@@ -73,11 +74,13 @@
     N.replacements <- length(value)
     ind <- rep_len(1L:N.replacements, N.to.replace)
     if (N.to.replace%%N.replacements != 0L)
-      warning('Number of items to replace is not a multiple of replacement length.')
+      warning("Number of items to replace is not a multiple ",
+              "of replacement length.")
     for (i in seq_along(y))
       y[[i]] <- BibReplace(y[[i]], value[[ind[i]]])
   }else{
-    stop('Object for replacement should be of class list, character, or BibEntry')
+    stop("Object for replacement should be of class list, ",
+         "character, or BibEntry")
   }
   replace.ind <- match(names.to.replace, names(x))
   x <- unclass(x)
@@ -92,7 +95,7 @@
 BibReplace <- function(orig, replace.vals){
   replace.fields <- names(replace.vals)
   if (is.null(replace.fields) || any(replace.fields == ''))
-    stop('Replacement object must have names corresponding to fields')
+    stop("Replacement object must have names corresponding to fields")
   if ('key' %in% replace.fields)
     attr(orig, 'key') <- replace.vals[['key']]
   
@@ -107,7 +110,8 @@ BibReplace <- function(orig, replace.vals){
   for (i in replace.fields[nl.to.update])
     orig[[i]] <- ArrangeAuthors(replace.vals[[i]])
 
-  replace.remains <- replace.vals[!replace.fields %in% c('bibtype', 'key', .BibEntryNameList)]
+  replace.remains <- replace.vals[!replace.fields %in% c('bibtype', 'key',
+                                                         .BibEntryNameList)]
   if (length(replace.remains)){
     replace.names <- names(replace.remains)
     for (i in seq_along(replace.remains)){
@@ -122,7 +126,8 @@ BibReplace <- function(orig, replace.vals){
   if (any(replace.fields %in% .BibEntryDateField)){  # update dateobj attribute
     tdate <- ProcessDates(orig)
     if (is.null(tdate))
-      stop(paste0('The specified Date Field value is not in a valid format for Bibtex/Biblatex'))
+      stop("The specified Date Field value is not in a valid format ",
+           "for Bibtex/Biblatex")
     attr(orig, 'dateobj') <- tdate
   }
 

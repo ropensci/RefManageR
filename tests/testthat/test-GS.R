@@ -17,13 +17,14 @@ test_that("check drop incomplete", {
         skip("Couldn't connect to GS")
     Sys.sleep(3)
 
-    ## be cautious to not demand warnings as Scholar results sorted by dates may update
-    ## using Leo Breiman should help prevent this from happening
+    ## be cautious to not demand warnings as Scholar results sorted by dates 
+    ## may update using Leo Breiman should help prevent this from happening
     num.dropped <- 0
     lim <- 6
     frame.number <- sys.nframe()
     out <- withCallingHandlers(ReadGS(scholar.id = "mXSv_1UAAAAJ", limit = lim,
-                                      sort.by.date = TRUE, check.entries = "error"),
+                                      sort.by.date = TRUE,
+                                      check.entries = "error"),
       message = function(w){
         if (any(grepl("information for entry", w)))
            assign("num.dropped", num.dropped + 1L,
@@ -42,8 +43,10 @@ test_that("check read by cites", {
         skip("Couldn't connect to GS")
 
     Sys.sleep(5)
-    expect_warning(out <- ReadGS(scholar.id = "CJOHNoQAAAAJ", check.entries = "warn",
-                                 sort.by.date = FALSE, limit = 10), "Incomplete")
+    expect_warning(out <- ReadGS(scholar.id = "CJOHNoQAAAAJ",
+                                 check.entries = "warn",
+                                 sort.by.date = FALSE, limit = 10),
+                   "Incomplete")
     expect_is(out, "BibEntry")
     expect_match(out[[1]]$title, "Measurement error")
 })
@@ -52,6 +55,6 @@ test_that("CreateBibKey works with non-ascii characters", {
     skip_on_cran()
     if (httr::http_error("http://scholar.google.com"))
         skip("Couldn't connect to GS")
-    out <- ReadGS(scholar.id = "KfQwll4AAAAJ", limit = 7, sort.by.date = TRUE) 
+    out <- ReadGS(scholar.id = "KfQwll4AAAAJ", limit = 7, sort.by.date = TRUE)
     expect_is(out, "BibEntry")
 })

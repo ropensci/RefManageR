@@ -1,7 +1,8 @@
 context("Un and re-listing")
 
-bib.l <- list(c(bibtype = "article", key = "mclean2014a", title = "My New Article",
-  author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-01"),
+bib.l <- list(c(bibtype = "article", key = "mclean2014a",
+                title = "My New Article", author = "Mathew W. McLean",
+                journaltitle = "The Journal", date = "2014-01"),
   c(bibtype = "article", key = "mclean2014b", title = "My Newer Article",
   author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-02"))
 bib <- as.BibEntry(bib.l)

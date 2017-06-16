@@ -1,14 +1,18 @@
 #' Merge two BibEntry objects while discarding duplicates
 #'
-#' Merges two BibEntry objects comparing only the specified fields to detect duplicates, thus it is can be made less strict
-#' than using \code{duplicated}, \code{unique}, etc.  Attributes are also merged and keys are ensured to be unique.
+#' Merges two BibEntry objects comparing only the specified fields to detect
+#' duplicates, thus it is can be made less strict
+#' than using \code{duplicated}, \code{unique}, etc.  Attributes are also merged
+#' and keys are ensured to be unique.
 #' \code{merge} and \code{+} simply provide different interfaces for merging.
 #'
 #' @param e1 BibEntry object
 #' @param e2 BibEntry object to be merged with e1
-#' @param fields.to.check character vector; which BibLaTeX fields should be checked to determine if an entry
-#' is a duplicate?  Can include \code{"bibtype"} to check entry type and \code{"key"} to check entry keys.
-#' Specifying \code{"all"} checks all fields using \code{\link{duplicated}}.
+#' @param fields.to.check character vector; which BibLaTeX fields should be
+#' checked to determine if an entry
+#' is a duplicate?  Can include \code{"bibtype"} to check entry type and
+#' \code{"key"} to check entry keys. Specifying \code{"all"} checks all fields
+#' using \code{\link{duplicated}}.
 #' @return an object of class BibEntry
 #' @family operators
 #' @seealso \code{\link{duplicated}}, \code{\link{unique}}
@@ -22,9 +26,9 @@
 #' bib1 <- bib[seq_len(44)]
 #' bib2 <- bib[45:length(bib)]
 #'
-#' ## The following is FALSE because the parent entry of one entry in bib1 is in bib2,
-#' ##   so the child entry in is expanded in the BibEntry object returned by `[`
-#' ##   to include the fields inherited from the dropped parent
+#' ## The following is FALSE because the parent entry of one entry in bib1
+#' ##   is in bib2, so the child entry in is expanded in the BibEntry object
+#' ##   returned by `[` to include the fields inherited from the dropped parent
 #' identical(merge(bib1, bib2, 'all'), bib)
 #' toBiblatex(bib1[[1L]])
 #' toBiblatex(bib[[1L]])
@@ -65,7 +69,8 @@
                                       xkey <- x$key
                                       xtype <- x$bibtype
                                       for (i in seq_along(y)){
-                                        if (ykeys[i] == xkey && ytypes[i] == xtype)
+                                        if (ykeys[i] == xkey &&
+                                            ytypes[i] == xtype)
                                           return(TRUE)
                                       }
                                       return(FALSE)
@@ -97,8 +102,9 @@
     }
     if (length(dup.ind)){
       e2 <- e2[[-dup.ind]]
-      message(paste0('Duplicate entries found in second BibEntry object in position(s): ',
-                     paste0(dup.ind, collapse = ', ')))
+      dup.str <- paste0(dup.ind, collapse = ', ')
+      message("Duplicate entries found in second BibEntry object ",
+              "in position(s): ", dup.str)
     }
   }
   x <- c(e1, e2)
@@ -121,7 +127,9 @@
 #' @method merge BibEntry
 #' @export
 #' @rdname merge.BibEntry
-merge.BibEntry <- function(x, y, fields.to.check = BibOptions()$merge.fields.to.check, ...){
+merge.BibEntry <- function(x, y,
+                           fields.to.check = BibOptions()$merge.fields.to.check,
+                           ...){
   oldfields <- BibOptions(merge.fields.to.check = fields.to.check)
   on.exit(BibOptions(oldfields))
   `+.BibEntry`(x, y)

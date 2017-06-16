@@ -11,13 +11,12 @@ bib <- ReadBib(system.file("Bib", "biblatexExamples.bib",
 test_that("yaml printing with authoryear", {
     BibOptions(check.entries = FALSE)
     print(bib[47:92], .opts = list(bib.style = "authoryear",
-                                                sorting = "anyvt", style = "yaml"))
+                                   sorting = "anyvt", style = "yaml"))
 })
 
 test_that("R style printing with authoryear", {
     print(bib[1:46], .opts = list(bib.style = "authoryear",
-                                                sorting = "anyt", style = "R"))
-
+                                  sorting = "anyt", style = "R"))
 })
 
 
@@ -58,13 +57,16 @@ test_that("open", {
     testbib$file <- file.path(R.home("doc/manual"), "R-intro.pdf")
     open(testbib)  # PDF
 
+    ## no error if cannot open
     expect_message(open(testbib, open.field = "eprint"),
-                   "Could not open the specified entry.")  # no error if cannot open
+                   "Could not open the specified entry.")  
 
     open(bib["kastenholz"])  # DOI
     testbib <- BibEntry(bibtype = "Misc", key = "arxiv", eprinttype = "arxiv",
-      eprintclass = "stat.ME", year = 2013, urldate = "2014-02-01", pubstate = "submitted",
-      title = "Something On the {arXiv}", author = "Mathew W. McLean", eprint = "1403.2036")
+                        eprintclass = "stat.ME", year = 2013,
+                        urldate = "2014-02-01", pubstate = "submitted",
+                        title = "Something On the {arXiv}",
+                        author = "Mathew W. McLean", eprint = "1403.2036")
     open(testbib, entry = 1)  # eprint
 })
 
@@ -75,12 +77,13 @@ test_that("c", {
 })
 
 test_that("levels", {
-    expect_identical(levels(bib)[["angenendt"]], c("author", "title", "journaltitle", "date",
-                                                   "volume", "pages", "langid", "indextitle",
-                                                   "shorttitle", "annotation"))
-    expect_identical(levels(bib[[1]])[[1]], c("author", "title", "subtitle", "pages",
-                                              "crossref", "langid", "langidopts",
-                                              "indextitle", "annotation"))
+    expect_identical(levels(bib)[["angenendt"]],
+                     c("author", "title", "journaltitle", "date", "volume",
+                       "pages", "langid", "indextitle", "shorttitle",
+                       "annotation"))
+    expect_identical(levels(bib[[1]])[[1]],
+                     c("author", "title", "subtitle", "pages", "crossref",
+                       "langid", "langidopts", "indextitle", "annotation"))
 })
 
 test_that("list extraction", {

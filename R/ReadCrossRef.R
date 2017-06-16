@@ -1,34 +1,36 @@
 #' Search CrossRef for citations.
 #'
-#' Provides an interface to the CrossRef API, searching for citations given a string query.
-#' Results are written to a
-#' bib file, read back into \code{R} using \code{\link{WriteBib}}, and returned as a BibEntry object.
-#'
+#' Provides an interface to the CrossRef API, searching for citations given a
+#' string query.  Results are written to a
+#' bib file, read back into \code{R} using \code{\link{WriteBib}}, and returned
+#' as a BibEntry object.
 #' @param query string; search term
-#' @param filter named list of possible filters; see \code{Details} and \code{References};
-#' ignored if \code{use.old.api = TRUE}
+#' @param filter named list of possible filters; see \code{Details} and
+#' \code{References}; ignored if \code{use.old.api = TRUE}
 #' @param limit numeric; maximum number of entries to return
 #' @param offset numeric; CrossRef will not return the
 #' first \code{offset} results (default 0); ignored if \code{use.old.api = TRUE}
-#' @param sort string; how specifying how the results from CrossRef should be sorted.  Possible
-#' values when \code{use.old.api = FALSE} are \code{"score"} (default; same as \code{"relevance"}),
+#' @param sort string; how specifying how the results from CrossRef should be
+#' sorted.  Possible values when \code{use.old.api = FALSE} are \code{"score"}
+#' (default; same as \code{"relevance"}),
 #' \code{"updated"}, \code{"deposited"}, \code{"indexed"}, or \code{"published"};
 #' see the references
 #' @param year numeric; if specified, only results from this year will be returned.
-#' @param min.relevance numeric; only results with a CrossRef-assigned relevance score at
-#' least this high will be returned.
-#' @param temp.file string; file name to use for storing Bibtex information returned by CrossRef.
+#' @param min.relevance numeric; only results with a CrossRef-assigned relevance
+#' score at least this high will be returned.
+#' @param temp.file string; file name to use for storing Bibtex information
+#' returned by CrossRef.
 #' @param delete.file boolean; should the bib file be deleted on exit?
-#' @param verbose boolean; if \code{TRUE}, additional messages are output regarding the
-#' results of the query.
+#' @param verbose boolean; if \code{TRUE}, additional messages are output
+#' regarding the results of the query.
 #' @param use.old.api boolean; should the older CrossRef API be used for the search?
 #' @return An object of class \code{BibEntry}.
-#' @note The entries returned by Crossref are frequently missing fields required by BibTeX, if
-#' you want the entries to be returned anyway, set \code{BibOptions()$check.entries} to
-#' \code{FALSE} or \code{"warn"}
+#' @note The entries returned by Crossref are frequently missing fields required
+#' by BibTeX, if you want the entries to be returned anyway, set
+#' \code{BibOptions()$check.entries} to \code{FALSE} or \code{"warn"}
 #'
-#' Fields \code{"score"} (the relevancy score) and \code{"license"} will be returned when
-#' \code{use.old.api = FALSE}.
+#' Fields \code{"score"} (the relevancy score) and \code{"license"} will be
+#' returned when \code{use.old.api = FALSE}.
 #' @details When \code{use.old.api = TRUE}, the query HTTP request only returns DOIs,
 #' which are then used to make HTTP requests for the corresponding BibTeX entries from
 #' CrossRef; when \code{use.old.api = FALSE}, the query HTTP request is parsed to create
@@ -39,8 +41,9 @@
 #' negatives are unlikely, the search can be prone to false positives.  Hence, setting
 #' \code{min.revelance} to a high value may be necessary if \code{use.old.api = TRUE}.
 #'
-#' Possible values for the \emph{names} in \code{filter} are \code{"has-funder"}, \code{"funder"},
-#' \code{"prefix"}, \code{"member"}, \code{"from-index-date"}, \code{"until-index-date"},
+#' Possible values for the \emph{names} in \code{filter} are \code{"has-funder"},
+#' \code{"funder"}, \code{"prefix"}, \code{"member"}, \code{"from-index-date"},
+#' \code{"until-index-date"},
 #' \code{"from-deposit-date"}, \code{"until-deposit-date"}, \code{"from-update-date"},
 #' \code{"until-update-date"}, \code{"from-created-date"}, \code{"until-created-date"},
 #' \code{"from-pub-date"}, \code{"until-pub-date"}, \code{"has-license"}, \code{"license.url"},
@@ -51,8 +54,8 @@
 #' \code{"updates"}, \code{"is-update"}, \code{"has-update-policy"}, \code{"container-title"},
 #' \code{"publisher-name"}, \code{"category-name"}, \code{"type-name"}, \code{"award.number"},
 #' \code{"award.funder"}, \code{"assertion-group"}, \code{"assertion"}, \code{"affiliation"},
-#' \code{"has-affiliation"}, \code{"alternative-id"}, and \code{"article-number"}.  See the first
-#' reference for a description of their meanings.
+#' \code{"has-affiliation"}, \code{"alternative-id"}, and \code{"article-number"}.
+#' See the first reference for a description of their meanings.
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr GET content http_error add_headers
 #' @importFrom utils URLdecode
@@ -84,9 +87,10 @@
 #'     year = 2012, limit = 2, use.old.api = TRUE)
 #' }
 ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
-                         sort = "relevance", year = NULL,
-                         min.relevance = 2, temp.file = tempfile(fileext = ".bib"),
-                         delete.file = TRUE, verbose = FALSE, use.old.api = FALSE){
+                         sort = "relevance", year = NULL, min.relevance = 2,
+                         temp.file = tempfile(fileext = ".bib"),
+                         delete.file = TRUE, verbose = FALSE,
+                         use.old.api = FALSE){
   bad <- 0
   
   ## file.create(temp.file)
@@ -100,31 +104,35 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
       if (.is_not_nonempty_text(query))
           stop(gettextf("specify a valid %s", sQuote("query")))
 
-      results <- try(GET("http://search.crossref.org/dois", query = list(q=query, year=year,
+      results <- try(GET("http://search.crossref.org/dois",
+                         query = list(q=query, year=year,
                          sort=sort, rows=limit)), TRUE)
     }else{
       params <- list(rows = limit, sort = sort, offset = offset)
       if (!.is_not_nonempty_text(query))
-        params$query <- query  # stop(gettextf("specify a valid %s", sQuote("query")))
+        params$query <- query  
 
       if (length(year))
-          suppressWarnings(filter$"from-pub-date" <- filter$"until-pub-date" <- year)
+          suppressWarnings(filter$"from-pub-date" <-
+                               filter$"until-pub-date" <- year)
 
       if (length(filter))
-          params$filter <- paste(paste0(names(filter),":",filter), collapse = ",")          
+          params$filter <- paste(paste0(names(filter),":",filter),
+                                 collapse = ",")          
       results <- try(GET("http://api.crossref.org/works", query=params))
     }
     if (inherits(results, "try-error"))
-      stop(gettextf("httr failed to GET results from CrossRef: %s", geterrmessage()))
+        stop(gettextf("httr failed to GET results from CrossRef: %s",
+                      geterrmessage()))
 
     fromj <- content(results, type = "application/json", encoding = "UTF-8")
     if (!use.old.api)
         fromj <- fromj$message$items
     num.res <- min(limit, length(fromj))
     if(num.res == 0L){
-      message(gettextf("Query %s returned no matches", ifelse(!.is_not_nonempty_text(query),
-                                                                dQuote(query),
-                                                                dQuote(params$filter))))
+      message(gettextf("Query %s returned no matches",
+                       ifelse(!.is_not_nonempty_text(query), dQuote(query),
+                              dQuote(params$filter))))
       return()
     }
 
@@ -134,7 +142,8 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
           good <- which(vapply(res, function(e){
               good <- e$score >= min.relevance
               if (good && verbose)
-                 message(gettextf("including the following entry with relevancy score %s:\n%s",
+                message(gettextf("including the following entry %s%s:\n%s",
+                                 "with relevancy score ",
                                   e$title, e$score[[i]]))
               good
           }, FALSE))
@@ -164,28 +173,36 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
         }
         for(i in 1:num.res){
           if (fromj[[i]][[score.str]] >= min.relevance){
-              bad <- bad + GetCrossRefBibTeX(paste0(if (!use.old.api) "http://dx.doi.org/",
-                                                    fromj[[i]][[doi.str]]), temp.file)
+              bad <- bad + GetCrossRefBibTeX(paste0(if (!use.old.api)
+                                                        "http://dx.doi.org/",
+                                                    fromj[[i]][[doi.str]]),
+                                             temp.file)
               if (verbose)
-                  message(gettextf("including the following entry with relevancy score %s:\n%s",
-                               fromj[[i]][[entry.str]], fromj[[i]][[score.str]]))
+                  message(gettextf("including the following entry %s%s:\n%s",
+                                   "with relevancy score ",
+                                   fromj[[i]][[entry.str]],
+                                   fromj[[i]][[score.str]]))
+              
           }
         }
       }  # end else for old API processing
     }
   }  # end else for case when query is not a DOI
   if (bad == num.res){
-    message(gettextf("no results with relavency score greater than %s successfully retrieved",
-                       sQuote("min.relevance")))
+    message(gettextf("no results with relavency score greater than %s%s",
+                       sQuote("min.relevance"), " successfully retrieved"))
     return()
   }
 
   bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
 
-  bib.res$url <- vapply(bib.res$url, function(x) if (!is.null(x)) URLdecode(x), "") 
+  bib.res$url <- vapply(bib.res$url, function(x) if (!is.null(x))
+                                                     URLdecode(x), "") 
   if (inherits(bib.res, "try-error"))
-      stop(gettextf("failed to parse the returned BibTeX results; if \'delete.file\' %s%s",
-                     "is FALSE, you can try viewing and editing the file: ", temp.file))
+      stop(gettextf("failed to parse the returned BibTeX results; %s%s%s",
+                    "if \'delete.file\' ",
+                    "is FALSE, you can try viewing and editing the file: ",
+                    temp.file))
 
   return(bib.res)  
 }
@@ -194,17 +211,19 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
 #' @noRd
 GetCrossRefBibTeX <- function(doi, tmp.file){
     ## temp <- try(getURLContent(url=doi,
-    ##                 .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"),
-    ##                    followLocation=TRUE)), TRUE)
+    ##  .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"),
+    ##  followLocation=TRUE)), TRUE)
     temp <- try(GET(doi, config = list(followlocation = TRUE),
                       add_headers(Accept = "application/x-bibtex")), TRUE)
     temp <- try(content(temp, as = "text", encoding = "UTF-8"), TRUE)
     ## if(is.raw(temp))
     ##     temp <- rawToChar(temp)
-    if (inherits(temp, "try-error") || temp[1] == "<h1>Internal Server Error</h1>" ||
+    if (inherits(temp, "try-error") ||
+        temp[1] == "<h1>Internal Server Error</h1>" ||
         !grepl("^[[:space:]]*@", temp, useBytes = TRUE)){
         ## last one for occasional non-bibtex returned by CrossRef
-      message(gettextf("server error for doi %s, you may want to try again.", dQuote(doi)))
+      message(gettextf("server error for doi %s, you may want to try again.",
+                       dQuote(doi)))
       return(1L)
     }
 
@@ -253,7 +272,8 @@ ParseCrossRef <- function(e){
 ToPersonCR <- function(x){
     x <- lapply(x, function(y){
                    y$affiliation <- NULL
-                   c(y, role = list(NULL), email = list(NULL), comment = list(NULL))
+                   c(y, role = list(NULL), email = list(NULL),
+                     comment = list(NULL))
                    })
     # out <- do.call("c", x)
     class(x) <- "person"

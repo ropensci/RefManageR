@@ -11,7 +11,8 @@
 #' Search NCBI's Entrez for citation information
 #'
 #' This function takes a query and searches an Entrez database for
-#' references using NCBI's E-Utilities, returning the results in a BibEntry object.
+#' references using NCBI's E-Utilities, returning the results in a BibEntry
+#' object.
 #' @param query string; search term.
 #' @param database string; the Entrez database to search.
 #' @param ... additional parameters to use for the search.
@@ -20,20 +21,29 @@
 #' @export
 #' @details Optional additional parameters to pass to the server include
 #' \itemize{
-#' \item \code{retstart} - index of the first retrieved ID that should be included in the results.
-#' \item \code{retmax} - maximum number of IDs the server will return (default 20). 
-#' \item \code{field} - limits the query to search only the specified field (e.g. \dQuote{title}).
-#' \item \code{datetype} - type of date to use when limiting search by dates. E.g. \dQuote{mdat}
+#' \item \code{retstart} - index of the first retrieved ID that should be
+#' included in the results.
+#' \item \code{retmax} - maximum number of IDs the server will
+#' return (default 20). 
+#' \item \code{field} - limits the query to search only the specified
+#' field (e.g. \dQuote{title}).
+#' \item \code{datetype} - type of date to use when limiting search by
+#' dates. E.g. \dQuote{mdat}
 #' for modification date or \dQuote{pdat} for publication date.
-#' \item \code{reldate} - integer; only items that have (\code{datetype}) date values within \code{reldate} \emph{days}
+#' \item \code{reldate} - integer; only items that have (\code{datetype})
+#' date values within \code{reldate} \emph{days}
 #' of the current date will be returned.
-#' \item \code{mindate}, \code{maxdate} - date ranges to restrict search results.  Possible formats are
+#' \item \code{mindate}, \code{maxdate} - date ranges to restrict search
+#' results.  Possible formats are
 #' \dQuote{YYYY}, \dQuote{YYYY/MM}, and \dQuote{YYYY/MM/DD}.
 #' }
-#' @note The returned entries will have type either \sQuote{Article} or \sQuote{Misc} depending on whether journal information was retrieved.
+#' @note The returned entries will have type either \sQuote{Article} or
+#' \sQuote{Misc} depending on whether journal information was retrieved.
 #' See the Entrez documentation listed in the \emph{References}.
 #'
-#' The language of the entry will be returned in the field \dQuote{language} and the abstract will be returned in the field \dQuote{abstract}, if they are available.
+#' The language of the entry will be returned in the field \dQuote{language}
+#' and the abstract will be returned in the field \dQuote{abstract}, if they
+#' are available.
 #' @references \url{https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
 #' @family pubmed
 #' @importFrom httr GET
@@ -45,7 +55,8 @@ ReadPubMed <- function(query, database = "PubMed", ...){
   .params <- list(...)
   bad.ind <- which(!names(.params) %in% c("usehistory", "WebEnv", "query_key",
                                           "retstart", "retmax", "field",
-                                          "datetype", "reldate", "mindate", "maxdate"))
+                                          "datetype", "reldate", "mindate",
+                                          "maxdate"))
   .parms <- .params
   if (length(bad.ind)){
     warning("Invalid .params specified and will be ignored")
@@ -74,15 +85,16 @@ ReadPubMed <- function(query, database = "PubMed", ...){
     return()
   }
 
-  res <- GetPubMedByID(id = ids, db = database, WebEnv = webenv, query_key = query.key)
+  res <- GetPubMedByID(id = ids, db = database, WebEnv = webenv,
+                       query_key = query.key)
 
   return(res)
 }
 
 #' Retrieve citation information from NCBI's Entrez for a set of PubMed IDs
 #'
-#' Uses NCBI's E-Utilities to retrieve bibliographic information given a vector of PubMed ID's and returns
-#' the results as a BibEntry object.
+#' Uses NCBI's E-Utilities to retrieve bibliographic information given a
+#' vector of PubMed ID's and returns the results as a BibEntry object.
 #' @param id character vector; PubMed ID's for searching NCBI's Entrez.
 #' @param db string; Entrez database to search.
 #' @param ... additional parameters to use for the search.
@@ -116,7 +128,8 @@ GetPubMedByID <- function(id, db = "pubmed", ...){
   temp <- POST(base.url, query = parms)
   tdoc <- read_xml(temp)
 
-  # Note: directly using xpathApply on tdoc won't work if some results are missing certain fields
+  ## Note: directly using xpathApply on tdoc won't work if some results are
+  ##  missing certain fields
   results <- xml_find_all(tdoc, "//PubmedArticleSet/PubmedArticle")
   results.book <- xml_find_all(tdoc, "//PubmedArticleSet/PubmedBookArticle")
     
@@ -141,23 +154,29 @@ GetPubMedByID <- function(id, db = "pubmed", ...){
 
 #' Retrieve related articles from PubMed using PubMed ID's
 #'
-#' Searches PubMed for articles related to a set of PubMed ID's using NCBI's E-Utilities.
-#' @param id either a character vector of PubMed ID's or a BibEntry object, which is expected to have at least some
-#' entries with \code{eprinttype = "pubmed"} and eprint field specifying a PubMed ID.
+#' Searches PubMed for articles related to a set of PubMed ID's using
+#' NCBI's E-Utilities.
+#' @param id either a character vector of PubMed ID's or a BibEntry object,
+#' which is expected to have at least some entries with
+#' \code{eprinttype = "pubmed"} and eprint field specifying a PubMed ID.
 #' @param database string; the Entrez database to search
-#' @param batch.mode logical; if \code{TRUE}, the PubMed IDs in \code{id} are combined by Entrez when searching for linked
-#' IDs so that only one set of linked IDs is returned.  If \code{FALSE}, a set of linked IDs is obtained for each ID
+#' @param batch.mode logical; if \code{TRUE}, the PubMed IDs in \code{id}
+#' are combined by Entrez when searching for linked
+#' IDs so that only one set of linked IDs is returned.  If \code{FALSE}, a
+#' set of linked IDs is obtained for each ID
 #' in \code{id}.
 #' will be returned
-#' @param max.results numeric vector; the maximum number of results to return if \code{batch.mode}
-#' \code{TRUE}; or if \code{batch.mode} is \code{FALSE}, this should have the same length
-#' as \code{id} with each element giving the maximum number of results to return for the
-#' corresponding ID.
-#' @param return.sim.scores logical; Entrez returns a similarity score with each returned citation giving a
-#' measure of how similar the returned entry is to the ones specified by the query.  If \code{TRUE} these scores are added
+#' @param max.results numeric vector; the maximum number of results to
+#' return if \code{batch.mode} \code{TRUE}; or if \code{batch.mode} is
+#' \code{FALSE}, this should have the same length
+#' as \code{id} with each element giving the maximum number of results to
+#' return for the corresponding ID.
+#' @param return.sim.scores logical; Entrez returns a similarity score with
+#' each returned citation giving a measure of how similar the returned entry
+#' is to the ones specified by the query.  If \code{TRUE} these scores are added
 #' to the returned BibEntry object in a field called \sQuote{score}.
-#' @param return.related.ids logical; should the original PubMed ID(s) that a returned entry is related to be stored in a
-#' field called \sQuote{PMIDrelated}.
+#' @param return.related.ids logical; should the original PubMed ID(s) that a
+#' returned entry is related to be stored in a field called \sQuote{PMIDrelated}.
 #' @return an object of class BibEntry.
 #' @importFrom httr GET
 #' @importFrom xml2 read_xml xml_find_all xml_text
@@ -174,8 +193,9 @@ GetPubMedByID <- function(id, db = "pubmed", ...){
 #'   return.sim.scores = TRUE, return.related.ids = TRUE))
 #'   GetPubMedRelated(bib, batch.mode = FALSE, max.results = c(2, 2))
 #' }
-GetPubMedRelated <- function(id, database = "pubmed", batch.mode = TRUE, max.results = 10,
-                             return.sim.scores = FALSE, return.related.ids = FALSE){
+GetPubMedRelated <- function(id, database = "pubmed", batch.mode = TRUE,
+                             max.results = 10, return.sim.scores = FALSE,
+                             return.related.ids = FALSE){
   stopifnot(!missing(id))
 
   if (inherits(id, "BibEntry")){
@@ -191,7 +211,8 @@ GetPubMedRelated <- function(id, database = "pubmed", batch.mode = TRUE, max.res
 
   if (batch.mode){
     id <- paste0(id, collapse=",")
-    parms <- list(cmd = "neighbor_score", dbfrom = "pubmed", db = database, id = id)
+    parms <- list(cmd = "neighbor_score", dbfrom = "pubmed", db = database,
+                  id = id)
   }else{
     parms <- as.list(id)
     names(parms) <- rep("id", length(id))
@@ -215,7 +236,8 @@ GetPubMedRelated <- function(id, database = "pubmed", batch.mode = TRUE, max.res
     ## temp <- xmlDoc(ch[[i]])
     temp <- ch[i]
     if (return.related.ids)
-      related <- paste0(xml_text(xml_find_all(temp, "//LinkSet/IdList/Id")), collapse = ",")
+      related <- paste0(xml_text(xml_find_all(temp, "//LinkSet/IdList/Id")),
+                        collapse = ",")
     ## temp <- xmlDoc(temp["//LinkSetDb"][[1L]])
 
     ids <- xml_text(xml_find_all(temp, ".//LinkSetDb/Link/Id"))
@@ -284,7 +306,7 @@ ProcessPubMedResult <- function(tdoc){
                          ".//MedlineCitation/Article/Journal/Title"))
 
   res$volume <- xml_text(xml_find_all(tdoc,
-                        ".//MedlineCitation/Article/Journal/JournalIssue/Volume"))
+                    ".//MedlineCitation/Article/Journal/JournalIssue/Volume"))
 
   res$number <- xml_text(xml_find_all(tdoc,
                     ".//MedlineCitation/Article/Journal/JournalIssue/Issue"))
@@ -297,7 +319,8 @@ ProcessPubMedResult <- function(tdoc){
     id.types <- xml_attr(xml_find_all(tdoc,
                     ".//PubmedData/ArticleIdList/ArticleId"),
                                     attr = "IdType", default = "")
-    if (length(doi.pos <- grep("doi", id.types, ignore.case = TRUE, useBytes = TRUE)))
+    if (length(doi.pos <- grep("doi", id.types, ignore.case = TRUE,
+                               useBytes = TRUE)))
        doi[doi.pos[1L]]
     else{
       doi <- vapply(doi, SearchDOIText, "")
@@ -316,18 +339,21 @@ ProcessPubMedResult <- function(tdoc){
                            ".//MedlineCitation/Article/Journal/ISSN"))
 
   res$abstract <- xml_text(xml_find_all(tdoc,
-                    ".//MedlineCitation/Article/Abstract/AbstractText"))
-  if (length(res$abstract) > 1){  # some abstracts are separated into sections: methods, conclusion, etc.
+                            ".//MedlineCitation/Article/Abstract/AbstractText"))
+  ## some abstracts are separated into sections: methods, conclusion, etc.
+  if (length(res$abstract) > 1){  
       abstract.labs <- xml_attr(xml_find_all(tdoc,
                     ".//MedlineCitation/Article/Abstract/AbstractText"),
                                     attr = "Label", default = "")
-      res$abstract <- if (!any(vapply(abstract.labs, .is_not_nonempty_text, FALSE)))
-                           paste0(paste(abstract.labs, res$abstract, sep = ": "), collapse = "\n")
+      res$abstract <- if (!any(vapply(abstract.labs, .is_not_nonempty_text,
+                                      FALSE)))
+                          paste0(paste(abstract.labs, res$abstract,
+                                       sep = ": "), collapse = "\n")
                       else paste0(res$abstract, collapse = "\n")
   }
 
   if (!length(complete.AuthorList) || complete.AuthorList == "N")
-    warning(paste0("Incomplete list of authors returned by PubMed for ID: ",
+    warning(gettextf("Incomplete list of authors returned by PubMed for ID: %s",
                    res$eprint), call. = FALSE)
 
   ## free(tdoc)
@@ -347,16 +373,17 @@ ProcessPubMedBookResult <- function(tdoc){
       return()
   res <- list()
 
-  title <- xml_text(xml_find_all(tdoc, "//PubmedBookArticle/BookDocument/Book/BookTitle"))
+  title <- xml_text(xml_find_all(tdoc,
+                         "//PubmedBookArticle/BookDocument/Book/BookTitle"))
   res$title <- gsub("\\.$", "", title, useBytes = TRUE)
   last.names <- xml_text(xml_find_all(tdoc,
-                "//PubmedBookArticle/BookDocument/Book/AuthorList/Author/LastName"))
+        "//PubmedBookArticle/BookDocument/Book/AuthorList/Author/LastName"))
   first.names <- xml_text(xml_find_all(tdoc,
-                "//PubmedBookArticle/BookDocument/Book/AuthorList/Author/ForeName"))
+        "//PubmedBookArticle/BookDocument/Book/AuthorList/Author/ForeName"))
   res$author <- as.person(paste(first.names, last.names))
 
   res$year <- xml_text(xml_find_all(tdoc,
-                       "//PubmedBookArticle/BookDocument/Book/PubDate/Year"))
+                      "//PubmedBookArticle/BookDocument/Book/PubDate/Year"))
     ## if (is.null(res$year))  # search extra hard for year
     ##     res$year <- xml_text(xml_find_all(tdoc,
     ##           "//PubmedBookArticle/MedlineCitation/Article/ArticleDate/Year",
@@ -365,25 +392,28 @@ ProcessPubMedBookResult <- function(tdoc){
                        "//PubmedBookArticle/BookDocument/Book/PubDate/Month"))
   if (is.null(res$year))
     res$year <- xml_text(xml_find_all(tdoc,
-                   "//PubmedBookArticle/PubmedBookData/History/PubMedPubDate/Year"))[1]
+           "//PubmedBookArticle/PubmedBookData/History/PubMedPubDate/Year"))[1]
 
   res$booktitle <- xml_text(xml_find_all(tdoc,
-                            "//PubmedBookArticle/BookDocument/Book/CollectionTitle"))
+                      "//PubmedBookArticle/BookDocument/Book/CollectionTitle"))
 
   res$publisher <- xml_text(xml_find_all(tdoc,
           "//PubmedBookArticle/BookDocument/Book/Publisher/PublisherName"))
 
   res$location <- xml_text(xml_find_all(tdoc,
-                    "//PubmedBookArticle/BookDocument/Book/Publisher/PublisherLocation"))
-  res$eprint <- xml_text(xml_find_all(tdoc, "//PubmedBookArticle/BookDocument/PMID"))
+          "//PubmedBookArticle/BookDocument/Book/Publisher/PublisherLocation"))
+  res$eprint <- xml_text(xml_find_all(tdoc,
+                                      "//PubmedBookArticle/BookDocument/PMID"))
   doc.ids <- xml_text(xml_find_all(tdoc,
-                   "//PubmedBookArticle/PubmedBookData/ArticleIdList/ArticleId"))
+                 "//PubmedBookArticle/PubmedBookData/ArticleIdList/ArticleId"))
   id.types <- xml_attr(xml_find_all(tdoc,
-                    "//PubmedBookArticle/PubmedBookData/ArticleIdList/ArticleId"),
+                  "//PubmedBookArticle/PubmedBookData/ArticleIdList/ArticleId"),
                                     attr = "IdType", default = "")
-  ## res$eprint <- if(length(pmid.pos <- grep("pubmed", id.types, ignore.case = TRUE)))
+  ## res$eprint <- if(length(pmid.pos <- grep("pubmed", id.types,
+  ##                                          ignore.case = TRUE)))
   ##                  doc.ids[pmid.pos[1L]]
-  res$doi <- if (length(doi.pos <- grep("doi", id.types, ignore.case = TRUE, useBytes = TRUE)))
+  res$doi <- if (length(doi.pos <- grep("doi", id.types, ignore.case = TRUE,
+                                        useBytes = TRUE)))
                doc.ids[doi.pos[1L]]
              else{
                doc.ids <- vapply(doc.ids, SearchDOIText, "")
@@ -398,13 +428,14 @@ ProcessPubMedBookResult <- function(tdoc){
   res$language <- xml_text(xml_find_all(tdoc,
                            "//PubmedBookArticle/BookDocument/Language"))
   res$abstract <- xml_text(xml_find_all(tdoc,
-                                        "//PubmedBookArticle/BookDocument/Abstract/AbstractText"))
+                    "//PubmedBookArticle/BookDocument/Abstract/AbstractText"))
   ## some abstracts are separated into sections: methods, conclusion, etc.
   if (length(res$abstract) > 1L){  
       abstract.labs <- xml_attr(xml_find_all(tdoc,
                     "//PubmedBookArticle/BookDocument/Abstract/AbstractText"),
                                     attr = "Label", default = "")
-      res$abstract <- if (!any(vapply(abstract.labs, .is_not_nonempty_text, FALSE)))
+      res$abstract <- if (!any(vapply(abstract.labs, .is_not_nonempty_text,
+                                      FALSE)))
                           paste0(paste(abstract.labs, res$abstract, sep = ": "),
                                  collapse = "\n")
                       else paste0(res$abstract, collapse = "\n")
@@ -424,16 +455,22 @@ ProcessPubMedBookResult <- function(tdoc){
 
 #' Retrieve PubMed ID's for a BibEntry object
 #'
-#' Uses the NCBI E-utilities to to search for PubMed ID's for citations stored in a BibEntry object.
+#' Uses the NCBI E-utilities to to search for PubMed ID's for citations
+#' stored in a BibEntry object.
 #' @param bib a bibentry object
-#' @param index indices specifying which entries of \code{bib} will be searched for.  If \code{missing}, all entries
+#' @param index indices specifying which entries of \code{bib} will be
+#' searched for.  If \code{missing}, all entries
 #' are searched for.
-#' @return a BibEntry object - \code{bib} with additional eprinttype and eprint fields when the search is successful
+#' @return a BibEntry object - \code{bib} with additional eprinttype and eprint
+#' fields when the search is successful
 #' for an entry.
-#' @details For each entry a citation string is created using the fields journaltitle/journal, date/year,
-#'   volume, pages, and author; and these strings are then used to search the NCBI database for PubMed ID's.
+#' @details For each entry a citation string is created using the fields
+#' journaltitle/journal, date/year,
+#'   volume, pages, and author; and these strings are then used to search the
+#' NCBI database for PubMed ID's.
 #'
-#'   If an ID is found for an entry, the entry is updated so that the eprinttype field is assigned the value
+#'   If an ID is found for an entry, the entry is updated so that the eprinttype
+#' field is assigned the value
 #'   \dQuote{pubmed} and the eprint field is assigned the ID.
 #' @family pubmed
 #' @importFrom httr GET content
@@ -450,7 +487,8 @@ LookupPubMedID <- function(bib, index){
   if (missing(index))
     index <- seq_along(bib)
 
-  base.url <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/ecitmatch.cgi?db=pubmed&retmode=xml&bdata="
+  base.url <- paste0("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/",
+                     "ecitmatch.cgi?db=pubmed&retmode=xml&bdata=")
   cit.strings <- vapply(bib[index], MakeCitationString, "")
 
   .url <- paste0(base.url,
@@ -478,8 +516,9 @@ LookupPubMedID <- function(bib, index){
 #' @importFrom utils URLencode
 MakeCitationString <- function(bib.entry){
   first.page <- sub("-[0-9]+", "", bib.entry$pages, useBytes = TRUE)
-  res <- paste(bib.entry$journal, year(bib.entry$dateobj), bib.entry$volume, first.page,
-               paste0(as.character(bib.entry$author), collapse = " "), "KeY", sep = "|")
+  res <- paste(bib.entry$journal, year(bib.entry$dateobj), bib.entry$volume,
+               first.page, paste0(as.character(bib.entry$author),
+                                  collapse = " "), "KeY", sep = "|")
   res <- URLencode(res)
   res <- gsub("%7C", "|", res, useBytes = TRUE)
   res <- gsub("%26", "and", res, useBytes = TRUE)

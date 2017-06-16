@@ -9,11 +9,14 @@ MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
 
   if (identical(match.date, "year.only")){
     if (is.interval(x)  && is.interval(pattern)){
-      return(year(int_start(x)) >= year(int_start(pattern)) && year(int_end(x)) <= year(int_end(pattern)))
+      return(year(int_start(x)) >= year(int_start(pattern)) &&
+             year(int_end(x)) <= year(int_end(pattern)))
     }else if (is.interval(x)){
-      return(year(int_start(x)) >= year(pattern) && year(int_end(x)) <= year(pattern))
+      return(year(int_start(x)) >= year(pattern) &&
+             year(int_end(x)) <= year(pattern))
     }else if (is.interval(pattern)){
-      return(year(x) >= year(int_start(pattern)) && year(x) <= year(int_end(pattern)))
+      return(year(x) >= year(int_start(pattern)) &&
+             year(x) <= year(int_end(pattern)))
     }else{
       return(year(x) == year(pattern))
     }
@@ -36,13 +39,15 @@ MatchDate <- function(x, pattern, match.date = .BibOptions$match.date){
 #
 #' @keywords internal
 MatchName <- function(nom, pattern, match.author=.BibOptions$match.author,
-                      ign.case = .BibOptions$ignore.case, regx = .BibOptions$use.regex){
+                      ign.case = .BibOptions$ignore.case,
+                      regx = .BibOptions$use.regex){
   if (is.null(nom))
     return(FALSE)
   if (identical(match.author, "exact")){
     nom <- as.character(nom)
   }else if (identical(match.author, 'family.with.initials')){
-    nom <- vapply(nom, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''),
+    nom <- vapply(nom, function(x) paste0(paste0(substring(x$given, 1L, 1L),
+                                                 collapse = ''),
                                           paste0(x$family, collapse = '')), "")
   }else{
     nom <- vapply(nom$family, paste0, "", collapse = '')
@@ -51,29 +56,38 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author,
   if (!regx && ign.case){
     return(all(pattern %in% tolower(nom)))
   }else{
-      return(all(vapply(pattern, function(pat) any(grepl(pat, x = nom, fixed = !regx,
+      return(all(vapply(pattern, function(pat) any(grepl(pat, x = nom,
+                                                         fixed = !regx,
                                                          ignore.case = ign.case,
-                                                         useBytes = TRUE)), FALSE)))
+                                                         useBytes = TRUE)),
+                        FALSE)))
   }
 }
 
 #' Search BibEntry objects by field
 #'
-#' Allows for searching and indexing a BibEntry object by fields, including names and dates.  The extraction operator and
-#' the \code{SearchBib} function simply provide different interfaces to the same search functionality.
-#'
+#' Allows for searching and indexing a BibEntry object by fields, including
+#' names and dates.  The extraction operator and the \code{SearchBib} function
+#' simply provide different interfaces to the same search functionality.
 #' @param x an object of class BibEntry
-#' @param i A named list or character vector of search terms with names corresponding to the field to search for the
-#' search term.  Alternatively, a vector of entry key values or numeric or logical indices specifying which entries to extract.
-#' @param j A named list or character vector, as \code{i}.  Entries matching the search specified by i \emph{OR} matching
+#' @param i A named list or character vector of search terms with names
+#' corresponding to the field to search for the
+#' search term.  Alternatively, a vector of entry key values or numeric or
+#' logical indices specifying which entries to extract.
+#' @param j A named list or character vector, as \code{i}.  Entries matching the
+#' search specified by i \emph{OR} matching
 #' the query specified by \code{j} will be return
-#' @param ... arguments in the form \code{bib.field = search.term}, or as \code{j} list\emph{s} or character vector\emph{s}
-#' for additional searches.  For \code{SearchBib}, can alternatively have same form as \code{i}.
+#' @param ... arguments in the form \code{bib.field = search.term}, or as \code{j}
+#' list\emph{s} or character vector\emph{s} for additional searches.  For
+#' \code{SearchBib}, can alternatively have same form as \code{i}.
 #' @param drop logical, should attributes besides class be dropped from result?
-#' @return an object of class BibEntry (the results of the search/indexing), \emph{or} if
-#' \code{BibOptions()$return.ind=TRUE}, the indices in \code{x} that match the search terms.
-#' @note The arguments to the SearchBib function that control certain search features can also be changed for the extraction
-#' operator by changing the corresponding option in the .BibOptions object; see \code{\link{BibOptions}}.
+#' @return an object of class BibEntry (the results of the search/indexing),
+#' \emph{or} if \code{BibOptions()$return.ind=TRUE}, the indices in \code{x} that
+#' match the search terms.
+#' @note The arguments to the SearchBib function that control certain search
+#' features can also be changed for the extraction
+#' operator by changing the corresponding option in the .BibOptions object; see
+#' \code{\link{BibOptions}}.
 #' @method [ BibEntry
 #' @aliases [.BibEntry
 #' @export
@@ -176,7 +190,8 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author,
     ret.ind <- .BibOptions$return.ind
     .BibOptions$return.ind <- TRUE
     tryCatch({
-      kall$x <- force(x)  # bquote(.(x))  # needed so that repeated calls don't cause testthat and check errors
+      ## needed so that repeated calls don't cause testthat and check errors  
+      kall$x <- force(x)  # bquote(.(x))  
       ind <- suppressMessages(eval(kall))
       if (!missing(j)){
         if (is.list(j[[1L]])){  # original call had at least two lists in ...
@@ -258,22 +273,24 @@ FindBibEntry <- function(bib, term, field){
       if (match.aut == 'exact'){
         term <- as.character(term)
       }else if (match.aut == 'family.with.initials'){
-        term <- vapply(term, function(x) paste0(paste0(substring(x$given, 1L, 1L), collapse = ''),
-                                                paste0(x$family, collapse = '')), "")
+        term <- vapply(term, function(x)
+            paste0(paste0(substring(x$given, 1L, 1L), collapse = ''),
+                   paste0(x$family, collapse = '')), "")
       }else{
         term <- vapply(term$family, paste0, "", collapse = ' ')
       }
     }
     if (ignorec)
       term <- tolower(term)
-    res <- vapply(vals, MatchName, FALSE, pattern = term, match.author = match.aut,
-                  regx = usereg, ign.case = ignorec)
+    res <- vapply(vals, MatchName, FALSE, pattern = term,
+                  match.author = match.aut, regx = usereg, ign.case = ignorec)
   }else if (field %in% .BibEntryDateField){
     if (field == 'month'){
       res <- vapply(vals, pmatch, FALSE, table = term, nomatch = FALSE)
     }else{
       if (d.yr){
-        match.dat <- ifelse(field == 'year', 'year.only', .BibOptions$match.date)
+        match.dat <- ifelse(field == 'year', 'year.only',
+                            .BibOptions$match.date)
       }else{  # eventdate, origdate, urldate
         vals <- lapply(vals, function(x){
           res <- try(ProcessDate(x), TRUE)
@@ -287,7 +304,8 @@ FindBibEntry <- function(bib, term, field){
       if (is.null(term) || inherits(term, 'try-error')){
         res <- logical(length(bib))
       }else{
-        res <- vapply(vals, MatchDate, FALSE, pattern = term, match.date = match.dat)
+        res <- vapply(vals, MatchDate, FALSE, pattern = term,
+                      match.date = match.dat)
       }
     }
   }else if (field == "dateobj"){
@@ -300,7 +318,8 @@ FindBibEntry <- function(bib, term, field){
   }else{
     res <- logical(length(bib))
     not.nulls <- which(!vapply(vals, is.null, FALSE))
-    vals <- gsub('\\n[[:space:]]*', ' ', unlist(vals[not.nulls]), useBytes = TRUE)
+    vals <- gsub('\\n[[:space:]]*', ' ', unlist(vals[not.nulls]),
+                 useBytes = TRUE)
     vals <- unlist(strsplit(cleanupLatexSearch(vals), '\n') )
 
     if (!usereg && ignorec){

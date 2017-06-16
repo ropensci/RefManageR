@@ -108,7 +108,8 @@
 #' BibOptions(restore.defaults = TRUE)
 BibOptions <- function(..., restore.defaults = FALSE){
   if (restore.defaults)
-    return(invisible(mapply(assign, .BibOptNames, .Defaults, MoreArgs = list(envir=.BibOptions))))
+    return(invisible(mapply(assign, .BibOptNames, .Defaults,
+                              MoreArgs = list(envir=.BibOptions))))
     
   if (missing(...))
     return(mget(.BibOptNames, envir = .BibOptions))
@@ -130,7 +131,8 @@ BibOptions <- function(..., restore.defaults = FALSE){
     if (any(ind)){
       opts[ind] <- as.logical(opts[ind])
       if (any(is.na(opts[ind])))
-        stop("One of the specified option values should be logical and is not, see ?BibOptions")
+        stop(gettextf("One of the specified option values should be logical %s",
+                        "and is not, see ?BibOptions"))
       names(opts[ind]) <- nom[ind]
     }
       
@@ -140,17 +142,19 @@ BibOptions <- function(..., restore.defaults = FALSE){
   }
 }
 
-.Defaults <- list(match.author='family.name', match.date='year.only', return.ind=FALSE, 
-              merge.fields.to.check = 'key', bib.style = 'numeric', first.inits = TRUE, 
-              dashed = TRUE, sorting = NULL, check.entries = 'error', use.regex = TRUE, 
-              ignore.case = TRUE, max.names = 3, cite.style = "authoryear",
-              longnamesfirst = TRUE, hyperlink = "to.doc", style = "text",
-              super = FALSE, bibpunct = c("(", ")", "[", "]",  ";", ","),
-              no.print.fields = character(0))  
+.Defaults <- list(match.author = 'family.name', match.date = 'year.only',
+                  return.ind = FALSE,  merge.fields.to.check = 'key',
+                  bib.style = 'numeric', first.inits = TRUE, 
+                  dashed = TRUE, sorting = NULL, check.entries = 'error',
+                  use.regex = TRUE,  ignore.case = TRUE, max.names = 3,
+                  cite.style = "authoryear", longnamesfirst = TRUE,
+                  hyperlink = "to.doc", style = "text", super = FALSE,
+                  bibpunct = c("(", ")", "[", "]",  ";", ","),
+                  no.print.fields = character(0))
 .BibOptions <- list2env(.Defaults)
 .BibOptNames <- names(.Defaults)
-.LogicalBibOptNames <- c("return.ind", "first.inits", "dashed", "use.regex", "ignore.case", 
-                         "longnamesfirst", "super")
+.LogicalBibOptNames <- c("return.ind", "first.inits", "dashed", "use.regex",
+                         "ignore.case", "longnamesfirst", "super")
 .cites <- new.env()
 assign("indices", logical(0), .cites)
 assign("labs", character(0), .cites)

@@ -3,11 +3,11 @@
 #' Functions to check if an object is a BibEntry, or coerce it if possible.
 #'
 #' @param x any \code{R} object.
-#' @details \code{as.BibEntry} is able to coerce suitably formatted character vectors,
-#' \code{\link{bibentry}} objects, lists,
+#' @details \code{as.BibEntry} is able to coerce suitably formatted character
+#' vectors, \code{\link{bibentry}} objects, lists,
 #' and data.frames to BibEntry objects.  See the examples.
-#' @note Each entry to be coerced should have a bibtype, key, and all required fields
-#' for the specified bibtype.
+#' @note Each entry to be coerced should have a bibtype, key, and all required
+#' fields for the specified bibtype.
 #' @return \code{as.BibEntry} - if successful, an object of class BibEntry.
 #' @aliases is.BibEntry
 #' @keywords utilities
@@ -49,7 +49,8 @@ as.BibEntry <- function(x){
         attr(y, "key") <- CreateBibKey(y[['title']], y[['author']], y[['year']])
       check <- try(.BibEntryCheckBibEntry1(y), TRUE)
       if (inherits(check, 'try-error')){
-          message(gettextf('Ignoring entry titled %s because %s', dQuote(y[['title']]),
+          message(gettextf('Ignoring entry titled %s because %s',
+                           dQuote(y[['title']]),
                          strsplit(check, '\\n[[:space:]]*')[[1]][2]))
         return(NULL)
       }
@@ -81,7 +82,8 @@ as.BibEntry <- function(x){
     y <- vector('list', length(x))
     for (i in seq_len(nrow(x))){
       na.ind <- which(!is.na(x[i, ]))
-      y[[i]] <- as.BibEntry(c(setNames(as.character(x[i, na.ind]), .fields[na.ind]), key = keys[i]) )
+      y[[i]] <- as.BibEntry(c(setNames(as.character(x[i, na.ind]),
+                                       .fields[na.ind]), key = keys[i]))
     }
     y <- MakeCitationList(y)
     return(y)
@@ -103,14 +105,16 @@ as.BibEntry <- function(x){
     }
   }else{
     classes <- paste(class(x), collapse = ", ")
-    stop(gettextf("Cannot coerce object of class %s to BibEntry", sQuote(classes)))
+    stop(gettextf("Cannot coerce object of class %s to BibEntry",
+                  sQuote(classes)))
   }
   x <- MakeKeysUnique(x)
   return(x)
 }
 
 #' @rdname as.BibEntry
-#' @return \code{is.BibEntry} - logical; \code{TRUE} if \code{x} is a BibEntry object.
+#' @return \code{is.BibEntry} - logical; \code{TRUE} if \code{x} is a BibEntry
+#' object.
 #' @export
 is.BibEntry <- function(x){
   inherits(x, "BibEntry")

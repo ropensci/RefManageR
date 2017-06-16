@@ -42,7 +42,7 @@ test_that("No sorting", {
     BibOptions(sorting = "none")
     capture.output(BIB, file = tfile)
     expect_order(1:3, tfile, c("E1", "E2", "E3"))
-                 ##c("\\[KpV\\] I. Kant", "\\[KU\\] I. Kant", "Nachtheil", "Brandt"))
+         ##c("\\[KpV\\] I. Kant", "\\[KU\\] I. Kant", "Nachtheil", "Brandt"))
 })
 
 test_that("nyt sorting", {

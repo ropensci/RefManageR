@@ -11,14 +11,19 @@
 
 #' Get Bibliography Information From a Zotero Library.
 #'
-#' @param user Zotero userID for use in calls to the Zotero API.  This is not the same as your Zotero
-#'   username.  The userID for accessing user-owned libraries can be found at
-#'   \verb{https://www.zotero.org/settings/keys} after logging in.
-#' @param group Zotero groupID for use in calls to the Zotero API.  Only one of \code{user} and \code{group} should be specified; \code{group} will be ignored if both are specified.
-#' @param .params A \emph{named} list of parameters to use in requests to the Zotero API with possible values
+#' @param user Zotero userID for use in calls to the Zotero API.  This is not
+#' the same as your Zotero username.  The userID for accessing user-owned
+#' libraries can be found at \verb{https://www.zotero.org/settings/keys}
+#' after logging in.
+#' @param group Zotero groupID for use in calls to the Zotero API.  Only one
+#' of \code{user} and \code{group} should be specified; \code{group} will be
+#' ignored if both are specified.
+#' @param .params A \emph{named} list of parameters to use in requests to the
+#' Zotero API with possible values
 #'  \itemize{
 #'    \item q - Search string to use to search the library
-#'    \item qmode - Search mode. Default is "titleCreatorYear".  Use "everything" to include full-text content in search.
+#'    \item qmode - Search mode. Default is "titleCreatorYear".  Use "everything"
+#'          to include full-text content in search.
 #'    \item key - API key.  This must be specified to access non-public libraries.
 #'    \item collection - name of a specific collection within the library to search
 #'    \item itemType - type of entry to search for; e.g., "book" or "journalArticle"
@@ -26,7 +31,8 @@
 #'    \item limit - maximum number of entries to return
 #'    \item start - index of first entry to return
 #'  }
-#' @param temp.file character; file name where the BibTeX data returned by Zotero will be temporarily written.
+#' @param temp.file character; file name where the BibTeX data returned by
+#' Zotero will be temporarily written.
 #' @param delete.file boolean; should \code{temp.file} be removed on exit?
 #' @return An object of class BibEntry
 #' @export
@@ -61,7 +67,8 @@
 #' BibOptions(old.opts)
 #' }
 #' @keywords database
-ReadZotero <- function(user, group, .params, temp.file = tempfile(fileext = ".bib"),
+ReadZotero <- function(user, group, .params,
+                       temp.file = tempfile(fileext = ".bib"),
                        delete.file = TRUE){
   if (delete.file)
     on.exit(unlink(temp.file, force = TRUE))
@@ -90,7 +97,7 @@ ReadZotero <- function(user, group, .params, temp.file = tempfile(fileext = ".bi
                         paste0("users/", user) else paste0("groups/", group),
                        coll, "/items")
   res <- GET(uri, query = .parms)  #, config = list(ssl.verifypeer=TRUE,
-                                   #             httpheader="Zotero-API-Version: 2",
+                                   #     httpheader="Zotero-API-Version: 2",
                                    # forbid.reuse=TRUE, cainfo=cert))
   res <- rawToChar(res$content)
 
@@ -102,8 +109,10 @@ ReadZotero <- function(user, group, .params, temp.file = tempfile(fileext = ".bi
 
   bib.res <- try(ReadBib(file=temp.file, .Encoding="UTF-8"), TRUE)
   if (inherits(bib.res, "try-error")){
-    stop(gettextf("Could not parse the returned BibTeX results.  If 'delete.file' %s%s",
-                   "is FALSE, you can try viewing and editing the file: ", temp.file))
+    stop(gettextf("Could not parse the returned BibTeX results.  If %s %s%s",
+                  sQuote("delete.file"),
+                  "is FALSE, you can try viewing and editing the file: ",
+                  temp.file))
   }
   bib.res
 }

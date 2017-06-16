@@ -1,12 +1,14 @@
 #' Sort a BibEntry Object
 #'
-#' Sorts a \code{BibEntry} object by specified fields.  The possible fields used for sorting and
-#' the order they are used in correspond with the options available in BibLaTeX.
+#' Sorts a \code{BibEntry} object by specified fields.  The possible fields used
+#' for sorting and the order they are used in correspond with the options
+#' available in BibLaTeX.
 #'
 #' @param x an object of class BibEntry
 #' @param decreasing logical; should the sort be increasing or decreasing?
 #' @param sorting sort method to use, see \bold{Details}.
-#' @param .bibstyle bibliography style; used when \code{sort} is called by \code{\link{print.BibEntry}}
+#' @param .bibstyle bibliography style; used when \code{sort} is called by
+#' \code{\link{print.BibEntry}}
 #' @param ... internal use only
 #' @return the sorted BibEntry object
 #' @method sort BibEntry
@@ -26,23 +28,31 @@
 #' \item none - no sorting is performed
 #' }
 #'
-#' All sorting methods first consider the field presort, if available.  Entries with no presort field are assigned presort
+#' All sorting methods first consider the field presort, if available.
+#' Entries with no presort field are assigned presort
 #' value \dQuote{mm}. Next the sortkey field is used.
 #'
-#' When sorting by name, the sortname field is used first.  If it is not present, the author field is used,
-#' if that is not present editor is used, and if that is not present translator is used.  All of these fields are affected
+#' When sorting by name, the sortname field is used first.  If it is not present,
+#' the author field is used,
+#' if that is not present editor is used, and if that is not present translator is
+#' used.  All of these fields are affected
 #' by the value of \code{max.names} in .BibOptions()$max.names.
 #'
-#' When sorting by title, first the field sorttitle is considered.  Similarly, when sorting by year, the field sortyear is
+#' When sorting by title, first the field sorttitle is considered.  Similarly,
+#' when sorting by year, the field sortyear is
 #' first considered.
 #'
-#' When sorting by volume, if the field is present it is padded to four digits with leading zeros; otherwise,
-#' the string \dQuote{0000} is used.
+#' When sorting by volume, if the field is present it is padded to four digits
+#' with leading zeros; otherwise, the string \dQuote{0000} is used.
 #'
-#' When sorting by alphabetic label, the labels that would be generating with the \dQuote{alphabetic} bibstyle are used.
-#' First the shorthand field is considered, then label, then shortauthor, shorteditor, author, editor, and translator.
-#' Refer to the BibLaTeX manual Sections 3.1.2.1 and 3.5 and Appendix C.2 for more information.
-#' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex Package. \url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+#' When sorting by alphabetic label, the labels that would be generating with
+#' the \dQuote{alphabetic} bibstyle are used.  First the shorthand field is
+#' considered, then label, then shortauthor, shorteditor, author, editor,
+#' and translator.  Refer to the BibLaTeX manual Sections 3.1.2.1 and 3.5 and
+#' Appendix C.2 for more information.
+#' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and
+#' Wright, J. (2013). The biblatex Package.
+#' \url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 #' @seealso \code{\link{BibEntry}}, \code{\link{print.BibEntry}}, \code{\link{order}}
 #' @importFrom tools bibstyle getBibstyle
 #' @examples
@@ -72,23 +82,31 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
     alabs <- sort.fun.env$sortKeysLA(x, yr)
 
   if (sorting != "none"){
-    ord <- switch(sorting, nyt = order(ps, aut, yr, ttl, decreasing = decreasing),
-              nyvt = order(ps, aut, yr, vol, ttl, decreasing = decreasing),
-              anyt = order(ps, alabs, aut, yr, ttl, decreasing = decreasing),
-              anyvt = order(ps, alabs, aut, yr, vol, ttl, decreasing = decreasing),
-              ynt = order(ps, yr, aut, ttl, decreasing = decreasing),
-              ydnt = order(ps, -as.numeric(yr), aut, ttl, decreasing = decreasing),
-              order(ps, aut, ttl, yr, decreasing = decreasing))  # DEFAULT = nty
+    ord <- switch(sorting, nyt = order(ps, aut, yr, ttl,
+                                       decreasing = decreasing),
+                  nyvt = order(ps, aut, yr, vol, ttl,
+                               decreasing = decreasing),
+                  anyt = order(ps, alabs, aut, yr, ttl,
+                               decreasing = decreasing),
+                  anyvt = order(ps, alabs, aut, yr, vol, ttl,
+                                decreasing = decreasing),
+                  ynt = order(ps, yr, aut, ttl,
+                              decreasing = decreasing),
+                  ydnt = order(ps, -as.numeric(yr), aut, ttl,
+                               decreasing = decreasing),
+                  ## DEFAULT = nty
+                  order(ps, aut, ttl, yr, decreasing = decreasing))
     suppressWarnings(x <- x[ord])
     aut <- aut[ord]
     if (.bibstyle == "alphabetic"){
       lab.ord <- order(alabs)
-      alabs[lab.ord] <- paste0(alabs[lab.ord], unlist(lapply(rle(alabs[lab.ord])$len,
-                       function(x){
-                         if (x == 1)
-                           ''
-                         else letters[seq_len(x)]
-                       })))
+      alabs[lab.ord] <- paste0(alabs[lab.ord],
+                               unlist(lapply(rle(alabs[lab.ord])$len,
+                                             function(x){
+                                               if (x == 1)
+                                                 ''
+                                               else letters[seq_len(x)]
+                                             })))
 
       alabs <- alabs[ord]
     }
@@ -124,7 +142,8 @@ sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
                                                      function(x){
                                                        if (x == 1)
                                                          ''
-                                                       else letters[seq_len(x)]
+                                                       else
+                                                           letters[seq_len(x)]
                                                      }))
       }
     }

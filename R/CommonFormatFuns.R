@@ -127,12 +127,13 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
 
     fmtLangOrig <- function(lang){
       if (length(lang))
-        paste0('from the ', sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE, useBytes = TRUE))
+        paste0('from the ', sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE,
+                                useBytes = TRUE))
     }
 
     fmtLanguage <- function(lang){
       if (length(lang) && tolower(lang) != 'english')
-        addPeriod(sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE, useBytes = TRUE))
+        addPeriod(sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE,useBytes = TRUE))
     }
 
     fmtSeries <- label(prefix = '. ')
@@ -141,7 +142,8 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
       if (length(ps)){
           cleanupLatex(addPeriod(switch(ps, inpreparation = 'In preparation.',
                                         submitted = 'Submitted.',
-                                        forthcoming = 'Forthcoming.', inpress = 'In press.',
+                                        forthcoming = 'Forthcoming.',
+                                        inpress = 'In press.',
                                         prepublished = 'Pre-published.', ps)))
       }
     }
@@ -179,22 +181,24 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
       }
     }
 
-    fmtEditor <- function(doc, editor.used.already = FALSE, prefix = NULL, suffix = '.'){
+    fmtEditor <- function(doc, editor.used.already = FALSE, prefix = NULL,
+                          suffix = '.'){
       res <- NULL
       if (length(doc$editor)  && !editor.used.already){
           res <- c(res, fmtSingleEditor(authorList(doc$editor), doc$editortype,
                                         prefix, suffix))
       }
       if (length(doc$editora)){
-          res <- c(res, fmtSingleEditor(authorList(doc$editora), doc$editoratype,
-                                        prefix, suffix))
+          res <- c(res, fmtSingleEditor(authorList(doc$editora),
+                                        doc$editoratype, prefix, suffix))
       }
       if (length(doc$editorb)){
-          res <- c(res, fmtSingleEditor(authorList(doc$editorb), doc$editorbtype,
-                                        prefix, suffix))
+          res <- c(res, fmtSingleEditor(authorList(doc$editorb),
+                                        doc$editorbtype, prefix, suffix))
       }
       if (length(doc$editorc)){
-        res <- c(res, fmtSingleEditor(authorList(doc$editorc), doc$editorctype, prefix, suffix))
+        res <- c(res, fmtSingleEditor(authorList(doc$editorc),
+                                      doc$editorctype, prefix, suffix))
       }
       paste0(res)
     }
@@ -211,15 +215,19 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
         if (length(paper$eprinttype)){
           eprinttype <- tolower(paper$eprinttype)
           res <- paste0(switch(eprinttype, 'arxiv'='arXiv', 'pubmed' = 'PMID',
-                               'googlebooks' = 'Google Books', 'jstor' = 'JSTOR', 'hdl' = 'HDL',
+                               'googlebooks' = 'Google Books',
+                               'jstor' = 'JSTOR', 'hdl' = 'HDL',
                                paper$eprinttype),
                         ': ')
 
           if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
-            base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
+            base.url <- switch(eprinttype,
+                               jstor = "http://www.jstor.org/stable/",
                                arxiv = "http://arxiv.org/abs/",
-                               pubmed = paste0("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/",
-                                         "elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id="),
+                               pubmed = paste0("https://eutils.ncbi.nlm.nih.",
+                                               "gov/entrez/eutils/",
+                                               "elink.fcgi?dbfrom=pubmed&",
+                                               "cmd=prlinks&retmode=ref&id="),
                                "")
             res <- paste0(res, "\\href{", base.url, paper$eprint, "}{",
                           paper$eprint)
@@ -236,9 +244,11 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
           }
         }else if (length(paper$archiveprefix)){
           if (length(paper$eprintclass)){
-            res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
+            res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [',
+                          paper$eprintclass, ']')
           }else if(length(paper$primaryclass)){
-            res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
+            res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [',
+                          paper$primaryclass, ']')
           }else
             res <- paste0('eprint: ', paper$eprint)
         }else{
@@ -251,15 +261,19 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
         if (length(paper$eprinttype)){
           eprinttype <- tolower(paper$eprinttype)
           res <- paste0(switch(eprinttype, 'arxiv'='arXiv', 'pubmed' = 'PMID',
-                               'googlebooks' = 'Google Books', 'jstor' = 'JSTOR',
+                               'googlebooks' = 'Google Books',
+                               'jstor' = 'JSTOR',
                                'hdl' = 'HDL', paper$eprinttype),
                         ': ')
 
           if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
-            base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
+            base.url <- switch(eprinttype,
+                               jstor = "http://www.jstor.org/stable/",
                                arxiv = "http://arxiv.org/abs/",
-                               pubmed = paste0("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/",
-                                         "elink.fcgi?dbfrom=pubmed&cmd=prlinks&retmode=ref&id="),
+                               pubmed = paste0("http://eutils.ncbi.nlm.nih.",
+                                               "gov/entrez/eutils/",
+                                               "elink.fcgi?dbfrom=pubmed&",
+                                               "cmd=prlinks&retmode=ref&id="),
                                "")
             res <- paste0(res, "[", paper$eprint)
             if (eprinttype == "arxiv"){
@@ -275,9 +289,11 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
           }
         }else if (length(paper$archiveprefix)){
           if (length(paper$eprintclass)){
-            res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
+            res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [',
+                          paper$eprintclass, ']')
           }else if(length(paper$primaryclass)){
-            res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
+            res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [',
+                          paper$primaryclass, ']')
           }else
             res <- paste0('eprint: ', paper$eprint)
         }else{
@@ -288,8 +304,10 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     }, function(paper){
       if (length(paper$eprint)){
         if (length(paper$eprinttype)){
-          res <- paste0(switch(tolower(paper$eprinttype), 'arxiv'='arXiv', 'pubmed' = 'PMID',
-                               'googlebooks' = 'Google Books', 'jstor' = 'JSTOR',
+          res <- paste0(switch(tolower(paper$eprinttype), 'arxiv' = 'arXiv',
+                               'pubmed' = 'PMID',
+                               'googlebooks' = 'Google Books',
+                               'jstor' = 'JSTOR',
                                'hdl' = 'HDL', paper$eprinttype),
                         ': ', paper$eprint)
           if (tolower(paper$eprinttype) == 'arxiv'){
@@ -301,9 +319,11 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
           }
         }else if (length(paper$archiveprefix)){
           if (length(paper$eprintclass)){
-            res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$eprintclass, ']')
+            res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [',
+                          paper$eprintclass, ']')
           }else if(length(paper$primaryclass)){
-            res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [', paper$primaryclass, ']')
+            res <- paste0(paper$archiveprefix, ': ', paper$eprint, ' [',
+                          paper$primaryclass, ']')
           }else
             res <- paste0('eprint: ', paper$eprint)
         }else{
@@ -348,7 +368,8 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
                             }
                           }, markdown = function(doi){
                               if (length(doi)){
-                                paste0("DOI: [", doi, "](http://dx.doi.org/", doi, ").")
+                                paste0("DOI: [", doi, "](http://dx.doi.org/",
+                                       doi, ").")
                               }
                             }, label(prefix = 'DOI: ', suffix = '.'))
 
@@ -389,8 +410,10 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     fmtSingleEditor <- function(nom, job, prefix = NULL, suffix = '.'){
       if (length(nom)){
         if(length(job)){
-          res <- paste0(switch(tolower(job), 'compiler' = 'Comp. by ', 'editor' = 'Ed. by ',
-                               'founder' = 'Found. by ', 'continuator' = 'Cont. by ',
+          res <- paste0(switch(tolower(job), 'compiler' = 'Comp. by ',
+                               'editor' = 'Ed. by ',
+                               'founder' = 'Found. by ',
+                               'continuator' = 'Cont. by ',
                                'redactor' = 'Red. by ', 'reviser' = 'Rev. by ',
                                'collaborator' = 'In collab. with ', job), nom)
         }else{
@@ -412,8 +435,10 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
           }
           if (length(pers$given)){
             if (.BibOptions$first.inits){
-              res <- paste0(paste(res, paste(substr(vapply(pers$given, cleanupLatex, ""),
-                                                    1L, 1L), collapse = ". "), sep = ", "), ".")
+              res <- paste0(paste(res, paste(substr(vapply(pers$given,
+                                                           cleanupLatex, ""),
+                                                    1L, 1L), collapse = ". "),
+                                  sep = ", "), ".")
               
             }else{
                 res <- paste(res, paste(vapply(pers$given, cleanupLatex, ""),
@@ -433,9 +458,11 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
         for (i in seq_along(bib)) {
           authors <- bib[[i]]$sortname
           if (!length(authors))
-            authors <- paste0(vapply(bib[[i]]$author, shortNameLF, ""), collapse = '')
+            authors <- paste0(vapply(bib[[i]]$author, shortNameLF, ""),
+                              collapse = '')
           if (authors == ''){
-            authors <- paste0(vapply(bib[[i]]$editor, shortNameLF, ""), collapse = '')
+            authors <- paste0(vapply(bib[[i]]$editor, shortNameLF, ""),
+                              collapse = '')
             if (authors == '')
                 authors <- paste0(vapply(bib[[i]]$translator, shortNameLF, ""),
                                   collapse = '')
@@ -546,17 +573,20 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
         if (nam.len == 1){
           res <- paste0(nam$family, collapse = '')
           res <- regmatches(res,
-                            regexpr('[[:upper:]][[:punct:]]?[[:alpha:]][[:punct:]]?[[:alpha:]]',
+                            regexpr(paste0("[[:upper:]][[:punct:]]?[[:alpha:]]",
+                                           "[[:punct:]]?[[:alpha:]]"),
                                          res, useBytes = TRUE))
           res <- gsub('[[:punct:]]', '', res, useBytes = TRUE)
         }else if (nam.len == 2 || nam.len == 3){
           res <- vapply(nam$family, paste0, "", collapse = '')
-          res <- paste0(regmatches(res, regexpr('[[:upper:]]', res, useBytes = TRUE)),
+          res <- paste0(regmatches(res, regexpr('[[:upper:]]', res,
+                                                useBytes = TRUE)),
                         collapse = '')
         }else{
           res <- paste0(nam$family[[1]], collapse = '')
           res <- regmatches(res,
-                            regexpr('[[:upper:]][[:punct:]]?[[:alpha:]][[:punct:]]?[[:alpha:]]',
+                            regexpr(paste0("[[:upper:]][[:punct:]]?[[:alpha:]]",
+                                           "[[:punct:]]?[[:alpha:]]"),
                                          res, useBytes = TRUE))
           res <- gsub('[[:punct:]]', '', res, useBytes = TRUE)
           res <- paste0(res, '+')

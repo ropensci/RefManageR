@@ -11,9 +11,11 @@
 #' @export
 #' @keywords internal
 #' @noRd
-format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOptions$bib.style,
-                             citation.bibtex.max = getOption("citation.bibtex.max", 1), .sort = TRUE,
-                            .sorting = 'nty', enc = 'UTF-8', ...){
+format.BibEntry <- function(x, style = .BibOptions$style,
+                            .bibstyle = .BibOptions$bib.style,
+                            citation.bibtex.max =
+                                getOption("citation.bibtex.max", 1),
+                            .sort = TRUE, .sorting = 'nty', enc = 'UTF-8', ...){
     old.opts <- BibOptions(list(style = .BibEntry_match_format_style(style),
                                return.ind = FALSE))
     on.exit(BibOptions(old.opts))
@@ -22,7 +24,8 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
     ## .BibOptions$return.ind <- FALSE
     ## on.exit(.BibOptions$return.ind <- ret.ind)
     if (.sort && !style %in% c('html', 'text', 'latex', "markdown"))
-      x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.labs = TRUE)
+      x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting,
+                return.labs = TRUE)
 
     .format_bibentry_via_Rd <- function(f){
         out <- file()
@@ -33,7 +36,8 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
         })
         x <- .BibEntry_expand_crossrefs(x)
         if (.sort)
-          x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting, return.labs = TRUE)
+          x <- sort(x, .bibstyle = .bibstyle, sorting = .sorting,
+                    return.labs = TRUE)
         res <- vapply(x, function(y) {
           rd <- toRd.BibEntry(y, .style = .bibstyle, .sorting = 'none')
           con <- textConnection(rd)
@@ -41,10 +45,11 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
           ## macro.env <- tools::loadRdMacros(file.path(R.home("share"), "Rd",
           ##                                            "macros", "system.Rd"))
           if (getRversion() >= "3.3.0"){
-              ## prevent use of devtools::system.file
-              macro.env <- tools::loadPkgRdMacros(base::system.file(package = "RefManageR"))
-              f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8',
-                macros = macro.env, ...)
+            ## prevent use of devtools::system.file
+            macro.env <- tools::loadPkgRdMacros(system.file(package =
+                                                                "RefManageR"))
+            f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8',
+              macros = macro.env, ...) 
           }else
               f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8', ...)
               
@@ -61,7 +66,7 @@ format.BibEntry <- function(x, style = .BibOptions$style, .bibstyle = .BibOption
                          useBytes = TRUE)
                  else
                      sub("^<p>", "<p><cite>", res, useBytes = TRUE)
-          res <- vapply(res, function(x) if (grepl("<cite>", x, useBytes = TRUE))
+          res <- vapply(res, function(x) if (grepl("<cite>", x, useBytes=TRUE))
                         paste0(x, "</cite></p>")
                       else  # XData or Set
                         paste0(x, "</p>"), "")

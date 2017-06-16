@@ -13,7 +13,7 @@ test_that("GetPubMedByID can process books (#2)", {
     expect_true(length(test) == 2L)
 })
 
-test_that("GetPubMedByID will use collective name if individual authors missing (#2)", {
+test_that("GetPubMedByID uses collective name if authors missing (#2)", {
   skip_on_cran()
   test <- GetPubMedByID(c(11678951, 15373863))
   if (length(test)){

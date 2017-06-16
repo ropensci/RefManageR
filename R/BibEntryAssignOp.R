@@ -5,7 +5,8 @@
 #' @param name string; the field to assign the new values to.
 #' @param value character vector; the replacement field values to be assigned.
 #' @return an object of class BibEntry with the updated fields.
-#' @note The method expects date and name list fields to be in the format expected by Biblatex.  The 
+#' @note The method expects date and name list fields to be in the format
+#' expected by Biblatex.  The 
 #' field specified by \code{name} does not have to be one currently in \code{x}.
 #' @method $<- BibEntry
 #' @export
@@ -23,8 +24,8 @@
 #' bib[1]$author[2] <- person(c("Raymond", "J."), "Carroll")
 #' bib$author
 `$<-.BibEntry` <- function(x, name, value){
-  # browser()
-  stopifnot(length(x) == length(value) || length(value) <= 1 || name %in% .BibEntryNameList)
+  stopifnot(length(x) == length(value) || length(value) <= 1 ||
+            name %in% .BibEntryNameList)
   is_attribute <- name %in% bibentry_attribute_names
   x <- unclass(x)
   name <- tolower(name)
@@ -60,7 +61,8 @@
       if ( name %in% .BibEntryDateField){  # dateobj may need to be updated
         tdate <- ProcessDates(x[[i]])
         if (is.null(tdate))
-          stop(paste0('The specified Date Field value is not in a valid format for Bibtex/Biblatex'))
+          stop("The specified Date Field value is not in a valid format ",
+               "for Bibtex/Biblatex")
         attr(x[[i]], 'dateobj') <- tdate
       }
     }

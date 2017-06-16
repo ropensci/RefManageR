@@ -1,15 +1,18 @@
 #' Enhanced Bibliographic Entries
 #'
-#' Provides a new class \code{BibEntry} which builds on \code{\link{bibentry}} to provide enhanced
-#'   functionality for representing, manipulating, importing, etc. bibliographic information in BibTeX or
-#'   BibLaTeX style.
-#' @param bibtype a character string with a BibTeX entry type. See Entry Types for details.
-#' @param textVersion a character string with a text representation of the reference to optionally be employed for printing.
+#' Provides a new class \code{BibEntry} which builds on \code{\link{bibentry}}
+#' to provide enhanced functionality for representing, manipulating, importing,
+#' etc. bibliographic information in BibTeX or BibLaTeX style.
+#' @param bibtype a character string with a BibTeX entry type. See Entry Types
+#' for details.
+#' @param textVersion a character string with a text representation of the
+#' reference to optionally be employed for printing.
 #' @param header a character string with optional header text.
 #' @param footer a character string with optional footer text.
 #' @param key	a character string giving the citation key for the entry.
-#' @param ...	arguments of the form \code{tag = value} giving the fields of the entry, with \code{tag} and
-#'   \code{value} the name and value of the field, respectively. Arguments with empty values are dropped. See
+#' @param ...	arguments of the form \code{tag = value} giving the fields
+#' of the entry, with \code{tag} and \code{value} the name and value of the
+#' field, respectively. Arguments with empty values are dropped. See
 #'   Entry Fields for details.
 #' @param other list; additional way to specify fields and their values
 #' @param mheader string; optional \dQuote{outer} header text
@@ -20,10 +23,11 @@
 #' @keywords database
 #' @importFrom utils bibentry
 #' @section Entry Types:
-#'   bibentry creates "bibentry" objects, which are modeled after BibLaTeX and BibTeX entries. The entry should
-#'   be a valid BibLaTeX or BibTeX entry type.  For a list of valid BibTeX entry types, see
-#'   \code{\link{bibentry}}.  BibLaTeX supports all entry types from BibTeX for backwards compatibility.
-#'   BibLaTeX defines following entry types
+#'   bibentry creates "bibentry" objects, which are modeled after BibLaTeX and
+#' BibTeX entries. The entry should
+#'   be a valid BibLaTeX or BibTeX entry type.  For a list of valid BibTeX entry
+#' types, see \code{\link{bibentry}}.  BibLaTeX supports all entry types from
+#' BibTeX for backwards compatibility. BibLaTeX defines following entry types
 #'   '  \itemize{
 #'    \item \emph{article} - An article in a journal, magazine, newspaper, or other periodical which forms a
 #'   self-contained unit with its own title.  Required fields: author, title, journal/journaltitle, year/date.
@@ -78,14 +82,16 @@
 #'     styles.
 #'  }
 #' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
-#' @note Date fields are parsed using the locale specified by \code{Sys.getlocale("LC_TIME")} (relevant
-#' when specifying a character \sQuote{month} field, instead of the recommended integer format)
+#' @note Date fields are parsed using the locale specified by
+#' \code{Sys.getlocale("LC_TIME")} (relevant when specifying a character
+#' \sQuote{month} field, instead of the recommended integer format)
 #'
 #' Name list fields (author, editor, etc.) should be specified as they would be for
 #' BibTeX/BibLaTeX; e.g. \code{author = "Doe, Jane and Smith, Bob A."}.
 #' @references BibLaTeX manual \url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}
-#' @details The BibEntry objects created by BibEntry can represent an arbitrary positive number of references,
-#'   as with \code{bibentry}, but many additional methods are defined for building and manipulating a database
+#' @details The BibEntry objects created by BibEntry can represent an
+#' arbitrary positive number of references, as with \code{bibentry}, but
+#' many additional methods are defined for building and manipulating a database
 #'   of references.
 #' @examples
 #' BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title",
@@ -99,7 +105,8 @@
 #' bib
 #' toBiblatex(bib)
 BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
-                      key = NULL, ..., other = list(), mheader = NULL, mfooter = NULL){
+                      key = NULL, ..., other = list(), mheader = NULL,
+                      mfooter = NULL){
   BibTeX_names <- names(BibLaTeX_entry_field_db)
   args <- c(list(...), other)
   if (!length(args))
@@ -132,7 +139,8 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
                 pos <- match(tolower(bibtype), tolower(BibTeX_names))
                 if (is.na(pos))
                   stop(gettextf("%s has to be one of %s", sQuote("bibtype"),
-                                paste(BibTeX_names, collapse = ", ")), domain = NA)
+                                paste(BibTeX_names, collapse = ", ")),
+                       domain = NA)
                 bibtype <- BibTeX_names[pos]
                 rval <- c(list(...), other)
                 rval <- rval[!vapply(rval, .is_not_nonempty_text, FALSE)]
@@ -174,7 +182,9 @@ BibEntry <- function (bibtype, textVersion = NULL, header = NULL, footer = NULL,
 
   rval <- lapply(seq_along(args$bibtype),
                  function(i) do.call("bibentry1", c(lapply(args, "[[", i),
-                                                    list(other = lapply(other, "[[", i)))))
+                                                    list(other = lapply(other,
+                                                                        "[[",
+                                                                        i)))))
 
   if (!.is_not_nonempty_text(mheader))
     attr(rval, "mheader") <- paste(mheader, collapse = "\n")

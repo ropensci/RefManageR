@@ -15,5 +15,6 @@
 #' names(bib)
 #' names(bib)[1] <- 'newkey'
 names.BibEntry <- function(x){
-  return(unlist(x$key))  # return(vapply(unclass(x), function(x) return(attr(x, 'key')), ""))
+  ## return(vapply(unclass(x), function(x) return(attr(x, 'key')), ""))  
+  return(unlist(x$key))  
 }

@@ -28,14 +28,17 @@ GetDOIs <- function(bib){
     message("All entries already have DOIs")
   else{
     json.bib <- toJSON(FormatEntryForCrossRef(bib[[missing.dois.pos]]))
-    headers <- list('Accept' = 'application/json', 'Content-Type' = 'application/json')
+    headers <- list('Accept' = 'application/json',
+                    'Content-Type' = 'application/json')
 
     ## json.res <- postForm("http://search.crossref.org/links",
-    ##                   .opts = list(postfields = json.bib, httpheader = headers))
+    ##              .opts = list(postfields = json.bib, httpheader = headers))
     ## json.res <- try(fromJSON(json.res), TRUE)
     json.res <- httr::POST("http://search.crossref.org/links", body = json.bib,
-                           config = list(add_headers = headers), encode = "json")
-    json.res <- try(content(json.res, type = "application/json", encoding = "UTF-8"), TRUE)
+                           config = list(add_headers = headers),
+                           encode = "json")
+    json.res <- try(content(json.res, type = "application/json",
+                            encoding = "UTF-8"), TRUE)
     if (inherits(json.res, "try-error") || !json.res[[2L]])
       message("Failed to retrieve any DOIs.")
     else{
@@ -43,11 +46,14 @@ GetDOIs <- function(bib){
       if (!any(matches))
         message("No matches.")
       else{
-        message(paste0("Matches for entries at positions ",
-                       paste0(missing.dois.pos[matches], collapse = ", "), "."))
+        match.str <- paste0(missing.dois.pos[matches], collapse = ", ")
+        message(gettextf("Matches for entries at positions %s.",
+                       match.str))
         bib$doi[missing.dois.pos[matches]] <- sub("http://dx.doi.org/", "",
-                                                   vapply(json.res[[1L]], "[[", "",
-                                                          "doi")[matches], useBytes = TRUE)
+                                                  vapply(json.res[[1L]], "[[",
+                                                         "",
+                                                         "doi")[matches],
+                                                  useBytes = TRUE)
       }
     }
   }
@@ -90,10 +96,11 @@ FormatEntryForCrossRef <- function(bib){
 
       formatArticle <- function(paper){
          collapse(c(fmtBAuthor(paper), fmtJTitle(paper$title), 
-               sentence(fmtJournal(paper), fmtVolume(paper$volume, paper$number),
-                                      fmtPages(paper$pages, paper$pagination),
-                       fmtDate(attr(paper, "dateobj")), sep = ', '),
-               fmtISSN(paper$issn)))
+                    sentence(fmtJournal(paper),
+                             fmtVolume(paper$volume, paper$number),
+                             fmtPages(paper$pages, paper$pagination),
+                             fmtDate(attr(paper, "dateobj")), sep = ', '),
+                    fmtISSN(paper$issn)))
       }
       oldopts <- BibOptions(max.names = 99, first.inits = TRUE)
       on.exit(BibOptions(oldopts))

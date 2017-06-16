@@ -1,20 +1,26 @@
 BibLaTeX_entry_field_db <- list()  # tools:::BibTeX_entry_field_db
 
-BibLaTeX_entry_field_db$Article <- c('author', 'title', 'journaltitle|journal', 'year|date')
+BibLaTeX_entry_field_db$Article <- c('author', 'title', 'journaltitle|journal',
+                                     'year|date')
 
-BibLaTeX_entry_field_db$Book <- c('author|editor|translator', 'title', 'year|date')
+BibLaTeX_entry_field_db$Book <- c('author|editor|translator', 'title',
+                                  'year|date')
 
 # multivolume book
-BibLaTeX_entry_field_db$MVBook <- c('author|editor|translator', 'title', 'year|date')  
+BibLaTeX_entry_field_db$MVBook <- c('author|editor|translator', 'title',
+                                    'year|date')  
 
 # different from BibTeX
-BibLaTeX_entry_field_db$InBook <- c('author', 'title', 'booktitle|maintitle', 'year|date')  
+BibLaTeX_entry_field_db$InBook <- c('author', 'title', 'booktitle|maintitle',
+                                    'year|date')  
 
 # e.g. book reprint in selected works of author
-BibLaTeX_entry_field_db$BookInBook <- c('author', 'title', 'booktitle|maintitle', 'year|date')  
+BibLaTeX_entry_field_db$BookInBook <- c('author', 'title',
+                                        'booktitle|maintitle', 'year|date')  
 
 # supplemental material for book
-BibLaTeX_entry_field_db$SuppBook <- c('author', 'title', 'booktitle|maintitle', 'year|date')  
+BibLaTeX_entry_field_db$SuppBook <- c('author', 'title', 'booktitle|maintitle',
+                                      'year|date')  
 
 # book without formal publisher
 BibLaTeX_entry_field_db$Booklet <- c('author|editor', 'title', 'year|date')  
@@ -26,10 +32,12 @@ BibLaTeX_entry_field_db$Collection <- c('editor', 'title', 'year|date')
 BibLaTeX_entry_field_db$MVCollection <- c('editor', 'title', 'year|date') 
 
 # contribution to a collection
-BibLaTeX_entry_field_db$InCollection <- c('author', 'editor', 'title', 'booktitle', 'year|date') 
+BibLaTeX_entry_field_db$InCollection <- c('author', 'editor', 'title',
+                                          'booktitle', 'year|date') 
 
 # supplement to a collection
-BibLaTeX_entry_field_db$SuppCollection <- c('author', 'editor', 'title', 'booktitle', 'year|date') 
+BibLaTeX_entry_field_db$SuppCollection <- c('author', 'editor', 'title',
+                                            'booktitle', 'year|date') 
 
 #manual
 BibLaTeX_entry_field_db$Manual <- c('author|editor', 'title', 'year|date') 
@@ -38,7 +46,8 @@ BibLaTeX_entry_field_db$Manual <- c('author|editor', 'title', 'year|date')
 BibLaTeX_entry_field_db$Misc <- character(0)
 
 # online
-BibLaTeX_entry_field_db$Online <- c('author|editor', 'title', 'year|date', 'url|eprinttype') 
+BibLaTeX_entry_field_db$Online <- c('author|editor', 'title', 'year|date',
+                                    'url|eprinttype') 
 
 # patent
 BibLaTeX_entry_field_db$Patent <- c('author', 'title', 'number', 'year|date') 
@@ -46,7 +55,8 @@ BibLaTeX_entry_field_db$Patent <- c('author', 'title', 'number', 'year|date')
 # periodical
 BibLaTeX_entry_field_db$Periodical <- c('editor', 'title', 'year|date') 
 
-# supplement to periodical; alias for article in most styles; e.g. regular columns, obituaries, letters to editor, etc.
+## supplement to periodical; alias for article in most styles;
+##   e.g. regular columns, obituaries, letters to editor, etc.
 BibLaTeX_entry_field_db$SuppPeriodical <- c('editor', 'title', 'year|date') 
 
 # proceedings
@@ -58,7 +68,8 @@ BibLaTeX_entry_field_db$MVProceedings <- c('editor', 'title', 'year|date')
 # inproceedings: an article in conference proceedings
 BibLaTeX_entry_field_db$InProceedings <- BibLaTeX_entry_field_db$Proceedings
 
-# reference: alias for collection for most styles; specific type of collection e.g. encyclopedia or dictionary
+## reference: alias for collection for most styles; specific type of collection
+##   e.g. encyclopedia or dictionary
 BibLaTeX_entry_field_db$Reference <- c('editor', 'title', 'year|date') 
 
 # multi-volume reference: alias for mvcollection for most styles; 
@@ -68,22 +79,26 @@ BibLaTeX_entry_field_db$MVReference <- BibLaTeX_entry_field_db$Reference
 BibLaTeX_entry_field_db$InReference <- BibLaTeX_entry_field_db$Reference
 
 # report: need to specify type field. replaces techreport
-BibLaTeX_entry_field_db$Report <- c('author', 'title', 'type', 'institution', 'year|date') 
+BibLaTeX_entry_field_db$Report <- c('author', 'title', 'type', 'institution',
+                                    'year|date') 
 
 # set: special, see Section 3.11.5 of biblatex manual
 BibLaTeX_entry_field_db$Set <- c('entryset')
 
 # thesis: replaces 'mastersthesis' and 'phdthesis' types by adding 'type' field
-BibLaTeX_entry_field_db$Thesis <- c('author', 'title', 'type', 'institution', 'year|date')  
+BibLaTeX_entry_field_db$Thesis <- c('author', 'title', 'type',
+                                    'institution', 'year|date')  
 
 # unpublished
 BibLaTeX_entry_field_db$Unpublished <- c('author', 'title', 'year|date') 
 
-# xdata. special containers for data to be enherited by other entries which specify an 'xdata' field; see Section 3.11.6 of bibtex manual
+## xdata. special containers for data to be enherited by other entries which
+##   specify an 'xdata' field; see Section 3.11.6 of bibtex manual
 BibLaTeX_entry_field_db$XData <- character(0)
 
 ######################
-# custom types # not supported by standard bib. styles, for which they will be treated as 'misc' type
+## custom types # not supported by standard bib. styles, for which they will be
+##   treated as 'misc' type
 BibLaTeX_entry_field_db$Customa <- character(0)
 BibLaTeX_entry_field_db$Customb <- character(0)
 BibLaTeX_entry_field_db$Customc <- character(0)
@@ -97,12 +112,13 @@ BibLaTeX_entry_field_db$Conference <- BibLaTeX_entry_field_db$InProceedings
 BibLaTeX_entry_field_db$Electronic <- BibLaTeX_entry_field_db$Online
 BibLaTeX_entry_field_db$MastersThesis <- c('author', 'title', 'school', 'year')
 BibLaTeX_entry_field_db$PhdThesis <- c('author', 'title', 'school', 'year')
-BibLaTeX_entry_field_db$TechReport <- c('author', 'title', 'institution', 'year')
+BibLaTeX_entry_field_db$TechReport <- c('author', 'title', 'institution',
+                                        'year')
 BibLaTeX_entry_field_db$Www <- BibLaTeX_entry_field_db$Online
 
 ##########################################
-# unsupported types: converted to 'misc' type by standard bib styles that don't support them
-# no checking for required fields
+## unsupported types: converted to 'misc' type by standard bib styles that don't
+##   support them; no checking for required fields
 BibLaTeX_entry_field_db$Artwork <- character(0)
 BibLaTeX_entry_field_db$Audio <- character(0)
 BibLaTeX_entry_field_db$BibNote <- character(0)
