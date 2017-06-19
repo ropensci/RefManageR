@@ -8,6 +8,7 @@ Rhtml/figure
 \#.*\#
 ^[.]gitignore$
 ^[.]travis[.]yml$
+^[.]appveyor[.]yml$
 ^[.]git$
 RefManageR-Ex.R
 ^paper.bib$
