@@ -23,7 +23,8 @@ environment:
 
 build_script:
   - travis-tool.sh install_deps
-  - travis-tool.sh install_github jimhester/covr
+  - Rscript -e "install.packages('covr')"
+#  - travis-tool.sh install_github jimhester/covr
 #  - travis-tool.sh install_github rstats-db/RSQLite
 
 test_script:
@@ -35,7 +36,7 @@ on_failure:
   - appveyor PushArtifact failure.zip
 
 on_success:
-  - R -e 'covr::coveralls(type = "all")'
+  - R -e "covr::coveralls(type = 'all')"
 
 artifacts:
   - path: '*.Rcheck\**\*.log'
