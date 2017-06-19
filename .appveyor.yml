@@ -1,7 +1,7 @@
 init:
   ps: |
         $ErrorActionPreference = "Stop"
-        Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
+        Invoke-WebRequest http://raw.github.com/mwmclean/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
         Import-Module '..\appveyor-tool.ps1'
 install:
   ps: Bootstrap
@@ -24,7 +24,7 @@ environment:
 
 build_script:
   - travis-tool.sh install_deps
-  - Rscript -e "install.packages('covr', repos = 'http://cran.rstudio.com')"
+#  - Rscript -e "install.packages('covr', repos = 'http://cran.rstudio.com')"
 #  - travis-tool.sh install_github jimhester/covr
 #  - travis-tool.sh install_github rstats-db/RSQLite
 
@@ -36,8 +36,8 @@ on_failure:
   - 7z a failure.zip *.Rcheck\*
   - appveyor PushArtifact failure.zip
 
-on_success:
-  - R -e "covr::coveralls(type = 'all')"
+# on_success:
+#   - R -e "covr::coveralls(type = 'all')"
 
 artifacts:
   - path: '*.Rcheck\**\*.log'
