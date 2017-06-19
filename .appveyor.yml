@@ -14,6 +14,7 @@ environment:
   matrix:
     - R_VERSION: devel
       POPPLERQT5FILE: 'dev\windows\appveyor\poppler-qt5-debug.zip'
+      CRAN: http://cran.rstudio.com
     - R_VERSION: release
       RTOOLS_VERSION: 32
       CRAN: http://cran.rstudio.com
@@ -23,7 +24,7 @@ environment:
 
 build_script:
   - travis-tool.sh install_deps
-  - Rscript -e "install.packages('covr')"
+  - Rscript -e "install.packages('covr', repos = 'http://cran.rstudio.com')"
 #  - travis-tool.sh install_github jimhester/covr
 #  - travis-tool.sh install_github rstats-db/RSQLite
 
