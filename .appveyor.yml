@@ -14,6 +14,7 @@ environment:
   matrix:
     - R_VERSION: devel
       POPPLERQT5FILE: 'dev\windows\appveyor\poppler-qt5-debug.zip'
+      CRAN: http://cran.rstudio.com
     - R_VERSION: release
       RTOOLS_VERSION: 32
       CRAN: http://cran.rstudio.com
