@@ -8,6 +8,9 @@ context("PubMed")
 
 test_that("GetPubMedByID can process books (#2)", {
   skip_on_cran()
+  if (httr::http_error("http://eutils.ncbi.nlm.nih.gov/"))
+      skip("Couldn't connect to Entrez")
+  
   test <- GetPubMedByID(c("24977996", "24921111"))
   if (length(test))
     expect_true(length(test) == 2L)
@@ -15,6 +18,9 @@ test_that("GetPubMedByID can process books (#2)", {
 
 test_that("GetPubMedByID uses collective name if authors missing (#2)", {
   skip_on_cran()
+  if (httr::http_error("http://eutils.ncbi.nlm.nih.gov/"))
+      skip("Couldn't connect to Entrez")
+  
   test <- GetPubMedByID(c(11678951, 15373863))
   if (length(test)){
     authors <- unlist(test$author)
@@ -23,8 +29,11 @@ test_that("GetPubMedByID uses collective name if authors missing (#2)", {
 })
 
 test_that("GetPubMedByID warns if authors missing (#3)", {
-    skip_on_cran()
-    gives_warning(GetPubMedByID("7936917"))
+  skip_on_cran()
+  if (httr::http_error("http://eutils.ncbi.nlm.nih.gov/"))
+    skip("Couldn't connect to Entrez")
+
+  gives_warning(GetPubMedByID("7936917"))
 })
 
 test_that("LookupPubMedID successfully retrieves and add ID's'", {
