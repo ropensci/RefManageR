@@ -983,56 +983,66 @@ ProcessDate <- function(dat, mon, searching = FALSE){
                .day <- TRUE
                if (length(days) == 2){
                   if (length(mons) == 1)
-                    interval(parse_date_time(paste0(dats[1], "-", mons, "-",
-                                                    days[1]),
-                                               c("%Y-%m-%d", "%Y-%b-%d")),
-                             parse_date_time(paste0(dats[2], "-", mons,
-                                                    "-", days[2]),
-                                               c("%Y-%m-%d", "%Y-%b-%d")))
+                   interval(parse_date_time(paste0(dats[1], "-", mons, "-",
+                                                   days[1]),
+                                            c("%Y-%m-%d", "%Y-%b-%d"),
+                                            locale = "C"),
+                            parse_date_time(paste0(dats[2], "-", mons, "-",
+                                                   days[2]),
+                                            c("%Y-%m-%d", "%Y-%b-%d"),
+                                            locale = "C"))
                   else if(length(mons) == 2)
-                    interval(parse_date_time(paste0(dats[1], "-", mons[1], "-",
-                                                    days[1]),
-                                                 c("%Y-%m-%d", "%Y-%b-%d")),
-                             parse_date_time(paste0(dats[2], "-", mons[2],
-                                                    "-", days[2]),
-                                                 c("%Y-%m-%d", "%Y-%b-%d")))
+                      interval(parse_date_time(paste0(dats[1], "-", mons[1],
+                                                      "-", days[1]),
+                                               c("%Y-%m-%d", "%Y-%b-%d"),
+                                               locale = "C"),
+                               parse_date_time(paste0(dats[2], "-", mons[2],
+                                                      "-", days[2]),
+                                               c("%Y-%m-%d", "%Y-%b-%d"),
+                                               locale = "C"))
                   else NA
               }else{
                 if (length(mons) == 1){
                   if (dats[1] == dats[2])
                     parse_date_time(paste0(dat, "-", mons, "-", days),
-                                    c("%Y-%m-%d", "%Y-%b-%d"))
+                                    c("%Y-%m-%d", "%Y-%b-%d"), locale = "C")
                   else
-                    interval(parse_date_time(paste0(dats[1], "-", mons, "-",
-                                                    days),
-                                             c("%Y-%m-%d", "%Y-%b-%d")),
-                             parse_date_time(paste0(dats[2], "-", mons, "-",
-                                                    days),
-                                             c("%Y-%m-%d", "%Y-%b-%d")))
+                      interval(parse_date_time(paste0(dats[1], "-", mons, "-",
+                                                      days),
+                                               c("%Y-%m-%d", "%Y-%b-%d"),
+                                               locale = "C"),
+                               parse_date_time(paste0(dats[2], "-", mons,
+                                                      "-", days),
+                                               c("%Y-%m-%d", "%Y-%b-%d"),
+                                               locale = "C"))
                 }else if (length(mons) == 2)
-                  interval(parse_date_time(paste0(dats[1], "-", mons[1], "-",
-                                                  days),
-                                               c("%Y-%m-%d", "%Y-%b-%d")),
-                           parse_date_time(paste0(dats[2], "-", mons[2],
-                                                  "-", days),
-                                               c("%Y-%m-%d", "%Y-%b-%d")))
+                    interval(parse_date_time(paste0(dats[1], "-", mons[1], "-",
+                                                    days),
+                                             c("%Y-%m-%d", "%Y-%b-%d"),
+                                             locale = "C"),
+                             parse_date_time(paste0(dats[2], "-", mons[2],
+                                                    "-", days),
+                                             c("%Y-%m-%d", "%Y-%b-%d"),
+                                             locale = "C"))
                 else NA
               }
           }else if (grepl("/", mon, useBytes = TRUE)){  # feb/mar
             mons <- strsplit(mon, "/")[[1L]]
             interval(parse_date_time(paste0(dats[1], "-", mons[1], "-01"),
-                                     c("%Y-%m-%d", "%Y-%b-%d")),
+                                     c("%Y-%m-%d", "%Y-%b-%d"), locale = "C"),
                      parse_date_time(paste0(dats[2], "-", mons[2], "-01"),
-                                     c("%Y-%m-%d", "%Y-%b-%d")))
+                                     c("%Y-%m-%d", "%Y-%b-%d"), locale = "C"))
           }else{
             if (dats[1] == dats[2])
-              parse_date_time(paste0(dat, '-', mon, '-01'),
-                              c("%Y-%m-%d", "%Y-%b-%d"))
+                parse_date_time(paste0(dat, '-', mon, '-01'),
+                                c("%Y-%m-%d", "%Y-%b-%d"), locale = "C")
             else
-              interval(parse_date_time(paste0(dats[1], '-', mon, '-01'),
-                                       c("%Y-%m-%d", "%Y-%b-%d")),
-                       parse_date_time(paste0(dats[2], '-', mon, '-01'),
-                                       c("%Y-%m-%d", "%Y-%b-%d")))
+                interval(parse_date_time(paste0(dats[1], '-', mon, '-01'),
+                                         c("%Y-%m-%d", "%Y-%b-%d"),
+                                         locale = "C"),
+                         parse_date_time(paste0(dats[2], '-', mon, '-01'),
+                                         c("%Y-%m-%d", "%Y-%b-%d"),
+                                         locale = "C"))
           }, TRUE)
       if (inherits(res, "try-error") || is.na(res)){
         warning(gettextf("Failed to parse month: %s%s", mon,
@@ -1050,10 +1060,10 @@ ProcessDate <- function(dat, mon, searching = FALSE){
 
   }else if (grepl('^(1|2)[0-9]{3}/$', dat, useBytes = TRUE)){
     if (!is.null(mon)){
-      res <- interval(parse_date_time(paste0(substring(dat, 1, 4), '-',
-                                             mon, '-01'),
-                                      c("%Y-%m-%d", "%Y-%b-%d")),
-                      Sys.Date())
+        res <- interval(parse_date_time(paste0(substring(dat, 1, 4), '-',
+                                               mon, '-01'),
+                                        c("%Y-%m-%d", "%Y-%b-%d"), locale="C"),
+                          Sys.Date())
       .mon <- TRUE
     }else{
       res <- interval(paste0(substring(dat, 1, 4), '-01-01'), Sys.Date())
