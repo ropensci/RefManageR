@@ -1,4 +1,4 @@
-Changes in Version 0.14.9 (2017-06-17)
+Changes in Version 0.14.10 (2017-06-24)
 --------------------------------------------------------
 NEW FEATURES
 
@@ -13,6 +13,7 @@ BUG FIXES
 citations
 * `c.BibEntry` throws an error if not all objects are `bibentry` objects
 * fix typos in documentation
+* Literaly ampersands are now printed correctly (not as '\&') (h/t Yue Hu) 
 
 Changes in Version 0.13.4 (2017-04-25)
 --------------------------------------------------------

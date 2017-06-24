@@ -325,6 +325,7 @@ cleanupLatex <- function (x){
     x <- gsub('\\\\hyphen', '-', x, useBytes = TRUE)
     x <- gsub("\\\\textquotesingle", "'", x, useBytes = TRUE)
   }
+  x <- gsub("\\\\&", "&", x, useBytes = TRUE)
 
   latex <- try(tools::parseLatex(x), silent = TRUE)
   if (inherits(latex, "try-error")) {
