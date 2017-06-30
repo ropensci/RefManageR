@@ -8,7 +8,8 @@
 #' @param .sorting - the BibLaTeX sorting method to use; see
 #' \code{\link{sort.BibEntry}}
 #' @param ... - ignored
-#' @S3method toRd BibEntry
+## @S3method toRd BibEntry
+#' @export
 #' @return Returns a character vector containing a fragment of Rd code that
 #' could be parsed and rendered.
 #' @seealso \code{\link{print.BibEntry}}, \code{\link{sort.BibEntry}},
