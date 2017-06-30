@@ -1,9 +1,11 @@
-Changes in Version 0.14.11 (2017-06-24)
+Changes in Version 0.14.12 (2017-06-30)
 --------------------------------------------------------
 NEW FEATURES
 
 * Package now uses httr, xml2, jsonlite packages instead of RCurl, XML, RJSONIO
 for scaffolding
+* No more R CMD check NOTE regarding foreign function call to bibtex (h/t Romain
+Francois)
 
 BUG FIXES
 

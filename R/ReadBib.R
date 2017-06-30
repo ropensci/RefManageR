@@ -12,7 +12,7 @@
 #' checking is done, \dQuote{warn} means entry is added with an error.
 #' \dQuote{error} means the entry will not be added.  See \code{\link{BibOptions}}.
 #' @author McLean, M. W., based on code in \code{bibtex} package by Francois, R.
-#' @import bibtex
+#' @importFrom bibtex do_read_bib
 #' @importFrom stringr str_trim
 #' @note Date fields are parsed using the locale specified by
 #' \code{Sys.getlocale("LC_TIME")}.  To read a bib file with character \sQuote{month}
@@ -40,9 +40,9 @@ ReadBib <- function(file, .Encoding = "UTF-8",
   }
   srcfile <- switch(.Encoding, unknown = srcfile(file),
                     srcfile(file, encoding = .Encoding))
-  out <- .External("do_read_bib", file = file, encoding = .Encoding,
-                   srcfile = srcfile, PACKAGE = "bibtex")
-  ## out <- do_read_bib(file, encoding = .Encoding, srcfile)
+  ## out <- .External("do_read_bib", file = file, encoding = .Encoding,
+  ##                  srcfile = srcfile, PACKAGE = "bibtex")
+  out <- do_read_bib(file, encoding = .Encoding, srcfile)
   at <- attributes(out)
   if (typeof(out) != "integer")
     out <- lapply(out, MakeBibEntry)
