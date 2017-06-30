@@ -16,9 +16,9 @@
 \item{...}{- see \code{\link{[.BibEntry}}}
 
 \item{value}{- values to be assigned to \code{x}.  To update one entry only,
-should be a named character vector with names corresponding to fields.  To update
-multiple entries, should be a list of named character vectors.  Can also be an object of 
-class BibEntry.}
+should be a named character vector with names corresponding to fields.  To
+update multiple entries, should be a list of named character vectors.  Can
+also be an object of class BibEntry.}
 }
 \value{
 an object of class BibEntry.

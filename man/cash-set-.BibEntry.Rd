@@ -20,7 +20,8 @@ an object of class BibEntry with the updated fields.
 Used to replace the values stored for a specified field in a BibEntry object.
 }
 \note{
-The method expects date and name list fields to be in the format expected by Biblatex.  The 
+The method expects date and name list fields to be in the format
+expected by Biblatex.  The 
 field specified by \code{name} does not have to be one currently in \code{x}.
 }
 \examples{

@@ -12,21 +12,25 @@
 
 \item{entry}{numeric index or character key of entry in \code{bib} to open.}
 
-\item{open.field}{character vector of fields to use in \code{bib} to open the BibEntry.
-Possible fields are any combination of \dQuote{file},\dQuote{url}, \dQuote{eprint}, or \dQuote{doi}.
-\dQuote{eprint} is implemented for \code{eprinttype=} \dQuote{JSTOR}, \dQuote{PubMed}, or \dQuote{arXiv}.
-When multiple fields are specified, they are tried in the order they appear in the vector.}
+\item{open.field}{character vector of fields to use in \code{bib} to open
+the BibEntry.  Possible fields are any combination of \dQuote{file},
+\dQuote{url}, \dQuote{eprint}, or \dQuote{doi}.  \dQuote{eprint} is
+implemented for \code{eprinttype=} \dQuote{JSTOR}, \dQuote{PubMed},
+or \dQuote{arXiv}.  When multiple fields are specified, they are tried in
+the order they appear in the vector.}
 
-\item{viewer}{character string giving the name of the program to be used as hypertext browser.
-It should be in the PATH, or a full path specified. Alternatively, an R function to be called to invoke
-the browser.  Defaults to \code{getOptions("pdfviewer")} if \code{open.field = "file"} and
+\item{viewer}{character string giving the name of the program to be used
+as hypertext browser.  It should be in the PATH, or a full path specified.
+Alternatively, an R function to be called to invoke the browser.  Defaults
+to \code{getOptions("pdfviewer")} if \code{open.field = "file"} and
 \code{getOptions("browser")}, otherwise.}
 
 \item{...}{not used.}
 }
 \description{
-Attempts to open a connection to an entry in a BibEntry object using fields such as \sQuote{file}, \sQuote{DOI},
-\sQuote{eprint} + \sQuote{eprinttype}, and \sQuote{URL}.
+Attempts to open a connection to an entry in a BibEntry object using fields
+such as \sQuote{file}, \sQuote{DOI}, \sQuote{eprint} + \sQuote{eprinttype},
+and \sQuote{URL}.
 }
 \examples{
 \dontrun{

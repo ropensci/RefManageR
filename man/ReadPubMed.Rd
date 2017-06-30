@@ -19,27 +19,37 @@ an object of class BibEntry.
 }
 \description{
 This function takes a query and searches an Entrez database for
-references using NCBI's E-Utilities, returning the results in a BibEntry object.
+references using NCBI's E-Utilities, returning the results in a BibEntry
+object.
 }
 \details{
 Optional additional parameters to pass to the server include
 \itemize{
-\item \code{retstart} - index of the first retrieved ID that should be included in the results.
-\item \code{retmax} - maximum number of IDs the server will return (default 20). 
-\item \code{field} - limits the query to search only the specified field (e.g. \dQuote{title}).
-\item \code{datetype} - type of date to use when limiting search by dates. E.g. \dQuote{mdat}
+\item \code{retstart} - index of the first retrieved ID that should be
+included in the results.
+\item \code{retmax} - maximum number of IDs the server will
+return (default 20). 
+\item \code{field} - limits the query to search only the specified
+field (e.g. \dQuote{title}).
+\item \code{datetype} - type of date to use when limiting search by
+dates. E.g. \dQuote{mdat}
 for modification date or \dQuote{pdat} for publication date.
-\item \code{reldate} - integer; only items that have (\code{datetype}) date values within \code{reldate} \emph{days}
+\item \code{reldate} - integer; only items that have (\code{datetype})
+date values within \code{reldate} \emph{days}
 of the current date will be returned.
-\item \code{mindate}, \code{maxdate} - date ranges to restrict search results.  Possible formats are
+\item \code{mindate}, \code{maxdate} - date ranges to restrict search
+results.  Possible formats are
 \dQuote{YYYY}, \dQuote{YYYY/MM}, and \dQuote{YYYY/MM/DD}.
 }
 }
 \note{
-The returned entries will have type either \sQuote{Article} or \sQuote{Misc} depending on whether journal information was retrieved.
+The returned entries will have type either \sQuote{Article} or
+\sQuote{Misc} depending on whether journal information was retrieved.
 See the Entrez documentation listed in the \emph{References}.
 
-The language of the entry will be returned in the field \dQuote{language} and the abstract will be returned in the field \dQuote{abstract}, if they are available.
+The language of the entry will be returned in the field \dQuote{language}
+and the abstract will be returned in the field \dQuote{abstract}, if they
+are available.
 }
 \examples{
 if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/"))

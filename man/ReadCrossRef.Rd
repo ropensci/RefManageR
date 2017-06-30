@@ -12,30 +12,32 @@ ReadCrossRef(query = "", filter = list(), limit = 5, offset = 0,
 \arguments{
 \item{query}{string; search term}
 
-\item{filter}{named list of possible filters; see \code{Details} and \code{References};
-ignored if \code{use.old.api = TRUE}}
+\item{filter}{named list of possible filters; see \code{Details} and
+\code{References}; ignored if \code{use.old.api = TRUE}}
 
 \item{limit}{numeric; maximum number of entries to return}
 
 \item{offset}{numeric; CrossRef will not return the
 first \code{offset} results (default 0); ignored if \code{use.old.api = TRUE}}
 
-\item{sort}{string; how specifying how the results from CrossRef should be sorted.  Possible
-values when \code{use.old.api = FALSE} are \code{"score"} (default; same as \code{"relevance"}),
+\item{sort}{string; how specifying how the results from CrossRef should be
+sorted.  Possible values when \code{use.old.api = FALSE} are \code{"score"}
+(default; same as \code{"relevance"}),
 \code{"updated"}, \code{"deposited"}, \code{"indexed"}, or \code{"published"};
 see the references}
 
 \item{year}{numeric; if specified, only results from this year will be returned.}
 
-\item{min.relevance}{numeric; only results with a CrossRef-assigned relevance score at
-least this high will be returned.}
+\item{min.relevance}{numeric; only results with a CrossRef-assigned relevance
+score at least this high will be returned.}
 
-\item{temp.file}{string; file name to use for storing Bibtex information returned by CrossRef.}
+\item{temp.file}{string; file name to use for storing Bibtex information
+returned by CrossRef.}
 
 \item{delete.file}{boolean; should the bib file be deleted on exit?}
 
-\item{verbose}{boolean; if \code{TRUE}, additional messages are output regarding the
-results of the query.}
+\item{verbose}{boolean; if \code{TRUE}, additional messages are output
+regarding the results of the query.}
 
 \item{use.old.api}{boolean; should the older CrossRef API be used for the search?}
 }
@@ -43,9 +45,10 @@ results of the query.}
 An object of class \code{BibEntry}.
 }
 \description{
-Provides an interface to the CrossRef API, searching for citations given a string query.
-Results are written to a
-bib file, read back into \code{R} using \code{\link{WriteBib}}, and returned as a BibEntry object.
+Provides an interface to the CrossRef API, searching for citations given a
+string query.  Results are written to a
+bib file, read back into \code{R} using \code{\link{WriteBib}}, and returned
+as a BibEntry object.
 }
 \details{
 When \code{use.old.api = TRUE}, the query HTTP request only returns DOIs,
@@ -58,8 +61,9 @@ to be to your query.  The \emph{old} API documentation warns that while false
 negatives are unlikely, the search can be prone to false positives.  Hence, setting
 \code{min.revelance} to a high value may be necessary if \code{use.old.api = TRUE}.
 
-Possible values for the \emph{names} in \code{filter} are \code{"has-funder"}, \code{"funder"},
-\code{"prefix"}, \code{"member"}, \code{"from-index-date"}, \code{"until-index-date"},
+Possible values for the \emph{names} in \code{filter} are \code{"has-funder"},
+\code{"funder"}, \code{"prefix"}, \code{"member"}, \code{"from-index-date"},
+\code{"until-index-date"},
 \code{"from-deposit-date"}, \code{"until-deposit-date"}, \code{"from-update-date"},
 \code{"until-update-date"}, \code{"from-created-date"}, \code{"until-created-date"},
 \code{"from-pub-date"}, \code{"until-pub-date"}, \code{"has-license"}, \code{"license.url"},
@@ -70,16 +74,16 @@ Possible values for the \emph{names} in \code{filter} are \code{"has-funder"}, \
 \code{"updates"}, \code{"is-update"}, \code{"has-update-policy"}, \code{"container-title"},
 \code{"publisher-name"}, \code{"category-name"}, \code{"type-name"}, \code{"award.number"},
 \code{"award.funder"}, \code{"assertion-group"}, \code{"assertion"}, \code{"affiliation"},
-\code{"has-affiliation"}, \code{"alternative-id"}, and \code{"article-number"}.  See the first
-reference for a description of their meanings.
+\code{"has-affiliation"}, \code{"alternative-id"}, and \code{"article-number"}.
+See the first reference for a description of their meanings.
 }
 \note{
-The entries returned by Crossref are frequently missing fields required by BibTeX, if
-you want the entries to be returned anyway, set \code{BibOptions()$check.entries} to
-\code{FALSE} or \code{"warn"}
+The entries returned by Crossref are frequently missing fields required
+by BibTeX, if you want the entries to be returned anyway, set
+\code{BibOptions()$check.entries} to \code{FALSE} or \code{"warn"}
 
-Fields \code{"score"} (the relevancy score) and \code{"license"} will be returned when
-\code{use.old.api = FALSE}.
+Fields \code{"score"} (the relevancy score) and \code{"license"} will be
+returned when \code{use.old.api = FALSE}.
 }
 \examples{
 if (interactive() && !http_error("http://search.crossref.org/")){

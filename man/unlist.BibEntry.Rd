@@ -27,13 +27,15 @@ RelistBibEntry(flesh, skeleton = NULL)
 For \code{unlist}, a list with bib entries collapsed into a single list.
 }
 \description{
-\code{RelistBibEntry} unflattens a BibEntry object that has been flattened with \code{unlist}.
+\code{RelistBibEntry} unflattens a BibEntry object that has been
+flattened with \code{unlist}.
 
 \code{unlist} flattens a BibEntry object to a single list where every field (including \code{bibtype} and \code{key})
 of every entry is a separate element in the list.
 }
 \details{
-\code{RelistBibEntry} is only intended for use with \code{unlist}ed BibEntry objects.
+\code{RelistBibEntry} is only intended for use with
+\code{unlist}ed BibEntry objects.
 }
 \note{
 The names of the list elements from an unlisted BibEntry object will not be unique.  To do this see \code{\link{make.unique}}.

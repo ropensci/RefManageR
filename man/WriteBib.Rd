@@ -2,7 +2,10 @@
 % Please edit documentation in R/WriteBib.R
 \name{WriteBib}
 \alias{WriteBib}
-\title{Create a BibTeX File from a BibEntry Object}
+\title{Create a BibTeX File from a BibEntry Object
+e
+Creates a Bibtex File from a BibEntry object for use with either BibTeX
+or BibLaTex.}
 \usage{
 WriteBib(bib, file = "references.bib", biblatex = TRUE, append = FALSE,
   verbose = TRUE, ...)
@@ -12,8 +15,10 @@ WriteBib(bib, file = "references.bib", biblatex = TRUE, append = FALSE,
 
 \item{file}{character string naming a file, should; end in \dQuote{.bib}}
 
-\item{biblatex}{boolean; if \code{TRUE}, \code{\link{toBiblatex}} is used and no conversions of the BibEntry object
-are done; if \code{FALSE} entries will be converted as described in \code{\link{toBibtex.BibEntry}}.}
+\item{biblatex}{boolean; if \code{TRUE}, \code{\link{toBiblatex}} is used
+and no conversions of the BibEntry object
+are done; if \code{FALSE} entries will be converted as described in
+\code{\link{toBibtex.BibEntry}}.}
 
 \item{append}{as in \code{\link{write.bib}}}
 
@@ -25,10 +30,14 @@ are done; if \code{FALSE} entries will be converted as described in \code{\link{
 \code{bib} - invisibly
 }
 \description{
-Creates a Bibtex File from a BibEntry object for use with either BibTeX or BibLaTex.
+Create a BibTeX File from a BibEntry Object
+e
+Creates a Bibtex File from a BibEntry object for use with either BibTeX
+or BibLaTex.
 }
 \note{
-To write the contents of \code{bib} \dQuote{as is}, the argument \code{biblatex} should be \code{TRUE}, otherwise
+To write the contents of \code{bib} \dQuote{as is}, the argument
+\code{biblatex} should be \code{TRUE}, otherwise
 conversion is done as in \code{\link{toBibtex.BibEntry}}.
 }
 \examples{
@@ -42,10 +51,12 @@ if (length(bib)){
 }
 }
 \seealso{
-\code{\link{write.bib}}, \code{\link{ReadBib}}, \code{\link{toBibtex.BibEntry}},
-\code{\link{toBiblatex}}, \code{\link{BibEntry}}
+\code{\link{write.bib}}, \code{\link{ReadBib}},
+\code{\link{toBibtex.BibEntry}}, \code{\link{toBiblatex}},
+\code{\link{BibEntry}}
 }
 \author{
-McLean, M. W. based on \code{\link{write.bib}} by Gaujoux, R. in package \code{bibtex}.
+McLean, M. W. based on \code{\link{write.bib}} by Gaujoux, R.
+in package \code{bibtex}.
 }
 \keyword{IO}

@@ -33,19 +33,19 @@ NoCite(bib, ..., .opts = list())
 \arguments{
 \item{bib}{a \code{BibEntry} or \code{bibentry} object}
 
-\item{...}{passed to \code{\link{SearchBib}} for indexing into bib.  A character vector of
-keys, for example.}
+\item{...}{passed to \code{\link{SearchBib}} for indexing into bib.  A character
+vector of keys, for example.}
 
 \item{textual}{logical; if TRUE, a \dQuote{textual} citation is produced, i.e.
-what is produced by \\citet in \code{natbib} and \\textcite in \code{BibLaTeX}; otherwise,
-a parenthetical citation as \\citep and \\autocite.}
+what is produced by \\citet in \code{natbib} and \\textcite in \code{BibLaTeX};
+otherwise, a parenthetical citation as \\citep and \\autocite.}
 
 \item{before}{string; optional text to display before the citation.}
 
 \item{after}{string; optional text to display after the citation.}
 
-\item{.opts}{list; See the relevant section in \code{\link{BibOptions}} for a description
-of all valid options for these functions.}
+\item{.opts}{list; See the relevant section in \code{\link{BibOptions}} for a
+description of all valid options for these functions.}
 }
 \value{
 For the cite functions: a character string containing the citation
@@ -65,20 +65,22 @@ e.g., a RMarkdown or RHTML document.
 See the package vignettes and execute the examples below.
 
 If \code{bib.style = "alphabetic"} or \code{bib.style = "numeric"},
-then sorting needs to be done at the start of the document prior to using a cite function as
-sorting is not done by the Printbibliography function for those styles (specifying
-\code{sorting} in \code{.opts} is ignored in this case).  If no sorting is none,
-the references are listed in the order they were cited in for those two styles.
+then sorting needs to be done at the start of the document prior to using a cite
+function as sorting is not done by the Printbibliography function for those styles
+(specifying \code{sorting} in \code{.opts} is ignored in this case).  If no sorting
+is none, the references are listed in the order they were cited in for those
+two styles.
 
-If the \code{...} argument to NoCite is identical to \dQuote{*}, then all references
-in \code{bib} are added to the bibliography without citations.
+If the \code{...} argument to NoCite is identical to \dQuote{*}, then all
+references in \code{bib} are added to the bibliography without citations.
 }
 \examples{
 file <- system.file("Bib", "biblatexExamples.bib", package = "RefManageR")
 BibOptions(check.entries = FALSE)
 bib <- ReadBib(file)
 Citet(bib, 12)
-Citep(bib, c("loh", "geer"), .opts = list(cite.style = "numeric"), before = "see e.g., ")
+Citep(bib, c("loh", "geer"), .opts = list(cite.style = "numeric"),
+      before = "see e.g., ")
 Citet(bib, "loh", .opts = list(cite.style = "numeric", super = TRUE))
 AutoCite(bib, eprinttype = "arxiv", .opts = list(cite.style = "authoryear"))
 AutoCite(bib, eprinttype = "arxiv", .opts = list(cite.style = "pandoc"))
@@ -86,7 +88,8 @@ Citep(bib, author = "kant")
 ## shorthand field in both entries gets used for numeric and alphabetic labels
 TextCite(bib, author = "kant", .opts = list(cite.style = "alphabetic"))
 TextCite(bib, author = "kant", .opts = list(cite.style = "numeric"))
-TextCite(bib, author = "kant", .opts = list(cite.style = "alphabetic", style = "html"))
+TextCite(bib, author = "kant", .opts = list(cite.style = "alphabetic",
+         style = "html"))
 punct <- unlist(BibOptions("bibpunct"))
 punct[3:4] <- c("(", ")")
 TextCite(bib, 33, .opts = list(bibpunct = punct, cite.style = "alphabetic"))
@@ -112,7 +115,8 @@ unlink(tdir)
 }
 }
 \seealso{
-\code{\link{print.BibEntry}}, \code{\link{BibOptions}}, \code{\link[utils]{citeNatbib}}
+\code{\link{print.BibEntry}}, \code{\link{BibOptions}},
+\code{\link[utils]{citeNatbib}}
 }
 \keyword{methods}
 \keyword{print}

@@ -8,25 +8,31 @@ ReadZotero(user, group, .params, temp.file = tempfile(fileext = ".bib"),
   delete.file = TRUE)
 }
 \arguments{
-\item{user}{Zotero userID for use in calls to the Zotero API.  This is not the same as your Zotero
-username.  The userID for accessing user-owned libraries can be found at
-\verb{https://www.zotero.org/settings/keys} after logging in.}
+\item{user}{Zotero userID for use in calls to the Zotero API.  This is not
+the same as your Zotero username.  The userID for accessing user-owned
+libraries can be found at \verb{https://www.zotero.org/settings/keys}
+after logging in.}
 
-\item{group}{Zotero groupID for use in calls to the Zotero API.  Only one of \code{user} and \code{group} should be specified; \code{group} will be ignored if both are specified.}
+\item{group}{Zotero groupID for use in calls to the Zotero API.  Only one
+of \code{user} and \code{group} should be specified; \code{group} will be
+ignored if both are specified.}
 
-\item{.params}{A \emph{named} list of parameters to use in requests to the Zotero API with possible values
-\itemize{
-  \item q - Search string to use to search the library
-  \item qmode - Search mode. Default is "titleCreatorYear".  Use "everything" to include full-text content in search.
-  \item key - API key.  This must be specified to access non-public libraries.
-  \item collection - name of a specific collection within the library to search
-  \item itemType - type of entry to search for; e.g., "book" or "journalArticle"
-  \item tag - name of tag to search for in library
-  \item limit - maximum number of entries to return
-  \item start - index of first entry to return
-}}
+\item{.params}{A \emph{named} list of parameters to use in requests to the
+Zotero API with possible values
+ \itemize{
+   \item q - Search string to use to search the library
+   \item qmode - Search mode. Default is "titleCreatorYear".  Use "everything"
+         to include full-text content in search.
+   \item key - API key.  This must be specified to access non-public libraries.
+   \item collection - name of a specific collection within the library to search
+   \item itemType - type of entry to search for; e.g., "book" or "journalArticle"
+   \item tag - name of tag to search for in library
+   \item limit - maximum number of entries to return
+   \item start - index of first entry to return
+ }}
 
-\item{temp.file}{character; file name where the BibTeX data returned by Zotero will be temporarily written.}
+\item{temp.file}{character; file name where the BibTeX data returned by
+Zotero will be temporarily written.}
 
 \item{delete.file}{boolean; should \code{temp.file} be removed on exit?}
 }

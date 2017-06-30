@@ -8,9 +8,11 @@ BibEntry(bibtype, textVersion = NULL, header = NULL, footer = NULL,
   key = NULL, ..., other = list(), mheader = NULL, mfooter = NULL)
 }
 \arguments{
-\item{bibtype}{a character string with a BibTeX entry type. See Entry Types for details.}
+\item{bibtype}{a character string with a BibTeX entry type. See Entry Types
+for details.}
 
-\item{textVersion}{a character string with a text representation of the reference to optionally be employed for printing.}
+\item{textVersion}{a character string with a text representation of the
+reference to optionally be employed for printing.}
 
 \item{header}{a character string with optional header text.}
 
@@ -18,9 +20,10 @@ BibEntry(bibtype, textVersion = NULL, header = NULL, footer = NULL,
 
 \item{key}{a character string giving the citation key for the entry.}
 
-\item{...}{arguments of the form \code{tag = value} giving the fields of the entry, with \code{tag} and
-\code{value} the name and value of the field, respectively. Arguments with empty values are dropped. See
-Entry Fields for details.}
+\item{...}{arguments of the form \code{tag = value} giving the fields
+of the entry, with \code{tag} and \code{value} the name and value of the
+field, respectively. Arguments with empty values are dropped. See
+  Entry Fields for details.}
 
 \item{other}{list; additional way to specify fields and their values}
 
@@ -32,28 +35,31 @@ Entry Fields for details.}
 an object of class BibEntry
 }
 \description{
-Provides a new class \code{BibEntry} which builds on \code{\link{bibentry}} to provide enhanced
-  functionality for representing, manipulating, importing, etc. bibliographic information in BibTeX or
-  BibLaTeX style.
+Provides a new class \code{BibEntry} which builds on \code{\link{bibentry}}
+to provide enhanced functionality for representing, manipulating, importing,
+etc. bibliographic information in BibTeX or BibLaTeX style.
 }
 \details{
-The BibEntry objects created by BibEntry can represent an arbitrary positive number of references,
-  as with \code{bibentry}, but many additional methods are defined for building and manipulating a database
+The BibEntry objects created by BibEntry can represent an
+arbitrary positive number of references, as with \code{bibentry}, but
+many additional methods are defined for building and manipulating a database
   of references.
 }
 \note{
-Date fields are parsed using the locale specified by \code{Sys.getlocale("LC_TIME")} (relevant
-when specifying a character \sQuote{month} field, instead of the recommended integer format)
+Date fields are parsed using the locale specified by
+\code{Sys.getlocale("LC_TIME")} (relevant when specifying a character
+\sQuote{month} field, instead of the recommended integer format)
 
 Name list fields (author, editor, etc.) should be specified as they would be for
 BibTeX/BibLaTeX; e.g. \code{author = "Doe, Jane and Smith, Bob A."}.
 }
 \section{Entry Types}{
 
-  bibentry creates "bibentry" objects, which are modeled after BibLaTeX and BibTeX entries. The entry should
-  be a valid BibLaTeX or BibTeX entry type.  For a list of valid BibTeX entry types, see
-  \code{\link{bibentry}}.  BibLaTeX supports all entry types from BibTeX for backwards compatibility.
-  BibLaTeX defines following entry types
+  bibentry creates "bibentry" objects, which are modeled after BibLaTeX and
+BibTeX entries. The entry should
+  be a valid BibLaTeX or BibTeX entry type.  For a list of valid BibTeX entry
+types, see \code{\link{bibentry}}.  BibLaTeX supports all entry types from
+BibTeX for backwards compatibility. BibLaTeX defines following entry types
   '  \itemize{
    \item \emph{article} - An article in a journal, magazine, newspaper, or other periodical which forms a
   self-contained unit with its own title.  Required fields: author, title, journal/journaltitle, year/date.

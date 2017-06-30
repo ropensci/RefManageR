@@ -9,21 +9,27 @@ LookupPubMedID(bib, index)
 \arguments{
 \item{bib}{a bibentry object}
 
-\item{index}{indices specifying which entries of \code{bib} will be searched for.  If \code{missing}, all entries
+\item{index}{indices specifying which entries of \code{bib} will be
+searched for.  If \code{missing}, all entries
 are searched for.}
 }
 \value{
-a BibEntry object - \code{bib} with additional eprinttype and eprint fields when the search is successful
+a BibEntry object - \code{bib} with additional eprinttype and eprint
+fields when the search is successful
 for an entry.
 }
 \description{
-Uses the NCBI E-utilities to to search for PubMed ID's for citations stored in a BibEntry object.
+Uses the NCBI E-utilities to to search for PubMed ID's for citations
+stored in a BibEntry object.
 }
 \details{
-For each entry a citation string is created using the fields journaltitle/journal, date/year,
-  volume, pages, and author; and these strings are then used to search the NCBI database for PubMed ID's.
+For each entry a citation string is created using the fields
+journaltitle/journal, date/year,
+  volume, pages, and author; and these strings are then used to search the
+NCBI database for PubMed ID's.
 
-  If an ID is found for an entry, the entry is updated so that the eprinttype field is assigned the value
+  If an ID is found for an entry, the entry is updated so that the eprinttype
+field is assigned the value
   \dQuote{pubmed} and the eprint field is assigned the ID.
 }
 \examples{

@@ -8,19 +8,25 @@ ReadGS(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
   .Encoding = "UTF-8", check.entries = BibOptions()$check.entries)
 }
 \arguments{
-\item{scholar.id}{character; the Google Scholar ID from which citations will be imported.  The ID can by found by
-visiting an author's Google Scholar profile and noting the value in the uri for the \dQuote{user} parameter.}
+\item{scholar.id}{character; the Google Scholar ID from which citations will
+be imported.  The ID can by found by
+visiting an author's Google Scholar profile and noting the value in the uri
+for the \dQuote{user} parameter.}
 
 \item{start}{numeric; index of first citation to include.}
 
 \item{limit}{numeric; maximum number of results to return.  Cannot exceed 100.}
 
-\item{sort.by.date}{boolean; if true, newest citations are imported first; otherwise, most cited works are imported first.}
+\item{sort.by.date}{boolean; if true, newest citations are imported first;
+otherwise, most cited works are imported first.}
 
-\item{.Encoding}{character; text encoding to use for importing the results and creating the bib entries.}
+\item{.Encoding}{character; text encoding to use for importing the results
+and creating the bib entries.}
 
-\item{check.entries}{What should be done with incomplete entries (those containing \dQuote{...} due to long fields)?
-Either \code{FALSE} to add them anyway, \code{"warn"} to add with a warning, or any other value to drop the entry
+\item{check.entries}{What should be done with incomplete entries (those
+containing \dQuote{...} due to long fields)?
+Either \code{FALSE} to add them anyway, \code{"warn"} to add with a warning,
+or any other value to drop the entry
 with a message and continue processing the remaining entries.}
 }
 \value{
@@ -28,8 +34,10 @@ An object of class BibEntry.  If the entry has any citations, the number of
 citations is stored in a field \sQuote{cites}.
 }
 \description{
-This function will create a BibEntry object for up to 100 references from a provided Google Scholar ID,
-if the profile is public.  The number of citations for each entry will also be imported.
+This function will create a BibEntry object for up to 100 references from a
+provided Google Scholar ID,
+if the profile is public.  The number of citations for each entry will
+also be imported.
 }
 \details{
 This function creates \code{BibTeX} entries from an author's
@@ -41,10 +49,10 @@ with \code{eprint}, \code{eprinttype}, and \code{url} fields.  Otherwise, a
 \sQuote{TechReport} entry is created; unless the entry has more than ten citations,
 in which case a \sQuote{Book} entry is created.
 
-Long author lists, long titles, and long journal/publisher names can all lead to these fields being incomplete for
-a particular entry.  When this occurs, these entries are either dropped or added with
-a warning depending on the value
-of the \code{check.entries} argument.
+Long author lists, long titles, and long journal/publisher names can all lead to
+these fields being incomplete for
+a particular entry.  When this occurs, these entries are either dropped or added
+with a warning depending on the value of the \code{check.entries} argument.
 }
 \note{
 Read Google's Terms of Service before using.

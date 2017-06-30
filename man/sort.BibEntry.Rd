@@ -14,7 +14,8 @@
 
 \item{sorting}{sort method to use, see \bold{Details}.}
 
-\item{.bibstyle}{bibliography style; used when \code{sort} is called by \code{\link{print.BibEntry}}}
+\item{.bibstyle}{bibliography style; used when \code{sort} is called by
+\code{\link{print.BibEntry}}}
 
 \item{...}{internal use only}
 }
@@ -22,8 +23,9 @@
 the sorted BibEntry object
 }
 \description{
-Sorts a \code{BibEntry} object by specified fields.  The possible fields used for sorting and
-the order they are used in correspond with the options available in BibLaTeX.
+Sorts a \code{BibEntry} object by specified fields.  The possible fields used
+for sorting and the order they are used in correspond with the options
+available in BibLaTeX.
 }
 \details{
 The possible values for argument \code{sorting} are
@@ -39,22 +41,28 @@ The possible values for argument \code{sorting} are
 \item none - no sorting is performed
 }
 
-All sorting methods first consider the field presort, if available.  Entries with no presort field are assigned presort
+All sorting methods first consider the field presort, if available.
+Entries with no presort field are assigned presort
 value \dQuote{mm}. Next the sortkey field is used.
 
-When sorting by name, the sortname field is used first.  If it is not present, the author field is used,
-if that is not present editor is used, and if that is not present translator is used.  All of these fields are affected
+When sorting by name, the sortname field is used first.  If it is not present,
+the author field is used,
+if that is not present editor is used, and if that is not present translator is
+used.  All of these fields are affected
 by the value of \code{max.names} in .BibOptions()$max.names.
 
-When sorting by title, first the field sorttitle is considered.  Similarly, when sorting by year, the field sortyear is
+When sorting by title, first the field sorttitle is considered.  Similarly,
+when sorting by year, the field sortyear is
 first considered.
 
-When sorting by volume, if the field is present it is padded to four digits with leading zeros; otherwise,
-the string \dQuote{0000} is used.
+When sorting by volume, if the field is present it is padded to four digits
+with leading zeros; otherwise, the string \dQuote{0000} is used.
 
-When sorting by alphabetic label, the labels that would be generating with the \dQuote{alphabetic} bibstyle are used.
-First the shorthand field is considered, then label, then shortauthor, shorteditor, author, editor, and translator.
-Refer to the BibLaTeX manual Sections 3.1.2.1 and 3.5 and Appendix C.2 for more information.
+When sorting by alphabetic label, the labels that would be generating with
+the \dQuote{alphabetic} bibstyle are used.  First the shorthand field is
+considered, then label, then shortauthor, shorteditor, author, editor,
+and translator.  Refer to the BibLaTeX manual Sections 3.1.2.1 and 3.5 and
+Appendix C.2 for more information.
 }
 \examples{
 file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
@@ -66,7 +74,9 @@ sort(bib, sorting = "ynt")
 BibOptions(restore.defaults = TRUE)
 }
 \references{
-Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The biblatex Package. \url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+Lehman, Philipp and Kime, Philip and Boruvka, Audrey and
+Wright, J. (2013). The biblatex Package.
+\url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 }
 \seealso{
 \code{\link{BibEntry}}, \code{\link{print.BibEntry}}, \code{\link{order}}

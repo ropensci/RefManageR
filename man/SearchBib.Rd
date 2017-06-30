@@ -13,14 +13,18 @@ SearchBib(x, .opts = list(), ...)
 \arguments{
 \item{x}{an object of class BibEntry}
 
-\item{i}{A named list or character vector of search terms with names corresponding to the field to search for the
-search term.  Alternatively, a vector of entry key values or numeric or logical indices specifying which entries to extract.}
+\item{i}{A named list or character vector of search terms with names
+corresponding to the field to search for the
+search term.  Alternatively, a vector of entry key values or numeric or
+logical indices specifying which entries to extract.}
 
-\item{j}{A named list or character vector, as \code{i}.  Entries matching the search specified by i \emph{OR} matching
+\item{j}{A named list or character vector, as \code{i}.  Entries matching the
+search specified by i \emph{OR} matching
 the query specified by \code{j} will be return}
 
-\item{...}{arguments in the form \code{bib.field = search.term}, or as \code{j} list\emph{s} or character vector\emph{s}
-for additional searches.  For \code{SearchBib}, can alternatively have same form as \code{i}.}
+\item{...}{arguments in the form \code{bib.field = search.term}, or as \code{j}
+list\emph{s} or character vector\emph{s} for additional searches.  For
+\code{SearchBib}, can alternatively have same form as \code{i}.}
 
 \item{drop}{logical, should attributes besides class be dropped from result?}
 
@@ -40,16 +44,20 @@ object is returned
 }}
 }
 \value{
-an object of class BibEntry (the results of the search/indexing), \emph{or} if
-\code{BibOptions()$return.ind=TRUE}, the indices in \code{x} that match the search terms.
+an object of class BibEntry (the results of the search/indexing),
+\emph{or} if \code{BibOptions()$return.ind=TRUE}, the indices in \code{x} that
+match the search terms.
 }
 \description{
-Allows for searching and indexing a BibEntry object by fields, including names and dates.  The extraction operator and
-the \code{SearchBib} function simply provide different interfaces to the same search functionality.
+Allows for searching and indexing a BibEntry object by fields, including
+names and dates.  The extraction operator and the \code{SearchBib} function
+simply provide different interfaces to the same search functionality.
 }
 \note{
-The arguments to the SearchBib function that control certain search features can also be changed for the extraction
-operator by changing the corresponding option in the .BibOptions object; see \code{\link{BibOptions}}.
+The arguments to the SearchBib function that control certain search
+features can also be changed for the extraction
+operator by changing the corresponding option in the .BibOptions object; see
+\code{\link{BibOptions}}.
 }
 \examples{
 file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")

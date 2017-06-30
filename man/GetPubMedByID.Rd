@@ -18,8 +18,8 @@ See the Entrez documentation listed in the \emph{References}.}
 a BibEntry object.
 }
 \description{
-Uses NCBI's E-Utilities to retrieve bibliographic information given a vector of PubMed ID's and returns
-the results as a BibEntry object.
+Uses NCBI's E-Utilities to retrieve bibliographic information given a
+vector of PubMed ID's and returns the results as a BibEntry object.
 }
 \note{
 Returned entries will have \code{bibtype} \dQuote{Article} or \dQuote{Book},
