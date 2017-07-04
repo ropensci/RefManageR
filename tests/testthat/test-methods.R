@@ -10,12 +10,20 @@ bib <- ReadBib(system.file("Bib", "biblatexExamples.bib",
 
 test_that("yaml printing with authoryear", {
     BibOptions(check.entries = FALSE)
-    print(bib[47:92], .opts = list(bib.style = "authoryear",
+    idx <- if (Sys.getenv("NOT_CRAN") == "")
+               47:92
+           else
+               48:50
+    print(bib[idx], .opts = list(bib.style = "authoryear",
                                    sorting = "anyvt", style = "yaml"))
 })
 
 test_that("R style printing with authoryear", {
-    print(bib[1:46], .opts = list(bib.style = "authoryear",
+    idx <- if (Sys.getenv("NOT_CRAN") == "true")
+               1:46
+           else
+               8:10
+    print(bib[idx], .opts = list(bib.style = "authoryear",
                                   sorting = "anyt", style = "R"))
 })
 
