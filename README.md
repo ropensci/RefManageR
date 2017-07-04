@@ -2,7 +2,7 @@ RefManageR
 ========
 [![](https://travis-ci.org/mwmclean/RefManageR.svg?branch=master)](https://travis-ci.org/mwmclean/RefManageR/)
 [![AppVeyor Build Status](http://ci.appveyor.com/api/projects/status/github/mwmclean/RefManageR?branch=master&svg=true)](http://ci.appveyor.com/project/mwmclean/RefManageR)
-[![Coverage Status](https://coveralls.io/repos/mwmclean/RefManageR/badge.svg?branch=master)](https://coveralls.io/r/mwmclean/RefManageR?branch=master)
+[![Coverage Status](https://s3.amazonaws.com/assets.coveralls.io/badges/coveralls_71.svg)](https://coveralls.io/r/mwmclean/RefManageR?branch=master)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RefManageR)](https://cran.r-project.org/package=RefManageR)
 [![CRAN_Download_Badge](http://cranlogs.r-pkg.org/badges/RefManageR)](https://cran.r-project.org/package=RefManageR)
 
