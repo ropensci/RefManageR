@@ -9,6 +9,7 @@ BUG FIXES
 
 * Remove missing plot from Rhtml vignette
 * URL field returned by `GetBibEntryWithDOI` is now decoded properly
+* Fix hyperlinks from bibliography to citations in vignettes
 
 Changes in Version 0.14.12 (2017-06-30)
 --------------------------------------------------------
