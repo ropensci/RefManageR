@@ -33,3 +33,10 @@ If \code{suppress.messages} is \code{FALSE}, the head/tail entries are output to
   with some additional formatting for the \sQuote{bibtype} and \sQuote{key}, in addition to
 invisibly returning the entries.
 }
+\examples{
+file <- system.file("Bib", "biblatexExamples.bib", package = "RefManageR")
+BibOptions(check.entries = FALSE)
+bib <- ReadBib(file)
+tail(bib, 2, suppress.messages = FALSE)
+bib <- head(bib, 1, suppress.messages = TRUE)
+}
