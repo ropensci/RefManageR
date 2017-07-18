@@ -1,5 +1,17 @@
+Changes in Version 0.14.16 (2017-07-18)
+--------------------------------------------------------
+
+NEW FEATURES
+
+* Documentation example improvements
+
+BUG FIXES
+
+* Remove missing plot from Rhtml vignette
+
 Changes in Version 0.14.12 (2017-06-30)
 --------------------------------------------------------
+
 NEW FEATURES
 
 * Package now uses httr, xml2, jsonlite packages instead of RCurl, XML, RJSONIO
