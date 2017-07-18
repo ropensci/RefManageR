@@ -1,4 +1,4 @@
-Changes in Version 0.14.16 (2017-07-18)
+Changes in Version 0.14.17 (2017-07-18)
 --------------------------------------------------------
 
 NEW FEATURES
@@ -8,6 +8,7 @@ NEW FEATURES
 BUG FIXES
 
 * Remove missing plot from Rhtml vignette
+* URL field returned by `GetBibEntryWithDOI` is now decoded properly
 
 Changes in Version 0.14.12 (2017-06-30)
 --------------------------------------------------------
