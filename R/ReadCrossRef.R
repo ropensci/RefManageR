@@ -215,7 +215,7 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
     ##  .opts = curlOptions(httpheader = c(Accept = "application/x-bibtex"),
     ##  followLocation=TRUE)), TRUE)
     temp <- try(GET(doi, config = list(followlocation = TRUE),
-                      add_headers(Accept = "application/x-bibtex")), TRUE)
+                    add_headers(Accept = "application/x-bibtex")), TRUE)
     temp <- try(content(temp, as = "text", encoding = "UTF-8"), TRUE)
     ## if(is.raw(temp))
     ##     temp <- rawToChar(temp)
@@ -223,9 +223,21 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
         temp[1] == "<h1>Internal Server Error</h1>" ||
         !grepl("^[[:space:]]*@", temp, useBytes = TRUE)){
         ## last one for occasional non-bibtex returned by CrossRef
-      message(gettextf("server error for doi %s, you may want to try again.",
-                       dQuote(doi)))
-      return(1L)
+
+        ## try different header if first one fails
+        temp <- try(GET(doi, config = list(followlocation = TRUE),
+                    add_headers(Accept = "text/bibliography; style=bibtex")),
+                    TRUE)
+        temp <- try(content(temp, as = "text", encoding = "UTF-8"), TRUE)        
+        if (inherits(temp, "try-error") ||
+            temp[1] == "<h1>Internal Server Error</h1>" ||
+            !grepl("^[[:space:]]*@", temp, useBytes = TRUE)){
+            doi.text <- sub("^https?://(dx[.])?doi.org/", "", doi)
+            message(gettextf("Server error for doi %s, you may want to %s",
+                             dQuote(doi.text),
+                             "try again, or BibTeX unavailable for this doi"))
+            return(1L)
+        }
     }
 
     temp <- gsub("&amp;", "&", temp, useBytes = TRUE)
