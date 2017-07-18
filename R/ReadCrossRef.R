@@ -67,7 +67,7 @@
 #' @references Newer API: \url{https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md},
 #' Older API: \url{http://search.crossref.org/help/api}
 #' @examples
-#' if (interactive() && !http_error("http://search.crossref.org/")){
+#' if (interactive() && !httr::http_error("http://search.crossref.org/")){
 #'   BibOptions(check.entries = FALSE)
 #'   ## 3 results from the American Statistical Association involving "regression"
 #'   ReadCrossRef("regression", filter = list(prefix="10.1198"), limit = 3)

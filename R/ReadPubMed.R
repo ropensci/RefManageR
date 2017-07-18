@@ -49,7 +49,7 @@
 #' @importFrom httr GET
 #' @importFrom xml2 read_xml xml_find_all xml_text
 #' @examples
-#' if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/"))
+#' if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
 #'   ReadPubMed(query = "raymond carroll measurement error", retmax = 5, mindate = 1990)
 ReadPubMed <- function(query, database = "PubMed", ...){
   .params <- list(...)
@@ -111,7 +111,7 @@ ReadPubMed <- function(query, database = "PubMed", ...){
 #' @references \url{https://www.ncbi.nlm.nih.gov/books/NBK25500/}
 #' @family pubmed
 #' @examples
-#' if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/"))
+#' if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
 #'   GetPubMedByID(c("11209037", "21245076"))
 GetPubMedByID <- function(id, db = "pubmed", ...){
 
@@ -185,7 +185,7 @@ GetPubMedByID <- function(id, db = "pubmed", ...){
 #' @keywords database
 #' @export
 #' @examples
-#' if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/")){
+#' if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/")){
 #'   file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 #'   bib <- ReadBib(file.name)
 #'   bib <- LookupPubMedID(bib[[101:102]])
@@ -477,8 +477,8 @@ ProcessPubMedBookResult <- function(tdoc){
 #' @keywords database
 #' @export
 #' @examples
-#' if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/")){
-#'   file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
+#' if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/")){
+#'   file.name <- system.file("Bib", "RJC.bib", package = "RefManageR")
 #'   bib <- ReadBib(file.name)
 #'   LookupPubMedID(bib[[101:102]])
 #' }

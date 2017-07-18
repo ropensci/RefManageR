@@ -18,7 +18,7 @@
 #' @importFrom httr http_error GET content
 #' @seealso \code{\link{ReadCrossRef}}, \code{\link{BibEntry}}
 #' @examples
-#' if (interactive() && !http_error("http://dx.doi.org/"))
+#' if (interactive() && !httr::http_error("http://dx.doi.org/"))
 #'   GetBibEntryWithDOI(c("10.1016/j.iheduc.2003.11.004", "10.3998/3336451.0004.203"))
 GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'),
                                delete.file = TRUE){

@@ -86,7 +86,7 @@ Fields \code{"score"} (the relevancy score) and \code{"license"} will be
 returned when \code{use.old.api = FALSE}.
 }
 \examples{
-if (interactive() && !http_error("http://search.crossref.org/")){
+if (interactive() && !httr::http_error("http://search.crossref.org/")){
   BibOptions(check.entries = FALSE)
   ## 3 results from the American Statistical Association involving "regression"
   ReadCrossRef("regression", filter = list(prefix="10.1198"), limit = 3)

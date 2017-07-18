@@ -14,7 +14,7 @@
 #' \sQuote{doi} field will be searched for.
 #' @references \url{http://search.crossref.org/help/api}
 #' @examples
-#' if (interactive() && !http_error("http://search.crossref.org")){
+#' if (interactive() && !httr::http_error("http://search.crossref.org")){
 #'   BibOptions(check.entries = FALSE, sorting = "none")
 #'   bib <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[1:5]
 #'   bib <- GetDOIs(bib)
