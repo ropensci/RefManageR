@@ -42,6 +42,11 @@
 #' \code{\link{open.BibEntry}}
 #' @importFrom plyr llply progress_text
 #' @importFrom utils flush.console
+#' @examples
+#' \dontrun{
+#' path <- system.file("doc", package = "RefManageR")
+#' ReadPDFs(path)
+#' }
 ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE,
                       use.crossref = TRUE, use.metadata = TRUE,
                       progress = FALSE) {
