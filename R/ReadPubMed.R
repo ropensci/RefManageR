@@ -1,14 +1,10 @@
-# Mathew W. McLean
-# December 1, 2013
-# Interact with PubMed
-
 # http://www.ncbi.nlm.nih.gov/books/NBK25500/
 # http://www.bioinformatics.org/texmed/
 # http://www.poirrier.be/~jean-etienne/software/pyp2b/
 # http://www.ncbi.nlm.nih.gov/pmc/tools/id-converter-api/
 # http://ropensci.github.io/rebi/
 
-#' Search NCBI's Entrez for citation information
+#' Search NCBI's E-Utilities for citation information
 #'
 #' This function takes a query and searches an Entrez database for
 #' references using NCBI's E-Utilities, returning the results in a BibEntry

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReadPubMed.R
 \name{ReadPubMed}
 \alias{ReadPubMed}
-\title{Search NCBI's Entrez for citation information}
+\title{Search NCBI's E-Utilities for citation information}
 \usage{
 ReadPubMed(query, database = "PubMed", ...)
 }
