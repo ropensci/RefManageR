@@ -972,7 +972,7 @@ ProcessDate <- function(dat, mon, searching = FALSE){
     dats <- strsplit(dat, "-?-|/")[[1]]
     if (length(dats) == 1L)
       dats <- c(dat, dat)
-    if (!is.null(mon)){
+    if (!.is_not_nonempty_text(mon)){
       ## Some Bibtex users, e.g. paperpile.com, format month as
       ## `"day~" # month` in bib entry;
       ##   attempt to handle this
