@@ -96,7 +96,8 @@ if (interactive() && !http_error("http://search.crossref.org/")){
   ReadCrossRef(filter = list(issn = "1467-9868", "from-pub-date" = 2010),
                limit = 2, min.relevance = 0)
 
-  ReadCrossRef(filter = list(prefix = "10.5555"), limit = 5, min.relevance = 0)
+  ## Articles published by Institute of Mathematical Statistics
+  ReadCrossRef(filter = list(prefix = "10.1214"), limit = 5, min.relevance = 0)
 
   ## old API
   ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
