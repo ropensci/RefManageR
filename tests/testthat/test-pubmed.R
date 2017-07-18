@@ -33,7 +33,7 @@ test_that("GetPubMedByID warns if authors missing (#3)", {
   if (httr::http_error("http://eutils.ncbi.nlm.nih.gov/"))
     skip("Couldn't connect to Entrez")
 
-  gives_warning(GetPubMedByID("7936917"))
+  expect_warning(GetPubMedByID("7936917"))
 })
 
 test_that("LookupPubMedID successfully retrieves and add ID's'", {
