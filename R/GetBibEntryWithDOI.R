@@ -16,6 +16,7 @@
 #' \code{BibEntry} object.
 #' @references \url{http://www.doi.org/tools.html}
 #' @importFrom httr http_error GET content
+#' @importFrom utils URLdecode
 #' @seealso \code{\link{ReadCrossRef}}, \code{\link{BibEntry}}
 #' @examples
 #' if (interactive() && !httr::http_error("http://dx.doi.org/"))
@@ -30,7 +31,7 @@ GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'),
                     config = list(followlocation = TRUE),
                       add_headers(Accept = "application/x-bibtex")), TRUE)
     if (!inherits(temp, "try-error") && !temp$status_code == 404){
-    temp <- try(content(temp, as = "text", encoding = "UTF-8"), TRUE)
+      temp <- try(content(temp, as = "text", encoding = "UTF-8"), TRUE)
       successes[i] <- TRUE
       ## if (is.raw(temp))
       ##   temp <- rawToChar(temp)
@@ -45,12 +46,15 @@ GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'),
   }
   if (any(successes)){
     bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
+
     if (inherits(bib.res, "try-error"))
       stop(gettextf("failed to parse the returned BibTeX results; if %s %s%s",
                     sQuote("delete.file"),
                     "is FALSE, you can try viewing and editing the file: ",
                     temp.file))
 
+    bib.res$url <- vapply(bib.res$url, function(x) if (!is.null(x))
+                                                 URLdecode(x), "") 
 
     return(bib.res)
   }
