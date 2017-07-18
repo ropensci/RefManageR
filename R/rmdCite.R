@@ -38,6 +38,10 @@ AddCite <- function(index, use.hyper = TRUE){
 #' BibOptions(check.entries = FALSE)
 #' bib <- ReadBib(file)
 #' Citet(bib, 12)
+#' NoCite(bib, title = "Alkanethiolate")
+#' PrintBibliography(bib, .opts = list(style = "latex",
+#'                   bib.style = "authoryear"))
+#' 
 #' Citep(bib, c("loh", "geer"), .opts = list(cite.style = "numeric"),
 #'       before = "see e.g., ")
 #' Citet(bib, "loh", .opts = list(cite.style = "numeric", super = TRUE))
@@ -278,7 +282,8 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
 #' If the \code{...} argument to NoCite is identical to \dQuote{*}, then all
 #' references in \code{bib} are added to the bibliography without citations.
 #' @seealso \code{\link{print.BibEntry}}, \code{\link{BibOptions}},
-#' \code{\link[utils]{citeNatbib}}
+#' \code{\link[utils]{citeNatbib}}, the package vignettes
+#' bib <- 
 #' @rdname Cite
 PrintBibliography <- function(bib, .opts = list()){
   if (!length(bib))

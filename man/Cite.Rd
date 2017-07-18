@@ -79,6 +79,10 @@ file <- system.file("Bib", "biblatexExamples.bib", package = "RefManageR")
 BibOptions(check.entries = FALSE)
 bib <- ReadBib(file)
 Citet(bib, 12)
+NoCite(bib, title = "Alkanethiolate")
+PrintBibliography(bib, .opts = list(style = "latex",
+                  bib.style = "authoryear"))
+
 Citep(bib, c("loh", "geer"), .opts = list(cite.style = "numeric"),
       before = "see e.g., ")
 Citet(bib, "loh", .opts = list(cite.style = "numeric", super = TRUE))
@@ -116,7 +120,8 @@ unlink(tdir)
 }
 \seealso{
 \code{\link{print.BibEntry}}, \code{\link{BibOptions}},
-\code{\link[utils]{citeNatbib}}
+\code{\link[utils]{citeNatbib}}, the package vignettes
+bib <-
 }
 \keyword{methods}
 \keyword{print}
