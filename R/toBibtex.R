@@ -39,22 +39,8 @@ ConvertToBibtex <- function(object, note.replace.field, extra.fields){
     
     if ("location" %in% obj.names  && is.null(object$address))
       object$address <- object$location
-    
-    dat <- attr(object, 'dateobj')
-    if (!is.null(dat) && is.null(object$year)){
-      if (is.interval(dat)){
-        object$year <- tolower(year(int_start(dat)))
-      }else{
-        object$year <- tolower(year(dat))
-      }
-    }
-    if (!is.null(dat) && attr(dat, "day.mon") > 0 && is.null(object$month)){
-      if (is.interval(dat)){
-        object$month <- tolower(month(int_start(dat), TRUE, TRUE))
-      }else{
-        object$month <- tolower(month(dat, TRUE, TRUE))
-      }
-    }
+
+    object <- ConvertDate(object)
     
     if ("institution" %in% obj.names && bibtype == 'thesis' &&
         is.null(object$school)){
@@ -99,6 +85,28 @@ ConvertToBibtex <- function(object, note.replace.field, extra.fields){
     return(rval)
 }
 
+#' Convert Biblatex date to bibtex year/month
+#' @noRd
+ConvertDate <- function(obj){
+    dat <- attr(obj, 'dateobj')
+    if (!is.null(dat) && is.null(obj$year)){
+      if (is.interval(dat)){
+        obj$year <- tolower(year(int_start(dat)))
+      }else{
+        obj$year <- tolower(year(dat))
+      }
+    }
+    if (!is.null(dat) && attr(dat, "day.mon") > 0 && is.null(obj$month)){
+      if (is.interval(dat)){
+        obj$month <- tolower(month(int_start(dat), TRUE, TRUE))
+      }else{
+        obj$month <- tolower(month(dat, TRUE, TRUE))
+      }
+    }
+    obj
+}
+
+#' Add field not supported by bibtex to the note field
 #' @noRd
 FillNote <- function(obj, onames, nrf){
     for (i in seq_along(nrf)){
