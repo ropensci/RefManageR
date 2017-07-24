@@ -57,7 +57,7 @@
 #' \code{"has-affiliation"}, \code{"alternative-id"}, and \code{"article-number"}.
 #' See the first reference for a description of their meanings.
 #' @importFrom jsonlite fromJSON
-#' @importFrom httr GET content http_error add_headers
+#' @importFrom httr GET content http_error add_headers status_code
 #' @importFrom utils URLdecode
 #' @export
 #' @keywords database
@@ -105,9 +105,9 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
       if (.is_not_nonempty_text(query))
           stop(gettextf("specify a valid %s", sQuote("query")))
 
-      results <- try(GET("http://search.crossref.org/dois",
+      results <- GET("http://search.crossref.org/dois",
                          query = list(q=query, year=year,
-                         sort=sort, rows=limit)), TRUE)
+                         sort=sort, rows=limit))
     }else{
       params <- list(rows = limit, sort = sort, offset = offset)
       if (!.is_not_nonempty_text(query))
@@ -120,13 +120,16 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
       if (length(filter))
           params$filter <- paste(paste0(names(filter),":",filter),
                                  collapse = ",")          
-      results <- try(GET("http://api.crossref.org/works", query=params))
+      results <- GET("http://api.crossref.org/works", query=params)
     }
-    if (inherits(results, "try-error"))
-        stop(gettextf("httr failed to GET results from CrossRef: %s",
-                      geterrmessage()))
-
     fromj <- content(results, type = "application/json", encoding = "UTF-8")
+    if (http_error(results)){
+      msg <- fromj$message[[1L]]
+      stop(gettextf("CrossRef API request failed [%s]: %s\n<%s>", 
+                    status_code(results), msg$type,
+                    msg$message), call. = FALSE)
+    }
+    
     if (!use.old.api)
         fromj <- fromj$message$items
     num.res <- min(limit, length(fromj))

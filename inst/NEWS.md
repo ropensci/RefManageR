@@ -1,9 +1,10 @@
-Changes in Version 0.14.17 (2017-07-18)
+Changes in Version 0.14.18 (2017-07-25)
 --------------------------------------------------------
 
 NEW FEATURES
 
 * Documentation example improvements
+* Improve error handling for API query functions
 
 BUG FIXES
 

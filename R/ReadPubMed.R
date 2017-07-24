@@ -42,7 +42,7 @@
 #' are available.
 #' @references \url{https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
 #' @family pubmed
-#' @importFrom httr GET
+#' @importFrom httr GET http_error
 #' @importFrom xml2 read_xml xml_find_all xml_text
 #' @examples
 #' if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
@@ -66,9 +66,8 @@ ReadPubMed <- function(query, database = "PubMed", ...){
   .parms$db <- database
   .parms$usehistory <- "y"
   ## results <- try(getForm(base.url, .params = .parms))
-  results <- try(GET(base.url, query = .parms), TRUE)
-
-  if (inherits(results, "try-error"))
+  results <- GET(base.url, query = .parms)
+  if (http_error(results))
     stop("Unable to GET results")
 
   tdoc <- read_xml(results, encoding = "UTF-8")

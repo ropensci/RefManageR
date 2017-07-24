@@ -37,9 +37,9 @@ GetDOIs <- function(bib){
     json.res <- httr::POST("http://search.crossref.org/links", body = json.bib,
                            config = list(add_headers = headers),
                            encode = "json")
-    json.res <- try(content(json.res, type = "application/json",
-                            encoding = "UTF-8"), TRUE)
-    if (inherits(json.res, "try-error") || !json.res[[2L]])
+    if (http_error(json.res) ||
+        !(json.res <- content(json.res, type = "application/json",
+                              encoding = "UTF-8"))[[2L]])
       message("Failed to retrieve any DOIs.")
     else{
       matches <- vapply(json.res[[1L]], "[[", FALSE, "match")
