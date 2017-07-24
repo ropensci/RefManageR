@@ -142,7 +142,7 @@ ResolveBibLaTeXCrossRef <- function(chi, par){
 
   
   if (chi.type %in% child.table[[par.type]])
-      chi <- ProcessCrossref(par.type, chi, par)
+      chi <- ProcessCrossref(par.type, par, chi)
   chi
 }
 
