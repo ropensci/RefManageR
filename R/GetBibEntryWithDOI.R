@@ -15,7 +15,7 @@
 #' written to a file and then read back into \code{R} and return as a
 #' \code{BibEntry} object.
 #' @references \url{http://www.doi.org/tools.html}
-#' @importFrom httr http_error GET content http_error
+#' @importFrom httr http_error GET content http_error modify_url
 #' @importFrom utils URLdecode
 #' @seealso \code{\link{ReadCrossRef}}, \code{\link{BibEntry}}
 #' @examples
@@ -27,7 +27,7 @@ GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'),
   on.exit(if (delete.file && file.exists(temp.file)) file.remove(temp.file))
   successes <- logical(length(doi))
   for (i in seq_along(doi)){
-    temp <- GET(paste0('http://dx.doi.org/', doi[i]),
+    temp <- GET(modify_url('http://dx.doi.org/', path = doi[i]),
                     config = list(followlocation = TRUE),
                       add_headers(Accept = "application/x-bibtex"))
     if (!http_error(temp)){
