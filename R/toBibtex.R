@@ -6,7 +6,21 @@ toBibtex.BibEntry <- function(object,
                               note.replace.field = c('urldate', "pubsate",
                                                      "addendum"),
                               extra.fields = NULL, ...){
-  format_bibentry1 <- function(object){
+  
+  
+  object <- .BibEntry_expand_crossrefs(unclass(object), to.bibtex = TRUE)
+  if (length(object)) {
+    object$.index <- NULL
+    rval <- head(unlist(lapply(object, ConvertToBibtex)), 
+                 -1L)
+  }
+  else rval <- character()
+  class(rval) <- "Bibtex"
+  rval
+}
+
+#' @noRd
+ConvertToBibtex <- function(object){
     object <- unclass(object)[[1L]]
     bibtype <- tolower(attr(object, "bibtype"))
     obj.names <- names(object)
@@ -61,22 +75,7 @@ toBibtex.BibEntry <- function(object,
     
     # fill empty note with urldate or pubstate
     if (!"note" %in% obj.names && length(note.replace.field)){
-      for (i in seq_along(note.replace.field)){
-        if (note.replace.field[i] %in% obj.names){
-          if (note.replace.field[i] == 'urldate'){
-            fDate <- try(ProcessDate(object$urldate, NULL), TRUE)
-            if (!is.null(fDate) && !inherits(fDate, 'try-error')){
-              object$note <- paste0('Last visited on ',
-                                    MakeBibLaTeX()$DateFormatter(fDate, TRUE))
-            }else{
-              object$note <- paste0('Last visited on ', object$urldate)
-            }
-          }else{
-            object$note <- object[[note.replace.field[i]]]
-          }
-          break
-        }
-      }
+      object <- FillNote(object, obj.names, note.replace.field)
     }
     
     if (bibtype == "thesis" && length(object$type)){
@@ -110,17 +109,27 @@ toBibtex.BibEntry <- function(object,
                            function(n) paste0("  ", n, " = {", object[[n]],
                                               "},"), ""), "}", "")
     return(rval)
-  }
-  
-  object <- .BibEntry_expand_crossrefs(unclass(object), to.bibtex = TRUE)
-  if (length(object)) {
-    object$.index <- NULL
-    rval <- head(unlist(lapply(object, format_bibentry1)), 
-                 -1L)
-  }
-  else rval <- character()
-  class(rval) <- "Bibtex"
-  rval
+}
+
+#' @noRd
+FillNote <- function(obj, onames, nrf){
+    for (i in seq_along(nrf)){
+        if (nrf[i] %in% onames){
+          if (nrf[i] == 'urldate'){
+            fDate <- try(ProcessDate(obj$urldate, NULL), TRUE)
+            if (!is.null(fDate) && !inherits(fDate, 'try-error')){
+              obj$note <- paste0('Last visited on ',
+                                    MakeBibLaTeX()$DateFormatter(fDate, TRUE))
+            }else{
+              obj$note <- paste0('Last visited on ', obj$urldate)
+            }
+          }else{
+            obj$note <- obj[[nrf[i]]]
+          }
+          break
+        }
+    }
+    obj
 }
 
 .Bibtex_fields <- c("address", "author", "annote", "booktitle", "chapter",
