@@ -218,9 +218,10 @@ GetPubMedRelated <- function(id, database = "pubmed", batch.mode = TRUE,
   base.url <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi"
 
   ## results <- try(getForm(base.url, .params = parms))
-  results <- try(GET(base.url, query = parms))
-  if (inherits(results, "try-error"))
-    return(NA)
+  results <- GET(base.url, query = parms)
+  if (http_error(results))
+      stop(gettextf("NCBI E-Utilities query error [%s]", status_code(results)),
+           .call = FALSE)
 
   tdoc <- read_xml(results)
   max.results <- rep(max.results, l = id.len)
