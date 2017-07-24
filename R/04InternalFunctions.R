@@ -125,72 +125,83 @@ ResolveBibLaTeXCrossRef <- function(chi, par){
   ## special handling for bookauthor, maintitle, mainsubtitle, maintitleaddon,
   ## booktitle, booktitleaddon, booksubtitle, journaltitle, journalsubtitle;
   ## see Appendix B of biblatex manual
-  if (!is.na(match(par.type, c('mvbook', 'book'))) &&
-      !is.na(match(chi.type, c('inbook', 'bookinbook', 'suppbook'))) &&
+  if (par.type %in% c('mvbook', 'book') &&
+      chi.type %in% c('inbook', 'bookinbook', 'suppbook') &&
       is.null(chi$bookauthor))
-    chi$bookauthor <- par$author
+      chi$bookauthor <- par$author
+  child.table <- list(mvbook = c("book", "inbook", "bookinbook", "suppbook"),
+                      mvcollection = c("collection", "reference",
+                                       "incollection"),
+                      mvreference = c("inreference", "suppcollection"),
+                      mvproceedings = c("proceedings", "inproceedings"),
+                      book = c("inbook", "bookinbook", "suppbook"),
+                      collection = c("incollection", "inreference"),
+                      reference = "suppcollection",
+                      proceedings = "inproceedings",
+                      periodical = c("article", "suppperiodical"))
 
-  if (par.type == 'mvbook' && !is.na(match(chi.type, c('book', 'inbook',
-                                                       'bookinbook',
-                                                       'suppbook')))){
-    if (is.null(chi$maintitle))
-      chi$maintitle <- par$title
-    if (is.null(chi$mainsubtitle))
-      chi$mainsubtitle <- par$subtitle
-    if (is.null(chi$maintitleaddon))
-      chi$maintitleaddon <- par$titleaddon
-  }else if (par.type == 'mvcollection' &&
-            !is.na(match(chi.type,
-                         c('collection', 'reference', 'incollection')))){
-    if (is.null(chi$maintitle))
-      chi$maintitle <- par$title
-  }else if (par.type == 'mvreference' &&
-            !is.na(match(chi.type, c('inreference', 'suppcollection')))){
-    if (is.null(chi$mainsubtitle))
-      chi$mainsubtitle <- par$subtitle
-    if (is.null(chi$maintitleaddon))
-      chi$maintitleaddon <- par$titleaddon
-  }else if (par.type == 'mvproceedings' &&
-            !is.na(match(chi.type, c('proceedings', 'inproceedings')))){
-    if (is.null(chi$maintitle))
-      chi$maintitle <- par$title
-    if (is.null(chi$mainsubtitle))
-      chi$mainsubtitle <- par$subtitle
-    if (is.null(chi$maintitleaddon))
-      chi$maintitleaddon <- par$titleaddon
-  }else if (par.type == 'book' &&
-            !is.na(match(chi.type, c('inbook', 'bookinbook', 'suppbook')))){
-    if (is.null(chi$booktitle))
-      chi$booktitle <- par$title
-    if (is.null(chi$booksubtitle))
-      chi$booksubtitle <- par$subtitle
-    if (is.null(chi$booktitleaddon))
-      chi$booktitleaddon <- par$titleaddon
-  }else if (par.type == 'collection' &&
-            !is.na(match(chi.type, c('incollection', 'inreference')))){
-    if (is.null(chi$booktitle))
-      chi$booktitle <- par$title
-  }else if (par.type == 'reference' && chi.type == 'suppcollection'){
-    if (is.null(chi$booksubtitle))
-      chi$booksubtitle <- par$subtitle
-    if (is.null(chi$booktitleaddon))
-      chi$booktitleaddon <- par$titleaddon
-  }else if (par.type == 'proceedings' && chi.type == 'inproceedings'){
-    if (is.null(chi$booktitle))
-      chi$booktitle <- par$title
-    if (is.null(chi$booksubtitle))
-      chi$booksubtitle <- par$subtitle
-    if (is.null(chi$booktitleaddon))
-      chi$booktitleaddon <- par$titleaddon
-  }else if (par.type == 'periodical' &&
-            !is.na(match(chi.type, c('article', 'suppperiodical')))){
-    if (is.null(chi$journaltitle) && is.null(chi$journal))
-      chi$journaltitle <- par$title
-    if (is.null(chi$journalsubtitle))
-      chi$journalsubtitle <- par$subtitle
-  }
+  
+  if (chi.type %in% child.table[[par.type]])
+      chi <- ProcessCrossref(par.type, chi, par)
   chi
 }
+
+#' @noRd
+ProcessCrossref <- function(par.type, par, chi){
+    switch(par.type, mvbook = {
+      if (is.null(chi$maintitle))
+        chi$maintitle <- par$title
+      if (is.null(chi$mainsubtitle))
+        chi$mainsubtitle <- par$subtitle
+      if (is.null(chi$maintitleaddon))
+        chi$maintitleaddon <- par$titleaddon
+
+    }, mvreference = {
+      if (is.null(chi$mainsubtitle))
+        chi$mainsubtitle <- par$subtitle
+      if (is.null(chi$maintitleaddon))
+        chi$maintitleaddon <- par$titleaddon
+    }, mvcollection = {
+      if (is.null(chi$maintitle))
+        chi$maintitle <- par$title
+    }, mvproceedings = {
+      if (is.null(chi$maintitle))
+        chi$maintitle <- par$title
+      if (is.null(chi$mainsubtitle))
+        chi$mainsubtitle <- par$subtitle
+      if (is.null(chi$maintitleaddon))
+        chi$maintitleaddon <- par$titleaddon
+    }, book = {
+      if (is.null(chi$booktitle))
+        chi$booktitle <- par$title
+      if (is.null(chi$booksubtitle))
+        chi$booksubtitle <- par$subtitle
+      if (is.null(chi$booktitleaddon))
+        chi$booktitleaddon <- par$titleaddon
+    }, collection = {
+      if (is.null(chi$booktitle))
+        chi$booktitle <- par$title
+    }, reference = {
+      if (is.null(chi$booksubtitle))
+        chi$booksubtitle <- par$subtitle
+      if (is.null(chi$booktitleaddon))
+        chi$booktitleaddon <- par$titleaddon
+    }, proceedings = {
+      if (is.null(chi$booktitle))
+        chi$booktitle <- par$title
+      if (is.null(chi$booksubtitle))
+        chi$booksubtitle <- par$subtitle
+      if (is.null(chi$booktitleaddon))
+        chi$booktitleaddon <- par$titleaddon
+    }, periodical = {
+      if (is.null(chi$journaltitle) && is.null(chi$journal))
+        chi$journaltitle <- par$title
+      if (is.null(chi$journalsubtitle))
+        chi$journalsubtitle <- par$subtitle
+    })
+    chi
+}
+
 
 #' @keywords internal
 #' @noRd
