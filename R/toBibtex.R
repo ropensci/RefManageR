@@ -11,7 +11,8 @@ toBibtex.BibEntry <- function(object,
   object <- .BibEntry_expand_crossrefs(unclass(object), to.bibtex = TRUE)
   if (length(object)) {
     object$.index <- NULL
-    rval <- head(unlist(lapply(object, ConvertToBibtex)), 
+    rval <- head(unlist(lapply(object, ConvertToBibtex,
+                               note.replace.field, extra.fields)), 
                  -1L)
   }
   else rval <- character()
@@ -20,7 +21,7 @@ toBibtex.BibEntry <- function(object,
 }
 
 #' @noRd
-ConvertToBibtex <- function(object){
+ConvertToBibtex <- function(object, note.replace.field, extra.fields){
     object <- unclass(object)[[1L]]
     bibtype <- tolower(attr(object, "bibtype"))
     obj.names <- names(object)
@@ -87,21 +88,8 @@ ConvertToBibtex <- function(object){
         "phdthesis"
       }, "phdthesis")
     }
-    
-    pos <- match(bibtype, tolower(names(BibTeX_entry_field_db)))
-    if (is.na(pos)){
-        bibtype <- switch(bibtype, "mvbook" = "Book", "bookinbook" = "InBook",
-                          "suppbook" = "InBook", "collection" = "Book",
-                          "mvcollection" = "Book",
-                          "suppcollection" = "InCollection",
-                          "reference" = "Book", "mvreference" = "Book",
-                          "inreference" = "InBook", "report" = "TechReport",
-                          "proceedings" = "Book", "mvproceedings" = "Book",
-                          "periodical" = "Book", "suppperiodical" = "InBook",
-                          "patent" = "TechReport", "Misc")
-    }else{
-      bibtype <- names(BibTeX_entry_field_db)[pos]
-    }
+
+    bibtype <- ConvertBibtype(bibtype)
     
     rval <- paste0("@", bibtype, "{", attr(object, "key"), ",")
     rval <- c(rval, vapply(names(object)[names(object) %in% c(.Bibtex_fields,
@@ -130,6 +118,23 @@ FillNote <- function(obj, onames, nrf){
         }
     }
     obj
+}
+
+#' @noRd
+ConvertBibtype <- function(bibtype){
+    types <- tolower(names(BibTeX_entry_field_db))
+    if (length(pos <- which(types %in% bibtype)))
+        types[pos]
+    else
+        switch(bibtype, "mvbook" = "Book", "bookinbook" = "InBook",
+                      "suppbook" = "InBook", "collection" = "Book",
+                      "mvcollection" = "Book",
+                      "suppcollection" = "InCollection",
+                      "reference" = "Book", "mvreference" = "Book",
+                      "inreference" = "InBook", "report" = "TechReport",
+                      "proceedings" = "Book", "mvproceedings" = "Book",
+                      "periodical" = "Book", "suppperiodical" = "InBook",
+                      "patent" = "TechReport", "Misc")
 }
 
 .Bibtex_fields <- c("address", "author", "annote", "booktitle", "chapter",
