@@ -1,4 +1,4 @@
-Changes in Version 0.14.18 (2017-07-25)
+Changes in Version 0.14.19 (2017-07-26)
 --------------------------------------------------------
 
 NEW FEATURES
@@ -11,6 +11,8 @@ BUG FIXES
 * Remove missing plot from Rhtml vignette
 * URL field returned by `GetBibEntryWithDOI` is now decoded properly
 * Fix hyperlinks from bibliography to citations in vignettes
+* Remove a incorrect message ocassionally output from the addition operator
+for `BibEntry` objects
 
 Changes in Version 0.14.12 (2017-06-30)
 --------------------------------------------------------
