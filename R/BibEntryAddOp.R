@@ -82,7 +82,7 @@
     }
     remain.dup.f <- setdiff(fields.to.check, c('bibtype', 'key'))
     
-    if (length(remain.dup.f) && length(dup.ind <- possible.dup)){
+    if (length(dup.ind <- possible.dup) && length(remain.dup.f)){
       dup.ind <- vapply(unclass(e2[possible.dup]),
                       function(x, y, flds){
                         x <- x[flds]
