@@ -212,6 +212,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
 }
 
 #' @keywords internal
+#' @importFrom httr GET status_code content http_error
 #' @noRd
 GetCrossRefBibTeX <- function(doi, tmp.file){
     ## temp <- try(getURLContent(url=doi,
@@ -233,9 +234,9 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
         if (http_error(temp) ||
             !grepl("^[[:space:]]*@", parsed, useBytes = TRUE)){
             doi.text <- sub("^https?://(dx[.])?doi.org/", "", doi)
-            message(gettextf("Server error for doi %s, you may want to %s",
-                             dQuote(doi.text),
-                             "try again, or BibTeX unavailable for this doi"))
+            message(gettextf("Server error [%s] for doi %s, you may want to%s",
+                             status_code(temp), dQuote(doi.text),
+                             " try again, or BibTeX unavailable for this doi"))
             return(1L)
         }
     }
