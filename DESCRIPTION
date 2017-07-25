@@ -31,7 +31,8 @@ Imports:
     methods
 Suggests:
     knitr,
-    testthat
+    testthat,
+    covr
 Encoding: UTF-8
 Depends:
     R (>= 3.0)
