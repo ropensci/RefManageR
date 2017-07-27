@@ -24,12 +24,10 @@ Please see the [vignette](https://arxiv.org/pdf/1403.2036v1)
 for an introduction and [NEWS](https://github.com/ropensci/RefManageR/blob/master/inst/NEWS.md)
 for the latest changes.
 
-Using the latest version from `Github` requires first installing the newest version of the `bibtex` package
-from `GitHub`:
+To install the latest version from `GitHub`:
 
 ```
 install.packages("devtools")
-devtools::install_github("romainfrancois/bibtex")
 devtools::install_github("ropensci/RefManageR")
 ```
 [![ropensci_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)
