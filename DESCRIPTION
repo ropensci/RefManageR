@@ -37,6 +37,6 @@ Encoding: UTF-8
 Depends:
     R (>= 3.0)
 VignetteBuilder: knitr
-BugReports: https://github.com/mwmclean/RefManageR/issues
-URL: https://github.com/mwmclean/RefManageR/
+BugReports: https://github.com/ropensci/RefManageR/issues
+URL: https://github.com/ropensci/RefManageR/
 RoxygenNote: 6.0.1
