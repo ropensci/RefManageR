@@ -32,7 +32,6 @@ Imports:
 Suggests:
     knitr,
     testthat,
-    covr
 Encoding: UTF-8
 Depends:
     R (>= 3.0)

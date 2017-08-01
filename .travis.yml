@@ -22,7 +22,7 @@ before_install:
 r_github_packages:
  - hadley/testthat
  - romainfrancois/bibtex
-# - jimhester/covr
+ - jimhester/covr
 
 r_build_args: '--no-build-vignettes'
  
@@ -37,4 +37,4 @@ notifications:
     on_failure: always # default: always
 
 after_success:
- - Rscript -e 'library(covr); coveralls(type = "all")'
+ - Rscript -e 'library(covr); codecov()'
