@@ -24,7 +24,7 @@ r_github_packages:
  - romainfrancois/bibtex
 
 r_packages:
- - jimhester/covr
+ - covr
 
 r_build_args: '--no-build-vignettes'
  
