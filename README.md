@@ -6,7 +6,7 @@ RefManageR
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RefManageR)](https://cran.r-project.org/package=RefManageR)
 [![CRAN_Download_Badge](http://cranlogs.r-pkg.org/badges/RefManageR)](https://cran.r-project.org/package=RefManageR)
 [![](https://ropensci.org/badges/120_status.svg)](https://github.com/ropensci/onboarding/issues/120)
-[![](https://zenodo.org/badge/DOI/10.5281/zenodo.835547.svg)](https://github.com/openjournals/joss-reviews/issues/269)
+[![](http://joss.theoj.org/papers/10.21105/joss.00338/status.svg)](http://joss.theoj.org/papers/10.21105/joss.00338)
 
 `RefManageR` provides tools for importing and working with
 bibliographic references.  It greatly enhances the `bibentry` class by
