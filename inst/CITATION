@@ -1,1 +1,10 @@
-bibentry(bibtype = "Manual", author = person(c("Mathew", "William"), "McLean"), title = "Straightforward Bibliography Management in R Using the RefManager Package", note = "arXiv: 1403.2036 [cs.DL]. Submitted", year = "2014", url = "http://arxiv.org/abs/1403.2036")
+bibentry(bibtype = "Article", author = person(c("Mathew", "William"), "McLean"),
+         title = "RefManageR: Import and Manage BibTeX and BibLaTeX References in R",
+         journal = "The Journal of Open Source Software", year = "2017",
+         doi = "10.21105/joss.00338")
+
+bibentry(bibtype = "Manual",
+         author = person(c("Mathew", "William"), "McLean"),
+         title = "Straightforward Bibliography Management in R Using the RefManager Package",
+         note = "arXiv: 1403.2036 [cs.DL]", year = "2014",
+         url = "http://arxiv.org/abs/1403.2036")
