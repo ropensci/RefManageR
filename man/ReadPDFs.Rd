@@ -55,6 +55,12 @@ any standard style) and can be used by the
 If the keywords metadata field is available, it will be added to the bib entry
 in a field \sQuote{keywords}, which is recognized by \code{BibLaTeX}.
 }
+\examples{
+\dontrun{
+path <- system.file("doc", package = "RefManageR")
+ReadPDFs(path)
+}
+}
 \references{
 \url{http://poppler.freedesktop.org/}
 }

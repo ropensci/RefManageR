@@ -5,6 +5,11 @@
 Add Citations to an RMarkdown Document and Print Bibliography
 ========================================================
 
+```{r unload, include = FALSE}
+## Needed to clear internal package citation list from previous vignette builds
+unloadNamespace("RefManageR")
+```
+
 ```{r setup, include = FALSE, cache = FALSE}
 library(RefManageR)
 bib <- ReadBib(system.file("Bib", "biblatexExamples.bib", 

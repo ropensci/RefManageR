@@ -22,7 +22,9 @@ before_install:
 r_github_packages:
  - hadley/testthat
  - romainfrancois/bibtex
- - jimhester/covr
+
+r_packages:
+ - covr
 
 r_build_args: '--no-build-vignettes'
  

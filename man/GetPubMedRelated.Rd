@@ -43,7 +43,7 @@ Searches PubMed for articles related to a set of PubMed ID's using
 NCBI's E-Utilities.
 }
 \examples{
-if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/")){
+if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/")){
   file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
   bib <- ReadBib(file.name)
   bib <- LookupPubMedID(bib[[101:102]])

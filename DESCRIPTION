@@ -1,5 +1,5 @@
 Package: RefManageR
-Version: 0.14.12
+Version: 0.14.20
 Title: Straightforward 'BibTeX' and 'BibLaTeX' Bibliography Management
 Authors@R: person(c("Mathew", "W."), "McLean", role = c("aut", "cre"),
     email = "mathew.w.mclean@gmail.com")
@@ -31,11 +31,11 @@ Imports:
     methods
 Suggests:
     knitr,
-    testthat
+    testthat,
 Encoding: UTF-8
 Depends:
     R (>= 3.0)
 VignetteBuilder: knitr
-BugReports: https://github.com/mwmclean/RefManageR/issues
-URL: https://github.com/mwmclean/RefManageR/
+BugReports: https://github.com/ropensci/RefManageR/issues
+URL: https://github.com/ropensci/RefManageR/
 RoxygenNote: 6.0.1

@@ -58,8 +58,9 @@
 #' \item \code{style} - as above, but used to format the citations.  
 #' \item \code{hyperlink} - character string or logical; for use with \code{style = "markdown"}
 #' and \code{style = "html"} (ignored otherwise).  If \code{FALSE}, no hyperlink
-#' will be generated for the citation or in the bibliography when printing.  If set equal to \code{"to.bib"}, then hyperlinks will be
-#' generated pointing connecting the citation and bibliography.  The default value, \code{"to.doc"},
+#' will be generated for the citation or in the bibliography when printing.  If
+#' set equal to \code{"to.bib"}, then hyperlinks will be
+#' generated linking the citation and bibliography.  The default value, \code{"to.doc"},
 #' will try to create the hyperlink using the \code{url}, \code{doi}, or \code{eprint} fields of 
 #' entry.  If these fields are not available, the hyperlink will point to the bibliography.  See
 #' also \code{\link{open.BibEntry}}.
@@ -68,7 +69,8 @@
 #' \item \code{max.names} - numeric; same as above, except for citations.
 #' \item \code{longnamesfirst} logical; should the first time a citation appears in the text
 #' not be truncated at \code{max.names}?
-#' \item \code{bibpunct} - character vector; punctuation to use in a citation.  The entries in \code{bibpunct} are as follows
+#' \item \code{bibpunct} - character vector; punctuation to use in a citation.  The entries
+#' in \code{bibpunct} are as follows
 #' \enumerate{
 #' \item The left delimiter for non-alphabetic and non-numeric citation styles
 #' \item The right delimiter for non-alphabetic and non-numeric citation styles

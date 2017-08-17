@@ -1,5 +1,24 @@
+Changes in Version 0.14.20 (2017-07-27)
+--------------------------------------------------------
+
+NEW FEATURES
+
+* Documentation example improvements
+* Improve error handling for API query functions
+* Package peer reviewed and accepted by rOpenSci (h/t Noam Ross, 
+Carl Boettiger, and Amelia McNamara)
+
+BUG FIXES
+
+* Remove missing plot from Rhtml vignette
+* URL field returned by `GetBibEntryWithDOI` is now decoded properly
+* Fix hyperlinks from bibliography to citations in vignettes
+* Remove a incorrect message occasionally output from the addition operator
+for `BibEntry` objects
+
 Changes in Version 0.14.12 (2017-06-30)
 --------------------------------------------------------
+
 NEW FEATURES
 
 * Package now uses httr, xml2, jsonlite packages instead of RCurl, XML, RJSONIO

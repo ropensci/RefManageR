@@ -33,8 +33,8 @@ field is assigned the value
   \dQuote{pubmed} and the eprint field is assigned the ID.
 }
 \examples{
-if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/")){
-  file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
+if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/")){
+  file.name <- system.file("Bib", "RJC.bib", package = "RefManageR")
   bib <- ReadBib(file.name)
   LookupPubMedID(bib[[101:102]])
 }

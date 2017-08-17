@@ -17,7 +17,13 @@
 #' @rdname head.BibEntry
 #' @aliases tail.BibEntry
 #' @method head BibEntry
-#' @export 
+#' @export
+#' @examples
+#' file <- system.file("Bib", "biblatexExamples.bib", package = "RefManageR")
+#' BibOptions(check.entries = FALSE)
+#' bib <- ReadBib(file)
+#' tail(bib, 2, suppress.messages = FALSE)
+#' bib <- head(bib, 1, suppress.messages = TRUE)
 head.BibEntry <- function (x, n = 6L, suppress.messages = TRUE, ...){
     stopifnot(length(n) == 1L)
     

@@ -1,14 +1,10 @@
-# Mathew W. McLean
-# December 1, 2013
-# Interact with PubMed
-
 # http://www.ncbi.nlm.nih.gov/books/NBK25500/
 # http://www.bioinformatics.org/texmed/
 # http://www.poirrier.be/~jean-etienne/software/pyp2b/
 # http://www.ncbi.nlm.nih.gov/pmc/tools/id-converter-api/
 # http://ropensci.github.io/rebi/
 
-#' Search NCBI's Entrez for citation information
+#' Search NCBI's E-Utilities for citation information
 #'
 #' This function takes a query and searches an Entrez database for
 #' references using NCBI's E-Utilities, returning the results in a BibEntry
@@ -46,10 +42,10 @@
 #' are available.
 #' @references \url{https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
 #' @family pubmed
-#' @importFrom httr GET
+#' @importFrom httr GET http_error stop_for_status
 #' @importFrom xml2 read_xml xml_find_all xml_text
 #' @examples
-#' if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/"))
+#' if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
 #'   ReadPubMed(query = "raymond carroll measurement error", retmax = 5, mindate = 1990)
 ReadPubMed <- function(query, database = "PubMed", ...){
   .params <- list(...)
@@ -70,10 +66,8 @@ ReadPubMed <- function(query, database = "PubMed", ...){
   .parms$db <- database
   .parms$usehistory <- "y"
   ## results <- try(getForm(base.url, .params = .parms))
-  results <- try(GET(base.url, query = .parms), TRUE)
-
-  if (inherits(results, "try-error"))
-    stop("Unable to GET results")
+  results <- GET(base.url, query = .parms)
+  stop_for_status(results)
 
   tdoc <- read_xml(results, encoding = "UTF-8")
 
@@ -111,7 +105,7 @@ ReadPubMed <- function(query, database = "PubMed", ...){
 #' @references \url{https://www.ncbi.nlm.nih.gov/books/NBK25500/}
 #' @family pubmed
 #' @examples
-#' if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/"))
+#' if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
 #'   GetPubMedByID(c("11209037", "21245076"))
 GetPubMedByID <- function(id, db = "pubmed", ...){
 
@@ -185,7 +179,7 @@ GetPubMedByID <- function(id, db = "pubmed", ...){
 #' @keywords database
 #' @export
 #' @examples
-#' if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/")){
+#' if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/")){
 #'   file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 #'   bib <- ReadBib(file.name)
 #'   bib <- LookupPubMedID(bib[[101:102]])
@@ -223,9 +217,10 @@ GetPubMedRelated <- function(id, database = "pubmed", batch.mode = TRUE,
   base.url <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi"
 
   ## results <- try(getForm(base.url, .params = parms))
-  results <- try(GET(base.url, query = parms))
-  if (inherits(results, "try-error"))
-    return(NA)
+  results <- GET(base.url, query = parms)
+  if (http_error(results))
+      stop(gettextf("NCBI E-Utilities query error [%s]", status_code(results)),
+           .call = FALSE)
 
   tdoc <- read_xml(results)
   max.results <- rep(max.results, l = id.len)
@@ -477,8 +472,8 @@ ProcessPubMedBookResult <- function(tdoc){
 #' @keywords database
 #' @export
 #' @examples
-#' if (interactive() && !http_error("https://eutils.ncbi.nlm.nih.gov/")){
-#'   file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
+#' if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/")){
+#'   file.name <- system.file("Bib", "RJC.bib", package = "RefManageR")
 #'   bib <- ReadBib(file.name)
 #'   LookupPubMedID(bib[[101:102]])
 #' }

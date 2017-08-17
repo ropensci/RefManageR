@@ -14,7 +14,7 @@
 #' \sQuote{doi} field will be searched for.
 #' @references \url{http://search.crossref.org/help/api}
 #' @examples
-#' if (interactive() && !http_error("http://search.crossref.org")){
+#' if (interactive() && !httr::http_error("http://search.crossref.org")){
 #'   BibOptions(check.entries = FALSE, sorting = "none")
 #'   bib <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[1:5]
 #'   bib <- GetDOIs(bib)
@@ -37,10 +37,11 @@ GetDOIs <- function(bib){
     json.res <- httr::POST("http://search.crossref.org/links", body = json.bib,
                            config = list(add_headers = headers),
                            encode = "json")
-    json.res <- try(content(json.res, type = "application/json",
-                            encoding = "UTF-8"), TRUE)
-    if (inherits(json.res, "try-error") || !json.res[[2L]])
-      message("Failed to retrieve any DOIs.")
+    status <- status_code(json.res)
+    if (status != 200 ||
+        !(json.res <- content(json.res, type = "application/json",
+                              encoding = "UTF-8"))[[2L]])
+        message(gettextf("Failed to retrieve any DOIs [%s].", status))
     else{
       matches <- vapply(json.res[[1L]], "[[", FALSE, "match")
       if (!any(matches))

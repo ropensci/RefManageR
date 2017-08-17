@@ -42,11 +42,18 @@
 #' \code{\link{open.BibEntry}}
 #' @importFrom plyr llply progress_text
 #' @importFrom utils flush.console
+#' @examples
+#' \dontrun{
+#' path <- system.file("doc", package = "RefManageR")
+#' ReadPDFs(path)
+#' }
 ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE,
                       use.crossref = TRUE, use.metadata = TRUE,
                       progress = FALSE) {
   if (!nzchar(Sys.which("pdfinfo")))
-     stop("poppler does not seem to be installed")
+      stop(gettextf("poppler does not seem to be installed.\n%s\n%s",
+                    "ReadPDFs requires the `pdfinfo` utility from Poppler PDF be installed.",
+                    "See http://poppler.freedesktop.org/"))
   path <- file.path(path[1])
   if (!file.exists(path))
       stop("Specified path does not exist")

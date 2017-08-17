@@ -38,6 +38,10 @@ AddCite <- function(index, use.hyper = TRUE){
 #' BibOptions(check.entries = FALSE)
 #' bib <- ReadBib(file)
 #' Citet(bib, 12)
+#' NoCite(bib, title = "Alkanethiolate")
+#' PrintBibliography(bib, .opts = list(style = "latex",
+#'                   bib.style = "authoryear"))
+#' 
 #' Citep(bib, c("loh", "geer"), .opts = list(cite.style = "numeric"),
 #'       before = "see e.g., ")
 #' Citet(bib, "loh", .opts = list(cite.style = "numeric", super = TRUE))
@@ -82,38 +86,15 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
     if (identical(class(bib), "bibentry"))
       bib <- as.BibEntry(bib)
 
-    result <- with(BibOptions(), {
+    with(BibOptions(), {
       style <- .BibEntry_match_format_style(style)
       papers <- suppressMessages(do.call(`[.BibEntry`, list(x = bib, ...)))
       keys <- unlist(papers$key)
       if (!length(papers))
         return("")
       if (cite.style == "pandoc"){
-        result <- paste0(paste0("@", names(papers)),
-                         collapse = paste0(bibpunct[5L], " "))
-        result <- paste0(before, result, after)
-        if (textual)
-          result <- paste0(bibpunct[3L], result,
-                             bibpunct[4L])
-        AddCite(keys, FALSE)
-        result
+        MakePandocCitation(papers, keys, textual, bibpunct, before, after)  
       }else{
-        shortName <- function(person){
-            if (length(person$family))
-                paste(cleanupLatex(person$family), collapse = " ")
-            else paste(cleanupLatex(person$given), collapse = " ")
-        }
-        authorList <- function(paper){
-          names <- vapply(paper$author, shortName, "")
-          if (!length(names))
-            names <- vapply(paper$editor, shortName, "")
-          if (!length(names))
-            names <- paper$label
-          if (!length(names))
-            names <- vapply(paper$translator, shortName, "")
-          names
-        }
-
         numeric <- "numeric" %in% cite.style
         alphabetic <- "alphabetic" %in% cite.style
         if (cite.style != .cites$sty)
@@ -215,53 +196,111 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
         }else {
             result <- paste0(auth, bibpunct[6L], " ", year)
         }
-        if (make.hyper){
-            url <- switch(hyperlink, to.bib = paste0("#bib-",
-                                                     gsub("[^_a-zA-Z0-9-]", "",
-                                                          keys,
-                                                          useBytes = TRUE)),
-                       to.doc = vapply(papers, GetURL, "", 
-                                       flds = c("url", "eprint", "doi"),
-                                       to.bib = TRUE),
-                       hyperlink)
-          if (style == "html"){
-            new.links <- if (any(first))
-                             paste(paste("<a id='cite-", gsub("[^_a-zA-Z0-9-]",
-                                                              "", keys[first],
-                                                              useBytes = TRUE),
-                                         "'></a>", sep = ""), collapse = "")
-                         else ""
-            result <- if (numeric && super && textual)
-                        paste0(auth, "<sup><a href='", url, "'>", result,
-                               "</a></sup>")
-                      else paste0("<a href='", url, "'>", result, "</a>")
-          }else if(style == "markdown"){
-            new.links <- if(any(first))
-                             paste(paste("<a name=cite-",
-                                         gsub("[^_a-zA-Z0-9-]", "",
-                                              keys[first], useBytes = TRUE),
-                                         "></a>", sep = ""), collapse = "")
-            else ""
-            result <- if (numeric && super && textual)
-                        paste0(auth, "^[", result, "](", url, ")")
-                      else paste0("[", result, "](", url, ")")
-          }
-        }
-        result <- paste(result, collapse = paste0(bibpunct[5L], " "))
-        if (!textual && (numeric || alphabetic)) {
-          result <- paste0(bibpunct[3L], before, result, after,
-                           bibpunct[4L])
-          if (super && numeric)
-            result <- paste0("^{", result, "}")
-        }else if (!textual){
-          result <- paste0(bibpunct[1L], before, result, after,
-                           bibpunct[2L])
-        }
-        if (make.hyper && style %in% c("html", "markdown"))
-          result <- paste0(new.links, result)
+        result <- if (make.hyper)
+                      MakeCiteHyperlink(result, papers, hyperlink, keys,
+                                        auth, style, first, numeric,
+                                        alphabetic, super, textual,
+                                        bibpunct, before, after)
+                  else
+                      AddCitationPunct(result, bibpunct, before, after,
+                                       textual, numeric, alphabetic, super)
         result
       }  # end else for if cite.style == "pandoc"
     })  # end with for BibOptions
+}
+
+#' Convert one element of person object (i.e. a single person)
+#' to character for printing citation
+#' @noRd
+shortName <- function(person){
+    if (length(person$family))
+        paste(cleanupLatex(person$family), collapse = " ")
+    else paste(cleanupLatex(person$given), collapse = " ")
+}
+
+#' Convert person object with multiple persons to character
+#' @noRd
+authorList <- function(paper){
+  names <- vapply(paper$author, shortName, "")
+  if (!length(names))
+    names <- vapply(paper$editor, shortName, "")
+  if (!length(names))
+    names <- paper$label
+  if (!length(names))
+    names <- vapply(paper$translator, shortName, "")
+  names
+}
+
+#' Print citation in pandoc format
+#' @noRd
+MakePandocCitation <- function(papers, keys, textual, bibpunct, before, after){
+    result <- paste0(paste0("@", names(papers)),
+                     collapse = paste0(bibpunct[5L], " "))
+    result <- paste0(before, result, after)
+    if (textual)
+      result <- paste0(bibpunct[3L], result,
+                         bibpunct[4L])
+    AddCite(keys, FALSE)
+    result
+}
+
+#' Add hyperlink, punctuation, before and after text to citation
+#' @noRd
+MakeCiteHyperlink <- function(result, papers, hyperlink, keys, auth,
+			      style, first, numeric, alphabetic, super,
+			      textual, bibpunct, before, after){
+    url <- switch(hyperlink, to.bib = paste0("#bib-",
+                                             gsub("[^_a-zA-Z0-9-]", "",
+                                                  keys,
+                                                  useBytes = TRUE)),
+               to.doc = vapply(papers, GetURL, "", 
+                               flds = c("url", "eprint", "doi"),
+                               to.bib = TRUE),
+               hyperlink)
+    if (style == "html"){
+      new.links <- if (any(first))
+                       paste(paste("<a id='cite-", gsub("[^_a-zA-Z0-9-]",
+                                                        "", keys[first],
+                                                        useBytes = TRUE),
+                                   "'></a>", sep = ""), collapse = "")
+                   else ""
+      result <- if (numeric && super && textual)
+                  paste0(auth, "<sup><a href='", url, "'>", result,
+                         "</a></sup>")
+                else paste0("<a href='", url, "'>", result, "</a>")
+    }else if(style == "markdown"){
+      new.links <- if(any(first))
+                       paste(paste("<a name=cite-",
+                                   gsub("[^_a-zA-Z0-9-]", "",
+                                        keys[first], useBytes = TRUE),
+                                   "></a>", sep = ""), collapse = "")
+      else ""
+      result <- if (numeric && super && textual)
+                  paste0(auth, "^[", result, "](", url, ")")
+                else paste0("[", result, "](", url, ")")
+    }
+    result <- AddCitationPunct(result, bibpunct, before, after, textual,
+			       numeric, alphabetic, super)
+
+    if (style %in% c("html", "markdown"))
+      result <- paste0(new.links, result)
+    result
+}
+
+#' Add punctions and before and after text to a citation
+#' @noRd
+AddCitationPunct <- function(result, bibpunct, before, after, textual,
+			     numeric, alphabetic, super){
+    result <- paste(result, collapse = paste0(bibpunct[5L], " "))
+    if (!textual && (numeric || alphabetic)) {
+      result <- paste0(bibpunct[3L], before, result, after,
+		       bibpunct[4L])
+      if (super && numeric)
+	result <- paste0("^{", result, "}")
+    }else if (!textual){
+      result <- paste0(bibpunct[1L], before, result, after,
+		       bibpunct[2L])
+    }
     result
 }
 
@@ -278,7 +317,8 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
 #' If the \code{...} argument to NoCite is identical to \dQuote{*}, then all
 #' references in \code{bib} are added to the bibliography without citations.
 #' @seealso \code{\link{print.BibEntry}}, \code{\link{BibOptions}},
-#' \code{\link[utils]{citeNatbib}}
+#' \code{\link[utils]{citeNatbib}}, the package vignettes
+#' bib <- 
 #' @rdname Cite
 PrintBibliography <- function(bib, .opts = list()){
   if (!length(bib))

@@ -12,6 +12,11 @@
 <body>
 <h1>Add Citations to an R HTML Document and Print Bibliography</h1>
 
+<!--begin.rcode unload, include = FALSE
+## Needed to clear internal package citation list from previous vignette builds
+unloadNamespace("RefManageR")
+end.rcode-->
+
 <!--begin.rcode setup, include = TRUE, cache = FALSE
 library(RefManageR)
 bib <- ReadBib(system.file("Bib", "biblatexExamples.bib",
@@ -24,17 +29,15 @@ This is an R HTML document. This is an example of a citation in the text <!--rin
 </p>
 <p>
 These are reports <!--rinline Citet(bib, bibtype = "Report", .opts = list(cite.style = "numeric", super = TRUE, hyperlink = "to.bib")) -->.  Their hyperlinks go to their entry in the bibliography.
-The link for <!--rinline TextCite(bib, "markey") --> will take you to the document in a new window; this is the default, if a link is available (see <code>?open.BibEnty</code>). The following citation has no hyperlink <!--rinline AutoCite(bib, location = "Uppsala", .opts = list(hyperlink = FALSE)) -->.  You can also embed plots, for example:
+The link for <!--rinline TextCite(bib, "markey") --> will take you to the document in a new window; this is the default, if a link is available (see <code>?open.BibEnty</code>). The following citation has no hyperlink <!--rinline AutoCite(bib, location = "Uppsala", .opts = list(hyperlink = FALSE)) -->.  
 </p>
-<!--begin.rcode fig.width=7, fig.height=6
-plot(cars)
-end.rcode-->
 <p>
-<!--rinline NoCite(bib = bib, title = "CTAN") -->I've added a reference to CTAN without citing it.  Now I'm adding a reference from another bibliography (a second <code>BibEntry</code> object) <!--rinline AutoCite(bib2, title = "binary longitudinal data", .opts = list(cite.style = "authortitle")) -->.  Look at all my Aristotle: <!--rinline TextCite(bib, author = "Aristotle", .opts = list(cite.style = "numeric", super = TRUE)) -->.
+<!--rinline NoCite(bib = bib, title = "CTAN") -->I've added a reference to CTAN without citing it.  Now I'm adding a reference from another bibliography (a second <code>BibEntry</code> object) <!--rinline AutoCite(bib2, title = "binary longitudinal data", .opts = list(cite.style = "authortitle")) -->.  Look at all my Aristotle: <!--rinline TextCite(bib, author = "Aristotle", .opts = list(cite.style = "numeric", super = TRUE)) -->.  Below is the <code>R</code> logo.
 </p>
-<!--begin.rcode fig.width=7, fig.height=6
-plot(cars)
-end.rcode-->
+<p>
+  <img src="https://cran.r-project.org/Rlogo.svg" alt="R logo" width="561" height="724"> 
+</p>
+
 <p>
 Some papers on the arXiv are <!--rinline TextCite(bib, eprinttype = "arxiv", .opts = list(cite.style = "authoryear", bib.style = "authoryear", sorting = "nyt")) -->.
 </p>
