@@ -98,6 +98,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
   ## if query is valid doi, skip search and get BibTeX entry right away
 
   if (nzchar(.doi <- SearchDOIText(query))){
+    if (delete.file) on.exit(unlink(temp.file,force=TRUE))
     num.res <- 1
     bad <- GetCrossRefBibTeX(paste0("http://dx.doi.org/", .doi), temp.file)
   }else{
