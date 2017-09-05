@@ -1,3 +1,12 @@
+Changes in Version 0.14.21 (2017-09-05)
+--------------------------------------------------------
+
+BUG FIXES
+
+* Fix deletion of temporary file if user supplies a DOI to 
+`ReadCrossRef` (h/t Ben Raymond)
+
+
 Changes in Version 0.14.20 (2017-07-27)
 --------------------------------------------------------
 

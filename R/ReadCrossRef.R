@@ -93,10 +93,12 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
                          delete.file = TRUE, verbose = FALSE,
                          use.old.api = FALSE){
   bad <- 0
-  
-  ## file.create(temp.file)
-  ## if query is valid doi, skip search and get BibTeX entry right away
 
+  ## file.create(temp.file)
+  if (delete.file)
+    on.exit(if (file.exists(temp.file)) unlink(temp.file, force = TRUE))
+
+  ## if query is valid doi, skip search and get BibTeX entry right away
   if (nzchar(.doi <- SearchDOIText(query))){
     num.res <- 1
     bad <- GetCrossRefBibTeX(paste0("http://dx.doi.org/", .doi), temp.file)
@@ -111,7 +113,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
     }else{
       params <- list(rows = limit, sort = sort, offset = offset)
       if (!.is_not_nonempty_text(query))
-        params$query <- query  
+        params$query <- query
 
       if (length(year))
           suppressWarnings(filter$"from-pub-date" <-
@@ -119,17 +121,17 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
 
       if (length(filter))
           params$filter <- paste(paste0(names(filter),":",filter),
-                                 collapse = ",")          
+                                 collapse = ",")
       results <- GET("http://api.crossref.org/works", query=params)
     }
     fromj <- content(results, type = "application/json", encoding = "UTF-8")
     if (http_error(results)){
       msg <- fromj$message[[1L]]
-      stop(gettextf("CrossRef API request failed [%s]: %s\n<%s>", 
+      stop(gettextf("CrossRef API request failed [%s]: %s\n<%s>",
                     status_code(results), msg$type,
                     msg$message), call. = FALSE)
     }
-    
+
     if (!use.old.api)
         fromj <- fromj$message$items
     num.res <- min(limit, length(fromj))
@@ -161,10 +163,6 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
           class(res) <- c("BibEntry", "bibentry")
           return(res)
       }else{
-        file.create(temp.file)
-        if (delete.file)
-          on.exit(unlink(temp.file, force = TRUE))
-
         relevancies <- numeric(num.res)
         if (use.old.api){
             score.str <- "normalizedScore"
@@ -186,7 +184,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
                                    "with relevancy score ",
                                    fromj[[i]][[entry.str]],
                                    fromj[[i]][[score.str]]))
-              
+
           }
         }
       }  # end else for old API processing
@@ -201,14 +199,14 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
   bib.res <- try(ReadBib(file=temp.file, .Encoding='UTF-8'), TRUE)
 
   bib.res$url <- vapply(bib.res$url, function(x) if (!is.null(x))
-                                                     URLdecode(x), "") 
+                                                     URLdecode(x), "")
   if (inherits(bib.res, "try-error"))
       stop(gettextf("failed to parse the returned BibTeX results; %s%s%s",
                     "if \'delete.file\' ",
                     "is FALSE, you can try viewing and editing the file: ",
                     temp.file))
 
-  return(bib.res)  
+  return(bib.res)
 }
 
 #' @keywords internal
