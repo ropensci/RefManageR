@@ -31,8 +31,9 @@ ReadBib <- function(file, .Encoding = "UTF-8",
                                                          sep = "\n") else "",
                     footer = "", check = BibOptions()$check.entries){
   stopifnot(!missing(file))
-  oldchk <- .BibOptions$check.entries
-  .BibOptions$check.entries <- check
+  old.chk <- BibOptions(check.entries = check)
+  on.exit(BibOptions(old.chk))
+
   if (!is.character(file)) {
       stop(gettextf("%s only supports reading from files, %s should be %s",
                     sQuote("read.bib"), sQuote("file"),
@@ -40,8 +41,7 @@ ReadBib <- function(file, .Encoding = "UTF-8",
   }
   srcfile <- switch(.Encoding, unknown = srcfile(file),
                     srcfile(file, encoding = .Encoding))
-  ## out <- .External("do_read_bib", file = file, encoding = .Encoding,
-  ##                  srcfile = srcfile, PACKAGE = "bibtex")
+
   out <- do_read_bib(file, encoding = .Encoding, srcfile)
   at <- attributes(out)
   if (typeof(out) != "integer")
@@ -50,8 +50,10 @@ ReadBib <- function(file, .Encoding = "UTF-8",
   preamble <- at[["preamble"]]
   out <- MakeCitationList(out, header, footer)
   out <- MakeKeysUnique(out)
-  
-  attr(out, "strings") <- at[["strings"]]
-  .BibOptions$check.entries <- oldchk
+
+  strings <- at[["strings"]]
+  if (length(strings))
+      attr(out, "strings") <- strings
+
   out
 }
