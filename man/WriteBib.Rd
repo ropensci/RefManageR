@@ -13,7 +13,9 @@ WriteBib(bib, file = "references.bib", biblatex = TRUE, append = FALSE,
 \arguments{
 \item{bib}{a BibEntry object to be written to file}
 
-\item{file}{character string naming a file, should; end in \dQuote{.bib}}
+\item{file}{character string naming a file, should; end in \dQuote{.bib}.
+Can be \code{NULL}, in which case the BibEntry object will be written
+to \code{\link{stdout}}.}
 
 \item{biblatex}{boolean; if \code{TRUE}, \code{\link{toBiblatex}} is used
 and no conversions of the BibEntry object

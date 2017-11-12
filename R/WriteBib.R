@@ -3,7 +3,9 @@
 #' Creates a Bibtex File from a BibEntry object for use with either BibTeX
 #' or BibLaTex.
 #' @param bib a BibEntry object to be written to file
-#' @param file character string naming a file, should; end in \dQuote{.bib}
+#' @param file character string naming a file, should; end in \dQuote{.bib}.
+#' Can be \code{NULL}, in which case the BibEntry object will be written
+#' to \code{\link{stdout}}.
 #' @param biblatex boolean; if \code{TRUE}, \code{\link{toBiblatex}} is used
 #' and no conversions of the BibEntry object
 #' are done; if \code{FALSE} entries will be converted as described in
@@ -42,15 +44,15 @@ WriteBib <- function (bib, file = "references.bib", biblatex = TRUE,
     return(invisible())
   }
   if (is.null(file))
-    file <- stdout()
+    fh <- stdout()
   else if (is.character(file)) {
     if (!grepl("\\.bib$", file, useBytes = TRUE))
       file <- paste(file, ".bib", sep = "")
+    fh <- file(file, open = if (append)
+      "a+"
+               else "w+")
+    on.exit(if (isOpen(fh)) close(fh))
   }
-  fh <- file(file, open = if (append)
-    "a+"
-             else "w+")
-  on.exit(if (isOpen(fh)) close(fh))
   if (verbose)
     message("Writing ", length(bib), " Bibtex entries ... ",
             appendLF = FALSE)
@@ -60,7 +62,10 @@ WriteBib <- function (bib, file = "references.bib", biblatex = TRUE,
     writeLines(toBibtex(bib, ...), fh)
   }
 
-  if (verbose)
-    message("OK\nResults written to file '", file, "'")
+  if (verbose){
+    msg <- paste0("OK\nResults written to ",
+            if (is.null(file)) "stdout" else paste0("file ", sQuote(file)))
+    message(msg)
+  }
   invisible(bib)
 }

@@ -1,3 +1,11 @@
+Changes in Version 0.14.22 (2017-11-12)
+--------------------------------------------------------
+
+BUG FIXES
+
+* Fix writing of BibEntry object to stdout in
+`WriteBib` (h/t Stephane Plaisance)
+
 Changes in Version 0.14.21 (2017-09-05)
 --------------------------------------------------------
 
