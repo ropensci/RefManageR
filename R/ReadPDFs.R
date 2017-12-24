@@ -126,7 +126,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE,
   ##   from metadata and JSTOR)
   metadoi.pos <- which(doi.meta.ind)
   doi.ind <- c(metadoi.pos[!metadoi.pos %in% JSTOR.ind], doi.text.ind)
-  comb.doi <- c(dois[!JSTOR.ind & doi.meta.ind], more.dois[!is.na(more.dois)])
+  comb.doi <- c(dois[!JSTOR.ind & doi.meta.ind], more.dois[nzchar(more.dois)])
 
   ## get bib info from CrossRef
   resCR <- CR.ind <- badCR.ind <- NULL

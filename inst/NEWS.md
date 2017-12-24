@@ -1,3 +1,11 @@
+Changes in Version 0.14.25 (2017-12-25)
+--------------------------------------------------------
+
+* Fix `GetDOIs`
+* Fix download of bibliographic info from DOI in `ReadPDFs`
+
+BUG FIXES
+
 Changes in Version 0.14.23 (2017-11-12)
 --------------------------------------------------------
 
