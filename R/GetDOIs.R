@@ -34,7 +34,7 @@ GetDOIs <- function(bib){
     ## json.res <- postForm("http://search.crossref.org/links",
     ##              .opts = list(postfields = json.bib, httpheader = headers))
     ## json.res <- try(fromJSON(json.res), TRUE)
-    json.res <- httr::POST("http://search.crossref.org/links", body = json.bib,
+    json.res <- httr::POST("https://search.crossref.org/links", body = json.bib,
                            config = list(add_headers = headers),
                            encode = "json")
     status <- status_code(json.res)
