@@ -6,7 +6,7 @@ context("Crossref")
 
 test_that("GetBibEntryWithDOIs retrieves DOIs", {
     skip_on_cran()
-    if (httr::http_error("http://dx.doi.org/"))
+    if (httr::http_error("https://doi.org/"))
         skip("Couldn't connect to dx.doi.org")
 
     dois <- c("10.1016/j.iheduc.2003.11.004", "10.3998/3336451.0004.203")
@@ -19,7 +19,7 @@ test_that("GetBibEntryWithDOIs retrieves DOIs", {
 
 test_that("GetBibEntryWithDOIs continues if some DOIs not found", {
     skip_on_cran()
-    if (httr::http_error("http://dx.doi.org/"))
+    if (httr::http_error("https://doi.org/"))
         skip("Couldn't connect to dx.doi.org")
 
     dois <- c("NotADOI", "10.3998/3336451.0004.203")

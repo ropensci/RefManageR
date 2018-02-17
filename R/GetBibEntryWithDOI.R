@@ -10,7 +10,7 @@
 #' @return an object of class BibEntry.
 #' @export
 #' @details
-#' The bibliographic information returned by the search of the \url{http://dx.doi.org}
+#' The bibliographic information returned by the search of the \url{https://doi.org}
 #' API is temporarily
 #' written to a file and then read back into \code{R} and return as a
 #' \code{BibEntry} object.
@@ -19,7 +19,7 @@
 #' @importFrom utils URLdecode
 #' @seealso \code{\link{ReadCrossRef}}, \code{\link{BibEntry}}
 #' @examples
-#' if (interactive() && !httr::http_error("http://dx.doi.org/"))
+#' if (interactive() && !httr::http_error("https://doi.org/"))
 #'   GetBibEntryWithDOI(c("10.1016/j.iheduc.2003.11.004", "10.3998/3336451.0004.203"))
 GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'),
                                delete.file = TRUE){
@@ -27,7 +27,7 @@ GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'),
   on.exit(if (delete.file && file.exists(temp.file)) file.remove(temp.file))
   successes <- logical(length(doi))
   for (i in seq_along(doi)){
-    temp <- GET(modify_url('http://dx.doi.org/', path = doi[i]),
+    temp <- GET(modify_url('https://doi.org/', path = doi[i]),
                     config = list(followlocation = TRUE),
                       add_headers(Accept = "application/x-bibtex"))
     if (!http_error(temp)){

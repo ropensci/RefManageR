@@ -50,7 +50,7 @@ GetDOIs <- function(bib){
         match.str <- paste0(missing.dois.pos[matches], collapse = ", ")
         message(gettextf("Matches for entries at positions %s.",
                        match.str))
-        bib$doi[missing.dois.pos[matches]] <- sub("http://dx.doi.org/", "",
+        bib$doi[missing.dois.pos[matches]] <- sub("https://doi.org/", "",
                                                   vapply(json.res[[1L]], "[[",
                                                          "",
                                                          "doi")[matches],

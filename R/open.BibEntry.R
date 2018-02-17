@@ -72,7 +72,7 @@ GetURL <- function(entry, flds, to.bib = FALSE){
         }
       }
     }else if (flds[i] == "doi" && !is.null(entry[["doi"]])){
-      url <- paste0("http://dx.doi.org/", entry[["doi"]])
+      url <- paste0("https://doi.org/", entry[["doi"]])
       opened <- TRUE
     }else if (flds[i] == "url" && !is.null(entry[["url"]])){
       url <- entry[["url"]]

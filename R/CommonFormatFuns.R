@@ -363,12 +363,12 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     fmtISRN <- label(prefix = 'ISRN: ', suffix = '.')
     fmtDOI <- switch(docstyle, html = function(doi){
                             if (length(doi)){
-                              paste0("DOI: \\href{http://dx.doi.org/",
+                              paste0("DOI: \\href{https://doi.org/",
                                      doi, "}{", doi, "}.")
                             }
                           }, markdown = function(doi){
                               if (length(doi)){
-                                paste0("DOI: [", doi, "](http://dx.doi.org/",
+                                paste0("DOI: [", doi, "](https://doi.org/",
                                        doi, ").")
                               }
                             }, label(prefix = 'DOI: ', suffix = '.'))
