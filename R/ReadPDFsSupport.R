@@ -127,7 +127,7 @@ ReadFirstPages <- function(doc, page.one = TRUE){
 #' @keywords internal
 #' @noRd
 CheckJSTOR <- function(doc1, doc2, file){
-  ind <- grep('http://www\\.jstor\\.org/stable/([0-9]+)', doc1,
+  ind <- grep('https?://www\\.jstor\\.org/stable/([0-9]+)', doc1,
               useBytes = TRUE)[1]
   if (!is.na(ind)){
     res <- try(GetJSTOR(doc1), TRUE)
@@ -138,7 +138,7 @@ CheckJSTOR <- function(doc1, doc2, file){
     res$url <- paste0('https://www.jstor.org/stable/', res$eprint)
     res$file <- normalizePath(file)
 
-  }else if (length(ind <- grep('http://links.jstor.org/sici', doc1,
+  }else if (length(ind <- grep('https?://links.jstor.org/sici', doc1,
                                useBytes = TRUE))){
     ## old format for JSTOR papers
     res <- try(GetJSTOR(doc1), TRUE)
