@@ -222,8 +222,8 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
 
           if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
             base.url <- switch(eprinttype,
-                               jstor = "http://www.jstor.org/stable/",
-                               arxiv = "http://arxiv.org/abs/",
+                               jstor = "https://www.jstor.org/stable/",
+                               arxiv = "https://arxiv.org/abs/",
                                pubmed = paste0("https://eutils.ncbi.nlm.nih.",
                                                "gov/entrez/eutils/",
                                                "elink.fcgi?dbfrom=pubmed&",
@@ -268,9 +268,9 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
 
           if (eprinttype %in% c("arxiv", "pubmed", "jstor")){
             base.url <- switch(eprinttype,
-                               jstor = "http://www.jstor.org/stable/",
-                               arxiv = "http://arxiv.org/abs/",
-                               pubmed = paste0("http://eutils.ncbi.nlm.nih.",
+                               jstor = "https://www.jstor.org/stable/",
+                               arxiv = "https://arxiv.org/abs/",
+                               pubmed = paste0("https://eutils.ncbi.nlm.nih.",
                                                "gov/entrez/eutils/",
                                                "elink.fcgi?dbfrom=pubmed&",
                                                "cmd=prlinks&retmode=ref&id="),

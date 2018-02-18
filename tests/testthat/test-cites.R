@@ -33,12 +33,12 @@ test_that("citation with markdown link", {
 test_that("citation with url link", {
     expect_identical(AutoCite(bib, "baez/online", before = "e.g., "),
                      paste0("<a name=cite-baezonline></a>[e.g., [2]",
-                     "(http://arxiv.org/abs/math/0307200v3)]"))
+                     "(https://arxiv.org/abs/math/0307200v3)]"))
 })
 
 test_that("citing twice uses correct number", {
     expect_identical(AutoCite(bib, "baez/online", before = "e.g., "),
-                     "[e.g., [2](http://arxiv.org/abs/math/0307200v3)]")
+                     "[e.g., [2](https://arxiv.org/abs/math/0307200v3)]")
 })
 
 test_that("citing entry with a shorthand field works", {
@@ -88,13 +88,13 @@ test_that("citation with several references with urls", {
                           "<a name=cite-itzhaki></a>",
                           "<a name=cite-wassenberg></a>",
                           "[Baez and Lauda [12]]",
-                          "(http://arxiv.org/abs/math/0307200v3); ",
+                          "(https://arxiv.org/abs/math/0307200v3); ",
                           "[Baez and Lauda [2]]",
-                          "(http://arxiv.org/abs/math/0307200v3); ",
+                          "(https://arxiv.org/abs/math/0307200v3); ",
                           "[Itzhaki [13]]",
-                          "(http://arxiv.org/abs/hep-th/9603067); ",
+                          "(https://arxiv.org/abs/hep-th/9603067); ",
                           "[Wassenberg and Sanders",
-                          " [14]](http://arxiv.org/abs/1008.2849v1)"))
+                          " [14]](https://arxiv.org/abs/1008.2849v1)"))
 })
 
 test_that("PrintBibliography", {

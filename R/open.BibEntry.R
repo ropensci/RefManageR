@@ -61,8 +61,8 @@ GetURL <- function(entry, flds, to.bib = FALSE){
   }else if (flds[i] == "eprint" && !is.null(entry[["eprint"]])){
       eprinttype <- suppressMessages(tolower(entry[["eprinttype"]]))
       if (length(eprinttype)){
-        base.url <- switch(eprinttype, jstor = "http://www.jstor.org/stable/",
-                           arxiv = "http://arxiv.org/abs/",
+        base.url <- switch(eprinttype, jstor = "https://www.jstor.org/stable/",
+                           arxiv = "https://arxiv.org/abs/",
                            pubmed = paste0("https://eutils.ncbi.nlm.nih.gov/",
                                          "entrez/eutils/elink.fcgi?dbfrom=",
                                          "pubmed&cmd=prlinks&retmode=ref&id="))

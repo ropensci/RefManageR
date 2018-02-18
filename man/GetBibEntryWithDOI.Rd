@@ -33,7 +33,7 @@ if (interactive() && !httr::http_error("http://dx.doi.org/"))
   GetBibEntryWithDOI(c("10.1016/j.iheduc.2003.11.004", "10.3998/3336451.0004.203"))
 }
 \references{
-\url{http://www.doi.org/tools.html}
+\url{https://www.doi.org/tools.html}
 }
 \seealso{
 \code{\link{ReadCrossRef}}, \code{\link{BibEntry}}

@@ -1,8 +1,8 @@
-# http://www.ncbi.nlm.nih.gov/books/NBK25500/
-# http://www.bioinformatics.org/texmed/
-# http://www.ncbi.nlm.nih.gov/pmc/tools/id-converter-api/
-# http://ropensci.github.io/rebi/
+# https://www.ncbi.nlm.nih.gov/books/NBK25500/
+# https://www.bioinformatics.org/texmed/
 # https://web.archive.org/web/20140813080014/http://www.poirrier.be/~jean-etienne/software/pyp2b/
+# https://www.ncbi.nlm.nih.gov/pmc/tools/id-converter-api/
+# https://ropensci.github.io/rebi/
 
 #' Search NCBI's E-Utilities for citation information
 #'

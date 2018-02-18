@@ -8,7 +8,7 @@ context("PubMed")
 
 test_that("GetPubMedByID can process books (#2)", {
   skip_on_cran()
-  if (httr::http_error("http://eutils.ncbi.nlm.nih.gov/"))
+  if (httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
       skip("Couldn't connect to Entrez")
   
   test <- GetPubMedByID(c("24977996", "24921111"))
@@ -18,7 +18,7 @@ test_that("GetPubMedByID can process books (#2)", {
 
 test_that("GetPubMedByID uses collective name if authors missing (#2)", {
   skip_on_cran()
-  if (httr::http_error("http://eutils.ncbi.nlm.nih.gov/"))
+  if (httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
       skip("Couldn't connect to Entrez")
   
   test <- GetPubMedByID(c(11678951, 15373863))
@@ -30,7 +30,7 @@ test_that("GetPubMedByID uses collective name if authors missing (#2)", {
 
 test_that("GetPubMedByID warns if authors missing (#3)", {
   skip_on_cran()
-  if (httr::http_error("http://eutils.ncbi.nlm.nih.gov/"))
+  if (httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
     skip("Couldn't connect to Entrez")
 
   expect_warning(GetPubMedByID("7936917"))
@@ -40,7 +40,7 @@ test_that("LookupPubMedID successfully retrieves and add ID's'", {
     skip_on_cran()
     file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
     bib <- ReadBib(file.name)
-    if (httr::http_error("http://eutils.ncbi.nlm.nih.gov/"))
+    if (httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
         skip("Couldn't connect to Entrez")
     out <- LookupPubMedID(bib[[101:102]])
     expect_equal(length(out), 2L)

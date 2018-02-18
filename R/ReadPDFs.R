@@ -2,7 +2,7 @@
 #'
 #' This function creates bibliographic information by reading the Metadata and
 #' text of PDFs stored in a user specified directory using Poppler
-#' (\url{http://poppler.freedesktop.org/}).  IF requested, the function
+#' (\url{https://poppler.freedesktop.org/}).  IF requested, the function
 #' first searches for DOIs and downloads \code{BibTeX} entries from
 #' \code{\link{ReadCrossRef}} if DOIs are found.  If this is not requested or
 #' a DOI is not found for an entry, an attempt is made to build a BibTeX
@@ -24,7 +24,7 @@
 #' CrossRef?
 #' @export
 #' @details This function requires that the \code{pdfinfo} utility from Poppler PDF
-#' \url{http://poppler.freedesktop.org/} be installed.
+#' \url{https://poppler.freedesktop.org/} be installed.
 #'
 #' This function will create only \code{Article} or \code{Misc} \code{BibTeX} entries.
 #'
@@ -36,7 +36,7 @@
 #' If the keywords metadata field is available, it will be added to the bib entry
 #' in a field \sQuote{keywords}, which is recognized by \code{BibLaTeX}.
 #' @return An object of class BibEntry.
-#' @references \url{http://poppler.freedesktop.org/}
+#' @references \url{https://poppler.freedesktop.org/}
 #' @keywords utilities
 #' @seealso \code{\link{ReadCrossRef}}, \code{\link{BibEntry}},
 #' \code{\link{open.BibEntry}}
@@ -53,7 +53,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE,
   if (!nzchar(Sys.which("pdfinfo")))
       stop(gettextf("poppler does not seem to be installed.\n%s\n%s",
                     "ReadPDFs requires the `pdfinfo` utility from Poppler PDF be installed.",
-                    "See http://poppler.freedesktop.org/"))
+                    "See https://poppler.freedesktop.org/"))
   path <- file.path(path[1])
   if (!file.exists(path))
       stop("Specified path does not exist")

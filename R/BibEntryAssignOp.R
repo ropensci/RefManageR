@@ -17,7 +17,7 @@
 #'   title = "My Work", year = "2012")
 #' bib$year <- 2014
 #' bib$author <- "McLean, M. W. and Carroll, R. J." 
-#' bib$url <- "http://example.com"
+#' bib$url <- "https://example.com"
 #' bib
 #' 
 #' bib <- c(bib, as.BibEntry(citation()))

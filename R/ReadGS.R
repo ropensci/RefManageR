@@ -46,7 +46,7 @@
 #' It is not possible to automatically import BibTeX entries directly from Google
 #' Scholar as no API is available and this violates their Terms of Service.
 #' @examples
-#' if (interactive() && !httr::http_error("http://scholar.google.com")){
+#' if (interactive() && !httr::http_error("https://scholar.google.com")){
 #'   ## R. J. Carroll's ten newest publications
 #'   ReadGS(scholar.id = "CJOHNoQAAAAJ", limit = 10, sort.by.date = TRUE)
 #'
@@ -70,7 +70,7 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
   if (sort.by.date)
     .params$sortby <- "pubdate"
 
-  uri <- "http://scholar.google.com/citations"
+  uri <- "https://scholar.google.com/citations"
   ## els <- mapply(function(id, val) {
   ##     paste(id, val, sep = "=", collapse = "&")
   ## }, names(.params), .params)

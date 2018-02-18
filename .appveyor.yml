@@ -1,7 +1,7 @@
 init:
   ps: |
         $ErrorActionPreference = "Stop"
-        Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
+        Invoke-WebRequest https://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
         Import-Module '..\appveyor-tool.ps1'
 install:
   ps: Bootstrap
@@ -14,10 +14,10 @@ environment:
   matrix:
     - R_VERSION: devel
       POPPLERQT5FILE: 'dev\windows\appveyor\poppler-qt5-debug.zip'
-      CRAN: http://cran.rstudio.com
+      CRAN: https://cran.rstudio.com
     - R_VERSION: release
       RTOOLS_VERSION: 32
-      CRAN: http://cran.rstudio.com
+      CRAN: https://cran.rstudio.com
       POPPLERQT5FILE: 'dev\windows\appveyor\poppler-qt5-debug.zip'
   global:
     NOT_CRAN: true
@@ -27,7 +27,7 @@ build_script:
 #  - travis-tool.sh install_r devtools
 #  - Rscript -e 'devtools::install_github("romainfrancois/bibtex")'
 #  - travis-tool.sh install_github romainfrancois/bibtex
-#  - Rscript -e "install.packages('covr', repos = 'http://cran.rstudio.com')"
+#  - Rscript -e "install.packages('covr', repos = 'https://cran.rstudio.com')"
 #  - travis-tool.sh install_github jimhester/covr
 #  - travis-tool.sh install_github rstats-db/RSQLite
 

@@ -71,7 +71,7 @@ BibOptions(old.opts)
 }
 }
 \references{
-\verb{http://www.zotero.org/support/dev/server_api/v2/read_requests}
+\verb{https://www.zotero.org/support/dev/server_api/v2/read_requests}
 }
 \seealso{
 \code{\link{BibEntry}}

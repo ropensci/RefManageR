@@ -35,7 +35,7 @@ An object of class BibEntry.
 \description{
 This function creates bibliographic information by reading the Metadata and
 text of PDFs stored in a user specified directory using Poppler
-(\url{http://poppler.freedesktop.org/}).  IF requested, the function
+(\url{https://poppler.freedesktop.org/}).  IF requested, the function
 first searches for DOIs and downloads \code{BibTeX} entries from
 \code{\link{ReadCrossRef}} if DOIs are found.  If this is not requested or
 a DOI is not found for an entry, an attempt is made to build a BibTeX
@@ -43,7 +43,7 @@ entry from the metadata and text.
 }
 \details{
 This function requires that the \code{pdfinfo} utility from Poppler PDF
-\url{http://poppler.freedesktop.org/} be installed.
+\url{https://poppler.freedesktop.org/} be installed.
 
 This function will create only \code{Article} or \code{Misc} \code{BibTeX} entries.
 
@@ -62,7 +62,7 @@ ReadPDFs(path)
 }
 }
 \references{
-\url{http://poppler.freedesktop.org/}
+\url{https://poppler.freedesktop.org/}
 }
 \seealso{
 \code{\link{ReadCrossRef}}, \code{\link{BibEntry}},

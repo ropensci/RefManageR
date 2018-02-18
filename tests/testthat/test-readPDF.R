@@ -2,10 +2,10 @@ context("Reading PDFs")
 
 tmpdir <- tempdir()
 ## tmpfile <- tempfile(fileext = ".zip", tmpdir = tmpdir)
-## poppler.fail <- download.file("http://dl.dropbox.com/u/3291828/Poppler/
+## poppler.fail <- download.file("https://dl.dropbox.com/u/3291828/Poppler/
 ##                               poppler.0.22.0_win32.zip",
 ##                            tmpfile, quiet = TRUE)
-## poppler.fail <- download.file("http://poppler.freedesktop.org/
+## poppler.fail <- download.file("https://poppler.freedesktop.org/
 ##                               poppler-0.32.0.tar.xz", tmpfile, quiet = TRUE)
 
 ## poppler.fail <- download.file(
@@ -92,7 +92,7 @@ test_that("Recognizes JSTOR", {
     bib <- ReadPDFs(exe.path, progress = FALSE, use.crossref = FALSE)
     expect_equal(bib[author = "carrol"]$eprinttype, "jstor")
     expect_equal(bib[author = "carrol"]$url,
-                 "http://www.jstor.org/stable/25050155")
+                 "https://www.jstor.org/stable/25050155")
 })
 
 test_that("Recognizes arxiv", {
@@ -102,7 +102,7 @@ test_that("Recognizes arxiv", {
     bib <- ReadPDFs(exe.path, progress = FALSE, use.crossref = FALSE)
     expect_equal(bib[author = "paul"]$eprinttype, "arxiv")
     expect_equal(bib[author = "paul"]$url,
-                 "http://arxiv.org/abs/math/0703858v1")
+                 "https://arxiv.org/abs/math/0703858v1")
 })
 
 test_that("Can parse arXiv date", {
