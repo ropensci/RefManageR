@@ -2,12 +2,12 @@
 # October 26, 2013
 # function for reading from Zotero library
 
-# http://www.zotero.org/support/kb/ssl_certificate_error
+# https://www.zotero.org/support/kb/ssl_certificate_error
 # names(getCurlOptionsConstants())
-# http://www.zotero.org/support/dev/server_api/v2/write_requests
+# https://www.zotero.org/support/dev/server_api/v2/write_requests
 #
 # http://www.omegahat.net/RCurl/philosophy.html
-# .opts explained: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
+# .opts explained: https://curl.haxx.se/libcurl/c/curl_easy_setopt.html
 
 #' Get Bibliography Information From a Zotero Library.
 #'
@@ -37,7 +37,7 @@
 #' @return An object of class BibEntry
 #' @export
 #' @seealso \code{\link{BibEntry}}
-#' @references \verb{http://www.zotero.org/support/dev/server_api/v2/read_requests}
+#' @references \verb{https://www.zotero.org/support/dev/server_api/v2/read_requests}
 #' @importFrom httr GET
 #' @examples
 #' \dontrun{

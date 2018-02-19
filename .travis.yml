@@ -1,11 +1,11 @@
-# see http://docs.travis-ci.com/user/languages/r/
+# see https://docs.travis-ci.com/user/languages/r/
 language: r
 
 # Be strict when checking our package
 warnings_are_errors: true
 
 # before_script:
-#  - wget http://poppler.freedesktop.org/poppler-0.32.0.tar.xz
+#  - wget https://poppler.freedesktop.org/poppler-0.32.0.tar.xz
 #  - tar poppler-0.32.0.tar.xz
 #  - export PATH=$PATH:$PWD/poppler-0.32.0
 
@@ -14,7 +14,7 @@ before_install:
   - echo `which pdfinfo`
 
 # install:
-#  - wget http://poppler.freedesktop.org/poppler-0.32.0.tar.xz
+#  - wget https://poppler.freedesktop.org/poppler-0.32.0.tar.xz
 #  - tar -xJf poppler-0.32.0.tar.xz
 #  - cd poppler-0.32.0 && ./configure --prefix=/usr && make && make install
 
@@ -27,7 +27,7 @@ r_packages:
  - covr
 
 r_build_args: '--no-build-vignettes'
- 
+
 # remove default --as-cran so testthat tests are run (also avoids to useless check notes)
 r_check_args: '--ignore-vignettes'
 

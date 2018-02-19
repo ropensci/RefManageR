@@ -65,9 +65,9 @@
 #' package \code{rcrossref} for larger queries and deep paging
 #' @family pubmed
 #' @references Newer API: \url{https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md},
-#' Older API: \url{http://search.crossref.org/help/api}
+#' Older API: \url{https://search.crossref.org/help/api}
 #' @examples
-#' if (interactive() && !httr::http_error("http://search.crossref.org/")){
+#' if (interactive() && !httr::http_error("https://search.crossref.org/")){
 #'   BibOptions(check.entries = FALSE)
 #'   ## 3 results from the American Statistical Association involving "regression"
 #'   ReadCrossRef("regression", filter = list(prefix="10.1198"), limit = 3)
@@ -107,7 +107,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
       if (.is_not_nonempty_text(query))
           stop(gettextf("specify a valid %s", sQuote("query")))
 
-      results <- GET("http://search.crossref.org/dois",
+      results <- GET("https://search.crossref.org/dois",
                          query = list(q=query, year=year,
                          sort=sort, rows=limit))
     }else{
@@ -122,7 +122,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
       if (length(filter))
           params$filter <- paste(paste0(names(filter),":",filter),
                                  collapse = ",")
-      results <- GET("http://api.crossref.org/works", query=params)
+      results <- GET("https://api.crossref.org/works", query=params)
     }
     fromj <- content(results, type = "application/json", encoding = "UTF-8")
     if (http_error(results)){

@@ -33,7 +33,7 @@ ReadFirstPages <- function(doc, page.one = TRUE){
             regm <- regmatches(arxinfo, m)
             res$eprint <- regm[[1]][2]
           }
-          res$url <- paste0('http://arxiv.org/abs/', res$eprint)
+          res$url <- paste0('https://arxiv.org/abs/', res$eprint)
       }
     }
   }
@@ -127,7 +127,7 @@ ReadFirstPages <- function(doc, page.one = TRUE){
 #' @keywords internal
 #' @noRd
 CheckJSTOR <- function(doc1, doc2, file){
-  ind <- grep('http://www\\.jstor\\.org/stable/([0-9]+)', doc1,
+  ind <- grep('https?://www\\.jstor\\.org/stable/([0-9]+)', doc1,
               useBytes = TRUE)[1]
   if (!is.na(ind)){
     res <- try(GetJSTOR(doc1), TRUE)
@@ -135,10 +135,10 @@ CheckJSTOR <- function(doc1, doc2, file){
       return(NA)
     res$eprint <- gsub('[^0-9]+', '', doc1[ind], useBytes = TRUE)
     res$eprinttype <- 'jstor'
-    res$url <- paste0('http://www.jstor.org/stable/', res$eprint)
+    res$url <- paste0('https://www.jstor.org/stable/', res$eprint)
     res$file <- normalizePath(file)
 
-  }else if (length(ind <- grep('http://links.jstor.org/sici', doc1,
+  }else if (length(ind <- grep('https?://links.jstor.org/sici', doc1,
                                useBytes = TRUE))){
     ## old format for JSTOR papers
     res <- try(GetJSTOR(doc1), TRUE)
@@ -286,18 +286,18 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
   aut.ind <- regexpr(paste0(# invalid words negate match
     ##  "(?!", BAD.WORDS,  ")",
     "^((B[Yy]|A[Uu][Tt][Hh][Oo][Rr][Ss]?|and):?[[:space:]])?",
-    ## first name, maybe hypenated or abbrev.  
+    ## first name, maybe hypenated or abbrev.
     "([[:upper:]][[:alpha:]]*[\\.]?[ -]",
     ## optional middle name or initial, maybe hypenated
     "([[:alpha:]]*[\\.]?[ -]){0,3}",
     ## optional middle name or initial, maybe hypenated
     ##"([[:upper:]][[:alpha:]]*[\\.]?[ -])*",
     ## last name + potential extra char to
-    "[[:upper:]][[:alpha:]'-]+([[:space:]]?[^[:alnum:]])?",        
+    "[[:upper:]][[:alpha:]'-]+([[:space:]]?[^[:alnum:]])?",
     "(,? Jr| II| III| IV)?(,? MD.?)?(,? P(h|H)D.?)?",  # optional qualifications
     ##  "(?<!", BAD.WORDS, ")",
     ## and, ",", ";", or "&" to seperate names. Repeat
-    "(,.|;.)*( and| &)?[[:space:]]?)+$"),             
+    "(,.|;.)*( and| &)?[[:space:]]?)+$"),
     doc[-1], perl=FALSE, useBytes = TRUE) # first line can't have authors
   aut.match <- regmatches(doc[-1], aut.ind)
   if (length(aut.match) == 0){
@@ -312,7 +312,7 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
 
     ## remove author or by at start
     aut.match <- gsub("^((B[Yy]|A[Uu][Tt][Hh][Oo][Rr][Ss]?|and):?[[:space:]])?",
-                      '', aut.match, useBytes = TRUE)  
+                      '', aut.match, useBytes = TRUE)
     aut.match <- gsub("\\<AND\\>", "and", aut.match, useBytes = TRUE)
     # remove bad words. can't get negative look-ahead working :(
     temp <- grep(BAD.WORDS, aut.match, ignore.case = TRUE, useBytes = TRUE)

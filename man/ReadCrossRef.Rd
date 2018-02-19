@@ -86,7 +86,7 @@ Fields \code{"score"} (the relevancy score) and \code{"license"} will be
 returned when \code{use.old.api = FALSE}.
 }
 \examples{
-if (interactive() && !httr::http_error("http://search.crossref.org/")){
+if (interactive() && !httr::http_error("https://search.crossref.org/")){
   BibOptions(check.entries = FALSE)
   ## 3 results from the American Statistical Association involving "regression"
   ReadCrossRef("regression", filter = list(prefix="10.1198"), limit = 3)
@@ -109,7 +109,7 @@ if (interactive() && !httr::http_error("http://search.crossref.org/")){
 }
 \references{
 Newer API: \url{https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md},
-Older API: \url{http://search.crossref.org/help/api}
+Older API: \url{https://search.crossref.org/help/api}
 }
 \seealso{
 \code{\link{ReadZotero}}, \code{\link{BibEntry}}, \code{\link{GetDOIs}},

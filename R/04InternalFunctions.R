@@ -676,7 +676,7 @@ ProcessArxiv <- function(arxinfo){
     regm <- regmatches(arxinfo, m)
     res$eprint <- regm[[1]][2]
   }
-  res$url <- paste0('http://arxiv.org/abs/', res$eprint)
+  res$url <- paste0('https://arxiv.org/abs/', res$eprint)
   res
 }
 
@@ -723,7 +723,7 @@ ProcessArxiv <- function(arxinfo){
 ##                                                useBytes = TRUE))[[1]][2])){
 ##     res$eprinttype <- "arxiv"
 ##     res$eprint <- eprint
-##     res$url <- paste0("http://arxiv.org/abs/", eprint)
+##     res$url <- paste0("https://arxiv.org/abs/", eprint)
 ##     attr(res, "entry") <- "misc"
 ##   }else{
 ##     if (is.na(numbers) || numbers == "" || as.character(year) == numbers){
@@ -797,7 +797,7 @@ ParseGSCitesNew <- function(title, author, year, src, cited_by, encoding,
                                                useBytes = TRUE))[[1]][2])){
     res$eprinttype <- "arxiv"
     res$eprint <- eprint
-    res$url <- paste0("http://arxiv.org/abs/", eprint)
+    res$url <- paste0("https://arxiv.org/abs/", eprint)
     attr(res, "entry") <- "misc"
   }else{
     if (is.na(numbers) || numbers == "" || as.character(year) == numbers){

@@ -7,4 +7,4 @@ bibentry(bibtype = "Manual",
          author = person(c("Mathew", "William"), "McLean"),
          title = "Straightforward Bibliography Management in R Using the RefManager Package",
          note = "arXiv: 1403.2036 [cs.DL]", year = "2014",
-         url = "http://arxiv.org/abs/1403.2036")
+         url = "https://arxiv.org/abs/1403.2036")

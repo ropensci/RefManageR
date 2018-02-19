@@ -9,7 +9,7 @@ expect_length <- function(expr, len){
 }
 
 test_that("basic Zotero search", {
-   ## if (httr::http_error("http://api.zotero.org/users"))
+   ## if (httr::http_error("https://api.zotero.org/users"))
     ##     skip("Couldn't connect to Zotero")
     res <- ReadZotero(user='1648676',
                       .params=list(q='bayesian',
@@ -20,7 +20,7 @@ test_that("basic Zotero search", {
 })
 
 test_that("Search specific collection", {
-   ## if (httr::http_error("http://api.zotero.org/users"))
+   ## if (httr::http_error("https://api.zotero.org/users"))
     ##   skip("Couldn't connect to Zotero")
    Sys.sleep(2)
    res <- ReadZotero(user='1648676',
@@ -33,7 +33,7 @@ test_that("Search specific collection", {
 
 test_that("Search by tag", {
    ## Notice issue with how Zotero uses Techreport entry for arXiv manuscripts
-   ## if (httr::http_error("http://api.zotero.org/users"))
+   ## if (httr::http_error("https://api.zotero.org/users"))
    ##     skip("Couldn't connect to Zotero")
    Sys.sleep(2)
    BibOptions(check.entries = "error")
