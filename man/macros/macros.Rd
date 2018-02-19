@@ -1,5 +1,6 @@
 \newcommand{\textquotesingle}{'}
 \newcommand{\hypen}{-}
+\newcommand{\ast}{*}
 \newcommand{\mkbibquote}{\dQuote{#1}}
 \newcommand{\mkbibemph}{\emph{#1}}
 \newcommand{\mkbibbold}{\bold{#1}}
