@@ -1,10 +1,17 @@
+Changes in Version 1.0.0 (2018-02-19)
+--------------------------------------------------------
+
+* Use https for all links (h/t Katrin Leinweber)
+* Use preferred DOI resovler (h/t Katrin Leinweber)
+* Add support for latex macro ast for asterisks (h/t Melinda Higgins)
+
 Changes in Version 0.14.25 (2017-12-25)
 --------------------------------------------------------
 
-* Fix `GetDOIs`
-* Fix download of bibliographic info from DOI in `ReadPDFs`
-
 BUG FIXES
+
+* Fix `GetDOIs` to use https
+* Fix download of bibliographic info from DOI in `ReadPDFs`
 
 Changes in Version 0.14.23 (2017-11-12)
 --------------------------------------------------------
