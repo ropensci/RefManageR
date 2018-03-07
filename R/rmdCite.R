@@ -320,7 +320,10 @@ AddCitationPunct <- function(result, bibpunct, before, after, textual,
 #' \code{\link[utils]{citeNatbib}}, the package vignettes
 #' bib <- 
 #' @rdname Cite
-PrintBibliography <- function(bib, .opts = list()){
+PrintBibliography <- function(bib, .opts = list(), start = 1, stop = NULL, decreasing = FALSE){
+   
+  bib <- sort(bib, decreasing = FALSE)
+	
   if (!length(bib))
     return(bib)
   if (identical(class(bib), "bibentry"))
@@ -368,6 +371,11 @@ PrintBibliography <- function(bib, .opts = list()){
     sQuote(paste0(paste0("@", names(.cites$indices)), collapse = ", ")))
     cat("\n...  \n\n")
   }
+  
+  if (is.null(stop)) {
+      stop <- length(bib)
+    } 
+    bib <- bib[start:stop]
   print(bib)
 }
 
