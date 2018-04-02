@@ -327,8 +327,7 @@ AddCitationPunct <- function(result, bibpunct, before, after, textual,
 #' \code{\link[utils]{citeNatbib}}, the package vignettes
 #' bib <- 
 #' @rdname Cite
-PrintBibliography <- function(bib, .opts = list(), start = 1, end = length(bib),
-                              decreasing = FALSE){
+PrintBibliography <- function(bib, .opts = list(), start = 1, end = length(bib)){
    
   bib <- sort(bib, decreasing = FALSE)
 	
