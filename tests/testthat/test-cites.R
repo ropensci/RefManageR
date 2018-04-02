@@ -130,6 +130,8 @@ test_that("switching cite.style and citing reference again", {
     expect_true(grepl("\\[KU\\]", Citet(bib, author = "Kant")))
 })
 
+bib2 <- ReadBib(system.file("Bib", "RJC.bib",
+                            package = "RefManageR"))[seq_len(20)]
 
 test_that("PrintBibliography when multiple BibEntry objects cited", {
     ##    rm(list=ls(all=TRUE))
@@ -145,8 +147,6 @@ test_that("PrintBibliography when multiple BibEntry objects cited", {
                                 package = "RefManageR"), check = FALSE)
     AutoCite(bib, author = "kant")
 
-    bib2 <- ReadBib(system.file("Bib", "RJC.bib",
-                                package = "RefManageR"))[seq_len(20)]
     if (!length(bib2))
         skip("Couldn't load RCJ.bib'")
     AutoCite(bib2, title = "binary longitudinal data")
@@ -154,4 +154,20 @@ test_that("PrintBibliography when multiple BibEntry objects cited", {
                                        .opts = list(cite.style = "numeric")))
     ## only one entry is printed (so that no blank lines separating entries)
     expect_false(any(grepl("^$", bibtext)))
+})
+
+test_that("PrintBibliography start and stop parameters", {
+    clear.cites()
+
+    if (!length(bib2))
+        skip("Couldn't load RCJ.bib'")
+    Citet(bib2, author = "Xun")    
+    AutoCite(bib2, title = "binary longitudinal data")
+    bibtext <- capture.output(PrintBibliography(bib2, stop = 1,
+                                       .opts = list(cite.style = "numeric")))
+    ## only one entry is printed (so that no blank lines separating entries)
+    expect_false(any(grepl("^$", bibtext)))
+    bibtext <- capture.output(PrintBibliography(bib2, start = 2,
+                                       .opts = list(cite.style = "numeric")))
+    expect_false(any(grepl("^$", bibtext)))    
 })
