@@ -1,3 +1,11 @@
+Changes in Version 1.1.0 (2018-04-02)
+--------------------------------------------------------
+
+* `PrintBibliography` gains parameters "start" and "end"
+to allow for printing only a subset of all cited entries from
+a BibEntry object (h/t Joseph Casillas #45, #46)
+
+
 Changes in Version 1.0.0 (2018-02-19)
 --------------------------------------------------------
 
