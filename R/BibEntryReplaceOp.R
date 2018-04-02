@@ -26,10 +26,10 @@
 #' ## add month to Serban et al., add URL and urldate to Jennings et al., and
 #' ##   add DOI and correct journal to Garcia et al.
 #' bib[seq_len(3L)] <- list(c(date="2013-12"), 
+#'                         c(url="https://bsb.eurasipjournals.com/content/2013/1/13", 
 #'                           urldate = "2014-02-02"), 
 #'                         c(doi="10.1093/bioinformatics/btt608", 
 #'                           journal = "Bioinformatics")) 
-#'                         c(url="https://bsb.eurasipjournals.com/content/2013/1/13", 
 #' print(bib[seq_len(3L)], .opts = list(sorting = "none", bib.style = "alphabetic"))
 #' bib2 <- bib[seq_len(3L)]
 #' bib2[2:3] <- bib[5:6]
