@@ -307,12 +307,19 @@ AddCitationPunct <- function(result, bibpunct, before, after, textual,
 #' @return PrintBibliography: The formatted list of references.
 #' @export
 #' @aliases TextCite AutoCite Citep Citet
-#' @details If \code{bib.style = "alphabetic"} or \code{bib.style = "numeric"},
-#' then sorting needs to be done at the start of the document prior to using a cite
-#' function as sorting is not done by the Printbibliography function for those styles
-#' (specifying \code{sorting} in \code{.opts} is ignored in this case).  If no sorting
-#' is none, the references are listed in the order they were cited in for those
-#' two styles.
+#' @param start Integer; specifying the index of the first citation to
+#'     print. Useful for printing long bibliographies on multiple
+#'     pages/slides.
+#' @param end Integer; specifying the index of the last citation to
+#'     print. Useful for printing long bibliographies on multiple
+#'     pages/slides.
+#' @details If \code{bib.style = "alphabetic"} or \code{bib.style =
+#'     "numeric"}, then sorting needs to be done at the start of the
+#'     document prior to using a cite function as sorting is not done
+#'     by the Printbibliography function for those styles (specifying
+#'     \code{sorting} in \code{.opts} is ignored in this case).  If no
+#'     sorting is none, the references are listed in the order they
+#'     were cited in for those two styles.
 #'
 #' If the \code{...} argument to NoCite is identical to \dQuote{*}, then all
 #' references in \code{bib} are added to the bibliography without citations.
@@ -373,10 +380,7 @@ PrintBibliography <- function(bib, .opts = list(), start = 1, end = length(bib),
     cat("\n...  \n\n")
   }
   
-  if (is.null(stop)) {
-      stop <- length(bib)
-    } 
-    bib <- bib[start:stop]
+  bib <- bib[start:end]
   print(bib)
 }
 

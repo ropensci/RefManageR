@@ -18,7 +18,8 @@
 Cite(bib, ..., textual = FALSE, before = NULL, after = NULL,
   .opts = list())
 
-PrintBibliography(bib, .opts = list())
+PrintBibliography(bib, .opts = list(), start = 1, end = length(bib),
+  decreasing = FALSE)
 
 Citep(bib, ..., before = NULL, after = NULL, .opts = list())
 
@@ -46,6 +47,14 @@ otherwise, a parenthetical citation as \\citep and \\autocite.}
 
 \item{.opts}{list; See the relevant section in \code{\link{BibOptions}} for a
 description of all valid options for these functions.}
+
+\item{start}{Integer; specifying the index of the first citation to
+print. Useful for printing long bibliographies on multiple
+pages/slides.}
+
+\item{end}{Integer; specifying the index of the last citation to
+print. Useful for printing long bibliographies on multiple
+pages/slides.}
 }
 \value{
 For the cite functions: a character string containing the citation
@@ -64,12 +73,13 @@ e.g., a RMarkdown or RHTML document.
 \details{
 See the package vignettes and execute the examples below.
 
-If \code{bib.style = "alphabetic"} or \code{bib.style = "numeric"},
-then sorting needs to be done at the start of the document prior to using a cite
-function as sorting is not done by the Printbibliography function for those styles
-(specifying \code{sorting} in \code{.opts} is ignored in this case).  If no sorting
-is none, the references are listed in the order they were cited in for those
-two styles.
+If \code{bib.style = "alphabetic"} or \code{bib.style =
+    "numeric"}, then sorting needs to be done at the start of the
+    document prior to using a cite function as sorting is not done
+    by the Printbibliography function for those styles (specifying
+    \code{sorting} in \code{.opts} is ignored in this case).  If no
+    sorting is none, the references are listed in the order they
+    were cited in for those two styles.
 
 If the \code{...} argument to NoCite is identical to \dQuote{*}, then all
 references in \code{bib} are added to the bibliography without citations.
