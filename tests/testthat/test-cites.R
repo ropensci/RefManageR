@@ -163,7 +163,7 @@ test_that("PrintBibliography start and stop parameters", {
         skip("Couldn't load RCJ.bib'")
     Citet(bib2, author = "Xun")    
     AutoCite(bib2, title = "binary longitudinal data")
-    bibtext <- capture.output(PrintBibliography(bib2, stop = 1,
+    bibtext <- capture.output(PrintBibliography(bib2, end = 1,
                                        .opts = list(cite.style = "numeric")))
     ## only one entry is printed (so that no blank lines separating entries)
     expect_false(any(grepl("^$", bibtext)))
