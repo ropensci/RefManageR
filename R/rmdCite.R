@@ -316,9 +316,9 @@ AddCitationPunct <- function(result, bibpunct, before, after, textual,
 #' @details If \code{bib.style = "alphabetic"} or \code{bib.style =
 #'     "numeric"}, then sorting needs to be done at the start of the
 #'     document prior to using a cite function as sorting is not done
-#'     by the Printbibliography function for those styles (specifying
+#'     by the \code{PrintBibliography} function for those styles (specifying
 #'     \code{sorting} in \code{.opts} is ignored in this case).  If no
-#'     sorting is none, the references are listed in the order they
+#'     sorting is done, the references are listed in the order they
 #'     were cited in for those two styles.
 #'
 #' If the \code{...} argument to NoCite is identical to \dQuote{*}, then all
