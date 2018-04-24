@@ -1162,7 +1162,12 @@ CreateBibKey <- function(ti, au, yr){
 
 #' @keywords internal
 MakeKeysUnique <- function(bib){
-    if (length(bib))
-        bib$key <- make.unique(names(bib), sep = ":")
+    if (length(bib)){
+        keys <- make.unique(names(bib), sep = ":")
+        bib <- unclass(bib)
+        for (i in seq_along(bib))
+            attr(bib[[i]], "key") <- keys[i]
+        class(bib) <- c("BibEntry", "bibentry")
+    }
     bib
 }
