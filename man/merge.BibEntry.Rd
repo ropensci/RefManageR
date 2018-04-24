@@ -9,7 +9,8 @@
 \method{+}{BibEntry}(e1, e2)
 
 \method{merge}{BibEntry}(x, y,
-  fields.to.check = BibOptions()$merge.fields.to.check, ...)
+  fields.to.check = BibOptions()$merge.fields.to.check,
+  ignore.case = BibOptions()$ignore.case, ...)
 }
 \arguments{
 \item{e1}{BibEntry object}
@@ -25,6 +26,9 @@ checked to determine if an entry
 is a duplicate?  Can include \code{"bibtype"} to check entry type and
 \code{"key"} to check entry keys. Specifying \code{"all"} checks all fields
 using \code{\link{duplicated}}.}
+
+\item{ignore.case}{logical; if \code{TRUE}, case is ignored when determining
+if fields are duplicates.}
 
 \item{...}{ignored}
 }
@@ -45,7 +49,7 @@ bib1 <- bib[seq_len(44)]
 bib2 <- bib[45:length(bib)]
 
 ## The following is FALSE because the parent entry of one entry in bib1
-##   is in bib2, so the child entry in is expanded in the BibEntry object
+##   is in bib2, so the child entry is expanded in the BibEntry object
 ##   returned by `[` to include the fields inherited from the dropped parent
 identical(merge(bib1, bib2, 'all'), bib)
 toBiblatex(bib1[[1L]])
