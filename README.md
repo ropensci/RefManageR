@@ -3,7 +3,7 @@ RefManageR
 [![](https://travis-ci.org/ropensci/RefManageR.svg?branch=master)](https://travis-ci.org/ropensci/RefManageR/)
 [![AppVeyor Build Status](http://ci.appveyor.com/api/projects/status/github/ropensci/RefManageR?branch=master&svg=true)](http://ci.appveyor.com/project/ropensci/RefManageR)
 [![Coverage Status](https://coveralls.io/repos/github/ropensci/RefManageR/badge.svg?branch=master)](https://coveralls.io/github/ropensci/RefManageR?branch=master)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RefManageR)](https://cran.r-project.org/package=RefManageR)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/RefManageR)](https://cran.r-project.org/package=RefManageR)
 [![CRAN_Download_Badge](http://cranlogs.r-pkg.org/badges/RefManageR)](https://cran.r-project.org/package=RefManageR)
 [![](https://ropensci.org/badges/120_status.svg)](https://github.com/ropensci/onboarding/issues/119)
 [![](http://joss.theoj.org/papers/10.21105/joss.00338/status.svg)](http://joss.theoj.org/papers/10.21105/joss.00338)
