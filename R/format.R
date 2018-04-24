@@ -46,6 +46,7 @@ format.BibEntry <- function(x, style = .BibOptions$style,
           ##                                            "macros", "system.Rd"))
           warnWithKey <- function(w){
                                            msg <- sub("^.*[[:alnum:]][:] ", "", w)
+                                           msg <- sub("\\n$", "", msg)
                                            msg <- paste0(y$key, ": ", msg)
                                            warning(msg, call. = FALSE)
                                            invokeRestart("muffleWarning")
