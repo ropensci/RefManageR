@@ -14,20 +14,20 @@
   if (length(rfields) > 0L) {
     ok <- vapply(rfields, function(f) any(f %in% fields), FALSE)
     if (any(!ok)){
-      if (check == 'warn'){
-          warning(sprintf(ngettext(sum(!ok),
-                      "A bibentry of bibtype %s has to specify the field: %s",
+      key <- attr(x, "key")
+      if (is.null(key))
+          key <- ""
+      else
+          key <- paste0(key, ": ")
+      msg <- sprintf(ngettext(sum(!ok),
+                      "%sA bibentry of bibtype %s has to specify the field: %s",
                       "A bibentry of bibtype %s has to specify the fields: %s"),
-                      sQuote(bibtype), paste(rfields[!ok], collapse = ", ")),
-                  domain = NA)
+                      key, sQuote(bibtype), paste(rfields[!ok], collapse = ", "))
+      if (check == 'warn'){
+          warning(msg, domain = NA, call. = FALSE)
         return(NULL)
-      }else{
-          stop(sprintf(ngettext(sum(!ok),
-                     "A bibentry of bibtype %s has to specify the field: %s",
-                     "A bibentry of bibtype %s has to specify the fields: %s"),
-                     sQuote(bibtype), paste(rfields[!ok], collapse = ", ")),
-               domain = NA)
-      }
+      }else
+          stop(msg, domain = NA)
     }
   }
 }
@@ -940,14 +940,22 @@ MakeBibEntry <- function(x, to.person = TRUE){
   if (type != 'set')
     tdate <- ProcessDates(y)
 
-  tryCatch(BibEntry(bibtype = type, key = key, dateobj = tdate, other = y),
+  withCallingHandlers(tryCatch(BibEntry(bibtype = type, key = key,
+                                        dateobj = tdate, other = y),
             error = function(e){
-                message(sprintf("Ignoring entry '%s' %sbecause:\n\t%s\n",
+                message(sprintf("Ignoring entry '%s' %sbecause:\n\t%s",
                          key,
                          line.no,
-                         conditionMessage(e)))
+                         conditionMessage(e)), domain = NA)
                 NULL
-                })
+            }),
+           warning = function(w){
+                warning(sprintf("%s %s:\n\t%s",
+                         key,
+                         line.no,
+                         conditionMessage(w)), domain = NA, call. = FALSE)
+                invokeRestart("muffleWarning")
+            })
 }
 
 #' @keywords internal

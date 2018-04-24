@@ -8,7 +8,14 @@ which defaults to `BibOptions()$ignore.case` (`TRUE`) so that case is
 ignore when checking for duplicate fields (h/t Justin Calabrese #47)
 * Improved warning message when printing entries with unknown 
 LaTeX macros (the entry key is now included). (h/t Justin Calabrese #49)
+* The entry key is now included in warning messages when entries are 
+missing fields and `BibOptions()$check.entries == "warn"` (h/t Justin
+Calabrese #48)
 
+BUG FIXES
+
+* Entries are now only checked once to ensure all required
+  fields are present in `ReadBib`
 
 Changes in Version 1.1.0 (2018-04-02)
 --------------------------------------------------------
