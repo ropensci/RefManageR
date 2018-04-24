@@ -44,15 +44,27 @@ format.BibEntry <- function(x, style = .BibOptions$style,
           on.exit(close(con))
           ## macro.env <- tools::loadRdMacros(file.path(R.home("share"), "Rd",
           ##                                            "macros", "system.Rd"))
+          warnWithKey <- function(w){
+                                           msg <- sub("^.*[[:alnum:]][:] ", "", w)
+                                           msg <- paste0(y$key, ": ", msg)
+                                           warning(msg, call. = FALSE)
+                                           invokeRestart("muffleWarning")
+                                       }
           if (getRversion() >= "3.3.0"){
             ## !!! prevent use of devtools::system.file
             macro.env <- tools::loadPkgRdMacros(base::system.file(package =
                                                                 "RefManageR"))
-            f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8',
-              macros = macro.env, ...) 
+              withCallingHandlers(f(con, fragment = TRUE, out = out,
+                         outputEncoding = 'UTF-8', macros = macro.env,
+                         warningCalls = FALSE, ...),
+                         warning = warnWithKey)
+              ## suppressWarnings(f(con, fragment = TRUE, out = out,
+              ##                        outputEncoding = 'UTF-8', macros = macro.env, ...))
           }else
-              f(con, fragment = TRUE, out = out, outputEncoding = 'UTF-8', ...)
-              
+              withCallingHandlers(f(con, fragment = TRUE, out = out,
+                         outputEncoding = 'UTF-8', warningCalls = FALSE, ...),
+                         warning = warnWithKey)
+
           paste(readLines(out, encoding = 'UTF-8'), collapse = "\n")
         }, "")
         if (style == "html"){

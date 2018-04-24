@@ -1,9 +1,13 @@
 Changes in Version 1.2.0 (2018-04-24)
 --------------------------------------------------------
 
+NEW FEATURES
+
 * `+.BibEntry` and `merge.BibEntry` gain an argument ignore.case,
 which defaults to `BibOptions()$ignore.case` (`TRUE`) so that case is 
 ignore when checking for duplicate fields (h/t Justin Calabrese #47)
+* Improved warning message when printing entries with unknown 
+LaTeX macros (the entry key is now included). (h/t Justin Calabrese #49)
 
 
 Changes in Version 1.1.0 (2018-04-02)

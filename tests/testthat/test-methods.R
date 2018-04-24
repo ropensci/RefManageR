@@ -90,6 +90,13 @@ test_that("open", {
     open(testbib, entry = 1)  # eprint
 })
 
+test_that("Warning for unknown macro includes key",
+{
+    bib <- BibEntry(key = "testkey", bibtype = "misc", author = "Smith, John",
+                    title = "Title with \\badmacro", year = 2018)
+    expect_warning(print(bib), "^testkey: unknown macro")
+})
+
 test_that("c", {
    expect_length(c(bib[1], bib[2]), 2L)
    expect_error(c(bib[1], unlist(bib[2])))
