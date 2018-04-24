@@ -1,3 +1,11 @@
+Changes in Version 1.2.0 (2018-04-24)
+--------------------------------------------------------
+
+* `+.BibEntry` and `merge.BibEntry` gain an argument ignore.case,
+which defaults to `BibOptions()$ignore.case` (`TRUE`) so that case is 
+ignore when checking for duplicate fields (h/t Justin Calabrese #47)
+
+
 Changes in Version 1.1.0 (2018-04-02)
 --------------------------------------------------------
 

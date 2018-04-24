@@ -51,6 +51,18 @@ test_that("merge function, two fields to check", {
     expect_equal(length(res), 6L)
 })
 
+test_that("addition operator ignore.case",
+{
+    bib1 <- BibEntry(key = "k1", title = "THE TITLE", author = "Smith, John",
+                     bibtype = "Misc", year = 2018)
+    bib2 <- BibEntry(key = "k2", title = "The Title", author = "Smith, John",
+                     bibtype = "Misc", year = 2018)
+    BibOptions(ignore.case = TRUE, merge.fields.to.check = c("year", "title"))
+    expect_message(bib1 + bib2, "Only duplicates")
+    expect_length(merge(bib1, bib2, ignore.case = FALSE,
+                        fields.to.check = "title"), 2)
+})
+
 test_that("head and tail", {
     expect_length(head(bib), 6L)
     expect_equal(tail(bib, 3), bib[(length(bib)-2):length(bib)])
@@ -67,7 +79,7 @@ test_that("open", {
 
     ## no error if cannot open
     expect_message(open(testbib, open.field = "eprint"),
-                   "Could not open the specified entry.")  
+                   "Could not open the specified entry.")
 
     open(bib["kastenholz"])  # DOI
     testbib <- BibEntry(bibtype = "Misc", key = "arxiv", eprinttype = "arxiv",

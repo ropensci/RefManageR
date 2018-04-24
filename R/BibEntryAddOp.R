@@ -13,6 +13,8 @@
 #' is a duplicate?  Can include \code{"bibtype"} to check entry type and
 #' \code{"key"} to check entry keys. Specifying \code{"all"} checks all fields
 #' using \code{\link{duplicated}}.
+#' @param ignore.case logical; if \code{TRUE}, case is ignored when determining
+#' if fields are duplicates.
 #' @return an object of class BibEntry
 #' @family operators
 #' @seealso \code{\link{duplicated}}, \code{\link{unique}}
@@ -27,7 +29,7 @@
 #' bib2 <- bib[45:length(bib)]
 #'
 #' ## The following is FALSE because the parent entry of one entry in bib1
-#' ##   is in bib2, so the child entry in is expanded in the BibEntry object
+#' ##   is in bib2, so the child entry is expanded in the BibEntry object
 #' ##   returned by `[` to include the fields inherited from the dropped parent
 #' identical(merge(bib1, bib2, 'all'), bib)
 #' toBiblatex(bib1[[1L]])
@@ -54,6 +56,7 @@
 #' @keywords methods
 `+.BibEntry` <- function(e1, e2){
   fields.to.check <- .BibOptions$merge.fields.to.check
+  ignore.case <- .BibOptions$ignore.case
   awl <- "all" %in% fields.to.check
   att1 <- attributes(e1)[bibentry_list_attribute_names]
   att2 <- attributes(e2)[bibentry_list_attribute_names]
@@ -81,17 +84,26 @@
       possible.dup <- unlist(e2$bibtype) %in% unlist(e1$bibtype)
     }
     remain.dup.f <- setdiff(fields.to.check, c('bibtype', 'key'))
-    
+
     if (length(dup.ind <- possible.dup) && length(remain.dup.f)){
+      ty <- unclass(e1)
+      ty <- lapply(ty, function(y, f, ignore.case){
+          y <- y[f]
+          if (ignore.case)
+              y <- lapply(y, tolower)
+          y
+      }, f = remain.dup.f, ignore.case = ignore.case)
       dup.ind <- vapply(unclass(e2[possible.dup]),
-                      function(x, y, flds){
+                      function(x, y, flds, ignore.case){
                         x <- x[flds]
+                        if (ignore.case)
+                          x <- lapply(x, tolower)
                         for (i in seq_along(y)){
-                          if (identical(y[[i]][flds], x))
+                          if (identical(y[[i]], x))
                             return(TRUE)
                         }
                         return(FALSE)
-                    }, FALSE, y = unclass(e1), flds = remain.dup.f)
+                    }, FALSE, y = ty, flds = remain.dup.f, ignore.case = ignore.case)
       if (length(dup.ind))
           dup.ind <- which(dup.ind)
     }
@@ -128,8 +140,10 @@
 #' @rdname merge.BibEntry
 merge.BibEntry <- function(x, y,
                            fields.to.check = BibOptions()$merge.fields.to.check,
+                           ignore.case = BibOptions()$ignore.case,
                            ...){
-  oldfields <- BibOptions(merge.fields.to.check = fields.to.check)
+  oldfields <- BibOptions(merge.fields.to.check = fields.to.check,
+                            ignore.case = ignore.case)
   on.exit(BibOptions(oldfields))
   `+.BibEntry`(x, y)
 }
