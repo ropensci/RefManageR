@@ -1,3 +1,9 @@
+Changes in Version 1.2.1 (2018-05-30)
+--------------------------------------------------------
+
+* `GetPubMedByID` is better at extracting years and months
+from the results returned by NCBI Entrez (h/t Dale Steele #52)
+
 Changes in Version 1.2.0 (2018-04-24)
 --------------------------------------------------------
 

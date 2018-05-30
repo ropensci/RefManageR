@@ -49,3 +49,11 @@ test_that("LookupPubMedID successfully retrieves and add ID's'", {
     expect_message(LookupPubMedID(bib, 453), "No PubMed ID's found")
 })
 
+test_that("GetPubMedByID reading of years/months (#52)", {
+  skip_on_cran()
+  if (httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
+    skip("Couldn't connect to Entrez")
+  bib <- GetPubMedByID("23891459") 
+  expect_equal(bib$year, "2013")
+  expect_equal(bib$month, "07")
+})

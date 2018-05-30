@@ -132,7 +132,7 @@ GetPubMedByID <- function(id, db = "pubmed", ...){
   ##   return()
   ## }
 
-  results <- c(lapply(results, ProcessPubMedResult),
+    results <- c(lapply(results, ProcessPubMedResult),
                lapply(results.book, ProcessPubMedBookResult))
 
   res <- if (length(results))  # else NULL
@@ -284,19 +284,10 @@ ProcessPubMedResult <- function(tdoc){
   complete.AuthorList <- xml_attr(xml_find_all(tdoc,
                     ".//MedlineCitation/Article/AuthorList"),
                                     attr = "CompleteYN", default = "")
-
-  res$year <- xml_text(xml_find_all(tdoc,
-        ".//MedlineCitation/Article/Journal/JournalIssue/PubDate/Year"))
-  res$month <- xml_text(xml_find_all(tdoc,
-        ".//MedlineCitation/Article/Journal/JournalIssue/PubDate/Month"))
-
-    if (is.null(res$year))  # search extra hard for year
-        res$year <- xml_text(xml_find_all(tdoc,
-                            ".//MedlineCitation/Article/ArticleDate/Year"))
-    if (is.null(res$year))
-        res$year <- xml_text(xml_find_all(tdoc,
-                             ".//PubmedData/History/PubMedPubDate/Year"))[1]
-
+  
+  res$year <- extractPubMedDatePart(tdoc, type = "Article", date.part = "Year")
+  res$month <- extractPubMedDatePart(tdoc, type = "Article", date.part = "Month")
+  
   res$journal <- xml_text(xml_find_all(tdoc,
                          ".//MedlineCitation/Article/Journal/Title"))
 
@@ -363,6 +354,28 @@ ProcessPubMedResult <- function(tdoc){
   MakeBibEntry(res, FALSE)
 }
 
+extractPubMedDatePart <- function(nodes, type = "Article", date.part = "Year"){
+  xpaths <- 
+    if (type == "Book")
+      c("//PubmedBookArticle/BookDocument/Book/PubDate/",
+        "//PubmedBookArticle/PubmedBookData/History/PubMedPubDate/",
+        ".//PubmedBookArticle//")
+    else
+      c(".//MedlineCitation/Article/Journal/JournalIssue/PubDate/",
+        ".//MedlineCitation/Article/ArticleDate/",
+        ".//PubmedData/History/PubMedPubDate/",
+        ".//MedlineCitation//", ".//PubmedData//")
+  xpaths <- paste0(xpaths, date.part)
+
+  out <- character(0)
+  i <- 1
+  while ((!length(out) || is.na(out)) && i <= length(xpaths)){
+    out <- xml_text(xml_find_first(nodes, xpaths[i]))
+    i <- i + 1
+  }
+  out
+}
+
 ProcessPubMedBookResult <- function(tdoc){
   if (!length(tdoc))
       return()
@@ -377,17 +390,8 @@ ProcessPubMedBookResult <- function(tdoc){
         "//PubmedBookArticle/BookDocument/Book/AuthorList/Author/ForeName"))
   res$author <- as.person(paste(first.names, last.names))
 
-  res$year <- xml_text(xml_find_all(tdoc,
-                      "//PubmedBookArticle/BookDocument/Book/PubDate/Year"))
-    ## if (is.null(res$year))  # search extra hard for year
-    ##     res$year <- xml_text(xml_find_all(tdoc,
-    ##           "//PubmedBookArticle/MedlineCitation/Article/ArticleDate/Year",
-    ##                              xmlValue))
-  res$month <- xml_text(xml_find_all(tdoc,
-                       "//PubmedBookArticle/BookDocument/Book/PubDate/Month"))
-  if (is.null(res$year))
-    res$year <- xml_text(xml_find_all(tdoc,
-           "//PubmedBookArticle/PubmedBookData/History/PubMedPubDate/Year"))[1]
+  res$year <- extractPubMedDatePart(tdoc, type = "Book", date.part = "Year")
+  res$month <- extractPubMedDatePart(tdoc, type = "Book", date.part = "Month")
 
   res$booktitle <- xml_text(xml_find_all(tdoc,
                       "//PubmedBookArticle/BookDocument/Book/CollectionTitle"))
