@@ -354,6 +354,8 @@ ProcessPubMedResult <- function(tdoc){
   MakeBibEntry(res, FALSE)
 }
 
+#' @importFrom xml2 xml_text xml_find_first
+#' @noRd
 extractPubMedDatePart <- function(nodes, type = "Article", date.part = "Year"){
   xpaths <- 
     if (type == "Book")
