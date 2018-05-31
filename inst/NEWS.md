@@ -1,8 +1,13 @@
-Changes in Version 1.2.1 (2018-05-30)
+Changes in Version 1.2.2 (2018-05-31)
 --------------------------------------------------------
+
+BUG FIXES
 
 * `GetPubMedByID` is better at extracting years and months
 from the results returned by NCBI Entrez (h/t Dale Steele #52)
+* The `as.data.frame`method for `BibEntry` objects now correctly
+handles the case of a single entry with name list fields containing multiple 
+names single entry (h/t Damon Bayer #51)
 
 Changes in Version 1.2.0 (2018-04-24)
 --------------------------------------------------------

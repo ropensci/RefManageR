@@ -59,15 +59,37 @@ test_that("data.frame-BibEntry conversion", {
    expect_equal(length(bib), 2L)
 })
 
-test_that("BibEntry to data.frame when multiple authors", {
-    bib <- list(c(bibtype = "article", key = "mclean2014a",
+test_that("BibEntry to df multiple authors, single entry #51", {
+  bib.l <- list(c(bibtype = "article", key = "mclean2014a",
                   title = "My New Article",
                   author = "McLean, Mathew W. and Ruppert, David",
                   journaltitle = "The Journal", date = "2014-01-01"))
-   bib <- as.BibEntry(bib)
+   bib <- as.BibEntry(bib.l)
    bib.df <- as.data.frame(bib)
    expect_is(bib.df, "data.frame")
-   expect_equal(length(bib), 1L)
+   expect_equal(nrow(bib.df), length(bib.l))
+   expect_equal(bib.df[["author"]], "Mathew W. McLean and David Ruppert")
+   expect_equal(rownames(bib.df), unname(names(bib)))
+   expect_equal(colnames(bib.df), c("bibtype", unique(unlist(fields(bib)))))
+})
+
+test_that("BibEntry to df multiple authors, multiple entries", {
+    bib.l <- list(c(bibtype = "article", key = "mclean2014a",
+                  title = "My New Article", editor = "Bob Smith",
+                  author = "McLean, Mathew W. and Ruppert, David",
+                  journaltitle = "The Journal", date = "2014-01-01"),
+                                c(bibtype = "article", key = "mclean2014b", volume = 10,
+                  title = "My Newer Article", author = "Mathew W. McLean",
+                  journaltitle = "The Journal", date = "2014"))
+    bib <- as.BibEntry(bib.l)
+    bib.df <- as.data.frame(bib)
+    expect_is(bib.df, "data.frame")
+    expect_equal(nrow(bib.df), length(bib.l))
+    expect_equal(bib.df[["author"]], c("Mathew W. McLean and David Ruppert",
+                                       "Mathew W. McLean"))
+    expect_equal(bib.df[["editor"]], unname(c(bib.l[[1L]]["editor"], NA)))
+    expect_equal(rownames(bib.df), unname(names(bib)))
+    expect_equal(colnames(bib.df), c("bibtype", unique(unlist(fields(bib)))))
 })
 
 
@@ -77,9 +99,9 @@ test_that("character to BibEntry", {
     bib <- as.BibEntry(bib.c)
     expect_is(bib, "BibEntry")
     ## missing bibtype
-    expect_error(as.BibEntry(bib.c[-1]), "Object of class character")  
+    expect_error(as.BibEntry(bib.c[-1]), "Object of class character")
     ## missing key
-    expect_error(as.BibEntry(bib.c[-5]), "Object of class character")  
+    expect_error(as.BibEntry(bib.c[-5]), "Object of class character")
 })
 
 test_that("bibentry to BibEntry", {
