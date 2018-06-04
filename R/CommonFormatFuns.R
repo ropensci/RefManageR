@@ -64,9 +64,9 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     shortName <- function(pers){
         if (length(pers$family)) {
             res <- cleanupLatex(pers$family)
-            if (length(pers$given)){ 
+            if (length(pers$given)){
               if (.BibOptions$first.inits){
-                paste0(c(substr(vapply(pers$given, cleanupLatex, ""), 
+                paste0(c(substr(vapply(pers$given, cleanupLatex, ""),
                     start = 1L, stop = 1L), res), collapse = ". ")
               }else{
                 cleanupLatex(as.character(pers))
@@ -78,9 +78,9 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
           paste(cleanupLatex(pers$given), collapse = " ")
         }
     }
-    
+
     fmtEventTitle <- cleanap
-    
+
     fmtIBTitle <- function(tl, stl, bib){
       if (bib){  # bookinbook entry
         fmtBTitle(tl, stl)
@@ -100,9 +100,9 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     fmtVolumes <- label(suffix = ' vols.')
     fmtOrganization <- label(suffix = '.')
 
-    
+
     fmtJTitle <- function(title){
-      if (!is.null(title))  
+      if (!is.null(title))
         if (grepl('[.?!]$', title, useBytes = TRUE))
           paste0("\\dQuote{", collapse(cleanupLatex(title)), "}")
         else paste0("\\dQuote{", collapse(cleanupLatex(title)), "}.")
@@ -148,7 +148,7 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
       }
     }
 
-    fmtPLocation <- labelclean(prefix = '(', suffix = ')')    
+    fmtPLocation <- labelclean(prefix = '(', suffix = ')')
     fmtAnnotator <- labelPersons(prefix = 'With annots. by ', suffix = '.')
     fmtCommentator <- labelPersons(prefix = 'With a comment. by ', suffix = '.')
     fmtIntroduction <- labelPersons(prefix = 'With an intro. by ', suffix = '.')
@@ -331,7 +331,7 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
         }
         addPeriod(res)
       }
-    })    
+    })
     fmtNote <- function(note, prefix = NULL, suffix = '.'){
       if (length(note))
         paste0(prefix, cleanupLatex(note), suffix)
@@ -361,15 +361,16 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     fmtISSN <- label(prefix = 'ISSN: ', suffix = '.')
     fmtISBN <- label(prefix = 'ISBN: ', suffix = '.')
     fmtISRN <- label(prefix = 'ISRN: ', suffix = '.')
+    #' @importFrom util URLencode
     fmtDOI <- switch(docstyle, html = function(doi){
                             if (length(doi)){
                               paste0("DOI: \\href{https://doi.org/",
-                                     doi, "}{", doi, "}.")
+                                     URLencode(doi, reserved = TRUE), "}{", doi, "}.")
                             }
                           }, markdown = function(doi){
                               if (length(doi)){
                                 paste0("DOI: [", doi, "](https://doi.org/",
-                                       doi, ").")
+                                       URLencode(doi, reserved = TRUE), ").")
                               }
                             }, label(prefix = 'DOI: ', suffix = '.'))
 
@@ -439,7 +440,7 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
                                                            cleanupLatex, ""),
                                                     1L, 1L), collapse = ". "),
                                   sep = ", "), ".")
-              
+
             }else{
                 res <- paste(res, paste(vapply(pers$given, cleanupLatex, ""),
                                         collapse = " "), sep = ", ")
@@ -523,7 +524,7 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
       }
       result
     }
-    
+
     sortKeysV <- function(bib){
       result <- numeric(length(bib))
       for (i in seq_along(bib)){
@@ -611,6 +612,6 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
         }
         result
     }
-        
+
     environment()
 }
