@@ -161,7 +161,7 @@ test_that("PrintBibliography start and stop parameters", {
 
     if (!length(bib2))
         skip("Couldn't load RCJ.bib'")
-    Citet(bib2, author = "Xun")    
+    Citet(bib2, author = "Xun")
     AutoCite(bib2, title = "binary longitudinal data")
     bibtext <- capture.output(PrintBibliography(bib2, end = 1,
                                        .opts = list(cite.style = "numeric")))
@@ -169,5 +169,26 @@ test_that("PrintBibliography start and stop parameters", {
     expect_false(any(grepl("^$", bibtext)))
     bibtext <- capture.output(PrintBibliography(bib2, start = 2,
                                        .opts = list(cite.style = "numeric")))
-    expect_false(any(grepl("^$", bibtext)))    
+    expect_false(any(grepl("^$", bibtext)))
+})
+
+test_that("#54 DOI with parentheses works with markdown", {
+   bibtext <- "@article{Mendenhall:1984,
+      Author = {Mendenhall, William M. and Million, Rodney R. and Sharkey, Daniel E. and Cassisi, Nicholas J.},
+      Date-Added = {2018-06-04 03:03:17 +0000},
+      Date-Modified = {2018-06-04 03:03:17 +0000},
+      Doi = {10.1016/0360-3016(84)90054-3},
+      Isbn = {0360-3016},
+      Journal = {International Journal of Radiation Oncology *Biology *Physics},
+      Number = {3},
+      Pages = {357--363},
+      Title = {Stage T3 squamous cell carcinoma of the glottic larynx treated with surgery and/or radiation therapy},
+      Volume = {10},
+      Year = {1984},
+      Bdsk-Url-1 = {https://doi.org/10.1016/0360-3016%5C%252884%5C%252990054-3}}"
+   tfile <- tempfile()
+   writeLines(bibtext, tfile)
+   bib <- ReadBib(tfile)
+   expect_length(grep("[(]https://doi.org/10.1016%2F0360-3016%2884%2990054-3[)]",
+                      capture.output(print(bib, .opts = list(style = "markdown")))), 1L)
 })

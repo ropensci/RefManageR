@@ -363,14 +363,16 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     fmtISRN <- label(prefix = 'ISRN: ', suffix = '.')
     #' @importFrom util URLencode
     fmtDOI <- switch(docstyle, html = function(doi){
-                            if (length(doi)){
+                            if (length(doi))
                               paste0("DOI: \\href{https://doi.org/",
-                                     URLencode(doi, reserved = TRUE), "}{", doi, "}.")
-                            }
+                                     doi, "}{", doi, "}.")
                           }, markdown = function(doi){
                               if (length(doi)){
+                                ## #54 possible parentheses in DOI need to be escaped
+                                ##   need to gsub/escape % for  later call to tools::Rd2txt
+                                enc.doi <- gsub("%", "\\\\%", URLencode(doi, reserved = TRUE))
                                 paste0("DOI: [", doi, "](https://doi.org/",
-                                       URLencode(doi, reserved = TRUE), ").")
+                                       enc.doi, ").")
                               }
                             }, label(prefix = 'DOI: ', suffix = '.'))
 
