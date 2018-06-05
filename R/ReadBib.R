@@ -36,7 +36,7 @@ ReadBib <- function(file, .Encoding = "UTF-8",
 
   if (!is.character(file)) {
       stop(gettextf("%s only supports reading from files, %s should be %s",
-                    sQuote("read.bib"), sQuote("file"),
+                    sQuote("ReadBib"), sQuote("file"),
                     "a character vector of length one"))
   }
   srcfile <- switch(.Encoding, unknown = srcfile(file),
