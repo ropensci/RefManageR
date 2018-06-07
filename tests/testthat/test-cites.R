@@ -191,4 +191,5 @@ test_that("#54 DOI with parentheses works with markdown", {
    bib <- ReadBib(tfile)
    expect_length(grep("[(]https://doi.org/10.1016%2F0360-3016%2884%2990054-3[)]",
                       capture.output(print(bib, .opts = list(style = "markdown")))), 1L)
+   unlink(tfile)
 })
