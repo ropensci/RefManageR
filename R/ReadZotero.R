@@ -38,7 +38,7 @@
 #' @export
 #' @seealso \code{\link{BibEntry}}
 #' @references \verb{https://www.zotero.org/support/dev/server_api/v2/read_requests}
-#' @importFrom httr GET
+#' @importFrom httr GET content
 #' @examples
 #' \dontrun{
 #' ## first two entries in library with bayesian in title
@@ -99,7 +99,7 @@ ReadZotero <- function(user, group, .params,
   res <- GET(uri, query = .parms)  #, config = list(ssl.verifypeer=TRUE,
                                    #     httpheader="Zotero-API-Version: 2",
                                    # forbid.reuse=TRUE, cainfo=cert))
-  res <- rawToChar(res$content)
+  res <- content(res, as = "text", encoding = "UTF-8")
 
   if (.is_not_nonempty_text(res)){
     print("No results.")
