@@ -21,7 +21,7 @@
           key <- paste0(key, ": ")
       msg <- sprintf(ngettext(sum(!ok),
                       "%sA bibentry of bibtype %s has to specify the field: %s",
-                      "A bibentry of bibtype %s has to specify the fields: %s"),
+                      "%sA bibentry of bibtype %s has to specify the fields: %s"),
                       key, sQuote(bibtype), paste(rfields[!ok], collapse = ", "))
       if (check == 'warn'){
           warning(msg, domain = NA, call. = FALSE)
@@ -140,7 +140,7 @@ ResolveBibLaTeXCrossRef <- function(chi, par){
                       proceedings = "inproceedings",
                       periodical = c("article", "suppperiodical"))
 
-  
+
   if (chi.type %in% child.table[[par.type]])
       chi <- ProcessCrossref(par.type, par, chi)
   chi
@@ -231,12 +231,12 @@ ArrangeSingleAuthor <- function(y){
         }, error = function(e){
             message(gettextf("Unrecognized macro in %s", y))
                     tmp
-                })        
+                })
       y <- deparseLatex(tmp)
     }
   }
-  ## split on commas not in braces  
-  parts <- unlist(strsplit(y, ", ?(?![^{}]*})", perl = TRUE))  
+  ## split on commas not in braces
+  parts <- unlist(strsplit(y, ", ?(?![^{}]*})", perl = TRUE))
   len.parts <- length(parts)
   if (len.parts == 1L){
     #     parts <- "{Barnes} {and} {Noble,} {Inc.}"
@@ -257,7 +257,7 @@ ArrangeSingleAuthor <- function(y){
       if (i > 0)
           first <- paste0(s[seq_len(i-1)], collapse = '')
       ## Mathew {McLean IX}
-      person(UnlistSplitClean(first), cleanupLatexSearch(last))  
+      person(UnlistSplitClean(first), cleanupLatexSearch(last))
     }else{
       vonrx <- "(^|[[:space:]])([[:lower:]+[:space:]?]+)[[:space:]]"
       m <- regexec(vonrx, parts, useBytes = TRUE)
@@ -837,7 +837,7 @@ ParseGSCitesNew <- function(title, author, year, src, cited_by, encoding,
 ProcessGSAuthors <- function(authors){
   # authors <- gsub(',', ', and', authors)  # add "and" to separate authors
   ## add space between given name initials
-  # authors <- gsub('([A-Z])([A-Z])', '\\1 \\2', authors)  
+  # authors <- gsub('([A-Z])([A-Z])', '\\1 \\2', authors)
   authors <- gsub(", [.]{3}$", "", authors, useBytes = TRUE)
   authors <- strsplit(authors, ", ")[[1]]
 
@@ -986,7 +986,7 @@ ProcessDate <- function(dat, mon, searching = FALSE){
   .day <- FALSE  # does entry contain valid day?
   .mon <- FALSE  # does entry contain valid month?
   if (grepl("^(1|2)[0-9]{3}((-?-|/)(1|2)[0-9]{3})?$", dat, useBytes = TRUE)){
-    ## e.g. 1991, 1991--1992, or 1991/1992  
+    ## e.g. 1991, 1991--1992, or 1991/1992
     ## check for year specified as range
     dats <- strsplit(dat, "-?-|/")[[1]]
     if (length(dats) == 1L)
@@ -1136,10 +1136,10 @@ CreateBibKey <- function(ti, au, yr){
   ## useBytes = TRUE can cause error to be thrown by tolower if non-ASCII
   ## character match because regmatches will return string with "bytes" encoding
 
-  ## will be character(0) if no matches or if ti is NULL  
+  ## will be character(0) if no matches or if ti is NULL
   key.title <- try({
         m <- regexpr("\\w{4,}", ti, useBytes = FALSE, perl = FALSE)
-        tolower(regmatches(ti, m))  
+        tolower(regmatches(ti, m))
   }, TRUE)
   if (inherits(key.title, "try-error"))
       key.title <- ""
@@ -1159,8 +1159,8 @@ CreateBibKey <- function(ti, au, yr){
                        'translator', 'commentator', 'annotator',
                        'introduction', 'foreword', 'afterword', 'bookauthor',
                        'holder')
-  
-.BibEntryDateField <- c('date', 'year', 'month', 'eventdate', 'origdate', 
+
+.BibEntryDateField <- c('date', 'year', 'month', 'eventdate', 'origdate',
                         'urldate')
 .BibEntryTypeField <- c(mathesis = 'MA Thesis', phdthesis = 'PhD thesis',
                         datacd = 'CD-ROM', candthesis = 'Cand. thesis',
