@@ -5,6 +5,8 @@ Changes in Version 1.2.6 (2018-12-07)
 
 * Fix extraction of citation counts in `ReadGS` that was occasionally 
 causing errors from some `scholar.id`s (h/t Miao Sun)
+* Fix printing of thesis and report entries types in authoryear style
+when "type" field missing (h/t Hugo Grunson)
 
 
 Changes in Version 1.2.2 (2018-05-31)
