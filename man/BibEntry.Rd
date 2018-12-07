@@ -117,7 +117,7 @@ BibTeX for backwards compatibility. BibLaTeX defines following entry types
 
 \examples{
 BibEntry(bibtype = "Article", key = "mclean2014", title = "An Article Title",
-  author = " McLean, Mathew W. and Wand, Matt P.", journaltitle = "The Journal Title",
+  author = "McLean, Mathew W. and Wand, Matt P.", journaltitle = "The Journal Title",
   date = "2014-02-06", pubstate = "forthcoming")
 bib <- BibEntry(bibtype = "XData", key = "arxiv_data", eprinttype = "arxiv",
 eprintclass = "stat.ME", year = 2013, urldate = "2014-02-01", pubstate = "submitted")
