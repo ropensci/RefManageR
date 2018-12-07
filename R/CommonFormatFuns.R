@@ -361,7 +361,7 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     fmtISSN <- label(prefix = 'ISSN: ', suffix = '.')
     fmtISBN <- label(prefix = 'ISBN: ', suffix = '.')
     fmtISRN <- label(prefix = 'ISRN: ', suffix = '.')
-    #' @importFrom util URLencode
+    #' @importFrom utils URLencode
     fmtDOI <- switch(docstyle, html = function(doi){
                             if (length(doi))
                               paste0("DOI: \\href{https://doi.org/",
