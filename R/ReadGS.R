@@ -89,7 +89,7 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
   ## doc <- GetForm(uri, .params = .params, .encoding = .Encoding)
   ## cites <- xpathApply(htmlParse(doc, encoding = .Encoding),
   ##   "//tr[@class=\"gsc_a_tr\"]")  # "//tr[@class=\"cit-table item\"]")
-  
+
   ## cites <- xpathApply(doc, "//tr[@class=\"gsc_a_tr\"]")
   if(!length(cites)){
     message("no results")
@@ -104,7 +104,7 @@ ReadGS <- function(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
   authors <- srcs[seq(1, length(srcs), by = 2)]
   journals <- srcs[seq(2, length(srcs), by = 2)]
   citeby <- xml_text(xml_find_all(cites,
-                     "//tr/td[@class=\"gsc_a_c\"]/a[@class=\"gsc_a_ac\"]"))
+                     "//tr/td[contains(@class,\"gsc_a_c\")]/a[contains(@class,\"gsc_a_ac\")]"))
   if (length(titles) > limit){
       idx <- seq_len(limit)
       titles <- titles[idx]

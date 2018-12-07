@@ -1,3 +1,12 @@
+Changes in Version 1.2.6 (2018-12-07)
+========================================================
+
+## BUGS FIXES
+
+* Fix extraction of citation counts in `ReadGS` that was occasionally 
+causing errors from some `scholar.id`s (h/t Miao Sun)
+
+
 Changes in Version 1.2.2 (2018-05-31)
 ========================================================
 
