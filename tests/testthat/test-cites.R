@@ -195,6 +195,7 @@ test_that("#54 DOI with parentheses works with markdown", {
 })
 
 test_that("#58 thesis and report with missing type arg", {
+    BibOptions(restore.defaults = TRUE)
     test <- bibentry("phdthesis", key = "test00", title = "My Wonderful Thesis", author = "Hugo Grunson",
                      school = "The U", year = "2018")
 
