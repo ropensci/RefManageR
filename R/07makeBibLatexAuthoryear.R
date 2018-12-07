@@ -717,7 +717,7 @@ MakeAuthorYear <- function(docstyle = "text"){
       }
     }
 
-    formatReport <- function(paper){
+    formatReport <- function(paper, type = NULL){
         collapse(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'),
                                               paper$.index),
                    fmtBTitle(paper$title, paper$subtitle),
@@ -735,7 +735,7 @@ MakeAuthorYear <- function(docstyle = "text"){
                ))    
     }
 
-    formatThesis <- function(paper){
+    formatThesis <- function(paper, type = NULL){
         collapse(c(fmtBAuthor(paper), fmtDate(attr(paper, 'dateobj'),
                                               paper$.index), 
                    fmtIBTitle(paper$title, paper$subtitle, FALSE),
