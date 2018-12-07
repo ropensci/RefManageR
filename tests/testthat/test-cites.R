@@ -193,3 +193,13 @@ test_that("#54 DOI with parentheses works with markdown", {
                       capture.output(print(bib, .opts = list(style = "markdown")))), 1L)
    unlink(tfile)
 })
+
+test_that("#58 thesis and report with missing type arg", {
+    test <- bibentry("phdthesis", key = "test00", title = "My Wonderful Thesis", author = "Hugo Grunson",
+                     school = "The U", year = "2018")
+
+    Cite(test, "test00")
+
+    out <- capture.output(PrintBibliography(test, .opts = list(bib.style = "authoryear")))
+    expect_true(grepl("^Grunson, H", out))
+})
