@@ -1,12 +1,15 @@
-Changes in Version 1.2.7 (2018-12-07)
+Changes in Version 1.2.8 (2018-12-10)
 ========================================================
 
 ## BUGS FIXES
 
 * Fix extraction of citation counts in `ReadGS` that was occasionally 
-causing errors from some `scholar.id`s (h/t Miao Sun)
+causing errors from some `scholar.id`s (h/t Miao Sun, #59)
 * Fix printing of thesis and report entries types in authoryear style
-when "type" field missing (h/t Hugo Grunson)
+when "type" field missing (h/t Hugo Grunson, #58)
+* Fix for `PrintBibliography` for the case of `BibEntry` objects with
+  a single entry, an NA value could appear next to the year in the
+  output (#60)
 
 
 Changes in Version 1.2.2 (2018-05-31)

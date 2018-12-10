@@ -203,4 +203,7 @@ test_that("#58 thesis and report with missing type arg", {
 
     out <- capture.output(PrintBibliography(test, .opts = list(bib.style = "authoryear")))
     expect_true(grepl("^Grunson, H", out))
+
+    ## no NA next to year #60
+    expect_true(grepl("[(]2018[)]", out))
 })

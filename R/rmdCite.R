@@ -41,7 +41,7 @@ AddCite <- function(index, use.hyper = TRUE){
 #' NoCite(bib, title = "Alkanethiolate")
 #' PrintBibliography(bib, .opts = list(style = "latex",
 #'                   bib.style = "authoryear"))
-#' 
+#'
 #' Citep(bib, c("loh", "geer"), .opts = list(cite.style = "numeric"),
 #'       before = "see e.g., ")
 #' Citet(bib, "loh", .opts = list(cite.style = "numeric", super = TRUE))
@@ -93,7 +93,7 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
       if (!length(papers))
         return("")
       if (cite.style == "pandoc"){
-        MakePandocCitation(papers, keys, textual, bibpunct, before, after)  
+        MakePandocCitation(papers, keys, textual, bibpunct, before, after)
       }else{
         numeric <- "numeric" %in% cite.style
         alphabetic <- "alphabetic" %in% cite.style
@@ -115,6 +115,8 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
             bib <- sort(bib, sorting = "none", .bibstyle = bibstyle,
                         return.labs = TRUE)
             newinds <- bib$.index
+            if (is.null(names(newinds)))  # key/name missing if bib has length 1 #60
+              names(newinds) <- names(bib)
             .labs <- newinds[keys]
             .cites$labs <- c(.cites$labs, newinds)
           }else{
@@ -122,8 +124,8 @@ Cite <- function(bib, ..., textual = FALSE, before = NULL, after = NULL,
             .labs <- .cites$labs[keys]
           }
         }else{
-          first.ind <- if (!length(.cites$labs))  # cite.style has changed, 
-                         seq_along(papers)        #   labs have been reset 
+          first.ind <- if (!length(.cites$labs))  # cite.style has changed,
+                         seq_along(papers)        #   labs have been reset
                        else which(first | !keys %in% names(.cites$labs))
           if (length(first.ind)){
             shorthands <- unlist(papers$shorthand)
@@ -253,7 +255,7 @@ MakeCiteHyperlink <- function(result, papers, hyperlink, keys, auth,
                                              gsub("[^_a-zA-Z0-9-]", "",
                                                   keys,
                                                   useBytes = TRUE)),
-               to.doc = vapply(papers, GetURL, "", 
+               to.doc = vapply(papers, GetURL, "",
                                flds = c("url", "eprint", "doi"),
                                to.bib = TRUE),
                hyperlink)
@@ -325,12 +327,12 @@ AddCitationPunct <- function(result, bibpunct, before, after, textual,
 #' references in \code{bib} are added to the bibliography without citations.
 #' @seealso \code{\link{print.BibEntry}}, \code{\link{BibOptions}},
 #' \code{\link[utils]{citeNatbib}}, the package vignettes
-#' bib <- 
+#' bib <-
 #' @rdname Cite
 PrintBibliography <- function(bib, .opts = list(), start = 1, end = length(bib)){
-   
+
   bib <- sort(bib, decreasing = FALSE)
-	
+
   if (!length(bib))
     return(bib)
   if (identical(class(bib), "bibentry"))
@@ -378,7 +380,7 @@ PrintBibliography <- function(bib, .opts = list(), start = 1, end = length(bib))
     sQuote(paste0(paste0("@", names(.cites$indices)), collapse = ", ")))
     cat("\n...  \n\n")
   }
-  
+
   bib <- bib[start:end]
   print(bib)
 }
