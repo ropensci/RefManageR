@@ -51,9 +51,9 @@ GetDOIs <- function(bib){
         message(gettextf("Matches for entries at positions %s.",
                        match.str))
         bib$doi[missing.dois.pos[matches]] <- sub("https?://(dx\\.)?doi.org/", "",
-                                                  vapply(json.res[[1L]], "[[",
+                                                  vapply(json.res[[1L]][matches], "[[",
                                                          "",
-                                                         "doi")[matches],
+                                                         "doi"),
                                                   useBytes = TRUE)
       }
     }
@@ -83,7 +83,7 @@ FormatEntryForCrossRef <- function(bib){
            paste0("\"", collapse(cleanupLatex(title)), "\"")
          else paste0("\"", collapse(cleanupLatex(title)), "\".")
        }
-      
+
       fmtJournal <- function(s){
         if (length(s$journaltitle)){
           res <- cleanupLatex(s$journaltitle)
@@ -91,12 +91,12 @@ FormatEntryForCrossRef <- function(bib){
             res <- paste(addPeriod(res), cleanupLatex(s$journalsubtitle))
           return(res)
         }else if(!is.null(s$journal)){
-          cleanupLatex(s$journal)  
+          cleanupLatex(s$journal)
         }
       }
 
       formatArticle <- function(paper){
-         collapse(c(fmtBAuthor(paper), fmtJTitle(paper$title), 
+         collapse(c(fmtBAuthor(paper), fmtJTitle(paper$title),
                     sentence(fmtJournal(paper),
                              fmtVolume(paper$volume, paper$number),
                              fmtPages(paper$pages, paper$pagination),
