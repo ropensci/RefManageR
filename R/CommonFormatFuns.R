@@ -398,7 +398,7 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     addPeriod <- function(string){
       ## #62: sub can cause conversion of unicode char to latin1 on windows
       ## sub("([^.?!])$", "\\1.", string, useBytes = TRUE)
-      if (grepl("([^.?!])$", string, useBytes = TRUE))
+      if (!.is_not_nonempty_text(string) && grepl("([^.?!])$", string, useBytes = TRUE))
         paste0(string, ".")
       else
         string
