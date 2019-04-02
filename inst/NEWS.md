@@ -1,7 +1,21 @@
+Changes in Version 1.2.11 (2019-04-02)
+========================================================
+
+## BUG FIXES
+
+* Fix issue that could lead to Unicode characters being
+converted to latin1 when printing (h/t joaochenriques #62)
+* Fix issue with extracting DOI from CrossRef results
+in `GetDOIs`
+* Fixes for `ReadCrossRef` when `use.old.api` is `TRUE`. Scores
+are sometimes not returned by the API call and when this occurs
+the entries will now be added to the output `BibEntry` object with
+a message indicating that no score was available.
+
 Changes in Version 1.2.8 (2018-12-10)
 ========================================================
 
-## BUGS FIXES
+## BUG FIXES
 
 * Fix extraction of citation counts in `ReadGS` that was occasionally 
 causing errors from some `scholar.id`s (h/t Miao Sun, #59)
@@ -10,7 +24,8 @@ when "type" field missing (h/t Hugo Grunson, #58)
 * Fix for `PrintBibliography` for the case of `BibEntry` objects with
   a single entry, an NA value could appear next to the year in the
   output (#60)
-
+* Fix issue that could lead to Unicode characters being
+converted to latin1 when printing (h/t joaochenriques #62)
 
 Changes in Version 1.2.2 (2018-05-31)
 ========================================================
