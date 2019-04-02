@@ -134,9 +134,12 @@ test_that("#62 no Unicode char. convers. when addPeriod", {
     bib <- ReadBib(tfile, check = FALSE)
     BibOptions(bib.style = "numeric", first.inits=TRUE, max.names = 5)
     sink(tfile)
-    bib
+    print(bib)
     sink()
     out <- readLines(tfile)
-    expect_true(grepl("Eça", out[1], useBytes = TRUE))
-    expect_true(grepl("Valério", out[1], useBytes = TRUE))
+    ## expect_true(grepl("Eça", out[1], useBytes = TRUE))
+    ## expect_true(grepl("Valério", out[1], useBytes = TRUE))
+    aut.latex <- "[1] J. C. C. Henriques, J. M. Lemos, L. E\\c{c}a, J. N. H. Val\\'erio, L. M. C."
+    expect.aut <- tools::latexToUtf8(tools::parseLatex(aut.latex))
+    expect_equal(out[1], tools::deparseLatex(expect.aut))
 })
