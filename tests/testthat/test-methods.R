@@ -117,3 +117,26 @@ test_that("list extraction", {
     expect_length(bib[[c("westfahl:space", "angenendt")]], 2L)
     expect_length(bib[[6:10]], 5L)
 })
+
+test_that("#62 no Unicode char. convers. when addPeriod", {
+    bib.text <- "@article{HENRIQUES201715670,
+          title = \"{{A Discontinuous Galerkin Method for optimal and sub-optimal control applied to an oscillating water column wave energy converter}}\",
+          journal = \"IFAC-PapersOnLine\",
+          volume = \"50\",
+          number = \"1\",
+          pages = \"15670 - 15677\",
+          year = \"2017\",
+          doi = \"10.1016/j.ifacol.2017.08.2400\",
+          author = \"J. C. C. Henriques and J. M. Lemos and L. E\\c{c}a and J. N. H. Val\\'erio and L. M. C. Gato and A. F. O. Falcao\",
+    }"
+    tfile <- tempfile()
+    writeLines(bib.text, tfile)
+    bib <- ReadBib(tfile, check = FALSE)
+    BibOptions(bib.style = "numeric", first.inits=TRUE, max.names = 5)
+    sink(tfile)
+    bib
+    sink()
+    out <- readLines(tfile)
+    expect_true(grepl("Eça", out[1], useBytes = TRUE))
+    expect_true(grepl("Valério", out[1], useBytes = TRUE))
+})
