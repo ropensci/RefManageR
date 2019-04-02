@@ -57,7 +57,7 @@ test_that("ReadCrossRef *old* API retrieves queries successfully", {
     if (httr::http_error("https://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
-    BibOptions(check.entries = FALSE, sorting = "none")    
+    BibOptions(check.entries = FALSE, sorting = "none")
     out <- ReadCrossRef(query = 'gelman bayesian', limit = 2,
                         sort = "relevance",
                         min.relevance = 80, use.old.api = TRUE)
@@ -71,7 +71,7 @@ test_that("ReadCrossRef *new* API retrieves queries successfully", {
     if (httr::http_error("https://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
-    BibOptions(check.entries = FALSE, sorting = "none")    
+    BibOptions(check.entries = FALSE, sorting = "none")
     out <- ReadCrossRef("regression", filter = list(prefix="10.1198"),
                         limit = 2, offset = 1)
 
@@ -85,12 +85,12 @@ test_that("ReadCrossRef *old* API min.relevance and verbose args work", {
     if (httr::http_error("https://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
-    BibOptions(check.entries = FALSE, sorting = "none")    
+    BibOptions(check.entries = FALSE, sorting = "none")
     expect_message(ReadCrossRef(query = 'ruppert semiparametric regression',
                                        limit = 2, sort = "relevance",
                                 min.relevance = 100, verbose = TRUE,
                                 use.old.api = TRUE),
-                          regexp = "100\\n$")
+                          regexp = "Ruppert")
 })
 
 
