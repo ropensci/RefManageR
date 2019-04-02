@@ -143,23 +143,36 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
     }
 
     if (num.res > 0L){
-        if (!use.old.api && is.na(.doi)){
+        if (verbose)
+            makeVerboseMessage <- function(name, score){
+                if (!is.null(score))
+                    gettextf("including the following entry %s%s:\n%s",
+                                     "with relevancy score ",
+                                     name,
+                                     score)
+                else
+                    gettextf("the following entry will be included, but its %s:\n%s",
+                                     "relevancy score was not available ",
+                                     name)
+            }
+        if (!use.old.api && !nzchar(.doi)){
           res <- lapply(fromj, ParseCrossRef)
-          good <- which(vapply(res, function(e){
-              good <- e$score >= min.relevance
+          good <- vapply(res, function(e){
+              good <- is.null(e$score) || e$score >= min.relevance
               if (good && verbose)
-                message(gettextf("including the following entry %s%s:\n%s",
-                                 "with relevancy score ",
-                                  e$title, e$score[[i]]))
+                message(makeVerboseMessage(e$title, e$score[[i]]))
+
               good
-          }, FALSE))
-          res <- res[good]
-          if (!length(res)){
+          }, FALSE)
+
+          if (!any(good)){
               message("no results with relavency score greater than ",
                       gettextf("%s successfully retrieved",
                            sQuote("min.relevance")))
             return()
           }
+
+          res <- res[good]
           class(res) <- c("BibEntry", "bibentry")
           return(res)
       }else{
@@ -174,17 +187,16 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
             entry.str <- "title"
         }
         for(i in 1:num.res){
-          if (fromj[[i]][[score.str]] >= min.relevance){
-              bad <- bad + GetCrossRefBibTeX(paste0(if (!use.old.api)
-                                                        "https://doi.org/",
-                                                    fromj[[i]][[doi.str]]),
-                                             temp.file)
-              if (verbose)
-                  message(gettextf("including the following entry %s%s:\n%s",
-                                   "with relevancy score ",
-                                   fromj[[i]][[entry.str]],
-                                   fromj[[i]][[score.str]]))
+            score <- fromj[[i]][[score.str]]
+            doi.url <- fromj[[i]][[doi.str]]
+            if (!grepl("https?://(dx\\.)?doi.org/", doi.url))
+                doi.url <- paste0("https://doi.org/", doi.url)
 
+            if (is.null(score) || score >= min.relevance){
+                bad <- bad + GetCrossRefBibTeX(doi.url,
+                                               temp.file)
+                if (verbose)
+                    message(makeVerboseMessage(fromj[[i]][[entry.str]], score))
           }
         }
       }  # end else for old API processing
