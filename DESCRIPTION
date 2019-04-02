@@ -4,7 +4,6 @@ Title: Straightforward 'BibTeX' and 'BibLaTeX' Bibliography Management
 Authors@R: person(c("Mathew", "W."), "McLean", role = c("aut", "cre"),
     email = "mathew.w.mclean@gmail.com",
     comment = c(ORCID = "0000-0002-7891-9645"))
-Author: Mathew W. McLean [aut, cre]
 Maintainer: Mathew W. McLean <mathew.w.mclean@gmail.com>
 Description: Provides tools for importing and working with bibliographic
     references. It greatly enhances the 'bibentry' class by providing a class
