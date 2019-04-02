@@ -1,6 +1,8 @@
 Changes in Version 1.2.11 (2019-04-02)
 ========================================================
 
+* The serial comma is now used in author lists
+
 ## BUG FIXES
 
 * Fix issue that could lead to Unicode characters being
@@ -11,6 +13,8 @@ in `GetDOIs`
 are sometimes not returned by the API call and when this occurs
 the entries will now be added to the output `BibEntry` object with
 a message indicating that no score was available.
+* A comma no longer appears before "et al." when the `max.names`
+options is set to `1` (h/t davidaknowles #56)
 
 Changes in Version 1.2.8 (2018-12-10)
 ========================================================
