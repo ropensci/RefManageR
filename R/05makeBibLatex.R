@@ -218,7 +218,7 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
             out <- paste(paste(out, paste0(vapply(res[-c(1L, length(res))],
                                                   shortName, ""),
                                            collapse = ", "), sep = ', '),
-                       shortName(res[length(res)]), sep = ' and ')
+                       shortName(res[length(res)]), sep = ', and ')
         }
       }
     }

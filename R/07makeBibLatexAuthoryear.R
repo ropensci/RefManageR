@@ -159,8 +159,8 @@ MakeAuthorYear <- function(docstyle = "text"){
           }else{
               out <- paste(paste(out, paste0(vapply(res[-c(1L, length(res))],
                                                     shortName, ""),
-                                             collapse = ", "), sep = ', '),  
-                         shortName(res[length(res)]), sep = ' and ')
+                                             collapse = ", "), sep = ', '),
+                         shortName(res[length(res)]), sep = ', and ')
           }
         }
       }
