@@ -56,10 +56,14 @@ which are then used to make HTTP requests for the corresponding BibTeX entries f
 CrossRef; when \code{use.old.api = FALSE}, the query HTTP request is parsed to create
 the \code{BibEntry} object (i.e. there are less HTTP requests when using the new API).
 
-CrossRef assigns a score between 0 and 100 based on how relevant a reference seems
-to be to your query.  The \emph{old} API documentation warns that while false
-negatives are unlikely, the search can be prone to false positives.  Hence, setting
-\code{min.revelance} to a high value may be necessary if \code{use.old.api = TRUE}.
+CrossRef assigns a score between 0 and 100 based on how relevant a
+reference seems to be to your query.  The \emph{old} API
+documentation warns that while false negatives are unlikely, the
+search can be prone to false positives.  Hence, setting
+\code{min.revelance} to a high value may be necessary if
+\code{use.old.api = TRUE}. In some instances with the old API, no
+score is returned, if this happens, the entries are added with a
+message indicating that no score was available.
 
 Possible values for the \emph{names} in \code{filter} are \code{"has-funder"},
 \code{"funder"}, \code{"prefix"}, \code{"member"}, \code{"from-index-date"},
@@ -120,4 +124,5 @@ Other pubmed: \code{\link{GetDOIs}},
   \code{\link{GetPubMedRelated}},
   \code{\link{LookupPubMedID}}, \code{\link{ReadPubMed}}
 }
+\concept{pubmed}
 \keyword{database}
