@@ -1,4 +1,14 @@
-Changes in Version 1.2.11 (2019-04-02)
+Changes in Version 1.2.13 (2019-04-03)
+========================================================
+
+## BUG FIXES
+
+* When working in single-byte locales, the `print` method 
+for `BibEntry` objects is more robust against multi-byte
+characters being converted to single-byte ones when
+`bib.style = "authoryear"`.
+
+Changes in Version 1.2.12 (2019-04-02)
 ========================================================
 
 * The serial comma is now used in author lists
