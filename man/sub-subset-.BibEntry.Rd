@@ -25,9 +25,14 @@ This function will replace the specified entry in \code{x} with the entry given
 by \code{value}.  To replace multiple entries see \code{\link{[<-.BibEntry}}.
 }
 \seealso{
-Other operators: \code{\link{$.BibEntry}},
-  \code{\link{$<-.BibEntry}}, \code{\link{+.BibEntry}},
-  \code{\link{[.BibEntry}}, \code{\link{[<-.BibEntry}},
-  \code{\link{[[.BibEntry}}, \code{\link{c.BibEntry}}
+Other operators: 
+\code{\link{$.BibEntry}()},
+\code{\link{$<-.BibEntry}()},
+\code{\link{+.BibEntry}()},
+\code{\link{[.BibEntry}()},
+\code{\link{[<-.BibEntry}()},
+\code{\link{[[.BibEntry}()},
+\code{\link{c.BibEntry}()}
 }
+\concept{operators}
 \keyword{methods}

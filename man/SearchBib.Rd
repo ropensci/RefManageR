@@ -3,7 +3,6 @@
 \name{[.BibEntry}
 \alias{[.BibEntry}
 \alias{SearchBib}
-\alias{[.BibEntry}
 \title{Search BibEntry objects by field}
 \usage{
 \method{[}{BibEntry}(x, i, j, ..., drop = FALSE)
@@ -75,7 +74,7 @@ bib[list(author="aristotle", date = "/1925"),list(editor = "westfahl")]
 ## Change some searching and printing options and search for author
 old.opts <- BibOptions(bib.style = "authoryear", match.author = "exact",
   max.names = 99, first.inits = FALSE)
-bib[author="Mart\\u00edn, Jacinto and S\\u00e1nchez, Alberto"]
+bib[author="Mart\u00edn, Jacinto and S\u00e1nchez, Alberto"]
 BibOptions(old.opts)  ## reset options
 
 ## Some works of Raymond J. Carroll's
@@ -121,11 +120,16 @@ length(bib[list(author='ruppert',bibtype="report",institution="north carolina"),
 }
 }
 \seealso{
-Other operators: \code{\link{$.BibEntry}},
-  \code{\link{$<-.BibEntry}}, \code{\link{+.BibEntry}},
-  \code{\link{[<-.BibEntry}}, \code{\link{[[.BibEntry}},
-  \code{\link{[[<-.BibEntry}}, \code{\link{c.BibEntry}}
+Other operators: 
+\code{\link{$.BibEntry}()},
+\code{\link{$<-.BibEntry}()},
+\code{\link{+.BibEntry}()},
+\code{\link{[<-.BibEntry}()},
+\code{\link{[[.BibEntry}()},
+\code{\link{[[<-.BibEntry}()},
+\code{\link{c.BibEntry}()}
 }
+\concept{operators}
 \keyword{database}
 \keyword{list}
 \keyword{manip}

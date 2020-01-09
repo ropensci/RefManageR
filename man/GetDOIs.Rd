@@ -34,9 +34,12 @@ if (interactive() && !httr::http_error("https://search.crossref.org")){
 \seealso{
 \code{\link{ReadCrossRef}}
 
-Other pubmed: \code{\link{GetPubMedByID}},
-  \code{\link{GetPubMedRelated}},
-  \code{\link{LookupPubMedID}}, \code{\link{ReadCrossRef}},
-  \code{\link{ReadPubMed}}
+Other pubmed: 
+\code{\link{GetPubMedByID}()},
+\code{\link{GetPubMedRelated}()},
+\code{\link{LookupPubMedID}()},
+\code{\link{ReadCrossRef}()},
+\code{\link{ReadPubMed}()}
 }
+\concept{pubmed}
 \keyword{database}

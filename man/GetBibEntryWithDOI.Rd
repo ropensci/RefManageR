@@ -4,8 +4,11 @@
 \alias{GetBibEntryWithDOI}
 \title{Lookup a Bibtex entry using a Digital Object Identifier}
 \usage{
-GetBibEntryWithDOI(doi, temp.file = tempfile(fileext = ".bib"),
-  delete.file = TRUE)
+GetBibEntryWithDOI(
+  doi,
+  temp.file = tempfile(fileext = ".bib"),
+  delete.file = TRUE
+)
 }
 \arguments{
 \item{doi}{character vector; DOIs to use to retrieve bibliographic information.}

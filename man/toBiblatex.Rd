@@ -4,13 +4,16 @@
 \alias{toBiblatex}
 \alias{toBibtex.BibEntry}
 \alias{toBibtex}
-\alias{toBibtex.BibEntry}
 \title{Convert BibEntry objects to BibTeX or BibLaTeX}
 \usage{
 toBiblatex(object, ...)
 
-\method{toBibtex}{BibEntry}(object, note.replace.field = c("urldate",
-  "pubsate", "addendum"), extra.fields = NULL, ...)
+\method{toBibtex}{BibEntry}(
+  object,
+  note.replace.field = c("urldate", "pubsate", "addendum"),
+  extra.fields = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{an object of class BibEntry to be converted}

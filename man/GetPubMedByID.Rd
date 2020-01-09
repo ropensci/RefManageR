@@ -35,9 +35,12 @@ if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
 \url{https://www.ncbi.nlm.nih.gov/books/NBK25500/}
 }
 \seealso{
-Other pubmed: \code{\link{GetDOIs}},
-  \code{\link{GetPubMedRelated}},
-  \code{\link{LookupPubMedID}}, \code{\link{ReadCrossRef}},
-  \code{\link{ReadPubMed}}
+Other pubmed: 
+\code{\link{GetDOIs}()},
+\code{\link{GetPubMedRelated}()},
+\code{\link{LookupPubMedID}()},
+\code{\link{ReadCrossRef}()},
+\code{\link{ReadPubMed}()}
 }
+\concept{pubmed}
 \keyword{database}

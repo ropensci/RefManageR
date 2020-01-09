@@ -38,4 +38,4 @@ Depends:
 VignetteBuilder: knitr
 BugReports: https://github.com/ropensci/RefManageR/issues
 URL: https://docs.ropensci.org/RefManageR, https://github.com/ropensci/RefManageR/
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2

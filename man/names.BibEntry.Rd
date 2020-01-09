@@ -3,7 +3,6 @@
 \name{names<-.BibEntry}
 \alias{names<-.BibEntry}
 \alias{names.BibEntry}
-\alias{names<-.BibEntry}
 \title{Names (keys) of a BibEntry object}
 \usage{
 \method{names}{BibEntry}(x) <- value

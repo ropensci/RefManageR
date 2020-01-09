@@ -3,14 +3,17 @@
 \name{+.BibEntry}
 \alias{+.BibEntry}
 \alias{merge.BibEntry}
-\alias{+.BibEntry}
 \title{Merge two BibEntry objects while discarding duplicates}
 \usage{
 \method{+}{BibEntry}(e1, e2)
 
-\method{merge}{BibEntry}(x, y,
+\method{merge}{BibEntry}(
+  x,
+  y,
   fields.to.check = BibOptions()$merge.fields.to.check,
-  ignore.case = BibOptions()$ignore.case, ...)
+  ignore.case = BibOptions()$ignore.case,
+  ...
+)
 }
 \arguments{
 \item{e1}{BibEntry object}
@@ -77,12 +80,17 @@ BibOptions(oldopt)
 \seealso{
 \code{\link{duplicated}}, \code{\link{unique}}
 
-Other operators: \code{\link{$.BibEntry}},
-  \code{\link{$<-.BibEntry}}, \code{\link{[.BibEntry}},
-  \code{\link{[<-.BibEntry}}, \code{\link{[[.BibEntry}},
-  \code{\link{[[<-.BibEntry}}, \code{\link{c.BibEntry}}
+Other operators: 
+\code{\link{$.BibEntry}()},
+\code{\link{$<-.BibEntry}()},
+\code{\link{[.BibEntry}()},
+\code{\link{[<-.BibEntry}()},
+\code{\link{[[.BibEntry}()},
+\code{\link{[[<-.BibEntry}()},
+\code{\link{c.BibEntry}()}
 }
 \author{
 McLean, M. W. \email{mathew.w.mclean@gmail.com}
 }
+\concept{operators}
 \keyword{methods}

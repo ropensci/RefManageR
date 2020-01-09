@@ -7,8 +7,14 @@ e
 Creates a Bibtex File from a BibEntry object for use with either BibTeX
 or BibLaTex.}
 \usage{
-WriteBib(bib, file = "references.bib", biblatex = TRUE, append = FALSE,
-  verbose = TRUE, ...)
+WriteBib(
+  bib,
+  file = "references.bib",
+  biblatex = TRUE,
+  append = FALSE,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{bib}{a BibEntry object to be written to file}

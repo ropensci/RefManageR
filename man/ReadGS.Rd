@@ -4,8 +4,14 @@
 \alias{ReadGS}
 \title{Import book and article references from a public Google Scholar profile by ID.}
 \usage{
-ReadGS(scholar.id, start = 0, limit = 100, sort.by.date = FALSE,
-  .Encoding = "UTF-8", check.entries = BibOptions()$check.entries)
+ReadGS(
+  scholar.id,
+  start = 0,
+  limit = 100,
+  sort.by.date = FALSE,
+  .Encoding = "UTF-8",
+  check.entries = BibOptions()$check.entries
+)
 }
 \arguments{
 \item{scholar.id}{character; the Google Scholar ID from which citations will
@@ -65,7 +71,7 @@ if (interactive() && !httr::http_error("https://scholar.google.com")){
   ## R. J. Carroll's ten newest publications
   ReadGS(scholar.id = "CJOHNoQAAAAJ", limit = 10, sort.by.date = TRUE)
 
-  ## Matthias Katzfu\\ss
+  ## Matthias Katzfu\ss
   BibOptions(check.entries = "warn")
   kat.bib <- ReadGS(scholar.id = "vqW0UqUAAAAJ")
 

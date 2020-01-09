@@ -59,8 +59,11 @@ if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
 \url{https://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.ESearch}
 }
 \seealso{
-Other pubmed: \code{\link{GetDOIs}},
-  \code{\link{GetPubMedByID}},
-  \code{\link{GetPubMedRelated}},
-  \code{\link{LookupPubMedID}}, \code{\link{ReadCrossRef}}
+Other pubmed: 
+\code{\link{GetDOIs}()},
+\code{\link{GetPubMedByID}()},
+\code{\link{GetPubMedRelated}()},
+\code{\link{LookupPubMedID}()},
+\code{\link{ReadCrossRef}()}
 }
+\concept{pubmed}

@@ -4,8 +4,14 @@
 \alias{ReadPDFs}
 \title{Create bibliographic information from PDF Metadata.}
 \usage{
-ReadPDFs(path, .enc = "UTF-8", recursive = TRUE, use.crossref = TRUE,
-  use.metadata = TRUE, progress = FALSE)
+ReadPDFs(
+  path,
+  .enc = "UTF-8",
+  recursive = TRUE,
+  use.crossref = TRUE,
+  use.metadata = TRUE,
+  progress = FALSE
+)
 }
 \arguments{
 \item{path}{character; path to directory containing pdfs or filename of

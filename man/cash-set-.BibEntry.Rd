@@ -37,9 +37,14 @@ bib[1]$author[2] <- person(c("Raymond", "J."), "Carroll")
 bib$author
 }
 \seealso{
-Other operators: \code{\link{$.BibEntry}},
-  \code{\link{+.BibEntry}}, \code{\link{[.BibEntry}},
-  \code{\link{[<-.BibEntry}}, \code{\link{[[.BibEntry}},
-  \code{\link{[[<-.BibEntry}}, \code{\link{c.BibEntry}}
+Other operators: 
+\code{\link{$.BibEntry}()},
+\code{\link{+.BibEntry}()},
+\code{\link{[.BibEntry}()},
+\code{\link{[<-.BibEntry}()},
+\code{\link{[[.BibEntry}()},
+\code{\link{[[<-.BibEntry}()},
+\code{\link{c.BibEntry}()}
 }
+\concept{operators}
 \keyword{methods}

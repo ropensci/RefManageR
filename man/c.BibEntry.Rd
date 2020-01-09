@@ -30,9 +30,14 @@ bib <- c(BibEntry(bibtype = "article", key = "mclean2014a", title = "My New Arti
   date = "2014-02"))
 }
 \seealso{
-Other operators: \code{\link{$.BibEntry}},
-  \code{\link{$<-.BibEntry}}, \code{\link{+.BibEntry}},
-  \code{\link{[.BibEntry}}, \code{\link{[<-.BibEntry}},
-  \code{\link{[[.BibEntry}}, \code{\link{[[<-.BibEntry}}
+Other operators: 
+\code{\link{$.BibEntry}()},
+\code{\link{$<-.BibEntry}()},
+\code{\link{+.BibEntry}()},
+\code{\link{[.BibEntry}()},
+\code{\link{[<-.BibEntry}()},
+\code{\link{[[.BibEntry}()},
+\code{\link{[[<-.BibEntry}()}
 }
+\concept{operators}
 \keyword{methods}
