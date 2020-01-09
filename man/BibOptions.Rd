@@ -54,8 +54,11 @@ recurring author and editor names are replaced with \dQuote{---} when printing.
 \item \code{sorting} - string; controls how BibEntry objects are sorted.  Possible values are \dQuote{nty}, \dQuote{nyt}, 
 \dQuote{nyvt}, \dQuote{anyt}, \dQuote{anyvt}, \dQuote{ynt}, \dQuote{ydnt}, \dQuote{none}, \dQuote{debug};  see 
 \code{\link{sort.BibEntry}}
-\item \code{max.names} - numeric; maximum number of names to display before using \dQuote{et al.} when formatting and printing name
-list fields.  This is also the minimum number of names that will be displayed if \dQuote{et al.} is used 
+\item \code{max.names} - numeric; maximum number of names to display before
+using \dQuote{et al.} when formatting and printing name list fields.  See the
+entry below for \code{longnamesfirst} to see how the first time a citation is
+printed it may ignore this option.  This is also the minimum number of names
+that will be displayed if \dQuote{et al.} is used
 (\sQuote{minnames} package option in Biblatex) 
 \item \code{no.print.fields} character vector; fields that should not be printed, 
 e.g., doi, url, isbn, etc.
