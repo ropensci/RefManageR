@@ -4,9 +4,13 @@
 \alias{ReadBib}
 \title{BibLaTeX/BibTeX .bib file parser}
 \usage{
-ReadBib(file, .Encoding = "UTF-8", header = if (length(preamble))
-  paste(preamble, sep = "\\n") else "", footer = "",
-  check = BibOptions()$check.entries)
+ReadBib(
+  file,
+  .Encoding = "UTF-8",
+  header = if (length(preamble)) paste(preamble, sep = "\\n") else "",
+  footer = "",
+  check = BibOptions()$check.entries
+)
 }
 \arguments{
 \item{file}{string; bib file to parse.}

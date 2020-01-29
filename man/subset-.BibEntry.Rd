@@ -53,10 +53,15 @@ bib2[3] <- c(journal='', eprinttype = "arxiv", eprint = "1308.5427",
 bib2                            
 }
 \seealso{
-Other operators: \code{\link{$.BibEntry}},
-  \code{\link{$<-.BibEntry}}, \code{\link{+.BibEntry}},
-  \code{\link{[.BibEntry}}, \code{\link{[[.BibEntry}},
-  \code{\link{[[<-.BibEntry}}, \code{\link{c.BibEntry}}
+Other operators: 
+\code{\link{$.BibEntry}()},
+\code{\link{$<-.BibEntry}()},
+\code{\link{+.BibEntry}()},
+\code{\link{[.BibEntry}()},
+\code{\link{[[.BibEntry}()},
+\code{\link{[[<-.BibEntry}()},
+\code{\link{c.BibEntry}()}
 }
+\concept{operators}
 \keyword{manip}
 \keyword{methods}

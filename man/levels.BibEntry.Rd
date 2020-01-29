@@ -3,7 +3,6 @@
 \name{levels.BibEntry}
 \alias{levels.BibEntry}
 \alias{fields}
-\alias{fields}
 \title{Extract all fields present in a BibEntry object}
 \usage{
 \method{levels}{BibEntry}(x)

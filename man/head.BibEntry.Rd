@@ -3,7 +3,6 @@
 \name{head.BibEntry}
 \alias{head.BibEntry}
 \alias{tail.BibEntry}
-\alias{tail.BibEntry}
 \title{Return the first or last part of a BibEntry object}
 \usage{
 \method{head}{BibEntry}(x, n = 6L, suppress.messages = TRUE, ...)

@@ -4,8 +4,17 @@
 \alias{BibEntry}
 \title{Enhanced Bibliographic Entries}
 \usage{
-BibEntry(bibtype, textVersion = NULL, header = NULL, footer = NULL,
-  key = NULL, ..., other = list(), mheader = NULL, mfooter = NULL)
+BibEntry(
+  bibtype,
+  textVersion = NULL,
+  header = NULL,
+  footer = NULL,
+  key = NULL,
+  ...,
+  other = list(),
+  mheader = NULL,
+  mfooter = NULL
+)
 }
 \arguments{
 \item{bibtype}{a character string with a BibTeX entry type. See Entry Types

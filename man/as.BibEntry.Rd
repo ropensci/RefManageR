@@ -3,7 +3,6 @@
 \name{as.BibEntry}
 \alias{as.BibEntry}
 \alias{is.BibEntry}
-\alias{is.BibEntry}
 \title{Coerce to a BibEntry object}
 \usage{
 as.BibEntry(x)

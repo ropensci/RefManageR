@@ -4,10 +4,19 @@
 \alias{ReadCrossRef}
 \title{Search CrossRef for citations.}
 \usage{
-ReadCrossRef(query = "", filter = list(), limit = 5, offset = 0,
-  sort = "relevance", year = NULL, min.relevance = 2,
-  temp.file = tempfile(fileext = ".bib"), delete.file = TRUE,
-  verbose = FALSE, use.old.api = FALSE)
+ReadCrossRef(
+  query = "",
+  filter = list(),
+  limit = 5,
+  offset = 0,
+  sort = "relevance",
+  year = NULL,
+  min.relevance = 2,
+  temp.file = tempfile(fileext = ".bib"),
+  delete.file = TRUE,
+  verbose = FALSE,
+  use.old.api = FALSE
+)
 }
 \arguments{
 \item{query}{string; search term}
@@ -119,10 +128,12 @@ Older API: \url{https://search.crossref.org/help/api}
 \code{\link{ReadZotero}}, \code{\link{BibEntry}}, \code{\link{GetDOIs}},
 package \code{rcrossref} for larger queries and deep paging
 
-Other pubmed: \code{\link{GetDOIs}},
-  \code{\link{GetPubMedByID}},
-  \code{\link{GetPubMedRelated}},
-  \code{\link{LookupPubMedID}}, \code{\link{ReadPubMed}}
+Other pubmed: 
+\code{\link{GetDOIs}()},
+\code{\link{GetPubMedByID}()},
+\code{\link{GetPubMedRelated}()},
+\code{\link{LookupPubMedID}()},
+\code{\link{ReadPubMed}()}
 }
 \concept{pubmed}
 \keyword{database}

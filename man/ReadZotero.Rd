@@ -4,8 +4,13 @@
 \alias{ReadZotero}
 \title{Get Bibliography Information From a Zotero Library.}
 \usage{
-ReadZotero(user, group, .params, temp.file = tempfile(fileext = ".bib"),
-  delete.file = TRUE)
+ReadZotero(
+  user,
+  group,
+  .params,
+  temp.file = tempfile(fileext = ".bib"),
+  delete.file = TRUE
+)
 }
 \arguments{
 \item{user}{Zotero userID for use in calls to the Zotero API.  This is not

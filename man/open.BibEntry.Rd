@@ -4,8 +4,13 @@
 \alias{open.BibEntry}
 \title{Open BibEntry in PDF viewer or web browser.}
 \usage{
-\method{open}{BibEntry}(con, entry = 1L, open.field = c("file", "url",
-  "eprint", "doi"), viewer, ...)
+\method{open}{BibEntry}(
+  con,
+  entry = 1L,
+  open.field = c("file", "url", "eprint", "doi"),
+  viewer,
+  ...
+)
 }
 \arguments{
 \item{con}{BibEntry object to extract connections from.}

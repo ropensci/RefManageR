@@ -4,8 +4,14 @@
 \alias{GetPubMedRelated}
 \title{Retrieve related articles from PubMed using PubMed ID's}
 \usage{
-GetPubMedRelated(id, database = "pubmed", batch.mode = TRUE,
-  max.results = 10, return.sim.scores = FALSE, return.related.ids = FALSE)
+GetPubMedRelated(
+  id,
+  database = "pubmed",
+  batch.mode = TRUE,
+  max.results = 10,
+  return.sim.scores = FALSE,
+  return.related.ids = FALSE
+)
 }
 \arguments{
 \item{id}{either a character vector of PubMed ID's or a BibEntry object,
@@ -56,9 +62,12 @@ if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/")){
 \url{https://www.ncbi.nlm.nih.gov/books/NBK25500/}
 }
 \seealso{
-Other pubmed: \code{\link{GetDOIs}},
-  \code{\link{GetPubMedByID}},
-  \code{\link{LookupPubMedID}}, \code{\link{ReadCrossRef}},
-  \code{\link{ReadPubMed}}
+Other pubmed: 
+\code{\link{GetDOIs}()},
+\code{\link{GetPubMedByID}()},
+\code{\link{LookupPubMedID}()},
+\code{\link{ReadCrossRef}()},
+\code{\link{ReadPubMed}()}
 }
+\concept{pubmed}
 \keyword{database}

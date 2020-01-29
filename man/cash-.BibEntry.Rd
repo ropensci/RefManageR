@@ -28,8 +28,13 @@ bib[[50:55]]$author
 bib[[seq_len(5)]]$bibtype
 }
 \seealso{
-Other operators: \code{\link{$<-.BibEntry}},
-  \code{\link{+.BibEntry}}, \code{\link{[.BibEntry}},
-  \code{\link{[<-.BibEntry}}, \code{\link{[[.BibEntry}},
-  \code{\link{[[<-.BibEntry}}, \code{\link{c.BibEntry}}
+Other operators: 
+\code{\link{$<-.BibEntry}()},
+\code{\link{+.BibEntry}()},
+\code{\link{[.BibEntry}()},
+\code{\link{[<-.BibEntry}()},
+\code{\link{[[.BibEntry}()},
+\code{\link{[[<-.BibEntry}()},
+\code{\link{c.BibEntry}()}
 }
+\concept{operators}
