@@ -3,7 +3,6 @@
 #' Functions to get and set the keys of an object of class BibEntry
 #' @aliases names<-.BibEntry
 #' @rdname names.BibEntry
-#' @method names BibEntry
 #' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
 #' @param x an object of class BibEntry
 #' @return \code{names} - character vector of the keys of the BibEntry object.
