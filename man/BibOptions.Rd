@@ -54,9 +54,12 @@ recurring author and editor names are replaced with \dQuote{---} when printing.
 \item \code{sorting} - string; controls how BibEntry objects are sorted.  Possible values are \dQuote{nty}, \dQuote{nyt}, 
 \dQuote{nyvt}, \dQuote{anyt}, \dQuote{anyvt}, \dQuote{ynt}, \dQuote{ydnt}, \dQuote{none}, \dQuote{debug};  see 
 \code{\link{sort.BibEntry}}
-\item \code{max.names} - numeric; maximum number of names to display before using \dQuote{et al.} when formatting and printing name
-list fields.  This is also the minimum number of names that will be displayed if \dQuote{et al.} is used 
-(\sQuote{minnames} package option in Biblatex) 
+\item \code{max.names} - numeric; maximum number of names to display before using
+\dQuote{et al.} when formatting and printing name list fields. This is also the minimum
+number of names that will be displayed if \dQuote{et al.} is used (corresponding
+to the \sQuote{minnames} package option in Biblatex). See below and option
+\code{longnamesfirst} when using this argument with the citation
+functions (\code{\link{Citet}}, etc.). 
 \item \code{no.print.fields} character vector; fields that should not be printed, 
 e.g., doi, url, isbn, etc.
 \item \code{style} - character string naming the printing style.  Possible values are 
@@ -82,7 +85,9 @@ entry.  If these fields are not available, the hyperlink will point to the bibli
 also \code{\link{open.BibEntry}}.
 \item \code{super} - logical; should superscripts be used for numeric citations?  Ignored if
  \code{cite.style != "numeric"}.
-\item \code{max.names} - numeric; same as above, except for citations.
+\item \code{max.names} - numeric; same as above, except for citations. Note, that the
+first time a reference is cited, this option will be ignored if \code{longfirstnames}
+is \code{TRUE}.
 \item \code{longnamesfirst} logical; should the first time a citation appears in the text
 not be truncated at \code{max.names}?
 \item \code{bibpunct} - character vector; punctuation to use in a citation.  The entries
