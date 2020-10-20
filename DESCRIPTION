@@ -30,6 +30,7 @@ Imports:
     methods
 Suggests:
     knitr,
+    markdown,
     testthat,
     bibtex (>= 0.4.1)
 Encoding: UTF-8
