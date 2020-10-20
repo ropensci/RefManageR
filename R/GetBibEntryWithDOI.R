@@ -10,7 +10,7 @@
 #' @return an object of class BibEntry.
 #' @export
 #' @details
-#' The bibliographic information returned by the search of the \url{https://doi.org}
+#' The bibliographic information returned by the search of the \url{https://doi.org/}
 #' API is temporarily
 #' written to a file and then read back into \code{R} and return as a
 #' \code{BibEntry} object.
