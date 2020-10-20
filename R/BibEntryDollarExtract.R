@@ -1,5 +1,5 @@
 #' Extract fields from a BibEntry object
-#' 
+#'
 #' used to extract a single field from each entry in a BibEntry object
 #' @param x an object of class BibEntry
 #' @param name the field to extract
@@ -11,22 +11,24 @@
 #' a particular entry.  The names attribute of the returned list contains the entry keys (potentially back-quoted).
 #' @importFrom stats setNames
 #' @examples
-#' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
-#' bib <- suppressMessages(ReadBib(file.name))
-#' bib[[50:55]]$author
-#' bib[[seq_len(5)]]$bibtype
+#' if (requireNamespace("bibtex")) {
+#'     file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
+#'     bib <- suppressMessages(ReadBib(file.name))
+#'     bib[[50:55]]$author
+#'     bib[[seq_len(5)]]$bibtype
+#'  }
 `$.BibEntry` <- function (x, name){
-  if (!length(x)) 
+  if (!length(x))
     return(NULL)
   is_attribute <- name %in% bibentry_attribute_names
-  if (is_attribute){ 
+  if (is_attribute){
     res <- lapply(unclass(x), attr, name)
   }else if (pmatch(name, "journaltitle", 0L)){
     res <- lapply(unclass(x), "[[", name = "journal", exact = FALSE)
   }else{
     res <- lapply(unclass(x), "[[", name)
   }
-  if (length(res) == 1L) 
+  if (length(res) == 1L)
     return(res[[1L]])
   setNames(res, vapply(unclass(x), attr, "", "key"))
 }

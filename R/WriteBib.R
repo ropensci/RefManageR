@@ -22,7 +22,7 @@
 #' \code{biblatex} should be \code{TRUE}, otherwise
 #' conversion is done as in \code{\link{toBibtex.BibEntry}}.
 #' @importFrom tools encoded_text_to_latex
-#' @author McLean, M. W. based on \code{\link{write.bib}} by Gaujoux, R.
+#' @author McLean, M. W. based on \code{write.bib} by Gaujoux, R.
 #' in package \code{bibtex}.
 #' @export
 #' @examples
@@ -31,7 +31,10 @@
 #' if (length(bib)){
 #'   tfile <- tempfile(fileext = ".bib")
 #'   WriteBib(bib, tfile, biblatex = TRUE)
-#'   identical(ReadBib(tfile), bib)
+#'
+#'   if (requireNamespace("bibtex"))
+#'     identical(ReadBib(tfile), bib)
+#'
 #'   unlink(tfile)
 #' }
 WriteBib <- function (bib, file = "references.bib", biblatex = TRUE,

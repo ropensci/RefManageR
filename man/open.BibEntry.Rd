@@ -39,10 +39,12 @@ and \sQuote{URL}.
 }
 \examples{
 \dontrun{
-testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex"))
-open(testbib)
-testbib$file <- file.path(R.home("doc/manual"), "R-intro.pdf")
-open(testbib)
+if (requireNamespace("bibtex")) {
+    testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex"))
+    open(testbib)
+    testbib$file <- file.path(R.home("doc/manual"), "R-intro.pdf")
+    open(testbib)
+}
 }
 }
 \seealso{

@@ -70,13 +70,15 @@ and translator.  Refer to the BibLaTeX manual Sections 3.1.2.1 and 3.5 and
 Appendix C.2 for more information.
 }
 \examples{
-file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
-bib <- suppressMessages(ReadBib(file.name)[[70:73]])
-BibOptions(sorting = "none")
-bib
-sort(bib, sorting = "nyt")
-sort(bib, sorting = "ynt")
-BibOptions(restore.defaults = TRUE)
+if (requireNamespace("bibtex")) {
+    file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
+    bib <- suppressMessages(ReadBib(file.name)[[70:73]])
+    BibOptions(sorting = "none")
+    bib
+    sort(bib, sorting = "nyt")
+    sort(bib, sorting = "ynt")
+    BibOptions(restore.defaults = TRUE)
+}
 }
 \references{
 Lehman, Philipp and Kime, Philip and Boruvka, Audrey and

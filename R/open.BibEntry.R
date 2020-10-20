@@ -25,10 +25,12 @@
 #' @importFrom utils browseURL
 #' @examples
 #' \dontrun{
-#' testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex"))
-#' open(testbib)
-#' testbib$file <- file.path(R.home("doc/manual"), "R-intro.pdf")
-#' open(testbib)
+#' if (requireNamespace("bibtex")) {
+#'     testbib <- ReadBib(system.file("REFERENCES.bib", package="bibtex"))
+#'     open(testbib)
+#'     testbib$file <- file.path(R.home("doc/manual"), "R-intro.pdf")
+#'     open(testbib)
+#' }
 #' }
 open.BibEntry <- function(con, entry = 1L,
                           open.field = c("file", "url", "eprint", "doi"),

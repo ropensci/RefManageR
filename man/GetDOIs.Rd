@@ -21,7 +21,9 @@ Only entries in \code{bib} that do not already contain a value in the
 \sQuote{doi} field will be searched for.
 }
 \examples{
-if (interactive() && !httr::http_error("https://search.crossref.org")){
+if (interactive() && !httr::http_error("https://search.crossref.org") &&
+   requireNamespace("bibtex"))
+{
   BibOptions(check.entries = FALSE, sorting = "none")
   bib <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[1:5]
   bib <- GetDOIs(bib)

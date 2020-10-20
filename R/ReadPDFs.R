@@ -17,7 +17,7 @@
 #' in subdirectories of path be used?
 #' @param use.crossref logical; should an attempt be made to download bibliographic
 #' information from CrossRef if
-#' any Document Object Identifiers (DOIs) are found?
+#' any Document Object Identifiers (DOIs) are found? This is only supported if the Suggeseted package \code{bibtex} is found.
 #' @param use.metadata logical; should the PDF metadata also be used to help
 #' create entries?
 #' @param progress logical; should progress bar be generated when fetching from
@@ -131,31 +131,35 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE,
   ## get bib info from CrossRef
   resCR <- CR.ind <- badCR.ind <- NULL
   if (use.crossref && length(doi.ind)){
-    message(paste0("Getting ", length(comb.doi),
+    if (requireNamespace("bibtex")){
+      message(paste0("Getting ", length(comb.doi),
                    " BibTeX entries from CrossRef..."))
-    flush.console()
-    if (progress){
-      progress <- progress_text(char = ".")
-    }else{
-      progress <- "none"
-    }
+      flush.console()
+      if (progress){
+        progress <- progress_text(char = ".")
+      }else{
+        progress <- "none"
+      }
 
-    tmpbib <- tempfile(fileext = ".bib", tmpdir=getwd())
-    resCR <- llply(as.list(comb.doi), ReadCrossRef, temp.file = tmpbib,
-                   delete.file = TRUE,
-                    .progress = progress)
-    message("Done")
-    ## on very rare instances CrossRef doesn't have record for particular DOI
-    CR.ind <- !vapply(resCR, is.null, FALSE)  
-    badCR.ind <- doi.ind[!CR.ind]
-    if(any(CR.ind)){
-       for (i in which(CR.ind))
-         resCR[[i]]$file <- files[doi.ind[i]]
-      not.done <- not.done[!not.done %in% doi.ind[CR.ind]]
-    }
+      tmpbib <- tempfile(fileext = ".bib", tmpdir=getwd())
+      resCR <- llply(as.list(comb.doi), ReadCrossRef, temp.file = tmpbib,
+                     delete.file = TRUE,
+                      .progress = progress)
+      message("Done")
+      ## on very rare instances CrossRef doesn't have record for particular DOI
+      CR.ind <- !vapply(resCR, is.null, FALSE)
+      badCR.ind <- doi.ind[!CR.ind]
+      if (any(CR.ind)){
+         for (i in which(CR.ind))
+           resCR[[i]]$file <- files[doi.ind[i]]
+        not.done <- not.done[!not.done %in% doi.ind[CR.ind]]
+      }
 
-    ## llply returns a list of BibEntry objs, NOT single BibEntry obj
-    resCR <- MakeCitationList(resCR[CR.ind])  
+      ## llply returns a list of BibEntry objs, NOT single BibEntry obj
+      resCR <- MakeCitationList(resCR[CR.ind])
+    }else
+        warning("Argument ", sQuote("use.crossref"), " ignored since the ",
+                dQuote("bibtex"), " package is not installed.")
   }
 
   ## get bib info from first page. if dont find abstract on first page,
@@ -177,7 +181,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE,
   done.inds <- c(done.inds, not.done[!is.na(res)], doi.ind[CR.ind])
   not.done <- not.done[is.na(res)]
   ## remove entries with no author or title info - done in MakeCitationList
-  res <- res[!is.na(res)]  
+  res <- res[!is.na(res)]
 
   res <- c(resJSTOR, res)
   if (length(res)){
@@ -201,7 +205,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE,
       for (i in seq_along(ind))
         res[[ind[i]]]$doi <- comb.doi[ind2[i]]
     }else if (use.crossref && length(badCR.ind)){
-      ## DOI's missed by CrossRef may be fixed up later  
+      ## DOI's missed by CrossRef may be fixed up later
       ind <- which(done.inds %in% badCR.ind)
       ind2 <- which(doi.ind %in% badCR.ind)
       for (i in seq_along(ind))

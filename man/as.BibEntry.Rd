@@ -31,13 +31,15 @@ Each entry to be coerced should have a bibtype, key, and all required
 fields for the specified bibtype.
 }
 \examples{
-file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
-bib <- suppressMessages(ReadBib(file.name))[[20:21]]
-identical(as.BibEntry(unlist(bib)), bib)  ## see also RelistBibEntry
+if (requireNamespace("bibtex")) {
+    file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
+    bib <- suppressMessages(ReadBib(file.name))[[20:21]]
+    identical(as.BibEntry(unlist(bib)), bib)  ## see also RelistBibEntry
 
-identical(as.BibEntry(unclass(bib)), bib)
+    identical(as.BibEntry(unclass(bib)), bib)
 
-identical(as.BibEntry(as.data.frame(bib)), bib)
+    identical(as.BibEntry(as.data.frame(bib)), bib)
+ }
 
 bib <- c(bibtype = "article", key = "mclean2014", title = "My New Article",
   author = "Mathew W. McLean", journaltitle = "The Journal", date = "2014-01")

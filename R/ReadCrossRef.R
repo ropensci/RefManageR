@@ -96,6 +96,10 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
                          temp.file = tempfile(fileext = ".bib"),
                          delete.file = TRUE, verbose = FALSE,
                          use.old.api = FALSE){
+  if (!requireNamespace("bibtex"))
+      stop("Sorry this feature currently cannot be used without the ",
+           dQuote("bibtex"), " package installed.")
+
   bad <- 0
 
   ## file.create(temp.file)

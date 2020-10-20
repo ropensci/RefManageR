@@ -54,7 +54,10 @@ bib <- ReadCrossRef(query = '10.1080/01621459.2012.699793')
 if (length(bib)){
   tfile <- tempfile(fileext = ".bib")
   WriteBib(bib, tfile, biblatex = TRUE)
-  identical(ReadBib(tfile), bib)
+
+  if (requireNamespace("bibtex"))
+    identical(ReadBib(tfile), bib)
+
   unlink(tfile)
 }
 }
@@ -64,7 +67,7 @@ if (length(bib)){
 \code{\link{BibEntry}}
 }
 \author{
-McLean, M. W. based on \code{\link{write.bib}} by Gaujoux, R.
+McLean, M. W. based on \code{write.bib} by Gaujoux, R.
 in package \code{bibtex}.
 }
 \keyword{IO}

@@ -56,13 +56,15 @@
 #' @seealso \code{\link{BibEntry}}, \code{\link{print.BibEntry}}, \code{\link{order}}
 #' @importFrom tools bibstyle getBibstyle
 #' @examples
-#' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
-#' bib <- suppressMessages(ReadBib(file.name)[[70:73]])
-#' BibOptions(sorting = "none")
-#' bib
-#' sort(bib, sorting = "nyt")
-#' sort(bib, sorting = "ynt")
-#' BibOptions(restore.defaults = TRUE)
+#' if (requireNamespace("bibtex")) {
+#'     file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
+#'     bib <- suppressMessages(ReadBib(file.name)[[70:73]])
+#'     BibOptions(sorting = "none")
+#'     bib
+#'     sort(bib, sorting = "nyt")
+#'     sort(bib, sorting = "ynt")
+#'     BibOptions(restore.defaults = TRUE)
+#' }
 sort.BibEntry <- function(x, decreasing = FALSE, sorting = BibOptions()$sorting,
                           .bibstyle = BibOptions()$bib.style, ...){
   sort.fun.env <- GetFormatFunctions(DateFormatter = I)

@@ -22,10 +22,12 @@ used to extract a single field from each entry in a BibEntry object
 \code{name} may be \dQuote{bibtype} to extract entry types or \dQuote{key} to extract keys.
 }
 \examples{
-file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
-bib <- suppressMessages(ReadBib(file.name))
-bib[[50:55]]$author
-bib[[seq_len(5)]]$bibtype
+if (requireNamespace("bibtex")) {
+    file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
+    bib <- suppressMessages(ReadBib(file.name))
+    bib[[50:55]]$author
+    bib[[seq_len(5)]]$bibtype
+ }
 }
 \seealso{
 Other operators: 

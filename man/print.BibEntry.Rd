@@ -16,7 +16,7 @@ options are
 values are plain text (style \dQuote{text}), BibTeX (\dQuote{Bibtex}), BibLaTeX
 (\dQuote{Biblatex}), a mixture of plain text and BibTeX as
 traditionally used for citations (\dQuote{citation}), HTML (\dQuote{html}),
-LaTeX (\dQuote{latex}), \dQuote{markdown}, \dQuote{yaml}, 
+LaTeX (\dQuote{latex}), \dQuote{markdown}, \dQuote{yaml},
 R code (\dQuote{R}), and a simple copy of the textVersion elements
 (style \dQuote{textVersion}, see \code{\link{BibEntry}})
 \item \code{bib.style} - character string specifying BibLaTeX style to use for
@@ -52,16 +52,18 @@ environment must have functions for formatting each of the entry types described
 \code{\link{BibEntry}}.
 }
 \examples{
-file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
-bib <- suppressMessages(ReadBib(file.name))
-print(bib[author="aristotle"], .opts = list(bib.style = "numeric"))
-print(bib[55:57], .opts = list(bib.style = "authortitle", first.inits = FALSE))
-print(bib[80:88], .opts = list(bib.style = "alphabetic", max.names = 1,
-      no.print.fields = "issn"))
-print(bib[32:36], .opts = list(bib.style = "draft"))
-oldopts <- BibOptions(bib.style = "authoryear", dashed = TRUE, sorting = "ydnt")
-bib[editor = "westfahl"]
-BibOptions(oldopts)
+if (requireNamespace("bibtex")) {
+    file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
+    bib <- suppressMessages(ReadBib(file.name))
+    print(bib[author="aristotle"], .opts = list(bib.style = "numeric"))
+    print(bib[55:57], .opts = list(bib.style = "authortitle", first.inits = FALSE))
+    print(bib[80:88], .opts = list(bib.style = "alphabetic", max.names = 1,
+          no.print.fields = "issn"))
+    print(bib[32:36], .opts = list(bib.style = "draft"))
+    oldopts <- BibOptions(bib.style = "authoryear", dashed = TRUE, sorting = "ydnt")
+    bib[editor = "westfahl"]
+    BibOptions(oldopts)
+}
 }
 \references{
 Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The

@@ -23,9 +23,11 @@
 Functions to get and set the keys of an object of class BibEntry
 }
 \examples{
-bib <- ReadBib(system.file("Bib", "test.bib", package = "RefManageR"))
-names(bib)
-names(bib)[1] <- 'newkey'
+if (requireNamespace("bibtex")) {
+    bib <- ReadBib(system.file("Bib", "test.bib", package = "RefManageR"))
+    names(bib)
+    names(bib)[1] <- 'newkey'
+}
 }
 \author{
 McLean, M. W. \email{mathew.w.mclean@gmail.com}

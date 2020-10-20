@@ -54,10 +54,12 @@
 #' @keywords database IO utilities
 #' @aliases toBibtex.BibEntry toBibtex
 #' @examples
-#' file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
-#' bib <- suppressMessages(ReadBib(file.name))
-#' toBiblatex(bib[70:72])
-#' toBibtex(bib[70:72])
+#' if (requireNamespace("bibtex")) {
+#'     file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
+#'     bib <- suppressMessages(ReadBib(file.name))
+#'     toBiblatex(bib[70:72])
+#'     toBibtex(bib[70:72])
+#' }
 toBiblatex <- function(object, ...){
     format_bibentry1 <- function(object) {
       object <- unclass(object)[[1L]]

@@ -70,6 +70,10 @@
 ReadZotero <- function(user, group, .params,
                        temp.file = tempfile(fileext = ".bib"),
                        delete.file = TRUE){
+  if (!requireNamespace("bibtex"))
+      stop("Sorry this feature currently cannot be used without the ",
+           dQuote("bibtex"), " package installed.")
+
   if (delete.file)
     on.exit(unlink(temp.file, force = TRUE))
 

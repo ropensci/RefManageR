@@ -1,3 +1,4 @@
+
 #' Search CrossRef for Document Object Identifiers for Given Citations
 #'
 #' This function queries CrossRef to obtain DOIs for the entries in a given
@@ -14,7 +15,9 @@
 #' \sQuote{doi} field will be searched for.
 #' @references \url{https://search.crossref.org/help/api}
 #' @examples
-#' if (interactive() && !httr::http_error("https://search.crossref.org")){
+#' if (interactive() && !httr::http_error("https://search.crossref.org") &&
+#'    requireNamespace("bibtex"))
+#' {
 #'   BibOptions(check.entries = FALSE, sorting = "none")
 #'   bib <- ReadBib(system.file("Bib", "RJC.bib", package = "RefManageR"))[1:5]
 #'   bib <- GetDOIs(bib)

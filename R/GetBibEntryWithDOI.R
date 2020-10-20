@@ -23,6 +23,10 @@
 #'   GetBibEntryWithDOI(c("10.1016/j.iheduc.2003.11.004", "10.3998/3336451.0004.203"))
 GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'),
                                delete.file = TRUE){
+  if (!requireNamespace("bibtex"))
+      stop("Sorry this feature currently cannot be used without the ",
+           dQuote("bibtex"), " package installed.")
+
   file.create(temp.file)
   on.exit(if (delete.file && file.exists(temp.file)) file.remove(temp.file))
   successes <- logical(length(doi))
@@ -54,7 +58,7 @@ GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'),
                     temp.file))
 
     bib.res$url <- vapply(bib.res$url, function(x) if (!is.null(x))
-                                                 URLdecode(x), "") 
+                                                 URLdecode(x), "")
 
     return(bib.res)
   }

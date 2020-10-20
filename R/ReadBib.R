@@ -12,7 +12,6 @@
 #' checking is done, \dQuote{warn} means entry is added with an error.
 #' \dQuote{error} means the entry will not be added.  See \code{\link{BibOptions}}.
 #' @author McLean, M. W., based on code in \code{bibtex} package by Francois, R.
-#' @importFrom bibtex do_read_bib
 #' @importFrom stringr str_trim
 #' @note Date fields are parsed using the locale specified by
 #' \code{Sys.getlocale("LC_TIME")}.  To read a bib file with character \sQuote{month}
@@ -24,12 +23,18 @@
 #' @seealso \code{\link[bibtex]{read.bib}} in package \code{bibtex}
 #' @export
 #' @examples
-#' file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
-#' bib <- ReadBib(file.name)
+#' if (requireNamespace("bibtex")) {
+#'     file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
+#'     bib <- ReadBib(file.name)
+#' }
 ReadBib <- function(file, .Encoding = "UTF-8",
                     header = if (length(preamble)) paste(preamble,
                                                          sep = "\n") else "",
                     footer = "", check = BibOptions()$check.entries){
+  if (!requireNamespace("bibtex"))
+      stop("Sorry this feature currently cannot be used without the ",
+           dQuote("bibtex"), " package installed.")
+
   stopifnot(!missing(file))
   old.chk <- BibOptions(check.entries = check)
   on.exit(BibOptions(old.chk))
@@ -42,7 +47,7 @@ ReadBib <- function(file, .Encoding = "UTF-8",
   srcfile <- switch(.Encoding, unknown = srcfile(file),
                     srcfile(file, encoding = .Encoding))
 
-  out <- do_read_bib(file, encoding = .Encoding, srcfile)
+  out <- bibtex::do_read_bib(file, encoding = .Encoding, srcfile)
   at <- attributes(out)
   if (typeof(out) != "integer")
     out <- lapply(out, MakeBibEntry)

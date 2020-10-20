@@ -41,8 +41,10 @@ Keys will be made unique by calling \code{\link[base]{make.unique}} with
 \code{sep = ":"}.
 }
 \examples{
-file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
-bib <- ReadBib(file.name)
+if (requireNamespace("bibtex")) {
+    file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
+    bib <- ReadBib(file.name)
+}
 }
 \seealso{
 \code{\link[bibtex]{read.bib}} in package \code{bibtex}
