@@ -10,11 +10,11 @@
 #' and no conversions of the BibEntry object
 #' are done; if \code{FALSE} entries will be converted as described in
 #' \code{\link{toBibtex.BibEntry}}.
-#' @param append as in \code{\link{write.bib}}
-#' @param verbose as in \code{\link{write.bib}}
+#' @param append as in \code{write.bib} in package \code{bibtex}
+#' @param verbose as in \code{write.bib} in package \code{bibtex}
 #' @param ... additional arguments passed to \code{\link{writeLines}}
 #' @return \code{bib} - invisibly
-#' @seealso \code{\link{write.bib}}, \code{\link{ReadBib}},
+#' @seealso \code{write.bib} in package \code{bibtex}, \code{\link{ReadBib}},
 #' \code{\link{toBibtex.BibEntry}}, \code{\link{toBiblatex}},
 #' \code{\link{BibEntry}}
 #' @keywords IO

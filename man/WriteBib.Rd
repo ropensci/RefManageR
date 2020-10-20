@@ -28,9 +28,9 @@ and no conversions of the BibEntry object
 are done; if \code{FALSE} entries will be converted as described in
 \code{\link{toBibtex.BibEntry}}.}
 
-\item{append}{as in \code{\link{write.bib}}}
+\item{append}{as in \code{write.bib} in package \code{bibtex}}
 
-\item{verbose}{as in \code{\link{write.bib}}}
+\item{verbose}{as in \code{write.bib} in package \code{bibtex}}
 
 \item{...}{additional arguments passed to \code{\link{writeLines}}}
 }
@@ -62,7 +62,7 @@ if (length(bib)){
 }
 }
 \seealso{
-\code{\link{write.bib}}, \code{\link{ReadBib}},
+\code{write.bib} in package \code{bibtex}, \code{\link{ReadBib}},
 \code{\link{toBibtex.BibEntry}}, \code{\link{toBiblatex}},
 \code{\link{BibEntry}}
 }
