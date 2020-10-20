@@ -28,7 +28,7 @@ for the latest changes.
 To install the latest version from `GitHub`:
 
 ```
-install.packages("devtools")
-devtools::install_github("ropensci/RefManageR")
+install.packages("remotes")
+remotes::install_github("ropensci/RefManageR")
 ```
 [![ropensci_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)
