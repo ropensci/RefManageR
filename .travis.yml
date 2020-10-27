@@ -21,7 +21,7 @@ before_install:
 # Use github version of testthat
 r_github_packages:
  - hadley/testthat
- - romainfrancois/bibtex
+ - ROpenSci/bibtex
 
 r_packages:
  - covr
