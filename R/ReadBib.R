@@ -31,9 +31,14 @@ ReadBib <- function(file, .Encoding = "UTF-8",
                     header = if (length(preamble)) paste(preamble,
                                                          sep = "\n") else "",
                     footer = "", check = BibOptions()$check.entries){
-  if (!requireNamespace("bibtex"))
-      stop("Sorry this feature currently cannot be used without the ",
-           dQuote("bibtex"), " package installed.")
+    if (!requireNamespace("bibtex")){
+      message("Sorry this feature currently cannot be used without the ",
+              dQuote("bibtex"), " package installed.\nPlease install from ",
+              "GitHub using the ", dQuote("remotes"),
+              " (or ", dQuote("devtools"), ") package:\n\n",
+              "remotes::install_github(\"ROpenSci/bibtex\")")
+      return(invisible())
+    }
 
   stopifnot(!missing(file))
   old.chk <- BibOptions(check.entries = check)

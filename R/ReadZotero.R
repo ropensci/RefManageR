@@ -70,9 +70,14 @@
 ReadZotero <- function(user, group, .params,
                        temp.file = tempfile(fileext = ".bib"),
                        delete.file = TRUE){
-  if (!requireNamespace("bibtex"))
-      stop("Sorry this feature currently cannot be used without the ",
-           dQuote("bibtex"), " package installed.")
+  if (!requireNamespace("bibtex")){
+    message("Sorry this feature currently cannot be used without the ",
+            dQuote("bibtex"), " package installed.\nPlease install from ",
+            "GitHub using the ", dQuote("remotes"),
+            " (or ", dQuote("devtools"), ") package:\n\n",
+            "remotes::install_github(\"ROpenSci/bibtex\")")
+    return(invisible())
+  }
 
   if (delete.file)
     on.exit(unlink(temp.file, force = TRUE))

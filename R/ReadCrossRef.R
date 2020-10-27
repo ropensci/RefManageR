@@ -96,9 +96,14 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
                          temp.file = tempfile(fileext = ".bib"),
                          delete.file = TRUE, verbose = FALSE,
                          use.old.api = FALSE){
-  if (!requireNamespace("bibtex"))
-      stop("Sorry this feature currently cannot be used without the ",
-           dQuote("bibtex"), " package installed.")
+    if (!requireNamespace("bibtex")){
+      message("Sorry this feature currently cannot be used without the ",
+              dQuote("bibtex"), " package installed.\nPlease install from ",
+              "GitHub using the ", dQuote("remotes"),
+              " (or ", dQuote("devtools"), ") package:\n\n",
+              "remotes::install_github(\"ROpenSci/bibtex\")")
+      return(invisible())
+    }
 
   bad <- 0
 

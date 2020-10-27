@@ -23,9 +23,14 @@
 #'   GetBibEntryWithDOI(c("10.1016/j.iheduc.2003.11.004", "10.3998/3336451.0004.203"))
 GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'),
                                delete.file = TRUE){
-  if (!requireNamespace("bibtex"))
-      stop("Sorry this feature currently cannot be used without the ",
-           dQuote("bibtex"), " package installed.")
+  if (!requireNamespace("bibtex")){
+    message("Sorry this feature currently cannot be used without the ",
+            dQuote("bibtex"), " package installed.\nPlease install from ",
+            "GitHub using the ", dQuote("remotes"),
+            " (or ", dQuote("devtools"), ") package:\n\n",
+            "remotes::install_github(\"ROpenSci/bibtex\")")
+    return(invisible())
+  }
 
   file.create(temp.file)
   on.exit(if (delete.file && file.exists(temp.file)) file.remove(temp.file))

@@ -1,11 +1,14 @@
-Changes in Version 1.3.0 (2019-10-21)
+Changes in Version 1.3.0 (2019-10-27)
 ========================================================
 
-* Package `bibtex` moved to Suggests in `DESCRIPTION` to due
-to it currently being orphaned on CRAN. Work is underway by the
-ROpenSci team to rectify this. The functions `ReadBib`,
-`GetBibEntryWithDOI`, `ReadCrossRef`, `ReadZotero`, will not work and
-now throw an error if `bibtex` is not installed.
+* Package `bibtex` moved to Suggests in `DESCRIPTION` due to it
+currently being orphaned on CRAN. Work is underway by the ROpenSci
+team to rectify this. The package can still be installed from
+[GitHub](https://github.com/ROpenSci/bibtex). In the event that
+`bibtex` is not installed, the functions `ReadBib()`,
+`GetBibEntryWithDOI()`, `ReadCrossRef()`, and `ReadZotero()` 
+throw an appropriate message asking the user to install `bibtex` and invisibly
+return `NULL`.
 
 
 Changes in Version 1.2.13 (2019-04-03)
