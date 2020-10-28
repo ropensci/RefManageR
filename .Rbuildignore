@@ -4,6 +4,7 @@ Rmd/figure
 Rhtml/.*[.]html$
 Rhtml/.*[.]md$
 Rhtml/figure
+pdf/.*[.]pdf$
 .*~$
 \#.*\#
 ^[.]gitignore$

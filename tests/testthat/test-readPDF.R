@@ -33,9 +33,16 @@ arxiv2.fail <- try(download.file("https://arxiv.org/pdf/math/0703858",
                                  mode = "wb"))
 if (inherits(arxiv2.fail, "try-error"))
     arxiv2.fail <- TRUE
-biomet.fail <- try(download.file(paste0("http://biomet.oxfordjournals.org/",
+
+## First try to use pdfs stored in repo for use with CI/devtools
+##  The pdfs are ignored by.Rbuildignore,
+##   if they aren't found (i.e. if using R CMD check), try to download them
+biomet.fail <- !file.copy(system.file("pdf", "biometrikaEx.pdf",
+                                     package = "RefManageR"), exe.path)
+if (biomet.fail)
+    biomet.fail <- try(download.file(paste0("http://biomet.oxfordjournals.org/",
                                         "content/83/4/715.full.pdf"),
-                                 destfile = file.path(exe.path, "ADVb.pdf"),
+                                 destfile = file.path(exe.path, "biometrikaEx.pdf"),
                                  mode = "wb"))
 if (inherits(biomet.fail, "try-error"))
     biomet.fail <- TRUE
