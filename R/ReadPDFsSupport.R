@@ -354,14 +354,15 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
   first.match <- FALSE
   done.match <- FALSE
   while (i <= N && !done.match){
-    temp <- grep(BAD.WORDS, doc[i], ignore.case = TRUE, useBytes = TRUE)
-    title.ind <- regexpr(paste0(  # "(?!", BAD.WORDS, ")",
+    likely.non.title.term.found <- grepl(BAD.WORDS, doc[i], ignore.case = TRUE,
+                                           useBytes = TRUE)
+    title.ind <- (regexpr(paste0(  # "(?!", BAD.WORDS, ")",
                 "^[\u201c\u022]?[[:upper:]][[:alpha:]'\u201c\u201d\u022-]+[ -]",
                 #"([[:alpha:]:,' ]){2,}(\\.|!|\\?)?$"),
-                "([[:alpha:]:,' \u201c\u201d\u022-]+){2,}.?$"),
+                "([[:alpha:]:,' \u201c\u201d\u022-]+){2,}"),
                 #"(?<!", BAD.WORDS, ")"),
-                       doc[i], perl = TRUE, useBytes = TRUE)
-    if (title.ind != -1 && !length(temp)){
+                       doc[i], perl = TRUE, useBytes = TRUE))
+    if (title.ind != -1 && !likely.non.title.term.found){
       if (!first.match){
         first.match <- TRUE
         title.match <- regmatches(doc[i], title.ind)
