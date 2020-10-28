@@ -1,5 +1,5 @@
 library(testthat)
-Sys.setenv(NOT_CRAN = "true")
+## Sys.setenv(NOT_CRAN = "true")
 ## filter_patt <- "^(?!readPDF)[A-Za-z0-9]+$"
 file.parts.to.exclude  <- c("readPDF", "crossref", "Read", "zotero")
 exclude.patt <- paste0(file.parts.to.exclude, collapse = "|")
