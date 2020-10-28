@@ -340,7 +340,7 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
   }
 
   BAD.WORDS <- paste0("\\bSupplement\\b|University|\\bCollege\\b|\\bCentre\\b",
-                      "|\\bCenter\\b|Working|Faculty|Paper|\\b[Uu][Rr][Ll]\\b",
+                      "|\\bCenter\\b|Working|^Printed in|Faculty|Paper|\\b[Uu][Rr][Ll]\\b",
                       "|Labs|\\bJournal\\b|Institute|\\bSchool\\b")
   if (length(match.ind)){  # if found author, assume title comes before author
     ind <- match.ind[1]
