@@ -27,7 +27,8 @@ Imports:
     httr,
     lubridate (>= 1.5.0),
     stringr,
-    methods
+    methods,
+    reticulate (>= 1.10)
 Suggests:
     knitr,
     markdown,
@@ -37,6 +38,12 @@ Encoding: UTF-8
 Depends:
     R (>= 3.0)
 VignetteBuilder: knitr
-BugReports: https://github.com/ropensci/RefManageR/issues
-URL: https://github.com/ropensci/RefManageR/
+BugReports: https://github.com/ropensci/refmanager/issues
+URL: https://github.com/ropensci/refmanager/
+Config/reticulate:
+  list(
+    packages = list(
+      list(package = "bibtexparser", pip = TRUE)
+    )
+  )
 RoxygenNote: 7.1.1

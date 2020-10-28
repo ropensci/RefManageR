@@ -902,9 +902,15 @@ CheckGSDots <- function(x, title, check){
 }
 
 #' @keywords internal
-MakeBibEntry <- function(x, to.person = TRUE){
-  type <- attr(x, "entry")
-  key <- attr(x, "key")
+MakeBibEntry <- function(x, to.person = TRUE, from.bibtex = TRUE){
+  if (from.bibtex){
+    type <- attr(x, "entry")
+    key <- attr(x, "key")
+  }else{  # from python
+    type <- x[["ENTRYTYPE"]]
+    key <- x[["ID"]]
+    x[["ENTRYTYPE"]]  <- x[["ID"]] <- NULL
+  }
   y <- as.list(x)
   names(y) <- tolower(names(y))
   fun <- ifelse(to.person, "ArrangeAuthors", "as.person")
