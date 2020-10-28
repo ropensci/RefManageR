@@ -39,7 +39,11 @@
 #' CrossRef assigns a score between 0 and 100 based on how relevant a
 #' reference seems to be to your query.  The \emph{old} API
 #' documentation warns that while false negatives are unlikely, the
-#' search can be prone to false positives.
+#' search can be prone to false positives.  Hence, setting
+#' \code{min.revelance} to a high value may be necessary if
+#' \code{use.old.api = TRUE}. In some instances with the old API, no
+#' score is returned, if this happens, the entries are added with a
+#' message indicating that no score was available.
 #'
 #' Possible values for the \emph{names} in \code{filter} are \code{"has-funder"},
 #' \code{"funder"}, \code{"prefix"}, \code{"member"}, \code{"from-index-date"},
@@ -65,6 +69,7 @@
 #' package \code{rcrossref} for larger queries and deep paging
 #' @family pubmed
 #' @references Newer API: \url{https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md},
+#' Older API: \url{https://search.crossref.org/help/api}
 #' @examples
 #' if (interactive() && !httr::http_error("https://search.crossref.org/")){
 #'   BibOptions(check.entries = FALSE)
@@ -79,8 +84,12 @@
 #'   ## Articles published by Institute of Mathematical Statistics
 #'   ReadCrossRef(filter = list(prefix = "10.1214"), limit = 5, min.relevance = 0)
 #'
+#'   ## old API
 #'   ReadCrossRef(query = 'rj carroll measurement error', limit = 2, sort = "relevance",
-#'     min.relevance = 80)
+#'     min.relevance = 80, use.old.api = TRUE)
+#'
+#'   ReadCrossRef(query = 'carroll journal of the american statistical association',
+#'     year = 2012, limit = 2, use.old.api = TRUE)
 #' }
 ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
                          sort = "relevance", year = NULL, min.relevance = 2,
@@ -96,11 +105,6 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
       return(invisible())
     }
 
-    if (use.old.api){
-        warning("The old API is no longer supported. Argument, ",
-                sQuote("use.old.api"), " ignored and the new API will be used.")
-        use.old.api <- FALSE
-    }
   bad <- 0
 
   ## file.create(temp.file)

@@ -6,7 +6,7 @@
 #' @param bib a \code{BibEntry} object
 #' @return \code{bib} with any found DOI's added in the \sQuote{doi} field
 #' @importFrom jsonlite toJSON fromJSON
-#' @importFrom httr POST content http_error content_type_json
+#' @importFrom httr POST content http_error
 #' @keywords database
 #' @export
 #' @seealso \code{\link{ReadCrossRef}}
@@ -30,26 +30,14 @@ GetDOIs <- function(bib){
   if (!length(missing.dois.pos))
     message("All entries already have DOIs")
   else{
-    ## json.bib <- toJSON(FormatEntryForCrossRef(bib[[missing.dois.pos]]))
-    query.bib <- FormatEntryForCrossRefOld(bib[[missing.dois.pos]])
+    json.bib <- toJSON(FormatEntryForCrossRef(bib[[missing.dois.pos]]))
     headers <- list('Accept' = 'application/json',
-##                    'Content-Type' = 'application/json',
-                    'User-Agent' = paste0("https://github.com/ropensci/refmanager; ",
-                                          "mailto:mathew.w.mclean@gmail.com"),
-                    'User-Agent-X' = paste0("https://github.com/ropensci/refmanager; ",
-                                          "mailto:mathew.w.mclean@gmail.com"))
+                    'Content-Type' = 'application/json')
 
-      bod <- list(query.bibliographic = query.bib,
-                  pid = "mathew.w.mclean@gmail.com")
     ## json.res <- postForm("https://search.crossref.org/links",
     ##              .opts = list(postfields = json.bib, httpheader = headers))
     ## json.res <- try(fromJSON(json.res), TRUE)
-    ##:ess-bp-start::browser@nil:##
-browser(expr=is.null(.ESSBP.[["@6@"]]));##:ess-bp-end:##
-    url <- "https://api.crossref.org"
-    url <- "https://doi.crossref.org/servlet/query"
-    ## url <- "https://search.crossref.org/links"
-    json.res <- httr::POST(url, body = bod,
+    json.res <- httr::POST("https://search.crossref.org/links", body = json.bib,
                            config = list(add_headers = headers),
                            encode = "json")
     status <- status_code(json.res)
@@ -76,58 +64,8 @@ browser(expr=is.null(.ESSBP.[["@6@"]]));##:ess-bp-end:##
   bib
 }
 
+
 FormatEntryForCrossRef <- function(bib){
-    fmt.env <- MakeBibLaTeX("text", TRUE)
-    assign("bib", bib, envir = fmt.env)
-    with(fmt.env, {
-      bibstyle <- "authoryear"
-      ## collapse <- function(strings)
-      ##               paste(strings, collapse = " ")
-
-      ## fmtVolume <- function(vol, num){
-      ##     if (length(vol)){
-      ##       res <- paste0("vol. ", vol)
-      ##       if (length(num))
-      ##         res <- paste(res, num, sep = ', no. ')
-      ##       res
-      ##     }
-      ##  }
-      ##  fmtJTitle <- function(title){
-      ##    if (grepl('[.?!]$', title, useBytes = TRUE))
-      ##      paste0("\"", collapse(cleanupLatex(title)), "\"")
-      ##    else paste0("\"", collapse(cleanupLatex(title)), "\".")
-      ##  }
-
-      ## fmtJournal <- function(s){
-      ##   if (length(s$journaltitle)){
-      ##     res <- cleanupLatex(s$journaltitle)
-      ##     if (length(s$journalsubtitle))
-      ##       res <- paste(addPeriod(res), cleanupLatex(s$journalsubtitle))
-      ##     return(res)
-      ##   }else if(!is.null(s$journal)){
-      ##     cleanupLatex(s$journal)
-      ##   }
-      ## }
-
-      formatArticle <- function(paper){
-         list(author = fmtBAuthor(paper), title = fmtJTitle(paper$title),
-                    journal = fmtJournal(paper),
-                             volume = fmtVolume(paper$volume, paper$number),
-                             pages = fmtPages(paper$pages, paper$pagination),
-                             date = fmtDate(attr(paper, "dateobj")),
-                    issn = fmtISSN(paper$issn))
-      }
-      oldopts <- BibOptions(max.names = 99, first.inits = TRUE)
-      on.exit(BibOptions(oldopts))
-      lapply(unclass(bib), function(doc){
-            doc$.duplicated <- FALSE
-            formatArticle(doc)
-          })
-      })
-}
-
-
-FormatEntryForCrossRefOld <- function(bib){
     fmt.env <- MakeBibLaTeX("text", TRUE)
     assign("bib", bib, envir = fmt.env)
     with(fmt.env, {
