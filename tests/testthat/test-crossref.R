@@ -52,15 +52,16 @@ test_that("GetBibEntryWithDOIs continues if some DOIs not found", {
 
 old.opts <- BibOptions(check.entries = FALSE)
 
-test_that("ReadCrossRef *old* API retrieves queries successfully", {
+test_that("ReadCrossRef *old* API warns and uses new API", {
     skip_on_cran()
     if (httr::http_error("https://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
     BibOptions(check.entries = FALSE, sorting = "none")
-    out <- ReadCrossRef(query = 'gelman bayesian', limit = 2,
+    expect_warning(out <- ReadCrossRef(query = 'gelman bayesian', limit = 2,
                         sort = "relevance",
-                        min.relevance = 80, use.old.api = TRUE)
+                        min.relevance = 80, use.old.api = TRUE),
+                   "old CrossRef API is no longer support")
 
     expect_is(out, "BibEntry")
     expect_equal(length(out), 2L)
