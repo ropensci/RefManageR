@@ -27,16 +27,20 @@
 #' @export
 #' @examples
 #' if (requireNamespace("bibtex")){
-#'     bib <- ReadCrossRef(query = '10.1080/01621459.2012.699793')
+#'     bib <- BibEntry("Article", key = "Carroll_2012",
+#'                     doi = "10.1080/01621459.2012.699793",
+#'                     year = "2012", month = "sep",
+#'                     volume = 107, number = 499,
+#'                     pages = {1166--1177},
+#'       author = "R. Carroll and A. Delaigle and P. Hall",
+#'       title = "Deconvolution When Classifying Noisy Data ...",
+#'       journal = "Journal of the American Statistical Association")
 #'
 #'   ## Write bib if no server error and bibtex available
 #'   if (length(bib)){
 #'     tfile <- tempfile(fileext = ".bib")
 #'     WriteBib(bib, tfile, biblatex = TRUE)
-#'
-#'     if (requireNamespace("bibtex"))
-#'       identical(ReadBib(tfile), bib)
-#'
+#'     identical(ReadBib(tfile), bib)
 #'     unlink(tfile)
 #'   }
 #' }
