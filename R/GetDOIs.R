@@ -8,7 +8,7 @@
 #' @importFrom jsonlite toJSON fromJSON
 #' @importFrom httr POST content http_error
 #' @keywords database
-#' @export
+#' @noRd
 #' @seealso \code{\link{ReadCrossRef}}
 #' @family pubmed
 #' @note Only entries in \code{bib} that do not already contain a value in the

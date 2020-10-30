@@ -21,43 +21,47 @@ ReadCrossRef(
 \arguments{
 \item{query}{string; search term}
 
-\item{filter}{named list of possible filters; see \code{Details} and
-\code{References}; ignored if \code{use.old.api = TRUE}}
+\item{filter}{named list of possible filters; see \code{Details}
+and \code{References}; ignored if \code{use.old.api = TRUE}}
 
 \item{limit}{numeric; maximum number of entries to return}
 
-\item{offset}{numeric; CrossRef will not return the
-first \code{offset} results (default 0); ignored if \code{use.old.api = TRUE}}
+\item{offset}{numeric; CrossRef will not return the first
+\code{offset} results (default 0); ignored if \code{use.old.api
+= TRUE}}
 
-\item{sort}{string; how specifying how the results from CrossRef should be
-sorted.  Possible values when \code{use.old.api = FALSE} are \code{"score"}
-(default; same as \code{"relevance"}),
-\code{"updated"}, \code{"deposited"}, \code{"indexed"}, or \code{"published"};
-see the references}
+\item{sort}{string; how specifying how the results from CrossRef
+should be sorted.  Possible values when \code{use.old.api =
+FALSE} are \code{"score"} (default; same as
+\code{"relevance"}), \code{"updated"}, \code{"deposited"},
+\code{"indexed"}, or \code{"published"}; see the references}
 
-\item{year}{numeric; if specified, only results from this year will be returned.}
+\item{year}{numeric; if specified, only results from this year will
+be returned.}
 
-\item{min.relevance}{numeric; only results with a CrossRef-assigned relevance
-score at least this high will be returned.}
+\item{min.relevance}{numeric; only results with a CrossRef-assigned
+relevance score at least this high will be returned.}
 
-\item{temp.file}{string; file name to use for storing Bibtex information
-returned by CrossRef.}
+\item{temp.file}{string; file name to use for storing Bibtex
+information returned by CrossRef.}
 
 \item{delete.file}{boolean; should the bib file be deleted on exit?}
 
-\item{verbose}{boolean; if \code{TRUE}, additional messages are output
-regarding the results of the query.}
+\item{verbose}{boolean; if \code{TRUE}, additional messages are
+output regarding the results of the query.}
 
-\item{use.old.api}{boolean; should the older CrossRef API be used for the search?}
+\item{use.old.api}{boolean; should the older CrossRef API be used
+for the search? NO LONGER SUPPORTED, all queries need to use
+the new API.}
 }
 \value{
 An object of class \code{BibEntry}.
 }
 \description{
-Provides an interface to the CrossRef API, searching for citations given a
-string query.  Results are written to a
-bib file, read back into \code{R} using \code{\link{WriteBib}}, and returned
-as a BibEntry object.
+Provides an interface to the CrossRef API, searching for citations
+given a string query.  Results are written to a bib file, read back
+into \code{R} using \code{\link{WriteBib}}, and returned as a
+BibEntry object.
 }
 \details{
 When \code{use.old.api = TRUE}, the query HTTP request only returns DOIs,
@@ -91,9 +95,10 @@ Possible values for the \emph{names} in \code{filter} are \code{"has-funder"},
 See the first reference for a description of their meanings.
 }
 \note{
-The entries returned by Crossref are frequently missing fields required
-by BibTeX, if you want the entries to be returned anyway, set
-\code{BibOptions()$check.entries} to \code{FALSE} or \code{"warn"}
+The entries returned by Crossref are frequently missing
+    fields required by BibTeX, if you want the entries to be
+    returned anyway, set \code{BibOptions()$check.entries} to
+    \code{FALSE} or \code{"warn"}
 
 Fields \code{"score"} (the relevancy score) and \code{"license"} will be
 returned when \code{use.old.api = FALSE}.
@@ -125,11 +130,10 @@ Newer API: \url{https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md
 Older API: \url{https://search.crossref.org/help/api}
 }
 \seealso{
-\code{\link{ReadZotero}}, \code{\link{BibEntry}}, \code{\link{GetDOIs}},
+\code{\link{ReadZotero}}, \code{\link{BibEntry}},
 package \code{rcrossref} for larger queries and deep paging
 
 Other pubmed: 
-\code{\link{GetDOIs}()},
 \code{\link{GetPubMedByID}()},
 \code{\link{GetPubMedRelated}()},
 \code{\link{LookupPubMedID}()},

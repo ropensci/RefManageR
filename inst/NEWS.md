@@ -1,4 +1,4 @@
-Changes in Version 1.3.0 (2019-10-27)
+Changes in Version 1.3.0 (2019-10-30)
 ========================================================
 
 * Package `bibtex` moved to Suggests in `DESCRIPTION` due to it
@@ -9,7 +9,11 @@ team to rectify this. The package can still be installed from
 `GetBibEntryWithDOI()`, `ReadCrossRef()`, and `ReadZotero()` 
 throw an appropriate message asking the user to install `bibtex` and invisibly
 return `NULL`.
-
+* The old CrossRef API can no longer be used. If `use.old.api` is set
+  to \code{TRUE} in \code{ReadCrossRef()}, it will be ignored with a warning.
+* `GetDOIs()` had to be removed due to changes to the CrossRef API. It
+  will hopefully return in the next release.
+  
 
 Changes in Version 1.2.13 (2019-04-03)
 ========================================================

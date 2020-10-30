@@ -36,7 +36,6 @@ if (interactive() && !httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
 }
 \seealso{
 Other pubmed: 
-\code{\link{GetDOIs}()},
 \code{\link{GetPubMedRelated}()},
 \code{\link{LookupPubMedID}()},
 \code{\link{ReadCrossRef}()},

@@ -1,33 +1,38 @@
 #' Search CrossRef for citations.
 #'
-#' Provides an interface to the CrossRef API, searching for citations given a
-#' string query.  Results are written to a
-#' bib file, read back into \code{R} using \code{\link{WriteBib}}, and returned
-#' as a BibEntry object.
+#' Provides an interface to the CrossRef API, searching for citations
+#' given a string query.  Results are written to a bib file, read back
+#' into \code{R} using \code{\link{WriteBib}}, and returned as a
+#' BibEntry object.
 #' @param query string; search term
-#' @param filter named list of possible filters; see \code{Details} and
-#' \code{References}; ignored if \code{use.old.api = TRUE}
+#' @param filter named list of possible filters; see \code{Details}
+#'     and \code{References}; ignored if \code{use.old.api = TRUE}
 #' @param limit numeric; maximum number of entries to return
-#' @param offset numeric; CrossRef will not return the
-#' first \code{offset} results (default 0); ignored if \code{use.old.api = TRUE}
-#' @param sort string; how specifying how the results from CrossRef should be
-#' sorted.  Possible values when \code{use.old.api = FALSE} are \code{"score"}
-#' (default; same as \code{"relevance"}),
-#' \code{"updated"}, \code{"deposited"}, \code{"indexed"}, or \code{"published"};
-#' see the references
-#' @param year numeric; if specified, only results from this year will be returned.
-#' @param min.relevance numeric; only results with a CrossRef-assigned relevance
-#' score at least this high will be returned.
-#' @param temp.file string; file name to use for storing Bibtex information
-#' returned by CrossRef.
+#' @param offset numeric; CrossRef will not return the first
+#'     \code{offset} results (default 0); ignored if \code{use.old.api
+#'     = TRUE}
+#' @param sort string; how specifying how the results from CrossRef
+#'     should be sorted.  Possible values when \code{use.old.api =
+#'     FALSE} are \code{"score"} (default; same as
+#'     \code{"relevance"}), \code{"updated"}, \code{"deposited"},
+#'     \code{"indexed"}, or \code{"published"}; see the references
+#' @param year numeric; if specified, only results from this year will
+#'     be returned.
+#' @param min.relevance numeric; only results with a CrossRef-assigned
+#'     relevance score at least this high will be returned.
+#' @param temp.file string; file name to use for storing Bibtex
+#'     information returned by CrossRef.
 #' @param delete.file boolean; should the bib file be deleted on exit?
-#' @param verbose boolean; if \code{TRUE}, additional messages are output
-#' regarding the results of the query.
-#' @param use.old.api boolean; should the older CrossRef API be used for the search?
+#' @param verbose boolean; if \code{TRUE}, additional messages are
+#'     output regarding the results of the query.
+#' @param use.old.api boolean; should the older CrossRef API be used
+#'     for the search? NO LONGER SUPPORTED, all queries need to use
+#'     the new API.
 #' @return An object of class \code{BibEntry}.
-#' @note The entries returned by Crossref are frequently missing fields required
-#' by BibTeX, if you want the entries to be returned anyway, set
-#' \code{BibOptions()$check.entries} to \code{FALSE} or \code{"warn"}
+#' @note The entries returned by Crossref are frequently missing
+#'     fields required by BibTeX, if you want the entries to be
+#'     returned anyway, set \code{BibOptions()$check.entries} to
+#'     \code{FALSE} or \code{"warn"}
 #'
 #' Fields \code{"score"} (the relevancy score) and \code{"license"} will be
 #' returned when \code{use.old.api = FALSE}.
@@ -65,7 +70,7 @@
 #' @importFrom utils URLdecode
 #' @export
 #' @keywords database
-#' @seealso \code{\link{ReadZotero}}, \code{\link{BibEntry}}, \code{\link{GetDOIs}},
+#' @seealso \code{\link{ReadZotero}}, \code{\link{BibEntry}},
 #' package \code{rcrossref} for larger queries and deep paging
 #' @family pubmed
 #' @references Newer API: \url{https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md},
@@ -96,15 +101,20 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
                          temp.file = tempfile(fileext = ".bib"),
                          delete.file = TRUE, verbose = FALSE,
                          use.old.api = FALSE){
-    if (!requireNamespace("bibtex")){
-      message("Sorry this feature currently cannot be used without the ",
-              dQuote("bibtex"), " package installed.\nPlease install from ",
-              "GitHub using the ", dQuote("remotes"),
-              " (or ", dQuote("devtools"), ") package:\n\n",
-              "remotes::install_github(\"ROpenSci/bibtex\")")
-      return(invisible())
-    }
+  if (!requireNamespace("bibtex")){
+    message("Sorry this feature currently cannot be used without the ",
+            dQuote("bibtex"), " package installed.\nPlease install from ",
+            "GitHub using the ", dQuote("remotes"),
+            " (or ", dQuote("devtools"), ") package:\n\n",
+            "remotes::install_github(\"ROpenSci/bibtex\")")
+    return(invisible())
+  }
 
+  if (use.old.api){
+      warning("The old CrossRef API is no longer supported,",
+              sQuote("use.old.api"), " will be ignored and the new API used.")
+      use.old.api <- FALSE
+  }
   bad <- 0
 
   ## file.create(temp.file)
