@@ -143,3 +143,15 @@ test_that("#62 no Unicode char. convers. when addPeriod", {
     expect.aut <- tools::latexToUtf8(tools::parseLatex(aut.latex))
     expect_equal(out[1], tools::deparseLatex(expect.aut))
 })
+
+test_that("#83 Custom bib types in custom bibstyle",
+{
+    env <- RefManageR:::MakeBibLaTeX()
+    env$formatCustoma <- function(paper) paste0("Hi: ", paper$title)
+    tools::bibstyle("custom", env)
+    BibOptions(bib.style = "custom")
+    bib <- BibEntry(key = "a", bibtype = "Customa",
+                    title = "Raindrops on roses and whiskers on kittens")
+    expect_equal(format(bib, style = "text"),
+                 "Hi: Raindrops on roses and whiskers on kittens")
+})

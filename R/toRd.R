@@ -101,7 +101,15 @@ toRd.BibEntry <- function(obj, ...) {
         Www = formatOnline(paper),
         Electronic = formatOnline(paper),
         Conference = formatInProceedings(paper),
-  	    paste("bibtype", attr(paper, "bibtype"), "not implemented") ))
+        {
+            ## Check for custom defined entry types in env
+            type <- attr(paper, "bibtype")
+            fun.name <- paste0("format", type)
+            if (!is.null(fmtFun <- get0(fun.name, env)) && is.function(fmtFun))
+                fmtFun(paper)
+            else
+                paste("bibtype", attr(paper, "bibtype"), "not implemented")
+        }))
   }
   result
 }
