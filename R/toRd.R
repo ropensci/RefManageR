@@ -45,71 +45,73 @@ toRd.BibEntry <- function(obj, ...) {
 
   bib <- unclass(obj)
   result <- character(length(bib))
-  #browser()
   for (i in seq_along(bib)) {
     assign('paper', bib[[i]], env)
 
-  	result[i] <- with(env,
+    result[i] <- with(env,
   	  switch(attr(paper, "bibtype"),
-  	    Article = formatArticle(paper),
-  	    Book = formatBook(paper),
-        MVBook = formatBook(paper, collection = FALSE),
-  	    InBook = formatInBook(paper),
-        BookInBook = formatInBook(paper, TRUE),
-        SuppBook = formatInBook(paper),
-        Booklet = formatBooklet(paper),
-        Collection = formatBook(paper, TRUE),
-        MVCollection = formatBook(paper, collection = TRUE),
-  	    InCollection = formatInCollection(paper),
-        SuppCollection = formatInCollection(paper),
-        Manual = formatManual(paper),
-  	    Misc = formatMisc(paper),
-        Online = formatOnline(paper),
-        Patent = formatPatent(paper),
-        Periodical = formatPeriodical(paper),
-        SuppPeriodical = formatArticle(paper),
-        Proceedings = formatProceedings(paper),
-        MVProceedings = formatProceedings(paper),
-        InProceedings = formatInProceedings(paper),
-        Reference = formatBook(paper, TRUE),  # alias for collection
-        MVReference = formatBook(paper, collection = TRUE),
-        InReference = formatInCollection(paper),
-        Report = formatReport(paper),
-        Thesis = formatThesis(paper),
-  	    Unpublished = formatUnpublished(paper),
-        Set = paste0('Set: ', attr(paper, 'key')),
-        XData = paste0('XData: ', attr(paper, 'key')),
-# Aliases
-        TechReport = {
-                      typ <-  if (is.null(paper$type))
-                               "techreport"
-                              else NULL
-                      formatReport(paper, typ)
-                      },
-        PhdThesis = {
+                 Article = formatArticle(paper),
+                 Book = formatBook(paper),
+                 MVBook = formatBook(paper, collection = FALSE),
+                 InBook = formatInBook(paper),
+                 BookInBook = formatInBook(paper, TRUE),
+                 SuppBook = formatInBook(paper),
+                 Booklet = formatBooklet(paper),
+                 Collection = formatBook(paper, TRUE),
+                 MVCollection = formatBook(paper, collection = TRUE),
+                 InCollection = formatInCollection(paper),
+                 SuppCollection = formatInCollection(paper),
+                 Manual = formatManual(paper),
+                 Misc = formatMisc(paper),
+                 Online = formatOnline(paper),
+                 Patent = formatPatent(paper),
+                 Periodical = formatPeriodical(paper),
+                 SuppPeriodical = formatArticle(paper),
+                 Proceedings = formatProceedings(paper),
+                 MVProceedings = formatProceedings(paper),
+                 InProceedings = formatInProceedings(paper),
+                 Reference = formatBook(paper, TRUE),  # alias for collection
+                 MVReference = formatBook(paper, collection = TRUE),
+                 InReference = formatInCollection(paper),
+                 Report = formatReport(paper),
+                 Thesis = formatThesis(paper),
+                 Unpublished = formatUnpublished(paper),
+                 Set = paste0('Set: ', attr(paper, 'key')),
+                 XData = paste0('XData: ', attr(paper, 'key')),
+                                        # Aliases
+                 TechReport = {
                      typ <-  if (is.null(paper$type))
-                               "phdthesis"
+                                 "techreport"
+                             else NULL
+                     formatReport(paper, typ)
+                 },
+                 PhdThesis = {
+                     typ <-  if (is.null(paper$type))
+                                 "phdthesis"
                              else NULL
                      formatThesis(paper, typ)
-                    },
-        MastersThesis = {
-                         typ <-  if (is.null(paper$type))
-                                   "mathesis"
-                                 else NULL
-                         formatThesis(paper, typ)
-                        },
-        Www = formatOnline(paper),
-        Electronic = formatOnline(paper),
-        Conference = formatInProceedings(paper),
-        {
-            ## Check for custom defined entry types in env
-            type <- attr(paper, "bibtype")
-            fun.name <- paste0("format", type)
-            if (!is.null(fmtFun <- get0(fun.name, env)) && is.function(fmtFun))
-                fmtFun(paper)
-            else
-                paste("bibtype", attr(paper, "bibtype"), "not implemented")
-        }))
+                 },
+                 MastersThesis = {
+                     typ <-  if (is.null(paper$type))
+                                 "mathesis"
+                             else NULL
+                     formatThesis(paper, typ)
+                 },
+                 Www = formatOnline(paper),
+                 Electronic = formatOnline(paper),
+                 Conference = formatInProceedings(paper),
+                 {
+                     ## Check for custom defined entry types in env
+                     type <- attr(paper, "bibtype")
+                     fun.name <- paste0("format", type)
+                     if (exists(fun.name, mode = "function",
+                                envir = parent.env(environment()),
+                                inherits = FALSE))
+                         eval(call(fun.name, paper))
+                     else
+                         paste("bibtype", attr(paper, "bibtype"),
+                               "not implemented")
+                 }))
   }
   result
 }
