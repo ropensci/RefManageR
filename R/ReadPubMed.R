@@ -20,7 +20,7 @@
 #' \item \code{retstart} - index of the first retrieved ID that should be
 #' included in the results.
 #' \item \code{retmax} - maximum number of IDs the server will
-#' return (default 20). 
+#' return (default 20).
 #' \item \code{field} - limits the query to search only the specified
 #' field (e.g. \dQuote{title}).
 #' \item \code{datetype} - type of date to use when limiting search by
@@ -126,7 +126,7 @@ GetPubMedByID <- function(id, db = "pubmed", ...){
   ##  missing certain fields
   results <- xml_find_all(tdoc, "//PubmedArticleSet/PubmedArticle")
   results.book <- xml_find_all(tdoc, "//PubmedArticleSet/PubmedBookArticle")
-    
+
   ## if(!length(results) && !length(results.book)){
   ##   message("No results.")
   ##   return()
@@ -137,10 +137,10 @@ GetPubMedByID <- function(id, db = "pubmed", ...){
 
   res <- if (length(results))  # else NULL
             MakeCitationList(results)
-  if (length(fails <- setdiff(id, unlist(res$eprint))))
+    if (length(fails <- setdiff(id, unlist(res$eprint))))
      message(paste0("Unable to fetch entries for id's: ",
                     paste0(fails, collapse = ", ")))
-  
+
   res <- MakeKeysUnique(res)
 
   return(res)
@@ -284,10 +284,10 @@ ProcessPubMedResult <- function(tdoc){
   complete.AuthorList <- xml_attr(xml_find_all(tdoc,
                     ".//MedlineCitation/Article/AuthorList"),
                                     attr = "CompleteYN", default = "")
-  
+
   res$year <- extractPubMedDatePart(tdoc, type = "Article", date.part = "Year")
   res$month <- extractPubMedDatePart(tdoc, type = "Article", date.part = "Month")
-  
+
   res$journal <- xml_text(xml_find_all(tdoc,
                          ".//MedlineCitation/Article/Journal/Title"))
 
@@ -327,7 +327,7 @@ ProcessPubMedResult <- function(tdoc){
   res$abstract <- xml_text(xml_find_all(tdoc,
                             ".//MedlineCitation/Article/Abstract/AbstractText"))
   ## some abstracts are separated into sections: methods, conclusion, etc.
-  if (length(res$abstract) > 1){  
+  if (length(res$abstract) > 1){
       abstract.labs <- xml_attr(xml_find_all(tdoc,
                     ".//MedlineCitation/Article/Abstract/AbstractText"),
                                     attr = "Label", default = "")
@@ -357,7 +357,7 @@ ProcessPubMedResult <- function(tdoc){
 #' @importFrom xml2 xml_text xml_find_first
 #' @noRd
 extractPubMedDatePart <- function(nodes, type = "Article", date.part = "Year"){
-  xpaths <- 
+  xpaths <-
     if (type == "Book")
       c("//PubmedBookArticle/BookDocument/Book/PubDate/",
         "//PubmedBookArticle/PubmedBookData/History/PubMedPubDate/",
@@ -384,31 +384,31 @@ ProcessPubMedBookResult <- function(tdoc){
   res <- list()
 
   title <- xml_text(xml_find_all(tdoc,
-                         "//PubmedBookArticle/BookDocument/Book/BookTitle"))
+                         ".//Book/BookTitle"))
   res$title <- gsub("\\.$", "", title, useBytes = TRUE)
   last.names <- xml_text(xml_find_all(tdoc,
-        "//PubmedBookArticle/BookDocument/Book/AuthorList/Author/LastName"))
+        ".//Book/AuthorList/Author/LastName"))
   first.names <- xml_text(xml_find_all(tdoc,
-        "//PubmedBookArticle/BookDocument/Book/AuthorList/Author/ForeName"))
+        ".//Book/AuthorList/Author/ForeName"))
   res$author <- as.person(paste(first.names, last.names))
 
   res$year <- extractPubMedDatePart(tdoc, type = "Book", date.part = "Year")
   res$month <- extractPubMedDatePart(tdoc, type = "Book", date.part = "Month")
 
   res$booktitle <- xml_text(xml_find_all(tdoc,
-                      "//PubmedBookArticle/BookDocument/Book/CollectionTitle"))
+                      ".//BookDocument/Book/CollectionTitle"))
 
   res$publisher <- xml_text(xml_find_all(tdoc,
-          "//PubmedBookArticle/BookDocument/Book/Publisher/PublisherName"))
+          ".//BookDocument/Book/Publisher/PublisherName"))
 
   res$location <- xml_text(xml_find_all(tdoc,
-          "//PubmedBookArticle/BookDocument/Book/Publisher/PublisherLocation"))
+          ".//BookDocument/Book/Publisher/PublisherLocation"))
   res$eprint <- xml_text(xml_find_all(tdoc,
-                                      "//PubmedBookArticle/BookDocument/PMID"))
+                                      ".//BookDocument/PMID"))
   doc.ids <- xml_text(xml_find_all(tdoc,
-                 "//PubmedBookArticle/PubmedBookData/ArticleIdList/ArticleId"))
+                 ".//PubmedBookData/ArticleIdList/ArticleId"))
   id.types <- xml_attr(xml_find_all(tdoc,
-                  "//PubmedBookArticle/PubmedBookData/ArticleIdList/ArticleId"),
+                  ".//PubmedBookData/ArticleIdList/ArticleId"),
                                     attr = "IdType", default = "")
   ## res$eprint <- if(length(pmid.pos <- grep("pubmed", id.types,
   ##                                          ignore.case = TRUE)))
@@ -427,13 +427,13 @@ ProcessPubMedBookResult <- function(tdoc){
   # res$doi <- grep("/", doi, value = TRUE)
 
   res$language <- xml_text(xml_find_all(tdoc,
-                           "//PubmedBookArticle/BookDocument/Language"))
+                           ".//BookDocument/Language"))
   res$abstract <- xml_text(xml_find_all(tdoc,
-                    "//PubmedBookArticle/BookDocument/Abstract/AbstractText"))
+                    ".//BookDocument/Abstract/AbstractText"))
   ## some abstracts are separated into sections: methods, conclusion, etc.
-  if (length(res$abstract) > 1L){  
+  if (length(res$abstract) > 1L){
       abstract.labs <- xml_attr(xml_find_all(tdoc,
-                    "//PubmedBookArticle/BookDocument/Abstract/AbstractText"),
+                    ".//BookDocument/Abstract/AbstractText"),
                                     attr = "Label", default = "")
       res$abstract <- if (!any(vapply(abstract.labs, .is_not_nonempty_text,
                                       FALSE)))
