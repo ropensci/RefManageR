@@ -73,11 +73,9 @@ test_that("Creates a BibEntry object", {
     msgs <- capture_messages(bib <- ReadPDFs(exe.path, progress = TRUE,
                                      use.crossref = TRUE))
     expect_is(bib, "BibEntry")
-    if (!biomet.fail){
-        expect_length(5, 1L)
-        expect_true(grepl("Could not retrieve author info", msgs[4]))
-        expect_true(grepl("biometrikaEx\\.pdf", msgs[5]))
-    }
+    if (!biomet.fail)
+        expect_equal(as.character(bib[["azzalini1996multivariate"]]$author),
+                     c("A AZZALINI", "A DALLA VALLE"))
 })
 
 test_that("Add file field", {
