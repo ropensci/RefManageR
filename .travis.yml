@@ -5,7 +5,7 @@ warnings_are_errors: true
 sudo: true
 
 addons:
-  python: 3.6
+  python: 3.7
 
 # before_script:
 #  - wget https://poppler.freedesktop.org/poppler-0.32.0.tar.xz
@@ -13,8 +13,8 @@ addons:
 #  - export PATH=$PATH:$PWD/poppler-0.32.0
 
 before_install:
-  - sudo ln -sf /usr/bin/python3.6 /usr/bin/python
-  - sudo ln -sf /usr/bin/python3.6 /usr/bin/python3
+  - sudo ln -sf /usr/bin/python3.7 /usr/bin/python
+  - sudo ln -sf /usr/bin/python3.7 /usr/bin/python3
   - pip3 install --upgrade --ignore-installed --user travis virtualenv > /dev/null
   - sudo apt-get install -qq qpdf ghostscript poppler-utils
   - echo `which pdfinfo`
