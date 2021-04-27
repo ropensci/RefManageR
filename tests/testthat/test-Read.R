@@ -14,3 +14,12 @@ test_that("ReadBib ignores entry but does not stop if invalid author/editor", {
   bib <- ReadBib(f, check = "error")
   expect_true(length(bib) == 1L)
 })
+
+test_that("ReadBib reads in 92 entries from biblatexExamples.bib", {
+    skip_if_not_installed("bibtex")
+    file.name <- system.file("Bib", "biblatexExamples.bib", package="RefManageR")
+    expect_warning(
+        bib <- ReadBib(file.name, check = "warn", use.bibtex = TRUE),
+        "has to specify the field: author OR editor")
+  expect_equal(length(bib), 92)
+})

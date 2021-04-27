@@ -39,7 +39,7 @@ ReadBib <- function(file, .Encoding = "UTF-8",
                     header = "", footer = "",
                     check = BibOptions()$check.entries,
                     use.bibtex = FALSE){
-    if (use.bibtex && !requireNamespace("bibtex")){
+    if (use.bibtex && !requireNamespace("bibtex", quietly = TRUE)){
       message("Paramter ", sQuote("use.bibtex"), "is TRUE, but the ",
               dQuote("bibtex"), " package is not installed.\nPlease install from ",
               "GitHub using the ", dQuote("remotes"),
