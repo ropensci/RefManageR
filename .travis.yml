@@ -15,7 +15,7 @@ addons:
 before_install:
   - sudo apt-get install -qq qpdf ghostscript poppler-utils
   - echo `which pdfinfo`
-  - sudo pip install numpy bibtexparser
+  - sudo pip3 install numpy bibtexparser
   
 # install:
 #  - wget https://poppler.freedesktop.org/poppler-0.32.0.tar.xz
