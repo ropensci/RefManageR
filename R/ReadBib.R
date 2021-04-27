@@ -89,7 +89,7 @@ pyReadBib <- function(src.file){
   py <- reticulate::import_builtins()
   py$fname <- py$open(path.expand(src.file$filename), "r")
   ## Customizable parser:
-  parser <- py.bibtex.parser$bparser$BibTexParser()
+  parser <- py.bibtex.parser$bparser$BibTexParser(common_strings="True")
   parser$ignore_nonstandard_types <- FALSE
   py.bib.db <- parser$parse_file(py$fname)
   py.dict <- py.bib.db$entries
