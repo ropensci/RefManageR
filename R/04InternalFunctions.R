@@ -9,7 +9,8 @@
                  !.is_not_nonempty_text(x$xdata)))
     return(NULL)
   bibtype <- attr(x, "bibtype")
-  rfields <- strsplit(BibLaTeX_entry_field_db[[bibtype]],
+  required.fields <- BibLaTeX_entry_field_db[[bibtype]]
+  rfields <- strsplit(required.fields,
                       "|", fixed = TRUE)
   if (length(rfields) > 0L) {
     ok <- vapply(rfields, function(f) any(f %in% fields), FALSE)
@@ -19,10 +20,13 @@
           key <- ""
       else
           key <- paste0(key, ": ")
+      missing.fields <- required.fields[!ok]
+      missing.fields <- paste(missing.fields, collapse = ",")
+      missing.fields <- gsub("|", " OR ", missing.fields, fixed = TRUE)
       msg <- sprintf(ngettext(sum(!ok),
                       "%sA bibentry of bibtype %s has to specify the field: %s",
                       "%sA bibentry of bibtype %s has to specify the fields: %s"),
-                      key, sQuote(bibtype), paste(rfields[!ok], collapse = ", "))
+                      key, sQuote(bibtype), missing.fields)
       if (check == 'warn'){
           warning(msg, domain = NA, call. = FALSE)
         return(NULL)
@@ -956,7 +960,7 @@ MakeBibEntry <- function(x, to.person = TRUE, from.bibtex = TRUE){
                 NULL
             }),
            warning = function(w){
-                warning(sprintf("%s %s:\n\t%s",
+               warning(sprintf("%s %s:\n\t%s",
                          key,
                          line.no,
                          conditionMessage(w)), domain = NA, call. = FALSE)
