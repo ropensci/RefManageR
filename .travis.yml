@@ -1,8 +1,8 @@
 # see https://docs.travis-ci.com/user/languages/r/
 language: r
 
-# Be strict when checking our package
 warnings_are_errors: true
+sudo: true
 
 # before_script:
 #  - wget https://poppler.freedesktop.org/poppler-0.32.0.tar.xz
@@ -12,7 +12,7 @@ warnings_are_errors: true
 before_install:
   - sudo apt-get install -qq qpdf ghostscript poppler-utils
   - echo `which pdfinfo`
-  - pip install numpy bibtexparser
+  - sudo pip install numpy bibtexparser
   - pyenv global 3.7
   - export RETICULATE_PYTHON="/opt/python/3.7/bin/python3.7"
   
