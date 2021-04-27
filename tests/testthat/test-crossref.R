@@ -4,8 +4,15 @@ context("Crossref")
 ## GetDOIs
 ## ReadCrossRef
 
+skip_if_no_parser <- function() {
+  have_bp <- py_module_available("bibtexparser")
+  if (!have_bp)
+    skip("bibtexparser not available for testing")
+}
+
 test_that("GetBibEntryWithDOIs retrieves DOIs", {
     skip_on_cran()
+    skip_if_no_parser()
     if (httr::http_error("https://doi.org/"))
         skip("Couldn't connect to doi.org")
 
@@ -19,6 +26,7 @@ test_that("GetBibEntryWithDOIs retrieves DOIs", {
 
 test_that("GetBibEntryWithDOIs continues if some DOIs not found", {
     skip_on_cran()
+    skip_if_no_parser()
     if (httr::http_error("https://doi.org/"))
         skip("Couldn't connect to doi.org")
 
@@ -55,6 +63,7 @@ old.opts <- BibOptions(check.entries = FALSE)
 
 test_that("ReadCrossRef *old* API warns and uses new API", {
     skip_on_cran()
+    skip_if_no_parser()
     if (httr::http_error("https://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
@@ -73,6 +82,7 @@ test_that("ReadCrossRef *old* API warns and uses new API", {
 
 test_that("ReadCrossRef *new* API retrieves queries successfully", {
     skip_on_cran()
+    skip_if_no_parser()
     if (httr::http_error("https://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
@@ -102,6 +112,7 @@ test_that("ReadCrossRef *new* API retrieves queries successfully", {
 
 test_that("ReadCrossRef works when given DOI", {
     skip_on_cran()
+    skip_if_no_parser()
     if (httr::http_error("https://search.crossref.org/"))
         skip("Couldn't connect to search.crossref.org")
 
