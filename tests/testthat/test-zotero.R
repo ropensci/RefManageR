@@ -4,6 +4,13 @@ context("Zotero")
 ## unloadNamespace("RefManageR")
 ## library(RefManageR)
 #BibOptions(restore.defaults = TRUE)
+skip_if_no_parser <- function() {
+  have_bp <- py_module_available("bibtexparser")
+  if (!have_bp)
+    skip("bibtexparser not available for testing")
+}
+
+
 expect_length <- function(expr, len){
   expect_equal(length(expr), len)
 }
