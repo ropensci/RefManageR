@@ -410,7 +410,7 @@ CleanAuthorTitle <- function(bib1, bib2, bibMeta, file){
     if (!is.null(bib1$year) || !is.null(bib2$year))
       bibMeta$date <- NULL
   }
-  if (bib2$found.abstract && (!is.null(bib2$author) || !is.null(bib2$title))){
+    if (bib2$found.abstract && (!is.null(bib2$author) || !is.null(bib2$title))){
     if(!is.null(bibMeta))
       bib1 <- AddListToList(bib1, bibMeta)
     bib <- AddListToList(bib2, bib1)

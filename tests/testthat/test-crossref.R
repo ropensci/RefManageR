@@ -106,9 +106,9 @@ test_that("ReadCrossRef works when given DOI", {
         skip("Couldn't connect to search.crossref.org")
 
     Sys.sleep(3)
-    try_again(3, out <- ReadCrossRef(query = "10.1007/978-1-4899-4477-1_13",
-                                     limit = 2, sort = "relevance",
-                                     min.relevance = 80))
+    try_again(10, out <- ReadCrossRef(query = "10.1007/978-1-4899-4477-1_13",
+                                     limit = 1, sort = "relevance",
+                                     min.relevance = 0))
 
     expect_is(out, "BibEntry")
     expect_equal(length(out), 1L)
