@@ -13,7 +13,7 @@ addons:
 #  - export PATH=$PATH:$PWD/poppler-0.32.0
 
 before_install:
-  - sudo apt-get install -qq qpdf ghostscript poppler-utils
+  - sudo apt-get install -qq qpdf ghostscript poppler-utils python3-pip
   - echo `which pdfinfo`
   - sudo pip3 install numpy bibtexparser
   
