@@ -15,7 +15,6 @@ addons:
 before_install:
   - sudo apt-get install -qq qpdf ghostscript poppler-utils python3-setuptools python3-pip
   - echo `which pdfinfo`
-  - pip install --upgrade pip 
   - sudo -H pip3 install numpy bibtexparser
   
 # install:
