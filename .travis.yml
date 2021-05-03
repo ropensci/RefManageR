@@ -1,6 +1,8 @@
 # see https://docs.travis-ci.com/user/languages/r/
 language: r
 
+dist: bionic
+
 warnings_are_errors: true
 sudo: true
 
