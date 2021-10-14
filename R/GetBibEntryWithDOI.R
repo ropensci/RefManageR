@@ -36,7 +36,7 @@ GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'),
   on.exit(if (delete.file && file.exists(temp.file)) file.remove(temp.file))
   successes <- logical(length(doi))
   for (i in seq_along(doi)){
-    temp <- GET(modify_url('https://doi.org/', path = doi[i]),
+    temp <- GET(modify_url('https://data.crossref.org/', path = doi[i]),
                     config = list(followlocation = TRUE),
                       add_headers(Accept = "application/x-bibtex"))
     if (!http_error(temp)){
