@@ -124,7 +124,7 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
   ## if query is valid doi, skip search and get BibTeX entry right away
   if (nzchar(.doi <- SearchDOIText(query))){
     num.res <- 1
-    bad <- GetCrossRefBibTeX(paste0("https://doi.org/", .doi), temp.file)
+    bad <- GetCrossRefBibTeX(paste0("https://data.crossref.org/", .doi), temp.file)
   }else{
     if (use.old.api){
       if (.is_not_nonempty_text(query))
