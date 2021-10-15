@@ -17,3 +17,4 @@ RefManageR-Ex.R
 ^paper.md$
 ^codemeta.json$
 ^CONTRIBUTING.md$
+^\.github$
