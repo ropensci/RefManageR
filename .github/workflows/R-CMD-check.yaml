@@ -35,7 +35,7 @@ jobs:
 
       - uses: r-lib/actions/setup-tinytex@master
 
-      - run: tlmgr install pdfpages
+      - run: tlmgr install pdfpages ae
 
       - uses: r-lib/actions/setup-r@v1
         with:
