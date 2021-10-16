@@ -47,6 +47,11 @@ jobs:
         with:
           extra-packages: rcmdcheck
 
+      - name: Install python packages
+        run: |
+          Rscript -e "reticulate::install_miniconda()"
+          Rscript -e "reticulate::py_install('bibtexparser')"
+
       - uses: r-lib/actions/check-r-package@v1
 
       - name: Show testthat output
