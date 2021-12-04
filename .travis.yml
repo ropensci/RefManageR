@@ -1,8 +1,13 @@
 # see https://docs.travis-ci.com/user/languages/r/
 language: r
 
-# Be strict when checking our package
+dist: bionic
+
 warnings_are_errors: true
+sudo: true
+
+addons:
+  python: 3.7
 
 # before_script:
 #  - wget https://poppler.freedesktop.org/poppler-0.32.0.tar.xz
@@ -10,9 +15,13 @@ warnings_are_errors: true
 #  - export PATH=$PATH:$PWD/poppler-0.32.0
 
 before_install:
-  - sudo apt-get install -qq qpdf ghostscript poppler-utils
+  - sudo apt-get install -qq qpdf ghostscript poppler-utils python3-setuptools python3-pip
   - echo `which pdfinfo`
-
+  - echo `which python3`
+  - pyenv global 3.7
+  - export RETICULATE_PYTHON="/opt/pyenv/shims/python3"
+  - python3.7 -m pip install --upgrade --user travis numpy bibtexparser
+  
 # install:
 #  - wget https://poppler.freedesktop.org/poppler-0.32.0.tar.xz
 #  - tar -xJf poppler-0.32.0.tar.xz

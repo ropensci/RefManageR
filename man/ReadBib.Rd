@@ -7,9 +7,10 @@
 ReadBib(
   file,
   .Encoding = "UTF-8",
-  header = if (length(preamble)) paste(preamble, sep = "\\n") else "",
+  header = "",
   footer = "",
-  check = BibOptions()$check.entries
+  check = BibOptions()$check.entries,
+  use.bibtex = FALSE
 )
 }
 \arguments{
@@ -17,25 +18,33 @@ ReadBib(
 
 \item{.Encoding}{encoding}
 
-\item{header}{header of the citation list. By default this is made from the Preamble
-entries found in the bib file.}
+\item{header}{header of the citation list. By default this is made
+from the Preamble entries found in the bib file.}
 
 \item{footer}{footer of the citation list.}
 
-\item{check}{\dQuote{error}, \dQuote{warn}, or logical \code{FALSE}.  What action
-should be taken if an entry is missing required fields?  \code{FALSE} means no
-checking is done, \dQuote{warn} means entry is added with an error.
-\dQuote{error} means the entry will not be added.  See \code{\link{BibOptions}}.}
+\item{check}{\dQuote{error}, \dQuote{warn}, or logical
+\code{FALSE}.  What action should be taken if an entry is
+missing required fields?  \code{FALSE} means no checking is
+done, \dQuote{warn} means entry is added with an error.
+\dQuote{error} means the entry will not be added.  See
+\code{\link{BibOptions}}.}
+
+\item{use.bibtex}{Logical, if \code{TRUE} the \code{bibtex} package
+will be used to parse the file (if it is available); otherwise,
+the \code{python} library \code{bibtextparser} is used.}
 }
 \description{
-Parser for bibliography databases in the bib format containing either BibLaTeX or
-BibTeX entries.
+Parser for bibliography databases in the bib format containing
+either BibLaTeX or BibTeX entries.
 }
 \note{
 Date fields are parsed using the locale specified by
-\code{Sys.getlocale("LC_TIME")}.  To read a bib file with character \sQuote{month}
-fields in a language other than the current locale, \code{Sys.setlocale} should be
-used to change \sQuote{LC_TIME}` to match the bib file before calling \code{ReadBib}.
+    \code{Sys.getlocale("LC_TIME")}.  To read a bib file with
+    character \sQuote{month} fields in a language other than the
+    current locale, \code{Sys.setlocale} should be used to change
+    \sQuote{LC_TIME}` to match the bib file before calling
+    \code{ReadBib}.
 
 Keys will be made unique by calling \code{\link[base]{make.unique}} with
 \code{sep = ":"}.
@@ -47,8 +56,9 @@ if (requireNamespace("bibtex")) {
 }
 }
 \seealso{
-\code{\link[bibtex]{read.bib}} in package \code{bibtex}
+\code{read.bib} in package \code{bibtex}
 }
 \author{
-McLean, M. W., based on code in \code{bibtex} package by Francois, R.
+McLean, M. W., based on code in \code{bibtex} package by
+    Francois, R.
 }

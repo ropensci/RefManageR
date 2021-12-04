@@ -43,9 +43,17 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
+      - name: Install Package + deps
+        run: remotes::install_local(dependencies = TRUE, force = TRUE)
+        shell
+
+      - name: Install Miniconda
+        run: |
+          reticulate::install_miniconda()
+          reticulate::py_install('bibtexparser')
         with:
           extra-packages: rcmdcheck
+        shell: Rscript
 
       - uses: r-lib/actions/check-r-package@v1
 

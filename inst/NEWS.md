@@ -1,3 +1,20 @@
+Changes in Version 2.0.0 (2019-04-27)
+========================================================
+
+## NEW FEATURES
+
+* The `bibtexparser` python package is now the default parser for `ReadBib`
+  instead of the orphaned package `bibtex`. The function gains an
+  argument, `use.bibtex`, which can be set to `TRUE` to use that
+  package instead of `bibtexparser`
+  
+## BUG FIXES
+
+* Bug fix for `ReadCrossRef` when parsing multiple book entries (#85, #86)
+* A ',' no longer appears before 'et al' in citations (#84)
+* Custom bibtypes such as "Customa" and "Customb" now work properly
+when using custom bibstyles with `tools::bibstyle()` (#83)
+
 Changes in Version 1.3.0 (2019-10-30)
 ========================================================
 

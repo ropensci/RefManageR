@@ -4,6 +4,13 @@ context("Zotero")
 ## unloadNamespace("RefManageR")
 ## library(RefManageR)
 #BibOptions(restore.defaults = TRUE)
+skip_if_no_parser <- function() {
+  have_bp <- py_module_available("bibtexparser")
+  if (!have_bp)
+    skip("bibtexparser not available for testing")
+}
+
+
 expect_length <- function(expr, len){
   expect_equal(length(expr), len)
 }
@@ -11,6 +18,7 @@ expect_length <- function(expr, len){
 test_that("basic Zotero search", {
    ## if (httr::http_error("https://api.zotero.org/users"))
     ##     skip("Couldn't connect to Zotero")
+    skip_if_no_parser()
     try_again(5,
     {
         res <- ReadZotero(user='1648676',
@@ -25,6 +33,7 @@ test_that("basic Zotero search", {
 test_that("Search specific collection", {
     ## if (httr::http_error("https://api.zotero.org/users"))
     ##   skip("Couldn't connect to Zotero")
+    skip_if_no_parser()
     try_again(5,
     {
         Sys.sleep(2)
@@ -41,6 +50,7 @@ test_that("Search by tag", {
     ## Notice issue with how Zotero uses Techreport entry for arXiv manuscripts
     ## if (httr::http_error("https://api.zotero.org/users"))
     ##     skip("Couldn't connect to Zotero")
+    skip_if_no_parser()
     try_again(5,
     {
         Sys.sleep(2)
