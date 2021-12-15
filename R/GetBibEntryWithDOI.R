@@ -38,7 +38,8 @@ GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'),
   for (i in seq_along(doi)){
     temp <- GET(modify_url('https://doi.org/', path = doi[i]),
                     config = list(followlocation = TRUE),
-                      add_headers(Accept = "application/x-bibtex"))
+                add_headers(Accept = "application/x-bibtex",
+                "User-Agent" = "mailto:mathew.w.mclean@gmail.com"))
     if (!http_error(temp)){
       temp <- content(temp, as = "text", encoding = "UTF-8")
       successes[i] <- TRUE
