@@ -18,3 +18,5 @@ RefManageR-Ex.R
 ^codemeta.json$
 ^CONTRIBUTING.md$
 ^\.github$
+^.*\.Rproj$
+^\.Rproj\.user$
