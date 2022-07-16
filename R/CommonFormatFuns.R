@@ -103,7 +103,7 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
 
     fmtJTitle <- function(title){
       if (!is.null(title))
-        if (grepl('[.?!]$', title, useBytes = TRUE))
+        if (grepl('[.?!]$', title, useBytes = FALSE))
           paste0("\\dQuote{", collapse(cleanupLatex(title)), "}")
         else paste0("\\dQuote{", collapse(cleanupLatex(title)), "}.")
     }
@@ -128,12 +128,12 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
     fmtLangOrig <- function(lang){
       if (length(lang))
         paste0('from the ', sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE,
-                                useBytes = TRUE))
+                                useBytes = FALSE))
     }
 
     fmtLanguage <- function(lang){
       if (length(lang) && tolower(lang) != 'english')
-        addPeriod(sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE,useBytes = TRUE))
+        addPeriod(sub("\\b(\\w)",    "\\U\\1", lang, perl=TRUE,useBytes = FALSE))
     }
 
     fmtSeries <- label(prefix = '. ')
@@ -173,7 +173,7 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
       if (length(tl)){
         if (!is.null(stl))
           tl <- paste0(c(addPeriod(tl), stl), collapse =' ')
-        if (grepl('[.?!]$', tl, useBytes = TRUE)){
+        if (grepl('[.?!]$', tl, useBytes = FALSE)){
           emph(cleanupLatex(tl))
         }else{
           paste0(emph(cleanupLatex(tl)), '.')
@@ -205,7 +205,7 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
 
     fmtVenue <- function(venue){
       if (length(venue)){
-        venue <- gsub('[.?!]$', '', venue, useBytes = TRUE)
+        venue <- gsub('[.?!]$', '', venue, useBytes = FALSE)
         paste0("(", collapse(cleanupLatex(venue)), ").")
       }
     }
@@ -397,8 +397,8 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
 
     addPeriod <- function(string){
       ## #62: sub can cause conversion of unicode char to latin1 on windows
-      ## sub("([^.?!])$", "\\1.", string, useBytes = TRUE)
-      if (!.is_not_nonempty_text(string) && grepl("([^.?!])$", string, useBytes = TRUE))
+      ## sub("([^.?!])$", "\\1.", string, useBytes = FALSE)
+      if (!.is_not_nonempty_text(string) && grepl("([^.?!])$", string, useBytes = FALSE))
         paste0(string, ".")
       else
         string
@@ -583,20 +583,20 @@ GetFormatFunctions <- function(docstyle = "text", DateFormatter){
           res <- regmatches(res,
                             regexpr(paste0("[[:upper:]][[:punct:]]?[[:alpha:]]",
                                            "[[:punct:]]?[[:alpha:]]"),
-                                         res, useBytes = TRUE))
-          res <- gsub('[[:punct:]]', '', res, useBytes = TRUE)
+                                         res, useBytes = FALSE))
+          res <- gsub('[[:punct:]]', '', res, useBytes = FALSE)
         }else if (nam.len == 2 || nam.len == 3){
           res <- vapply(nam$family, paste0, "", collapse = '')
           res <- paste0(regmatches(res, regexpr('[[:upper:]]', res,
-                                                useBytes = TRUE)),
+                                                useBytes = FALSE)),
                         collapse = '')
         }else{
           res <- paste0(nam$family[[1]], collapse = '')
           res <- regmatches(res,
                             regexpr(paste0("[[:upper:]][[:punct:]]?[[:alpha:]]",
                                            "[[:punct:]]?[[:alpha:]]"),
-                                         res, useBytes = TRUE))
-          res <- gsub('[[:punct:]]', '', res, useBytes = TRUE)
+                                         res, useBytes = FALSE))
+          res <- gsub('[[:punct:]]', '', res, useBytes = FALSE)
           res <- paste0(res, '+')
         }
         res

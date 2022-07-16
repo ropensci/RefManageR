@@ -42,12 +42,12 @@ MakeAuthorYear <- function(docstyle = "text"){
                                                nchar(strings[1+which(bad.idx)]) - 1)
       }
 
-      ## gsub('\\.((\\n)?,)', '\\1', out, useBytes = TRUE)
+      ## gsub('\\.((\\n)?,)', '\\1', out, useBytes = FALSE)
       paste(strings, collapse = "\n")
     }
 
     addPeriodTitle <- function (string){
-      sub("([^.?!])$", "\\dQuote{\\1.}", string, useBytes = TRUE)
+      sub("([^.?!])$", "\\dQuote{\\1.}", string, useBytes = FALSE)
     }
 
     ###########################################################################
@@ -63,13 +63,13 @@ MakeAuthorYear <- function(docstyle = "text"){
     fmtPages <- function(pgs, pref){
       if (length(pgs)){
         if (!length(pref)){
-          if (grepl('-', pgs, useBytes = TRUE)){
+          if (grepl('-', pgs, useBytes = FALSE)){
             paste0(', pp. ', pgs)
           }else{
             paste0(', p. ', pgs)
           }
         }else{
-          if (grepl('-', pgs, useBytes = TRUE)){
+          if (grepl('-', pgs, useBytes = FALSE)){
             paste0(switch(pref, column = ', cols. ', verse = ', vv. ',
                           line = ', ll. ',  section = ', \u00a7\u00a7 ',
                           paragraph = ', par. ', none = ', ', ', pp. '),
@@ -122,14 +122,14 @@ MakeAuthorYear <- function(docstyle = "text"){
         if (docstyle == "html"){
           key <- attr(doc, "key")
           ind <- .cites$indices[key]
-          key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
+          key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = FALSE)
           res <- if (!is.na(ind) && ind)
             paste0("\\code{", key, "}\\href{#cite-", key, "}{", res, "}")
           else res
         }else if (docstyle == "markdown"){
           key <- attr(doc, "key")
           ind <- .cites$indices[key]
-          key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
+          key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = FALSE)
           res <- if (!is.na(ind) && ind){
             paste0("<a name=bib-", key, "></a>[", res, "](#cite-", key, ")")
           }else res

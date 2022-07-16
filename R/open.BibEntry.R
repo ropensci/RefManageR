@@ -40,7 +40,7 @@ open.BibEntry <- function(con, entry = 1L,
   if (missing(viewer))
     viewer <- getOption("browser")
   url <- GetURL(ref, open.field)
-  if (grepl("^file", url, useBytes = TRUE))
+  if (grepl("^file", url, useBytes = FALSE))
     viewer <- getOption("pdfviewer")
 
   if (!nzchar(url))
@@ -84,6 +84,6 @@ GetURL <- function(entry, flds, to.bib = FALSE){
   }
   if (!opened && to.bib)
       url <- paste0("#bib-", gsub("[^_a-zA-Z0-9-]", "", attr(entry, "key"),
-                                  useBytes = TRUE))
+                                  useBytes = FALSE))
   url
 }

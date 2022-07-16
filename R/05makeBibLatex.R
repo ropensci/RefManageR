@@ -37,7 +37,7 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
     if (length(res)){
       key <- attr(paper, "key")
       ind <- .cites$indices[key]
-      key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
+      key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = FALSE)
       res <- if (!is.na(ind) && ind)
         paste0("\\code{", key, "}\\href{#cite-", key, "}{", res, "}")
       else res
@@ -48,7 +48,7 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
     if (length(res)){
       key <- attr(paper, "key")
       ind <- .cites$indices[key]
-      key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
+      key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = FALSE)
       res <- if (!is.na(ind) && ind)
         paste0("<a name=bib-", key, "></a>[", res, "](#cite-", key, ")")
       else res
@@ -70,7 +70,7 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
     res <- NULL
     if (length(strings))
       res <- paste(strings, collapse = sep)
-    res <- gsub('\\.$', '', res, useBytes = TRUE)
+    res <- gsub('\\.$', '', res, useBytes = FALSE)
     if (!is.null(pgs))
       res <- paste(res, pgs, sep = ', ')
     if (!is.null(tp))
@@ -85,7 +85,7 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
     res <- DateFormatter(attr(s, 'dateobj'))
     if (usevenue){
         paste0("(", paste0(c(cleanupLatex(gsub('[.?!]$', '', s[['venue']],
-                                               useBytes = TRUE)),
+                                               useBytes = FALSE)),
                              res), collapse = ', '), ")")
     }else{
       paste0("(", paste0(c(s[['issue']], res), collapse = ' '), ")")
@@ -101,13 +101,13 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
   fmtPages <- function(pgs, pref){
     if (length(pgs)){
       if (!length(pref)){
-        if (grepl('-', pgs, useBytes = TRUE)){
+        if (grepl('-', pgs, useBytes = FALSE)){
           paste0('pp. ', pgs)
         }else{
           paste0('p. ', pgs)
         }
       }else{
-        if (grepl('-', pgs, useBytes = TRUE)){
+        if (grepl('-', pgs, useBytes = FALSE)){
           paste0(switch(pref, column = 'cols. ', verse = 'vv. ', line = 'll. ',
                         section = '\u00a7\u00a7 ', paragraph = 'par. ',
                         none = '', 'pp. '), pgs)
@@ -159,14 +159,14 @@ MakeBibLaTeX <- function(docstyle = "text", authortitle = FALSE) {
       if (docstyle == "html"){
         key <- attr(doc, "key")
         ind <- .cites$indices[key]
-        key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
+        key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = FALSE)
         res <- if (!is.na(ind) && ind)
                  paste0("\\code{", key, "}\\href{#cite-", key, "}{", res, "}")
                else res
       }else if (docstyle == "markdown"){
         key <- attr(doc, "key")
         ind <- .cites$indices[key]
-        key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = TRUE)
+        key <- gsub("[^_a-zA-Z0-9-]", "", key, useBytes = FALSE)
         res <- if (!is.na(ind) && ind)
                  paste0("<a name=bib-", key, "></a>[", res, "](#cite-",
                         key, ")")

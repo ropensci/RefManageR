@@ -269,7 +269,7 @@ ProcessPubMedResult <- function(tdoc){
 
   title <- xml_text(xml_find_all(tdoc,
                                  ".//MedlineCitation/Article/ArticleTitle"))
-  res$title <- sub("\\.$", "", title, useBytes = TRUE)
+  res$title <- sub("\\.$", "", title, useBytes = FALSE)
   last.names <- xml_text(xml_find_all(tdoc,
                 ".//MedlineCitation/Article/AuthorList/Author/LastName"))
   first.names <- xml_text(xml_find_all(tdoc,
@@ -306,7 +306,7 @@ ProcessPubMedResult <- function(tdoc){
                     ".//PubmedData/ArticleIdList/ArticleId"),
                                     attr = "IdType", default = "")
     if (length(doi.pos <- grep("doi", id.types, ignore.case = TRUE,
-                               useBytes = TRUE)))
+                               useBytes = FALSE)))
        doi[doi.pos[1L]]
     else{
       doi <- vapply(doi, SearchDOIText, "")
@@ -385,7 +385,7 @@ ProcessPubMedBookResult <- function(tdoc){
 
   title <- xml_text(xml_find_all(tdoc,
                          ".//Book/BookTitle"))
-  res$title <- gsub("\\.$", "", title, useBytes = TRUE)
+  res$title <- gsub("\\.$", "", title, useBytes = FALSE)
   last.names <- xml_text(xml_find_all(tdoc,
         ".//Book/AuthorList/Author/LastName"))
   first.names <- xml_text(xml_find_all(tdoc,
@@ -414,7 +414,7 @@ ProcessPubMedBookResult <- function(tdoc){
   ##                                          ignore.case = TRUE)))
   ##                  doc.ids[pmid.pos[1L]]
   res$doi <- if (length(doi.pos <- grep("doi", id.types, ignore.case = TRUE,
-                                        useBytes = TRUE)))
+                                        useBytes = FALSE)))
                doc.ids[doi.pos[1L]]
              else{
                doc.ids <- vapply(doc.ids, SearchDOIText, "")
@@ -496,10 +496,10 @@ LookupPubMedID <- function(bib, index){
                 paste0(cit.strings, collapse = "%0D"))
   results <- GET(.url)  # getURL(.url)
   results <- content(results)
-  m <- gregexpr("KeY\\|(NOT_FOUND|[0-9]+)", results, useBytes = TRUE)
+  m <- gregexpr("KeY\\|(NOT_FOUND|[0-9]+)", results, useBytes = FALSE)
   res <- unlist(regmatches(results, m))
-  res <- sub("KeY\\|", "", res, useBytes = TRUE)
-  ind <- grep("[0-9]", res, useBytes = TRUE)
+  res <- sub("KeY\\|", "", res, useBytes = FALSE)
+  ind <- grep("[0-9]", res, useBytes = FALSE)
   if (length(ind)){
     message(paste0("Success for entries: ", paste0(index[ind], collapse=", ")))
     bib$eprint[index[ind]] <- res[ind]
@@ -516,13 +516,13 @@ LookupPubMedID <- function(bib, index){
 #' @importFrom lubridate year
 #' @importFrom utils URLencode
 MakeCitationString <- function(bib.entry){
-  first.page <- sub("-[0-9]+", "", bib.entry$pages, useBytes = TRUE)
+  first.page <- sub("-[0-9]+", "", bib.entry$pages, useBytes = FALSE)
   res <- paste(bib.entry$journal, year(bib.entry$dateobj), bib.entry$volume,
                first.page, paste0(as.character(bib.entry$author),
                                   collapse = " "), "KeY", sep = "|")
   res <- URLencode(res)
-  res <- gsub("%7C", "|", res, useBytes = TRUE)
-  res <- gsub("%26", "and", res, useBytes = TRUE)
+  res <- gsub("%7C", "|", res, useBytes = FALSE)
+  res <- gsub("%26", "and", res, useBytes = FALSE)
   res <- paste0(res, "|")
-  return(gsub("%20", "+", res, useBytes = TRUE))
+  return(gsub("%20", "+", res, useBytes = FALSE))
 }

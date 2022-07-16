@@ -207,7 +207,7 @@ ProcessCrossref <- function(par.type, par, chi){
 #' @noRd
 ArrangeAuthors <- function (x){
   rx <- "[[:space:]]+and[[:space:]]+"
-  x <- gsub('[[:space:]]{2,}', ' ', x, useBytes = TRUE)
+  x <- gsub('[[:space:]]{2,}', ' ', x, useBytes = FALSE)
   authors <- lapply(strsplit(x, rx)[[1]], ArrangeSingleAuthor)
   do.call("c", authors)
 }
@@ -221,7 +221,7 @@ ArrangeSingleAuthor <- function(y){
   ##  and braces are removed by UnlistSplitClean
   ##  this behaviour is not the same as for other fields, which only have
   ##  the LaTeX stripped when using SearchBib
-  if (grepl('[\\]', y, useBytes = TRUE)){
+  if (grepl('[\\]', y, useBytes = FALSE)){
     tmp <- try(parseLatex(y), TRUE)
     if (!inherits(tmp, 'try-error')){
         tmp <- tryCatch({
@@ -240,7 +240,7 @@ ArrangeSingleAuthor <- function(y){
   len.parts <- length(parts)
   if (len.parts == 1L){
     #     parts <- "{Barnes} {and} {Noble,} {Inc.}"
-    if (grepl("[^{][[:print:]][}]$", parts, useBytes = TRUE)){
+    if (grepl("[^{][[:print:]][}]$", parts, useBytes = FALSE)){
       s <- unlist(strsplit(parts, ''))
       i <- length(s) - 1L
       paren <- 1
@@ -260,7 +260,7 @@ ArrangeSingleAuthor <- function(y){
       person(UnlistSplitClean(first), cleanupLatexSearch(last))
     }else{
       vonrx <- "(^|[[:space:]])([[:lower:]+[:space:]?]+)[[:space:]]"
-      m <- regexec(vonrx, parts, useBytes = TRUE)
+      m <- regexec(vonrx, parts, useBytes = FALSE)
       von <- unlist(regmatches(parts, m))[3L]
       if (!is.na(von)){
         name <- unlist(strsplit(parts, vonrx))
@@ -282,11 +282,11 @@ ArrangeSingleAuthor <- function(y){
       }
     }
   }else if (len.parts == 2L){
-    if (grepl('^[{]', parts[1L], useBytes = TRUE)){  # e.g. {de Gama}, Vasco
+    if (grepl('^[{]', parts[1L], useBytes = FALSE)){  # e.g. {de Gama}, Vasco
       person(UnlistSplitClean(parts[2L]), UnlistSplitClean(parts[1L]))
     }else{
       vonrx <- "^([[:lower:]+[:space:]?]+)[[:space:]]"
-      m <- regexec(vonrx, parts[1L], useBytes = TRUE)
+      m <- regexec(vonrx, parts[1L], useBytes = FALSE)
       von <- unlist(regmatches(parts[1L], m))[2]
       if (is.na(von)){  # e.g. Smith, John Paul
         person(UnlistSplitClean(parts[2L]), cleanupLatexSearch(parts[1L]))
@@ -294,12 +294,12 @@ ArrangeSingleAuthor <- function(y){
           person(UnlistSplitClean(parts[2L]),
                  c(cleanupLatexSearch(von),
                    cleanupLatexSearch(sub(vonrx, '', parts[1L],
-                                          useBytes = TRUE))))
+                                          useBytes = FALSE))))
       }
     }
   }else if (len.parts == 3L){
     vonrx <- "^([[:lower:]+[:space:]?]+)[[:space:]]"
-    m <- regexec(vonrx, parts[1L], useBytes = TRUE)
+    m <- regexec(vonrx, parts[1L], useBytes = FALSE)
     von <- unlist(regmatches(parts[1L], m))[2]
     if (is.na(von)){  # e.g. White, Jr., Walter
         person(UnlistSplitClean(parts[3L]), c(cleanupLatexSearch(parts[1L]),
@@ -307,7 +307,7 @@ ArrangeSingleAuthor <- function(y){
     }else{  # e.g. des White, Jr., Walter
       person(UnlistSplitClean(parts[3L]),
              c(cleanupLatexSearch(von),
-               cleanupLatexSearch(sub(vonrx, '', parts[1L], useBytes = TRUE)),
+               cleanupLatexSearch(sub(vonrx, '', parts[1L], useBytes = FALSE)),
                cleanupLatexSearch(parts[2L])))
     }
   }else{
@@ -319,7 +319,7 @@ ArrangeSingleAuthor <- function(y){
 #' @noRd
 UnlistSplitClean <- function(s){
   ## cleanupLatex(str_trim(s))
-  unlist(strsplit(gsub("[{}]", "", str_trim(s), useBytes = TRUE), " "))
+  unlist(strsplit(gsub("[{}]", "", str_trim(s), useBytes = FALSE), " "))
 }
 
 #' @keywords internal
@@ -328,15 +328,15 @@ cleanupLatex <- function (x){
   if (!length(x))
     return(x)
   if (getRversion() < "3.3.0"){
-    if (any(grepl('mkbib', x, useBytes = TRUE))){
-      x <- gsub('mkbibquote', 'dQuote', x, useBytes = TRUE)
-      x <- gsub('mkbibemph', 'emph', x, useBytes = TRUE)
-      x <- gsub('mkbibbold', 'bold', x, useBytes = TRUE)
+    if (any(grepl('mkbib', x, useBytes = FALSE))){
+      x <- gsub('mkbibquote', 'dQuote', x, useBytes = FALSE)
+      x <- gsub('mkbibemph', 'emph', x, useBytes = FALSE)
+      x <- gsub('mkbibbold', 'bold', x, useBytes = FALSE)
     }
-    x <- gsub('\\\\hyphen', '-', x, useBytes = TRUE)
-    x <- gsub("\\\\textquotesingle", "'", x, useBytes = TRUE)
+    x <- gsub('\\\\hyphen', '-', x, useBytes = FALSE)
+    x <- gsub("\\\\textquotesingle", "'", x, useBytes = FALSE)
   }
-  x <- gsub("\\\\&", "&", x, useBytes = TRUE)
+  x <- gsub("\\\\&", "&", x, useBytes = FALSE)
 
   latex <- try(tools::parseLatex(x), silent = TRUE)
   if (inherits(latex, "try-error")) {
@@ -352,15 +352,15 @@ cleanupLatex <- function (x){
                 })
     x <- tools::deparseLatex(latex, dropBraces = FALSE)
     if (getRversion() < "3.3.0"){
-      if (grepl("\\\\[[:punct:]]", x, useBytes = TRUE)){
-        x <- gsub("\\\\'I", '\u00cd', x, useBytes = TRUE)
-        x <- gsub("\\\\'i", '\u00ed', x, useBytes = TRUE)
-        x <- gsub('\\\\"I', '\u00cf', x, useBytes = TRUE)
-        x <- gsub('\\\\"i', '\u00ef', x, useBytes = TRUE)
-        x <- gsub("\\\\\\^I", '\u00ce', x, useBytes = TRUE)
-        x <- gsub("\\\\\\^i", '\u00ee', x, useBytes = TRUE)
-        x <- gsub("\\\\`I", '\u00cc', x, useBytes = TRUE)
-        x <- gsub("\\\\`i", '\u00ec', x, useBytes = TRUE)
+      if (grepl("\\\\[[:punct:]]", x, useBytes = FALSE)){
+        x <- gsub("\\\\'I", '\u00cd', x, useBytes = FALSE)
+        x <- gsub("\\\\'i", '\u00ed', x, useBytes = FALSE)
+        x <- gsub('\\\\"I', '\u00cf', x, useBytes = FALSE)
+        x <- gsub('\\\\"i', '\u00ef', x, useBytes = FALSE)
+        x <- gsub("\\\\\\^I", '\u00ce', x, useBytes = FALSE)
+        x <- gsub("\\\\\\^i", '\u00ee', x, useBytes = FALSE)
+        x <- gsub("\\\\`I", '\u00cc', x, useBytes = FALSE)
+        x <- gsub("\\\\`i", '\u00ec', x, useBytes = FALSE)
         Encoding(x) <- 'UTF-8'
       }
     }
@@ -384,7 +384,7 @@ MakeCitationList <- function( x, header, footer){
 #' @noRd
 .is_not_nonempty_text <- function(x){
     is.null(x) || any(is.na(x)) || all(grepl("^[[:space:]]*$", x,
-                                             useBytes = TRUE))
+                                             useBytes = FALSE))
 }
 
 #' @keywords internal
@@ -566,7 +566,7 @@ format_author <- function(author) paste(vapply(author, function(p) {
   fnms <- p$family
   only_given_or_family <- is.null(fnms) || is.null(p$given)
   fbrc <- if (length(fnms) > 1L || any(grepl("[[:space:]]",
-                                             fnms, useBytes = TRUE)) ||
+                                             fnms, useBytes = FALSE)) ||
               only_given_or_family)
     c("{", "}")
   else ""
@@ -662,17 +662,17 @@ ProcessArxiv <- function(arxinfo){
   res <- list(eprinttype = 'arxiv')
   # need to check date since arXiv identifier format changed in Apr-07
   m <- regexpr('[0-9]{1,2}[[:space:]][A-Z][a-z]{2}[[:space:]][0-9]{4}',
-               arxinfo, useBytes = TRUE)
+               arxinfo, useBytes = FALSE)
 
   adate <- strptime(regmatches(arxinfo, m), format='%d %b %Y')
   if (length(adate) && adate >= strptime('01 Apr 2007', format='%d %b %Y')){
     p <- 'arXiv:([0-9]{4}[\\.][0-9]{4}v[0-9])[[:space:]]\\[([[:graph:]]+)\\]'
-    m <- regexec(p, arxinfo, useBytes = TRUE)
+    m <- regexec(p, arxinfo, useBytes = FALSE)
     regm <- regmatches(arxinfo, m)
     res$eprintclass <- regm[[1]][3]
     res$eprint <- regm[[1]][2]
   }else{
-    m <- regexec('arXiv:([[:graph:]]+)\\s', arxinfo, useBytes = TRUE)
+    m <- regexec('arXiv:([[:graph:]]+)\\s', arxinfo, useBytes = FALSE)
     regm <- regmatches(arxinfo, m)
     res$eprint <- regm[[1]][2]
   }
@@ -696,13 +696,13 @@ ProcessArxiv <- function(arxinfo){
 ##   src <- td[[3L]][[1L]]  # xmlValue(td[[3L]], encoding)
 
 ##   year <- as.numeric(regmatches(td[[3L]][[2L]][[1]],
-##                      regexpr("([12][0-9]{3}$)", src, useBytes = TRUE)))
+##                      regexpr("([12][0-9]{3}$)", src, useBytes = FALSE)))
 ##   first_digit <- as.numeric(regexpr("[\\[\\(]?\\d",
-##                                     src, useBytes = TRUE)) - 1L
+##                                     src, useBytes = FALSE)) - 1L
 ##   ids <- which(first_digit < 0L)
 ##   first_digit <- replace(first_digit, ids, str_length(src)[ids])
 ##   journal <- str_trim(str_sub(src, 1L, first_digit))
-##   trailing_commas <- as.numeric(regexpr(",$", journal, useBytes = TRUE)) - 1L
+##   trailing_commas <- as.numeric(regexpr(",$", journal, useBytes = FALSE)) - 1L
 ##   ids <- which(trailing_commas < 0L)
 ##   trailing_commas <- replace(trailing_commas, ids,
 ##                              str_length(journal)[ids])
@@ -720,7 +720,7 @@ ProcessArxiv <- function(arxinfo){
 ##   res <- list(title = title, author = author, cites = cited_by,
 ##               year = year)
 ##   if (!is.na(eprint <- regmatches(src, regexec("arXiv:([0-9.]*)", src,
-##                                                useBytes = TRUE))[[1]][2])){
+##                                                useBytes = FALSE))[[1]][2])){
 ##     res$eprinttype <- "arxiv"
 ##     res$eprint <- eprint
 ##     res$url <- paste0("https://arxiv.org/abs/", eprint)
@@ -770,13 +770,13 @@ ParseGSCitesNew <- function(title, author, year, src, cited_by, encoding,
   ## src <- td[[3L]][[1L]]  # xmlValue(td[[3L]], encoding)
 
     ## year <- as.numeric(regmatches(td[[3L]][[2L]][[1]],
-    ##                    regexpr("([12][0-9]{3}$)", src, useBytes = TRUE)))
+    ##                    regexpr("([12][0-9]{3}$)", src, useBytes = FALSE)))
   first_digit <- as.numeric(regexpr("[\\[\\(]?\\d",
-                                    src, useBytes = TRUE)) - 1L
+                                    src, useBytes = FALSE)) - 1L
   ids <- which(first_digit < 0L)
   first_digit <- replace(first_digit, ids, str_length(src)[ids])
   journal <- str_trim(str_sub(src, 1L, first_digit))
-  trailing_commas <- as.numeric(regexpr(",$", journal, useBytes = TRUE)) - 1L
+  trailing_commas <- as.numeric(regexpr(",$", journal, useBytes = FALSE)) - 1L
   ids <- which(trailing_commas < 0L)
   trailing_commas <- replace(trailing_commas, ids,
                              str_length(journal)[ids])
@@ -794,7 +794,7 @@ ParseGSCitesNew <- function(title, author, year, src, cited_by, encoding,
   res <- list(title = title, author = author, cites = cited_by,
               year = year)
   if (!is.na(eprint <- regmatches(src, regexec("arXiv:([0-9.]*)", src,
-                                               useBytes = TRUE))[[1]][2])){
+                                               useBytes = FALSE))[[1]][2])){
     res$eprinttype <- "arxiv"
     res$eprint <- eprint
     res$url <- paste0("https://arxiv.org/abs/", eprint)
@@ -838,12 +838,12 @@ ProcessGSAuthors <- function(authors){
   # authors <- gsub(',', ', and', authors)  # add "and" to separate authors
   ## add space between given name initials
   # authors <- gsub('([A-Z])([A-Z])', '\\1 \\2', authors)
-  authors <- gsub(", [.]{3}$", "", authors, useBytes = TRUE)
+  authors <- gsub(", [.]{3}$", "", authors, useBytes = FALSE)
   authors <- strsplit(authors, ", ")[[1]]
 
   ## need to ensure given name initials are processed correctly,
   ## GS returns them without spaces
-  m <- regexec("^([[:alpha:]]*)[[:space:]](.*)", authors, useBytes = TRUE)
+  m <- regexec("^([[:alpha:]]*)[[:space:]](.*)", authors, useBytes = FALSE)
   autList <- regmatches(authors, m)
   autList <- lapply(seq_along(authors), function(i){
     if (length(name <- autList[[i]]))
@@ -863,17 +863,17 @@ ProcessGSAuthors <- function(authors){
 ProcessGSNumbers <- function(numbers){
   pages <- volume <- number <- NULL
 
-  m <- regexpr('([0-9]+)', numbers, useBytes = TRUE)
+  m <- regexpr('([0-9]+)', numbers, useBytes = FALSE)
   if(m != -1)
     volume <- regmatches(numbers, m)
 
-  m <- regexpr('[(]([0-9]+)[)]', numbers, useBytes = TRUE)
+  m <- regexpr('[(]([0-9]+)[)]', numbers, useBytes = FALSE)
   if(m != -1){
     number <- regmatches(numbers, m)
     number <- substr(number, 2, nchar(number)-1)  # remove ( )
   }
 
-  m <- regexpr('[0-9]+[\\-][0-9]+', numbers, useBytes = TRUE)
+  m <- regexpr('[0-9]+[\\-][0-9]+', numbers, useBytes = FALSE)
   if(m != -1){
     pages <- regmatches(numbers, m)
     pages <- gsub('-', '--', pages)  # '-' --> '--'
@@ -985,7 +985,7 @@ ProcessDate <- function(dat, mon, searching = FALSE){
 
   .day <- FALSE  # does entry contain valid day?
   .mon <- FALSE  # does entry contain valid month?
-  if (grepl("^(1|2)[0-9]{3}((-?-|/)(1|2)[0-9]{3})?$", dat, useBytes = TRUE)){
+  if (grepl("^(1|2)[0-9]{3}((-?-|/)(1|2)[0-9]{3})?$", dat, useBytes = FALSE)){
     ## e.g. 1991, 1991--1992, or 1991/1992
     ## check for year specified as range
     dats <- strsplit(dat, "-?-|/")[[1]]
@@ -996,7 +996,7 @@ ProcessDate <- function(dat, mon, searching = FALSE){
       ## `"day~" # month` in bib entry;
       ##   attempt to handle this
       ## examples: "2~" # dec, "4--6~" # aug, jan # "/" # feb,
-      res <- try(if (grepl("~", mon, useBytes = TRUE)){
+      res <- try(if (grepl("~", mon, useBytes = FALSE)){
                days <- strsplit(sub("~.*", "", mon), "-?-")[[1L]]
                mons <- strsplit(sub(".*~", "", mon), "/")[[1L]]
                .day <- TRUE
@@ -1045,7 +1045,7 @@ ProcessDate <- function(dat, mon, searching = FALSE){
                                              locale = "C"))
                 else NA
               }
-          }else if (grepl("/", mon, useBytes = TRUE)){  # feb/mar
+          }else if (grepl("/", mon, useBytes = FALSE)){  # feb/mar
             mons <- strsplit(mon, "/")[[1L]]
             interval(parse_date_time(paste0(dats[1], "-", mons[1], "-01"),
                                      c("%Y-%m-%d", "%Y-%b-%d"), locale = "C"),
@@ -1077,7 +1077,7 @@ ProcessDate <- function(dat, mon, searching = FALSE){
                interval(as.POSIXct(paste0(dats[1], '-01-01')),
                         as.POSIXct(paste0(dats[2], '-01-01')))
 
-  }else if (grepl('^(1|2)[0-9]{3}/$', dat, useBytes = TRUE)){
+  }else if (grepl('^(1|2)[0-9]{3}/$', dat, useBytes = FALSE)){
     if (!is.null(mon)){
         res <- interval(parse_date_time(paste0(substring(dat, 1, 4), '-',
                                                mon, '-01'),
@@ -1087,14 +1087,14 @@ ProcessDate <- function(dat, mon, searching = FALSE){
     }else{
       res <- interval(paste0(substring(dat, 1, 4), '-01-01'), Sys.Date())
     }
-  }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]/$', dat, useBytes = TRUE)){
+  }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]/$', dat, useBytes = FALSE)){
     res <- interval(paste0(substring(dat, 1, 7), '-01'), Sys.Date())
     .mon <- TRUE
   }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]/$', dat,
-                  useBytes = TRUE)){
+                  useBytes = FALSE)){
     res <- interval(substring(dat, 1, 10), Sys.Date())
     .mon <- .day <- TRUE
-  }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]$', dat, useBytes = TRUE)){
+  }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]$', dat, useBytes = FALSE)){
     res <- as.POSIXct(paste0(dat, '-01'))
     .mon <- TRUE
   }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat, useBytes=TRUE)){
@@ -1105,21 +1105,21 @@ ProcessDate <- function(dat, mon, searching = FALSE){
     ##  res <- interval(paste0(substring(dat, 1, 4), '-01-01'),
     ## paste0(substring(dat, 6, 9), '-01-01'))
   }else if (grepl('^(1|2)[0-9]{3}-[01][0-9]/(1|2)[0-9]{3}-[01][0-9]$', dat,
-                  useBytes = TRUE)){
+                  useBytes = FALSE)){
     res <- interval(paste0(substring(dat, 1, 7), '-01'),
                     paste0(substring(dat, 9, 15), '-01'))
     .mon <- TRUE
   }else if (grepl(paste0("^(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]/(1|2)[0-9]{3}",
-                         "-[01][0-9]-[0-3][0-9]$"), dat, useBytes = TRUE)){
+                         "-[01][0-9]-[0-3][0-9]$"), dat, useBytes = FALSE)){
     res <- interval(substring(dat, 1, 10), substring(dat, 12, 21))
     .day <- .mon <- TRUE
   }else if (searching){
-    if (grepl('^/(1|2)[0-9]{3}$', dat, useBytes = TRUE)){
+    if (grepl('^/(1|2)[0-9]{3}$', dat, useBytes = FALSE)){
       res <- interval('0001-01-01', paste0(substring(dat, 2, 5), '-01-01'))
-    }else if (grepl('^/(1|2)[0-9]{3}-[01][0-9]$', dat, useBytes = TRUE)){
+    }else if (grepl('^/(1|2)[0-9]{3}-[01][0-9]$', dat, useBytes = FALSE)){
       res <- interval('0001-01-01', paste0(substring(dat, 2, 8), '-01'))
     }else if (grepl('^/(1|2)[0-9]{3}-[01][0-9]-[0-3][0-9]$', dat,
-                    useBytes = TRUE)){
+                    useBytes = FALSE)){
       res <- interval('0001-01-01', substring(dat, 2, 11))
     }else{
       stop('No valid date format available.')
@@ -1133,7 +1133,7 @@ ProcessDate <- function(dat, mon, searching = FALSE){
 
 #' @keywords internal
 CreateBibKey <- function(ti, au, yr){
-  ## useBytes = TRUE can cause error to be thrown by tolower if non-ASCII
+  ## useBytes = FALSE can cause error to be thrown by tolower if non-ASCII
   ## character match because regmatches will return string with "bytes" encoding
 
   ## will be character(0) if no matches or if ti is NULL

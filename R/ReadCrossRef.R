@@ -257,7 +257,7 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
     ## if(is.raw(temp))
     ##     temp <- rawToChar(temp)
     if (http_error(temp) ||
-        !grepl("^[[:space:]]*@", parsed, useBytes = TRUE)){
+        !grepl("^[[:space:]]*@", parsed, useBytes = FALSE)){
         ## last one for occasional non-bibtex returned by CrossRef
 
         ## try different header if first one fails
@@ -265,7 +265,7 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
                     add_headers(Accept = "text/bibliography; style=bibtex"))
         parsed <- content(temp, as = "text", encoding = "UTF-8")
         if (http_error(temp) ||
-            !grepl("^[[:space:]]*@", parsed, useBytes = TRUE)){
+            !grepl("^[[:space:]]*@", parsed, useBytes = FALSE)){
             doi.text <- sub("^https?://(dx[.])?doi.org/", "", doi)
             message(gettextf("Server error [%s] for doi %s, you may want to%s",
                              status_code(temp), dQuote(doi.text),
@@ -274,9 +274,9 @@ GetCrossRefBibTeX <- function(doi, tmp.file){
         }
     }
 
-    parsed <- gsub("&amp;", "&", parsed, useBytes = TRUE)
+    parsed <- gsub("&amp;", "&", parsed, useBytes = FALSE)
     ## Crossref uses data type for some entries
-    parsed <- sub("^@[Dd]ata", "@online", parsed, useBytes = TRUE)
+    parsed <- sub("^@[Dd]ata", "@online", parsed, useBytes = FALSE)
     write(parsed, file = tmp.file, append = TRUE)
     return(0L)
 }

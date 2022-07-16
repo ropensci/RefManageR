@@ -8,7 +8,7 @@ ReadFirstPages <- function(doc, page.one = TRUE){
   # arXiv
   arXiv <- FALSE
   if (TRUE){
-    ind <- grep('arXiv:', doc, useBytes = TRUE)[1]
+    ind <- grep('arXiv:', doc, useBytes = FALSE)[1]
     if(!is.na(ind)){
       arXiv <- TRUE
       found.abstract <- TRUE  # assume no cover page for an arXiv paper
@@ -16,7 +16,7 @@ ReadFirstPages <- function(doc, page.one = TRUE){
       res$eprinttype <- 'arxiv'
       # need to check date since arXiv identifier format changed in Apr-07
       m <- regexpr('[0-9]{1,2}[[:space:]][A-Z][a-z]{2}[[:space:]][0-9]{4}',
-                   arxinfo, useBytes = TRUE)
+                   arxinfo, useBytes = FALSE)
 
       adate <- strptime(regmatches(arxinfo, m), format='%d %b %Y')
       if (length(adate)){
@@ -24,12 +24,12 @@ ReadFirstPages <- function(doc, page.one = TRUE){
           if (adate >= strptime('01 Apr 2007', format='%d %b %Y')){
               m <- regexec(paste0("arXiv:([0-9]{4}[\\.][0-9]{4}v[0-9])",
                                   "[[:space:]]\\[([[:graph:]]+)\\]"),
-                           arxinfo, useBytes = TRUE)
+                           arxinfo, useBytes = FALSE)
             regm <- regmatches(arxinfo, m)
             res$eprintclass <- regm[[1]][3]
             res$eprint <- regm[[1]][2]
           }else{
-            m <- regexec('arXiv:([[:graph:]]+)\\s', arxinfo, useBytes = TRUE)
+            m <- regexec('arXiv:([[:graph:]]+)\\s', arxinfo, useBytes = FALSE)
             regm <- regmatches(arxinfo, m)
             res$eprint <- regm[[1]][2]
           }
@@ -40,26 +40,26 @@ ReadFirstPages <- function(doc, page.one = TRUE){
 
   if (TRUE){
     if (!arXiv){  # try to get url
-      ind <- grep('^[Uu]Rr][Ll]: ', doc, useBytes = TRUE)
+      ind <- grep('^[Uu]Rr][Ll]: ', doc, useBytes = FALSE)
       if (length(ind))
-        res$url <- gsub('^[Uu]Rr][Ll]: ', '', doc[ind], useBytes = TRUE)
+        res$url <- gsub('^[Uu]Rr][Ll]: ', '', doc[ind], useBytes = FALSE)
 
 
       # volume
       m <- regexec('(Vol|Volume)[[:punct:]]?[[:space:]]?([0-9]+)', doc,
-                   useBytes = TRUE)
+                   useBytes = FALSE)
       if (length(m[[1]]) != 1)
         res$volume <- unlist(regmatches(doc, m))[3]
 
       # number
       m <- regexec('([Nn]o\\.|Number|Issue)[[:space:]]([0-9]{1,3})', doc,
-                   useBytes = TRUE)
+                   useBytes = FALSE)
       if (length(m[[1]]) != 1)
         res$number <- unlist(regmatches(doc, m))[3]
       # pages -pdftotext has trouble with "-"
       m <- regexec(paste0("([0-9]{1,4}) ?[-\u1390\u2212\ufe58\ufe63\uff0d",
                           "\u2012-\u2015] ?([0-9]{1,4})[[:punct:]]?$"),
-                   doc, useBytes = TRUE)
+                   doc, useBytes = FALSE)
       tmatch <- unlist(regmatches(doc, m))
       if (length(tmatch))
         res$pages <- paste0(tmatch[-1], collapse='-')
@@ -68,17 +68,17 @@ ReadFirstPages <- function(doc, page.one = TRUE){
       # make lame, conservative attempt to get journal
       journ.ind <- regexec(paste0("^([[:alpha:] -]{2,})[,\\.;]?[[:print:]]*",
                                   "\\(?\\<((19|20)[0-9]{2})\\>"),
-                           doc[1], useBytes = TRUE)  # [[:upper:]][[:alpha:]]+
+                           doc[1], useBytes = FALSE)  # [[:upper:]][[:alpha:]]+
       if (length(journ.ind[[1]]) != 1){
         temp <- regmatches(doc[1], journ.ind)[[1]]
-        res$journal <- gsub(' $', '', temp[2], useBytes = TRUE)
+        res$journal <- gsub(' $', '', temp[2], useBytes = FALSE)
         res$year <- temp[3]
         doc <- doc[-1L]
       }
 
       # year
       if (is.null(res$year)){
-        m <- regexpr('\\<(19|20)[0-9]{2}\\>', doc, useBytes = TRUE)
+        m <- regexpr('\\<(19|20)[0-9]{2}\\>', doc, useBytes = FALSE)
         if (any(m != -1L))
           res$year <- regmatches(doc, m)[1L]
       }
@@ -86,24 +86,24 @@ ReadFirstPages <- function(doc, page.one = TRUE){
 
     # keywords
     ind <- grep('Key ?words( and phrases)?(:|.)[[:space:]]?', doc,
-                ignore.case = TRUE, useBytes = TRUE)
+                ignore.case = TRUE, useBytes = FALSE)
     if (length(ind)){
         res$keywords <- sub('Key ?words( and phrases)?(:|.)[[:space:]]?', '',
-                            doc[ind], ignore.case = TRUE, useBytes = TRUE)
+                            doc[ind], ignore.case = TRUE, useBytes = FALSE)
         if (ind+1 <= length(doc) && grepl('^([[:alpha:]]+[,;]? ?)+\\.?$',
-                                          doc[ind+1], useBytes = TRUE))
+                                          doc[ind+1], useBytes = FALSE))
           res$keywords <- paste(res$keywords, doc[ind+1])
         if (ind+2 <= length(doc) && grepl('^([[:alpha:]]+[,;]? ?)+\\.?$',
-                                          doc[ind+2], useBytes = TRUE))
+                                          doc[ind+2], useBytes = FALSE))
           res$keywords <- paste(res$keywords, doc[ind+2])
         ## keywords need to be comma separated for BibLaTeX
-        res$keywords <- gsub(';', ',', res$keywords, useBytes = TRUE)
-        res$keywords <- gsub('[;,]$', '', res$keywords, useBytes = TRUE)
+        res$keywords <- gsub(';', ',', res$keywords, useBytes = FALSE)
+        res$keywords <- gsub('[;,]$', '', res$keywords, useBytes = FALSE)
         doc <- doc[1L:(ind-1)]  # shorten doc used to search for author, title
         found.abstract <- TRUE
     }else if(length(abst.ind <-
                         grep('^[1I]\\.?[[:blank:]]Introduction([[:space:]]|$)',
-                             doc, useBytes = TRUE))){
+                             doc, useBytes = FALSE))){
       if (abst.ind > 2L){
         doc <- doc[1L:(abst.ind - 1L)]
         if (page.one)  # allows for first section at top of 2nd page
@@ -128,23 +128,23 @@ ReadFirstPages <- function(doc, page.one = TRUE){
 #' @noRd
 CheckJSTOR <- function(doc1, doc2, file){
   ind <- grep('https?://www\\.jstor\\.org/stable/([0-9]+)', doc1,
-              useBytes = TRUE)[1]
+              useBytes = FALSE)[1]
   if (!is.na(ind)){
     res <- try(GetJSTOR(doc1), TRUE)
     if (inherits(res, 'try-catch'))
       return(NA)
-    res$eprint <- gsub('[^0-9]+', '', doc1[ind], useBytes = TRUE)
+    res$eprint <- gsub('[^0-9]+', '', doc1[ind], useBytes = FALSE)
     res$eprinttype <- 'jstor'
     res$url <- paste0('https://www.jstor.org/stable/', res$eprint)
     res$file <- normalizePath(file)
 
   }else if (length(ind <- grep('https?://links.jstor.org/sici', doc1,
-                               useBytes = TRUE))){
+                               useBytes = FALSE))){
     ## old format for JSTOR papers
     res <- try(GetJSTOR(doc1), TRUE)
     if (inherits(res, 'try-catch'))
       return(NA)
-    res$url <- sub('Stable URL:[[:space:]]', '', doc1[ind], useBytes = TRUE)
+    res$url <- sub('Stable URL:[[:space:]]', '', doc1[ind], useBytes = FALSE)
   }else{
     return(NA)
   }
@@ -161,23 +161,23 @@ CheckJSTOR <- function(doc1, doc2, file){
   ##########################################
   # try for keywords and DOI on page 2
   ind <- grep('Key ?words( and phrases)?:[[:space:]]?', doc2,
-              ignore.case = TRUE, useBytes = TRUE)
+              ignore.case = TRUE, useBytes = FALSE)
 
   if (length(ind)){
       res$keywords <- sub('[[:space:]]*Key ?words( and phrases)?:[[:space:]]?',
-                          '', doc2[ind], ignore.case = TRUE, useBytes = TRUE)
+                          '', doc2[ind], ignore.case = TRUE, useBytes = FALSE)
       if (ind+1 <= length(doc2) && grepl('^([[:alpha:]]+[ ,;]?)+\\.?$',
-                                         doc2[ind+1], useBytes = TRUE))
+                                         doc2[ind+1], useBytes = FALSE))
         res$keywords <- paste(res$keywords, doc2[ind+1])
       if (ind+2 <= length(doc2) && grepl('^([[:alpha:]]+[ ,;]?)+\\.?$',
-                                         doc2[ind+2], useBytes = TRUE))
+                                         doc2[ind+2], useBytes = FALSE))
         res$keywords <- paste(res$keywords, doc2[ind+2])
       ## keywords need to be comma separated for BibLaTeX
-      res$keywords <- gsub(';', ',', res$keywords, useBytes = TRUE)
+      res$keywords <- gsub(';', ',', res$keywords, useBytes = FALSE)
   }
 
   pattern  <- "\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'])\\S)+)\\b"
-  m <- regexpr(pattern, doc2, perl=TRUE, useBytes = TRUE)
+  m <- regexpr(pattern, doc2, perl=TRUE, useBytes = FALSE)
   if (any(m != -1))
     res$doi <- unlist(regmatches(doc2, m))
 
@@ -188,43 +188,43 @@ CheckJSTOR <- function(doc1, doc2, file){
 #' @noRd
 GetJSTOR <- function(doc){
   ## take extra caution for long title, author list, or journal info
-  aut.ind <- grep('Author\\(s\\): ', doc, useBytes = TRUE)
+  aut.ind <- grep('Author\\(s\\): ', doc, useBytes = FALSE)
   if (!length(aut.ind)){  # old format for JSTOR papers.
-    url.ind <- grep('Stable URL', doc, useBytes = TRUE)
+    url.ind <- grep('Stable URL', doc, useBytes = FALSE)
     source.ind <- grep('([[:print:]]+),[[:space:]]Vol\\. ', doc,
-                       useBytes = TRUE)
+                       useBytes = FALSE)
 
     ## immediately above source.ind is author, if line above that has
     ##   a semicolon, it is also author info
-    aut.ind <- grep(';', doc[1:(source.ind-1)], useBytes = TRUE)
+    aut.ind <- grep(';', doc[1:(source.ind-1)], useBytes = FALSE)
     if(!is.na(aut.ind)){
       author <- paste0(doc[aut.ind:(source.ind-1)], collapse = ' ')
     }else{
       aut.ind <- source.ind-1
       author <- doc[aut.ind]
     }
-    author <- gsub(';', ',', author, useBytes = TRUE)
+    author <- gsub(';', ',', author, useBytes = FALSE)
     author <- as.person(author)
 
-    publisher.ind <- grep('published by', doc, useBytes = TRUE)[1]
+    publisher.ind <- grep('published by', doc, useBytes = FALSE)[1]
     m <- regexec('published by ([[:alpha:], -]+).?$', doc[publisher.ind],
-                 useBytes = TRUE)
+                 useBytes = FALSE)
     publisher <- regmatches(doc[publisher.ind], m)[[1]][2]
 
     jinfo <- paste0(doc[source.ind:(url.ind-1)], collapse = ' ')
   }else{
-    reviewed.ind <- grep('Reviewed work\\(s\\):', doc, useBytes = TRUE)
+    reviewed.ind <- grep('Reviewed work\\(s\\):', doc, useBytes = FALSE)
     if (length(reviewed.ind))
       doc <- doc[-reviewed.ind]
 
-    publisher.ind <- grep('Published by: ', doc, useBytes = TRUE)
-    url.ind <- grep('Stable URL: ', doc, useBytes = TRUE)
+    publisher.ind <- grep('Published by: ', doc, useBytes = FALSE)
+    url.ind <- grep('Stable URL: ', doc, useBytes = FALSE)
     publisher <- sub('Published by: ', '',
                      paste0(doc[publisher.ind:(url.ind-1)], collapse = ' '),
-                     useBytes = TRUE)
-    source.ind <- grep('Source: ', doc, useBytes = TRUE)
+                     useBytes = FALSE)
+    source.ind <- grep('Source: ', doc, useBytes = FALSE)
     author <- paste0(doc[aut.ind:(source.ind-1)], collapse = ' ')
-    author <- sub('Author\\(s\\): ', '', author, useBytes = TRUE)
+    author <- sub('Author\\(s\\): ', '', author, useBytes = FALSE)
     author <- as.person(author)
 
     jinfo <- paste0(doc[source.ind:(publisher.ind-1)], collapse = ' ')
@@ -239,7 +239,7 @@ GetJSTOR <- function(doc){
   pattern <- paste0("^(Source:[[:space:]])?([[:print:]]+),[[:space:]]Vol",
                     "\\. ([0-9]+)(, No\\. ([[:digit:]/]+))?\\.? ",
     "\\(([[:upper:]][[:lower:]]{2}\\.?, )?([0-9]{4})\\), pp. ([[:digit:] -]+)")
-  m <- regexec(pattern, jinfo, useBytes = TRUE)
+  m <- regexec(pattern, jinfo, useBytes = FALSE)
   journal.info <- unlist(regmatches(jinfo, m))
   if (!length(journal.info))  # Source: line has unexpected format
     return(list(title = title, author = author, publisher = publisher))
@@ -251,9 +251,9 @@ GetJSTOR <- function(doc){
 
   year <- journal.info[8]  # journal.info[length(journal.info)-1]
   ## gsub for edge case # gsub('pp. ', '', journal.info[length(journal.info)])
-  pages <- gsub(' ', '', journal.info[9], useBytes = TRUE)
+  pages <- gsub(' ', '', journal.info[9], useBytes = FALSE)
   ## poppler doesn't read the JSTOR en-dash always
-  if(!grepl('-', pages, useBytes = TRUE)){
+  if(!grepl('-', pages, useBytes = FALSE)){
     psplit <- floor(nchar(pages)/2)
     pages <- paste0(substr(pages, 1, psplit), '-', substr(pages, psplit+1,
                                                           nchar(pages)))
@@ -270,7 +270,7 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
   if (!identical(found.abstract, TRUE)){
       abst.ind <- grep(paste0("^A[Bb][Ss][Tt][Rr][Aa][Cc][Tt]|^S[Uu][Mm][Mm]",
                          "[Aa][Rr][Yy]|^S[Yy][Nn][Oo][Pp][Ss][Ii][Ss][:.]?\\>"),
-                       doc, useBytes = TRUE)
+                       doc, useBytes = FALSE)
     if (length(abst.ind) && abst.ind > 2L){
       ## assume title/author comes before Abstract. need 2nd cond. for ind==1
       doc <- doc[1L:(abst.ind - 1L)]
@@ -298,31 +298,31 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
     ##  "(?<!", BAD.WORDS, ")",
     ## and, ",", ";", or "&" to seperate names. Repeat
     "(,.|;.)*( and| &)?[[:space:]]?)+$"),
-    doc[-1], perl=FALSE, useBytes = TRUE) # first line can't have authors
+    doc[-1], perl=FALSE, useBytes = FALSE) # first line can't have authors
   aut.match <- regmatches(doc[-1], aut.ind)
   if (length(aut.match) == 0){
     aut.match <- NULL
   }else{
     ## remove MD and PhD
-    aut.match <- gsub("(,? MD)?(,? P(H|h)D)?", '', aut.match, useBytes = TRUE)
+    aut.match <- gsub("(,? MD)?(,? P(H|h)D)?", '', aut.match, useBytes = FALSE)
     ## remove punct at end of last name
-    aut.match <- gsub("[^[:alpha:] ,'-]", '', aut.match, useBytes = TRUE)
+    aut.match <- gsub("[^[:alpha:] ,'-]", '', aut.match, useBytes = FALSE)
     ## aut.match <- gsub("^A[Uu][Tt][Hh][Oo][Rr]( |: )|^B[Yy]( |: )", '',
     ##                   aut.match)  # remove author or by at start
 
     ## remove author or by at start
     aut.match <- gsub("^((B[Yy]|A[Uu][Tt][Hh][Oo][Rr][Ss]?|and):?[[:space:]])?",
-                      '', aut.match, useBytes = TRUE)
-    aut.match <- gsub("\\<AND\\>", "and", aut.match, useBytes = TRUE)
+                      '', aut.match, useBytes = FALSE)
+    aut.match <- gsub("\\<AND\\>", "and", aut.match, useBytes = FALSE)
     # remove bad words. can't get negative look-ahead working :(
-    temp <- grep(BAD.WORDS, aut.match, ignore.case = TRUE, useBytes = TRUE)
+    temp <- grep(BAD.WORDS, aut.match, ignore.case = TRUE, useBytes = FALSE)
     if (length(temp)){
       aut.ind[which(aut.ind > 0L)[temp]] <- -1L
       aut.match <- aut.match[-temp]
     }
     if (!is.null(kw)){  # extra protection from including title with author
         temp <- grep(paste0(unlist(strsplit(kw, ',? ')), collapse = '|'),
-                     aut.match, ignore.case = TRUE, useBytes = TRUE)
+                     aut.match, ignore.case = TRUE, useBytes = FALSE)
       if (length(temp)){
         aut.ind[which(aut.ind > 0L)[temp]] <- -1L
         aut.match <- aut.match[-temp]
@@ -355,13 +355,13 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
   done.match <- FALSE
   while (i <= N && !done.match){
     likely.non.title.term.found <- grepl(BAD.WORDS, doc[i], ignore.case = TRUE,
-                                           useBytes = TRUE)
+                                           useBytes = FALSE)
     title.ind <- (regexpr(paste0(  # "(?!", BAD.WORDS, ")",
                 "^[\u201c\u022]?[[:upper:]][[:alpha:]'\u201c\u201d\u022-]+[ -]",
                 #"([[:alpha:]:,' ]){2,}(\\.|!|\\?)?$"),
                 "([[:alpha:]:,' \u201c\u201d\u022-]+){2,}"),
                 #"(?<!", BAD.WORDS, ")"),
-                       doc[i], perl = TRUE, useBytes = TRUE))
+                       doc[i], perl = TRUE, useBytes = FALSE))
     if (title.ind != -1 && !likely.non.title.term.found){
       if (!first.match){
         first.match <- TRUE
@@ -381,7 +381,7 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
   }else{
     if (length(match.ind)){  # undo reversing of doc when author matched
       if (i > 3L){
-        if (grepl("[[:alpha:]', -]+", doc[i-3L], useBytes = TRUE))
+        if (grepl("[[:alpha:]', -]+", doc[i-3L], useBytes = FALSE))
           title.match <- c(doc[i-3L], title.match)
       }
       title.match <- rev(title.match)
@@ -389,10 +389,10 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
     title.match <- paste0(title.match, collapse = ' ')
     # simple fix for case troubles
     title.match <- gsub("([[:alpha:]])([[:alpha:]'-]*)", "\\U\\1\\L\\2",
-                        title.match, perl = TRUE, useBytes = TRUE)
+                        title.match, perl = TRUE, useBytes = FALSE)
     ## remove superscripted char indicating footnote for title
     title.match <- gsub('[^\\w]*$', '', title.match, perl = TRUE,
-                        useBytes = TRUE)
+                        useBytes = FALSE)
   }
 
   ## return(list(ind=which(aut.ind != -1L), match=aut.match, ab.ind=ind,
@@ -455,7 +455,7 @@ CleanAuthorTitle <- function(bib1, bib2, bibMeta, file){
 #' @noRd
 SearchDOIText <- function(txt){
   pattern  <- "\\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'])\\S)+)\\b"
-  m <- regexpr(pattern, txt, perl = TRUE, useBytes = TRUE)
+  m <- regexpr(pattern, txt, perl = TRUE, useBytes = FALSE)
   if(all(m == -1)){
     return("")
   }else{
@@ -475,29 +475,29 @@ ProcessPDFMeta <- function(x, enc = 'UTF-8'){
   found.tags <- substring(x, 1L, 16L)
   ind <- pmatch(tags, found.tags)
   if (!is.na(ind[1])){
-    title.info <- sub(re, "", x[ind[1]], useBytes = TRUE)
+    title.info <- sub(re, "", x[ind[1]], useBytes = FALSE)
     if (grepl('[[:upper:]][[:lower:]-]* [[:alpha:]]+', title.info,
-              useBytes = TRUE))
+              useBytes = FALSE))
       res$title <- title.info
   }
 
   if (!is.na(ind[2])){
-    aut.info <- sub(re, "", x[ind[2]], useBytes = TRUE)
-    if (grepl("\\w[\\.'-]? \\w", aut.info, useBytes = TRUE))
+    aut.info <- sub(re, "", x[ind[2]], useBytes = FALSE)
+    if (grepl("\\w[\\.'-]? \\w", aut.info, useBytes = FALSE))
       res$author <- aut.info
   }
 
   # add keywords if available
   ind <- pmatch('Keywords', found.tags)
   if(!is.na(ind)){
-    res$keywords <- sub('Keywords:[[:space:]]+', '', x[ind], useBytes = TRUE)
+    res$keywords <- sub('Keywords:[[:space:]]+', '', x[ind], useBytes = FALSE)
     if (res$keywords =='')
       res$keywords <- NULL
   }
 
   ind <- pmatch('Subject:', found.tags)
   if (!is.na(ind)){
-    subj <- sub('Subject:[[:space:]]+', '', x[ind], useBytes = TRUE)
+    subj <- sub('Subject:[[:space:]]+', '', x[ind], useBytes = FALSE)
 
     if (subj != ''){
       res <- c(res, ProcessPDFSubject(subj))
@@ -509,7 +509,7 @@ ProcessPDFMeta <- function(x, enc = 'UTF-8'){
   if (is.null(res$year)){
     ind <- pmatch('ModDate', found.tags)
     if(!is.na(ind)){
-      date <- sub('ModDate:[[:space:]]+', '', x[ind], useBytes = TRUE)
+      date <- sub('ModDate:[[:space:]]+', '', x[ind], useBytes = FALSE)
       date <- suppressWarnings(parse_date_time(date,
                                                orders = c("%m/%d/%y %H:%M:%S",
                                                           "%m/%d %H:%M:%S %y")))
@@ -518,7 +518,7 @@ ProcessPDFMeta <- function(x, enc = 'UTF-8'){
         res$date <- trunc(date, 'days')
       }
     }else if (!is.na(ind <-pmatch('CreationDate', found.tags))){
-      date <- sub('CreationDate:[[:space:]]+', '', x[ind], useBytes = TRUE)
+      date <- sub('CreationDate:[[:space:]]+', '', x[ind], useBytes = FALSE)
       date <- suppressWarnings(parse_date_time(date,
                                                orders = c("%m/%d/%y %H:%M:%S",
                                                           "%m/%d %H:%M:%S %y")))
@@ -541,7 +541,7 @@ ProcessPDFSubject <- function(subj){
 
   journ.ind <- regexec(paste0("^([[:upper:]][[:alpha:] ]+)[,\\.;]?",
                               "[[:print:]]*\\(?\\<(19|20)[0-9]{2}\\>"),
-                       subj, useBytes = TRUE)
+                       subj, useBytes = FALSE)
   temp <- unlist(regmatches(subj, journ.ind))
   if (length(temp)){
     res$journal <- temp[2]
@@ -549,18 +549,18 @@ ProcessPDFSubject <- function(subj){
       res$year <- temp[3]
   }
 
-  m <- regexec('[Vv]ol(\\.|ume)?[[:space:]]([0-9]{1,3})', subj, useBytes = TRUE)
+  m <- regexec('[Vv]ol(\\.|ume)?[[:space:]]([0-9]{1,3})', subj, useBytes = FALSE)
   if (length(m[[1]]) != 1)
     res$volume <- unlist(regmatches(subj, m))[3]
 
   m <- regexec('([Nn]o\\.|Number|Issue)[[:space:]]([0-9]{1,3})', subj,
-               useBytes = TRUE)
+               useBytes = FALSE)
   if (length(m[[1]]) != 1)
     res$number <- unlist(regmatches(subj, m))[3]
 
   if (is.null(res$volume) && is.null(res$number)){
     m <- regexec('\\(([0-9]{1,3})\\)[[:blank:]]?([0-9]{1,3})', subj,
-                 useBytes = TRUE)[[1]]
+                 useBytes = FALSE)[[1]]
     if (length(m[[1]]) != 1){
       temp <- regmatches(subj, m)[[1]]
       res$volume <- temp[2]
@@ -570,10 +570,10 @@ ProcessPDFSubject <- function(subj){
 
   # be extra careful matching hypen. usuallly it's \u2013, an en dash
   m <- regexpr('[0-9]+[-\u2212\ufe58\ufe63\uff0d\u2012-\u2015][0-9]+', subj,
-               useBytes = TRUE)
+               useBytes = FALSE)
   if (m != -1){
     res$pages <- grep('[0-9]+[-\u2212\ufe58\ufe63\uff0d\u2012-\u2015][0-9]+',
-                      subj, value = TRUE, useBytes = TRUE)
+                      subj, value = TRUE, useBytes = FALSE)
   }
   return(res)
 }
