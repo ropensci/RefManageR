@@ -28,7 +28,7 @@ Optional additional parameters to pass to the server include
 \item \code{retstart} - index of the first retrieved ID that should be
 included in the results.
 \item \code{retmax} - maximum number of IDs the server will
-return (default 20). 
+return (default 20).
 \item \code{field} - limits the query to search only the specified
 field (e.g. \dQuote{title}).
 \item \code{datetype} - type of date to use when limiting search by

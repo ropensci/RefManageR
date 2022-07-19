@@ -243,7 +243,7 @@ new API)
 * Fix generation of entry keys when the word used from the title for key
 generation contains a non-ascii character (h/t Mark Johnson)
 * RefManageR will no longer hang due to a bug in `tools::latexToUtf8`
-([PR\#17138](https://bugs.r-project.org/bugzilla3/show_bug.cgi?id=17138)) that
+([PR\#17138](https://bugs.r-project.org/show_bug.cgi?id=17138)) that
 is occasionally encountered when that function processes an unknown
 macro (h/t Eric Bryant)
 * Entries with no title field can now be printed without error when
