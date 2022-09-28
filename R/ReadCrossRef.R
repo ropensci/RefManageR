@@ -66,7 +66,7 @@
 #' \code{"has-affiliation"}, \code{"alternative-id"}, and \code{"article-number"}.
 #' See the first reference for a description of their meanings.
 #' @importFrom jsonlite fromJSON
-#' @importFrom httr GET content http_error add_headers status_code
+#' @importFrom httr GET content http_error add_headers http_condition
 #' @importFrom utils URLdecode
 #' @export
 #' @keywords database
@@ -147,14 +147,12 @@ ReadCrossRef <- function(query = "", filter = list(), limit = 5, offset = 0,
                                  collapse = ",")
       results <- GET("https://api.crossref.org/works", query=params)
     }
-    fromj <- content(results, type = "application/json", encoding = "UTF-8")
     if (http_error(results)){
-      msg <- fromj$message[[1L]]
-      stop(gettextf("CrossRef API request failed [%s]: %s\n<%s>",
-                    status_code(results), msg$type,
-                    msg$message), call. = FALSE)
+      msg <- paste0("CrossRef API request failed:\n",
+                    as.character(http_condition(results, "message")))
+      stop(msg, call. = FALSE)
     }
-
+    fromj <- content(results, type = "application/json", encoding = "UTF-8")
     if (!use.old.api)
         fromj <- fromj$message$items
     num.res <- min(limit, length(fromj))
