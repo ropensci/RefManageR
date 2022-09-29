@@ -41,7 +41,7 @@ GetBibEntryWithDOI <- function(doi, temp.file=tempfile(fileext = '.bib'),
                 add_headers(Accept = "application/x-bibtex",
                 "User-Agent" = "mailto:mathew.w.mclean@gmail.com"))
     if (!http_error(temp)){
-      temp <- content(temp, as = "text", encoding = "UTF-8")
+      temp <- content(temp, as = "text")  # encoding = "UTF-8")
       successes[i] <- TRUE
       ## if (is.raw(temp))
       ##   temp <- rawToChar(temp)

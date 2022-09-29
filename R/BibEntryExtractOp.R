@@ -59,7 +59,7 @@ MatchName <- function(nom, pattern, match.author=.BibOptions$match.author,
       return(all(vapply(pattern, function(pat) any(grepl(pat, x = nom,
                                                          fixed = !regx,
                                                          ignore.case = ign.case,
-                                                         useBytes = TRUE)),
+                                                         useBytes = FALSE)),
                         FALSE)))
   }
 }
@@ -323,16 +323,16 @@ FindBibEntry <- function(bib, term, field){
     res <- logical(length(bib))
     not.nulls <- which(!vapply(vals, is.null, FALSE))
     vals <- gsub('\\n[[:space:]]*', ' ', unlist(vals[not.nulls]),
-                 useBytes = TRUE)
+                 useBytes = FALSE)
     vals <- unlist(strsplit(cleanupLatexSearch(vals), '\n') )
 
     if (!usereg && ignorec){
         res[not.nulls[grepl(tolower(term), tolower(vals), fixed = TRUE,
-                            useBytes = TRUE)]] <- TRUE
+                            useBytes = FALSE)]] <- TRUE
     }else{
         res[not.nulls[grepl(term, vals, fixed = !.BibOptions$use.regex,
                             ignore.case = .BibOptions$ignore.case,
-                            useBytes = TRUE)]] <- TRUE
+                            useBytes = FALSE)]] <- TRUE
     }
   }
   res
@@ -342,13 +342,13 @@ FindBibEntry <- function(bib, term, field){
 cleanupLatexSearch <- function (x){
   if (!length(x))
     return(x)
-  if (any(grepl('mkbib', x, useBytes = TRUE))){
-    x <- gsub('\\\\mkbibquote[{]([^}]+)[}]', "\\1", x, useBytes = TRUE)
-    x <- gsub('\\\\mkbibemph[{]([^}]+)[}]', "\\1", x, useBytes = TRUE)
-    x <- gsub('\\\\mkbibbold[{]([^}]+)[}]', "\\1", x, useBytes = TRUE)
+  if (any(grepl('mkbib', x, useBytes = FALSE))){
+    x <- gsub('\\\\mkbibquote[{]([^}]+)[}]', "\\1", x, useBytes = FALSE)
+    x <- gsub('\\\\mkbibemph[{]([^}]+)[}]', "\\1", x, useBytes = FALSE)
+    x <- gsub('\\\\mkbibbold[{]([^}]+)[}]', "\\1", x, useBytes = FALSE)
   }
-  x <- gsub('\\\\hyphen', '-', x, useBytes = TRUE)
-  x <- gsub("\\\\textquotesingle", "'", x, useBytes = TRUE)
+  x <- gsub('\\\\hyphen', '-', x, useBytes = FALSE)
+  x <- gsub("\\\\textquotesingle", "'", x, useBytes = FALSE)
 
   latex <- try(tools::parseLatex(x), silent = TRUE)
   if (inherits(latex, "try-error")) {
@@ -363,15 +363,15 @@ cleanupLatexSearch <- function (x){
                     latex
                 })
     x <- tools::deparseLatex(latex, dropBraces = TRUE)
-    if (grepl("\\\\[[:punct:]]", x, useBytes = TRUE)){
-      x <- gsub("\\\\'I", '\u00cd', x, useBytes = TRUE)
-      x <- gsub("\\\\'i", '\u00ed', x, useBytes = TRUE)
-      x <- gsub('\\\\"I', '\u00cf', x, useBytes = TRUE)
-      x <- gsub('\\\\"i', '\u00ef', x, useBytes = TRUE)
-      x <- gsub("\\\\\\^I", '\u00ce', x, useBytes = TRUE)
-      x <- gsub("\\\\\\^i", '\u00ee', x, useBytes = TRUE)
-      x <- gsub("\\\\`I", '\u00cc', x, useBytes = TRUE)
-      x <- gsub("\\\\`i", '\u00ec', x, useBytes = TRUE)
+    if (grepl("\\\\[[:punct:]]", x, useBytes = FALSE)){
+      x <- gsub("\\\\'I", '\u00cd', x, useBytes = FALSE)
+      x <- gsub("\\\\'i", '\u00ed', x, useBytes = FALSE)
+      x <- gsub('\\\\"I', '\u00cf', x, useBytes = FALSE)
+      x <- gsub('\\\\"i', '\u00ef', x, useBytes = FALSE)
+      x <- gsub("\\\\\\^I", '\u00ce', x, useBytes = FALSE)
+      x <- gsub("\\\\\\^i", '\u00ee', x, useBytes = FALSE)
+      x <- gsub("\\\\`I", '\u00cc', x, useBytes = FALSE)
+      x <- gsub("\\\\`i", '\u00ec', x, useBytes = FALSE)
       Encoding(x) <- 'UTF-8'
     }
     x

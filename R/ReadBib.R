@@ -13,6 +13,7 @@
 #' \dQuote{error} means the entry will not be added.  See \code{\link{BibOptions}}.
 #' @author McLean, M. W., based on code in \code{bibtex} package by Francois, R.
 #' @importFrom stringr str_trim
+#' @importFrom bibtex do_read_bib
 #' @note Date fields are parsed using the locale specified by
 #' \code{Sys.getlocale("LC_TIME")}.  To read a bib file with character \sQuote{month}
 #' fields in a language other than the current locale, \code{Sys.setlocale} should be
@@ -36,7 +37,7 @@ ReadBib <- function(file, .Encoding = "UTF-8",
               dQuote("bibtex"), " package installed.\nPlease install from ",
               "GitHub using the ", dQuote("remotes"),
               " (or ", dQuote("devtools"), ") package:\n\n",
-              "remotes::install_github(\"ROpenSci/bibtex\")")
+              "remotes::install_github(\"ropensci/bibtex\")")
       return(invisible())
     }
 

@@ -60,7 +60,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE,
   files <- list.files(path, pattern = '.pdf$', full.names = TRUE,
                       recursive = recursive)
   if (!length(files)){  # check if directory or file specified
-      if (!grepl("[.]pdf$", path, useBytes = TRUE))
+      if (!grepl("[.]pdf$", path, useBytes = FALSE))
           stop(gettextf("%s must be a valid path containing PDFs %s%s",
                         sQuote("path"), "or a file name ending in ",
                         dQuote(".pdf"), domain = NA))
@@ -187,7 +187,7 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE,
   if (length(res)){
       res <- withCallingHandlers(lapply(res, MakeBibEntry, to.person = FALSE),
                                  warning = function(w){
-      if(any(grepl("recycled", w$message, useBytes = TRUE)))
+      if(any(grepl("recycled", w$message, useBytes = FALSE)))
         invokeRestart( "muffleWarning" )
       })
     res <- MakeCitationList(res)

@@ -1,10 +1,6 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/master/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
-on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
+on: push
 
 name: R-CMD-check
 
@@ -31,23 +27,38 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: r-lib/actions/setup-pandoc@v1
+      - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-tinytex@master
 
       - run: tlmgr install pdfpages ae pdflscape
 
-      - uses: r-lib/actions/setup-r@v1
+      - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: rcmdcheck
 
-      - uses: r-lib/actions/check-r-package@v1
+      - run: sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes ghostscript
+        if: runner.os == 'Linux'
+
+      - run: choco install ghostscript --no-progress
+        if: runner.os == 'Windows'
+      - shell: bash
+        run: |
+          echo "C:/Program Files (x86)/gs/gs9.53.3/bin/" >> $GITHUB_PATH
+          echo "C:/Program Files/gs/gs9.53.3/bin/" >> $GITHUB_PATH
+          export PATH="/c/Program Files (x86)/gs/gs9.53.3/bin/:$PATH"
+          export PATH="/c/Program Files/gs/gs9.53.3/bin/:$PATH"
+        if: matrix.config.os == 'windows-latest'
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          build_args: 'c("--compact-vignettes=both")'
 
       - name: Show testthat output
         if: always()

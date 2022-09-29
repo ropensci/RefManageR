@@ -7,9 +7,7 @@ context("PubMed")
 
 
 test_that("GetPubMedByID can process books (#2)", {
-  skip_on_cran()
-  if (httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
-    skip("Couldn't connect to Entrez")
+  skip_if_offline("eutils.ncbi.nlm.nih.gov")
 
   test <- GetPubMedByID(c("24977996", "24921111"))
   if (length(test))
@@ -17,9 +15,7 @@ test_that("GetPubMedByID can process books (#2)", {
 })
 
 test_that("GetPubMedByID uses collective name if authors missing (#2)", {
-  skip_on_cran()
-  if (httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
-    skip("Couldn't connect to Entrez")
+  skip_if_offline("eutils.ncbi.nlm.nih.gov")
   Sys.sleep(2)
 
   try_again(3, test <- GetPubMedByID(c(11678951, 15373863)))
@@ -30,9 +26,7 @@ test_that("GetPubMedByID uses collective name if authors missing (#2)", {
 })
 
 test_that("GetPubMedByID warns if authors missing (#3)", {
-  skip_on_cran()
-  if (httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
-    skip("Couldn't connect to Entrez")
+  skip_if_offline("eutils.ncbi.nlm.nih.gov")
   Sys.sleep(2)
 
   BibOptions(check.entries = FALSE)
@@ -40,11 +34,10 @@ test_that("GetPubMedByID warns if authors missing (#3)", {
 })
 
 test_that("LookupPubMedID successfully retrieves and add ID's'", {
-    skip_on_cran()
+    skip_if_offline("eutils.ncbi.nlm.nih.gov")
+    
     file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
     bib <- ReadBib(file.name)
-    if (httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
-      skip("Couldn't connect to Entrez")
     Sys.sleep(2)
     try_again(3, out <- LookupPubMedID(bib[[101:102]]))
     expect_equal(length(out), 2L)
@@ -55,9 +48,7 @@ test_that("LookupPubMedID successfully retrieves and add ID's'", {
 })
 
 test_that("GetPubMedByID reading of years/months (#52)", {
-  skip_on_cran()
-  if (httr::http_error("https://eutils.ncbi.nlm.nih.gov/"))
-    skip("Couldn't connect to Entrez")
+  skip_if_offline("eutils.ncbi.nlm.nih.gov")
   Sys.sleep(2)
   try_again(3, bib <- GetPubMedByID("23891459"))
   expect_equal(bib$year, "2013")
@@ -66,7 +57,7 @@ test_that("GetPubMedByID reading of years/months (#52)", {
 
 test_that("GetPubMedByID: Multiple books parsed correctly #86",
 {
-    skip_on_cran()
+    skip_if_offline("eutils.ncbi.nlm.nih.gov")
     ids <- c("33780208", "33764725")
     names(ids) <- c("geary2021variation", "brennan2021potential")
     try_again(3, bib <- GetPubMedByID(ids))

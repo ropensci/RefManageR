@@ -57,7 +57,7 @@ GetDOIs <- function(bib){
                                                   vapply(json.res[[1L]][matches], "[[",
                                                          "",
                                                          "doi"),
-                                                  useBytes = TRUE)
+                                                  useBytes = FALSE)
       }
     }
   }
@@ -82,7 +82,7 @@ FormatEntryForCrossRef <- function(bib){
           }
        }
        fmtJTitle <- function(title){
-         if (grepl('[.?!]$', title, useBytes = TRUE))
+         if (grepl('[.?!]$', title, useBytes = FALSE))
            paste0("\"", collapse(cleanupLatex(title)), "\"")
          else paste0("\"", collapse(cleanupLatex(title)), "\".")
        }
