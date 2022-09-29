@@ -43,9 +43,11 @@ jobs:
         with:
           extra-packages: rcmdcheck
 
+      - uses: jy95/ghostscript-action@v1
+      
       - uses: r-lib/actions/check-r-package@v2
         with:
-          build_args: 'c("--compact-vignettes=\"gs+qpdf\"")'
+          build_args: 'c("--compact-vignettes=both")'
 
       - name: Show testthat output
         if: always()
