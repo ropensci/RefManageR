@@ -3,6 +3,8 @@
 ReadFirstPages <- function(doc, page.one = TRUE){
   doc <- unlist(doc)
   res <- list()
+  if (length(doc) == 0)
+      return(list(found.abstract = FALSE))
   found.abstract <- FALSE
 
   # arXiv
@@ -405,17 +407,17 @@ GetAuthorTitle <- function(doc, found.abstract, kw){
 #' @keywords internal
 #' @noRd
 CleanAuthorTitle <- function(bib1, bib2, bibMeta, file){
-  # browser()
-  if (!is.null(bibMeta)){ # Don't let Metadata date overwrite year from pdf text
+  has.meta <- !is.null(bibMeta) && !all(is.na(bibMeta))
+  if (has.meta){ # Don't let Metadata date overwrite year from pdf text
     if (!is.null(bib1$year) || !is.null(bib2$year))
       bibMeta$date <- NULL
   }
-    if (bib2$found.abstract && (!is.null(bib2$author) || !is.null(bib2$title))){
-    if(!is.null(bibMeta))
+  if (bib2$found.abstract && (!is.null(bib2$author) || !is.null(bib2$title))){
+    if(has.meta)
       bib1 <- AddListToList(bib1, bibMeta)
     bib <- AddListToList(bib2, bib1)
   }else{
-    if(!is.null(bibMeta))
+    if(has.meta)
       bib2 <- AddListToList(bib2, bibMeta)
     bib <- AddListToList(bib1, bib2)
   }
@@ -581,8 +583,8 @@ ProcessPDFSubject <- function(subj){
 #' @keywords internal
 #' @noRd
 AddListToList <- function(list1, list2){
-  c1 <- is.na(list1) || length(list1)==0
-  c2 <- is.na(list2) || length(list2)==0
+  c1 <- all(is.na(list1)) || length(list1)==0
+  c2 <- all(is.na(list2)) || length(list2)==0
 
   if (c1 && c2)
     return(NA)

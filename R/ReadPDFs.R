@@ -84,8 +84,14 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE,
 
     dois <- vapply(out, SearchDOIText, "")
     doi.meta.ind <- vapply(dois, nzchar, FALSE)  # !is.na(dois)
+    pages.idx <- lapply(out, grep, patt = "^Pages:")
+    pages <- as.numeric(mapply(function(md, idx) sub("^[^0-9]*", "", md[idx]),
+                               out, pages.idx))
   }else
+  {
     doi.meta.ind <- logical(n.files)
+    pages <- rep(Inf, n.files)
+  }
 
   ########################################
   # search first two pages of pdf for DOI
@@ -99,9 +105,12 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE,
 
   tfile1 <- tempfile(fileext = '.txt')
   txt.files1 <- lapply(files, GetPDFTxt, page = 1, tfile = tfile1, enc = .enc)
-  txt.files2 <- lapply(files, GetPDFTxt, page = 2, tfile = tfile1, enc = .enc)
+  txt.files2 <- vector("list", n.files)
+  for (i in seq_len(n.files))
+      if (pages[i] > 1)
+          txt.files2[[i]] <- GetPDFTxt(files[[i]], page = 2, tfile = tfile1, enc = .enc)
   file.remove(tfile1)
-
+  
   ## check first page for JSTOR, if yes grab info from both pages, else NA
   resJSTOR <- mapply(CheckJSTOR, txt.files1, txt.files2, files, SIMPLIFY=FALSE)
   JSTOR.ind <- !is.na(resJSTOR)

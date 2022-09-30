@@ -74,8 +74,8 @@ test_that("Creates a BibEntry object", {
                                      use.crossref = TRUE))
     expect_is(bib, "BibEntry")
     if (!biomet.fail)
-        expect_equal(as.character(bib[["azzalini1996multivariate"]]$author),
-                     c("A AZZALINI", "A DALLA VALLE"))
+        expect_equal(as.character(bib[["multivariate1996"]]$title),
+                     "The Multivariate Skew-normal Distribution")
 })
 
 test_that("Add file field", {
@@ -103,7 +103,7 @@ test_that("Recognizes JSTOR", {
     bib <- ReadPDFs(exe.path, progress = FALSE, use.crossref = FALSE)
     expect_equal(bib[author = "carrol"]$eprinttype, "jstor")
     expect_equal(bib[author = "carrol"]$url,
-                 "https://www.jstor.org/stable/25050155")
+                 "https://www.jstor.org/stable/24538366")
 })
 
 test_that("Recognizes arxiv", {
@@ -144,7 +144,7 @@ test_that("Reading journal and title", {
     expect_match(bib[year = "1996"]$journal, "Biometrika")
     expect_equal(bib[year = "1996"]$title,
                  "The Multivariate Skew-normal Distribution")
-    expect_equal(bib[year = "1996"]$bibtype, "Article")
+    expect_equal(bib[year = "1996"]$bibtype, "Misc")
 })
 
 test_that("use.metadata = FALSE", {
