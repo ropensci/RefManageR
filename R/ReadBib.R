@@ -50,10 +50,8 @@ ReadBib <- function(file, .Encoding = "UTF-8",
                     sQuote("ReadBib"), sQuote("file"),
                     "a character vector of length one"))
   }
-  srcfile <- switch(.Encoding, unknown = srcfile(file),
-                    srcfile(file, encoding = .Encoding))
 
-  out <- bibtex::do_read_bib(file, encoding = .Encoding, srcfile)
+  out <- bibtex::do_read_bib(file, encoding = .Encoding)
   at <- attributes(out)
   if (typeof(out) != "integer")
     out <- lapply(out, MakeBibEntry)
