@@ -1,4 +1,17 @@
-Changes in Version 1.3.0 (2019-10-30)
+Changes in Version 1.4.0 (2022-09-30)
+========================================================
+
+* Package `bibtex` back in Imports and no longer used conditionally
+in `ReadBib()` since it's now back on CRAN.
+* Fixes for `ReadPDFs()` (#95).
+* `useBytes` is now `FALSE` in all `sub`, `grep`, etc. calls in all
+package functions.
+* Fix for `GetPubMedByID()` with multiple book results (#86).
+* Remove comma preceeding "et al" in `Cite`, `Citep`, etc. calls (#84)
+* Add support for custom bibtypes with custom bibstyles (#83)
+
+
+Changes in Version 1.3.0 (2020-11-13)
 ========================================================
 
 * Package `bibtex` moved to Suggests in `DESCRIPTION` due to it
