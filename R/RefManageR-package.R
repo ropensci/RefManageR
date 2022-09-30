@@ -57,8 +57,8 @@
 #' @keywords package
 #' @references McLean, M. W. (2014). Straightforward Bibliography Management in R Using the RefManageR Package.
 #' \href{https://arxiv.org/abs/1403.2036}{arXiv: 1403.2036 [cs.DL]}. Submitted.
-#' @references Lehman, P., P. Kime, A. Boruvka, and J. Wright (2013). The biblatex Package.
-#' \url{https://texdoc.org/serve/biblatex/}.
+#' @references Kime, P., M. Wemheuer, and P. Lehman (2022). The biblatex Package.
+#' \url{http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 #' @references Hornik, K., D. Murdoch, and A. Zeileis (2012).
 #' Who Did What? The Roles of R Package Authors and How to Refer to Them. The R Journal \bold{4}, 1.
 #' \url{https://journal.r-project.org/archive/2012-1/RJournal_2012-1_Hornik~et~al.pdf}

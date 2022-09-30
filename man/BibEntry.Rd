@@ -137,7 +137,7 @@ bib
 toBiblatex(bib)
 }
 \references{
-BibLaTeX manual \url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}
+BibLaTeX manual \url{http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/biblatex/doc/biblatex.pdf}
 }
 \seealso{
 \code{\link{bibentry}}

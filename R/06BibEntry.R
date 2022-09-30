@@ -88,7 +88,7 @@
 #'
 #' Name list fields (author, editor, etc.) should be specified as they would be for
 #' BibTeX/BibLaTeX; e.g. \code{author = "Doe, Jane and Smith, Bob A."}.
-#' @references BibLaTeX manual \url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}
+#' @references BibLaTeX manual \url{http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/biblatex/doc/biblatex.pdf}
 #' @details The BibEntry objects created by BibEntry can represent an
 #' arbitrary positive number of references, as with \code{bibentry}, but
 #' many additional methods are defined for building and manipulating a database

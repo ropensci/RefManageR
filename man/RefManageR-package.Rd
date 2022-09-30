@@ -63,8 +63,8 @@ functions such as \code{\link{print.BibEntry}}, \code{\link{[.BibEntry}}, and
 McLean, M. W. (2014). Straightforward Bibliography Management in R Using the RefManageR Package.
 \href{https://arxiv.org/abs/1403.2036}{arXiv: 1403.2036 [cs.DL]}. Submitted.
 
-Lehman, P., P. Kime, A. Boruvka, and J. Wright (2013). The biblatex Package.
-\url{https://texdoc.org/serve/biblatex/}.
+Kime, P., M. Wemheuer, and P. Lehman (2022). The biblatex Package.
+\url{http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 
 Hornik, K., D. Murdoch, and A. Zeileis (2012).
 Who Did What? The Roles of R Package Authors and How to Refer to Them. The R Journal \bold{4}, 1.

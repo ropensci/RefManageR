@@ -43,7 +43,7 @@
 #' \code{\link{BibEntry}}.
 #' @references Lehman, Philipp and Kime, Philip and Boruvka, Audrey and Wright, J. (2013). The
 #' biblatex Package.
-#' \url{https://mirror.pregi.net/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
+#' \url{http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 #' @seealso \code{\link{BibEntry}}, \code{\link{ReadBib}}, \code{\link{sort.BibEntry}}
 #' @examples
 #' if (requireNamespace("bibtex")) {
