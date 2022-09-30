@@ -20,7 +20,21 @@
 #' @keywords methods manip
 #' @family operators
 #' @examples
-#' if (requireNamespace("bibtex")) {
+#' bib.text <- "@Manual{mclean2014,
+#'   author = {Mathew William McLean},
+#'   title = {Straightforward Bibliography Management in R Using the RefManager Package},
+#'   note = {arXiv: 1403.2036 [cs.DL]},
+#'   year = {2014},
+#'   url = {https://arxiv.org/abs/1403.2036},
+#' }"
+#' tfile <- tempfile(fileext = ".bib")
+#' writeLines(bib.text, tfile)
+#' bib <- ReadBib(tfile)
+#' bib[1] <- list(c(date = "2014-03", key = "mwm2014"))
+#' bib
+#' unlink(tfile)
+#' 
+#' \dontrun{
 #'     file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
 #'     bib <- ReadBib(file.name)
 #'     print(bib[seq_len(3L)], .opts = list(sorting = "none", bib.style = "alphabetic"))

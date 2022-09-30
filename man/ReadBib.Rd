@@ -41,7 +41,18 @@ Keys will be made unique by calling \code{\link[base]{make.unique}} with
 \code{sep = ":"}.
 }
 \examples{
-if (requireNamespace("bibtex")) {
+bib.text <- "@Manual{mclean2014,
+  author = {Mathew William McLean},
+  title = {Straightforward Bibliography Management in R Using the RefManager Package},
+  note = {arXiv: 1403.2036 [cs.DL]},
+  year = {2014},
+  url = {https://arxiv.org/abs/1403.2036},
+}"
+tfile <- tempfile(fileext = ".bib")
+writeLines(bib.text, tfile)
+ReadBib(tfile)
+unlink(tfile)
+\dontrun{
     file.name <- system.file("Bib", "RJC.bib", package="RefManageR")
     bib <- ReadBib(file.name)
 }
