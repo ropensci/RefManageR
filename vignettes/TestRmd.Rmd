@@ -1,9 +1,11 @@
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{RMarkdown Citations Example}
--->
-Add Citations to an RMarkdown Document and Print Bibliography
-========================================================
+---
+title: "Add Citations to an RMarkdown Document and Print Bibliography"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{RMarkdown Citations Example}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
 
 ```{r unload, include = FALSE}
 ## Needed to clear internal package citation list from previous vignette builds

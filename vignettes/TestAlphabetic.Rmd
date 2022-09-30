@@ -1,9 +1,11 @@
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{RMarkdown Citations - Alphabetic Style}
--->
-Add Citations to an RMarkdown Document and Print Bibliography
-========================================================
+---
+title: "Add Citations to an RMarkdown Document and Print Bibliography"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{RMarkdown Citations - Alphabetic Style}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
 
 ```{r setup, include = TRUE, cache = FALSE}
 library(RefManageR)
