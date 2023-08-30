@@ -29,7 +29,7 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
-      - uses: r-lib/actions/setup-tinytex@master
+      - uses: r-lib/actions/setup-tinytex@main
 
       - run: tlmgr install pdfpages ae pdflscape
 
