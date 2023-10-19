@@ -137,8 +137,8 @@ test_that("#62 no Unicode char. convers. when addPeriod", {
     print(bib)
     sink()
     out <- readLines(tfile)
-    ## expect_true(grepl("Eça", out[1], useBytes = TRUE))
-    ## expect_true(grepl("Valério", out[1], useBytes = TRUE))
+    ## expect_true(grepl("E?a", out[1], useBytes = TRUE))
+    ## expect_true(grepl("Val?rio", out[1], useBytes = TRUE))
     aut.latex <- "[1] J. C. C. Henriques, J. M. Lemos, L. E\\c{c}a, J. N. H. Val\\'erio, L. M. C."
     expect.aut <- tools::latexToUtf8(tools::parseLatex(aut.latex))
     expect_equal(out[1], tools::deparseLatex(expect.aut))
@@ -154,4 +154,27 @@ test_that("#83 Custom bib types in custom bibstyle",
                     title = "Raindrops on roses and whiskers on kittens")
     expect_equal(format(bib, style = "text"),
                  "Hi: Raindrops on roses and whiskers on kittens")
+})
+
+test_that("#100 Assigning person",
+{
+  bib <- BibEntry(key = "a", 
+                  bibtype = "Misc",
+                  title = "Foobar",
+                  author = "Jane Doe",
+                  year = 2022)
+  persons <- c(person("Angelo", "Canty", role = "aut", comment =
+                             "S original, <http://statwww.epfl.ch/davison/BMA/library.html>"),
+                    person(c("Brian", "D."), "Ripley", role = c("aut", "trl", "cre"),
+                           comment = "R port", email = "ripley@stats.ox.ac.uk")
+  )
+  bib[1]$author <- persons[[1]]
+  expect_equal(bib$author[[1]], persons[[1]])
+  
+  bib[1]$author <- persons
+  expect_equal(bib[1]$author[2], persons[2])
+  bib[1]$author[2] <- persons[[1]]
+  expect_equal(bib[1]$author[2], persons[[1]])
+  bib[1]$author <- "John Wick and Jon Doe"  
+  expect_equal(bib$author[1], person("John", "Wick"))  
 })
