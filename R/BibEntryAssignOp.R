@@ -51,14 +51,13 @@
         NULL
       else {
         if (name %in% .BibEntryNameList){
-          if (inherits(value, "person")){
+          if (inherits(value, "person") || inherits(value[[1]], "person"))
             value
-          }else{
+          else
             ArrangeAuthors(value[[i]])  
-          }
         }else paste(value[[i]])
       }
-      if ( name %in% .BibEntryDateField){  # dateobj may need to be updated
+      if (name %in% .BibEntryDateField){  # dateobj may need to be updated
         tdate <- ProcessDates(x[[i]])
         if (is.null(tdate))
           stop("The specified Date Field value is not in a valid format ",
