@@ -38,5 +38,5 @@ Depends:
     R (>= 3.0)
 VignetteBuilder: knitr
 BugReports: https://github.com/ropensci/RefManageR/issues
-URL: https://github.com/ropensci/RefManageR/
+URL: https://docs.ropensci.org/RefManageR/, https://github.com/ropensci/RefManageR
 RoxygenNote: 7.2.1
