@@ -21,7 +21,6 @@
 #' @note To write the contents of \code{bib} \dQuote{as is}, the argument
 #' \code{biblatex} should be \code{TRUE}, otherwise
 #' conversion is done as in \code{\link{toBibtex.BibEntry}}.
-#' @importFrom tools encoded_text_to_latex
 #' @author McLean, M. W. based on \code{write.bib} by Gaujoux, R.
 #' in package \code{bibtex}.
 #' @export

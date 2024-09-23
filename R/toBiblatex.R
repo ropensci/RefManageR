@@ -50,7 +50,7 @@
 #' }
 #' @seealso \code{\link{toBibtex}}, \code{\link{BibEntry}}, \code{\link{print.BibEntry}}
 #' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
-#' @importFrom tools encoded_text_to_latex parseLatex deparseLatex latexToUtf8
+#' @importFrom tools parseLatex deparseLatex latexToUtf8
 #' @keywords database IO utilities
 #' @aliases toBibtex.BibEntry toBibtex
 #' @examples
@@ -67,7 +67,7 @@ toBiblatex <- function(object, ...){
           "key"), ",")
       nl.ind <- which(names(object) %in% .BibEntryNameList)
       for (i in nl.ind)
-        object[i] <- encoded_text_to_latex(format_author(object[[i]]), "UTF-8")
+        object[i] <- EncodedNameListToLaTeX(object[[i]])
       rval <- c(rval, vapply(names(object), function(n) paste0("  ",
           n, " = {", object[[n]], "},"), ""), "}", "")
       return(rval)
@@ -80,4 +80,18 @@ toBiblatex <- function(object, ...){
     else rval <- character()
     class(rval) <- "Bibtex"
     rval
+}
+
+#' Wrapper for tools:: encoded_text_to_latex that returns original
+#' text if translation to LaTeX fails
+#' @importFrom tools encoded_text_to_latex
+#' @noRd
+#' @seealso  \url{https://github.com/ropensci/RefManageR/issues/106}
+EncodedNameListToLaTeX <- function(name.list, encoding = "UTF-8")
+{
+  formatted.text <- format_author(name.list)
+  out <- encoded_text_to_latex(formatted.text, encoding)
+  if (grepl("^[?]", out))
+    return(formatted.text)
+  return(out)
 }

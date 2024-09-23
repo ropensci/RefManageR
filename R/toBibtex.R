@@ -26,11 +26,9 @@ ConvertToBibtex <- function(object, note.replace.field, extra.fields){
     bibtype <- tolower(attr(object, "bibtype"))
     obj.names <- names(object)
     if ("author" %in% obj.names)
-      object$author <- encoded_text_to_latex(format_author(object$author),
-                                             "UTF-8")
+      object$author <- EncodedNameListToLaTeX(object$author)
     if ("editor" %in% obj.names)
-      object$editor <- encoded_text_to_latex(format_author(object$editor),
-                                             "UTF-8")
+      object$editor <- EncodedNameListToLaTeX(object$editor)
     # see 2.3 Usage Notes p. 28
     
     if (bibtype == "article" && 'journaltitle' %in% obj.names  &&
