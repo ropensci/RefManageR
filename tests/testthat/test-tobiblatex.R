@@ -29,3 +29,27 @@ test_that("toBibtex doesn't replace CJK character name lists with ???? (#106)",
   out <- toBibtex(bib)
   expect_false(any(grepl("[?]", out)))
 })
+
+
+bib <- BibEntry(bibtype = "Article", key = "smith2014", title = "An Article Title",
+                author = "Smith, Joé", journaltitle = "The Journal Title",
+                date = "2014-02-06", pubstate = "forthcoming")
+test_that("toBiblatex can toggle encoding names to LaTeX (#105)",
+{
+  out <- toBiblatex(bib, encoded.names.to.latex = TRUE)
+  out.author = out[3]
+  expect_true(grepl("{\\a'e}", out.author, fixed = TRUE))
+  out <- toBiblatex(bib, encoded.names.to.latex = FALSE)
+  out.author = out[3]
+  expect_false(grepl("{\\a'e}", out.author, fixed = TRUE))
+})
+
+test_that("toBibtex can toggle encoding names to LaTeX (#105)",
+{
+  out <- toBibtex(bib, encoded.names.to.latex = TRUE)
+  out.author = out[3]
+  expect_true(grepl("{\\a'e}", out.author, fixed = TRUE))
+  out <- toBibtex(bib, encoded.names.to.latex = FALSE)
+  out.author = out[3]
+  expect_false(grepl("{\\a'e}", out.author, fixed = TRUE))
+})

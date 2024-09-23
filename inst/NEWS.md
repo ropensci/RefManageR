@@ -3,7 +3,9 @@ Changes in Version 1.4.1 (2024-09-23)
 * Fix for `toBibLaTeX` and `toBibTeX` non-ASCII name list fields. Add escape
 hatch if `tools::encoded_text_to_latex` fails to convert name lists to valid
 LaTeX (observed for Japanese names in #106 h/t @kijinosu).
-
+* Add argument `encoded.names.to.latex` to `toBibTeX` and `toBibLaTeX` to
+toggle whether `tools::encoded_text_to_latex` is called on name list fields 
+(requested in #105)
 
 Changes in Version 1.4.0 (2022-09-30)
 ========================================================

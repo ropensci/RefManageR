@@ -10,6 +10,9 @@
 #' @param extra.fields character vector; fields that are not supported in standard BibTeX styles are by default dropped
 #' in the result return by the toBibtex function.
 #' Any fields specified in extra.fields will \emph{not} be dropped if present in an entry.
+#' @param encoded.names.to.latex if \code{TRUE} (the default) then name list fields
+#' such as \sQuote{author} and \sQuote{editor} will have non-ASCII characters
+#' translated to LaTeX escape sequences by \code{\link{encoded_text_to_latex}}.
 #' @param ... ignored
 #' @export
 #' @return an object of class \dQuote{Bibtex} - character vectors where each element holds one line of a BibTeX or BibLaTeX file
@@ -60,14 +63,16 @@
 #'     toBiblatex(bib[70:72])
 #'     toBibtex(bib[70:72])
 #' }
-toBiblatex <- function(object, ...){
+toBiblatex <- function(object, encoded.names.to.latex = TRUE, ...){
     format_bibentry1 <- function(object) {
       object <- unclass(object)[[1L]]
       rval <- paste0("@", attr(object, "bibtype"), "{", attr(object,
           "key"), ",")
-      nl.ind <- which(names(object) %in% .BibEntryNameList)
-      for (i in nl.ind)
-        object[i] <- EncodedNameListToLaTeX(object[[i]])
+      if (encoded.names.to.latex) {
+        nl.ind <- which(names(object) %in% .BibEntryNameList)
+        for (i in nl.ind)
+          object[i] <- EncodedNameListToLaTeX(object[[i]])
+      }
       rval <- c(rval, vapply(names(object), function(n) paste0("  ",
           n, " = {", object[[n]], "},"), ""), "}", "")
       return(rval)
