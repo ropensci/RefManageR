@@ -1,20 +1,8 @@
-#' Import and Manage BibTeX and BibLaTeX references with RefManageR
-#'
-#' RefManageR provides tools for importing and working with
-#' bibliographic references.  It greatly enhances the bibentry class by
-#' providing a class BibEntry which stores BibTeX and BibLaTeX references,
-#' supports UTF-8 encoding, and can be easily searched by any field, by date
-#' ranges, and by various formats for name lists (author by last names,
-#' translator by full names, etc.). Entries can be updated, combined, sorted, printed
-#' in a number of styles, and exported. BibTeX and BibLaTeX .bib files can be
-#' read into R and converted to BibEntry objects.  Interfaces to NCBI's
-#' Entrez, CrossRef, and Zotero are provided for importing references and
-#' references can be created from locally stored PDFs using Poppler.  Includes
-#' functions for citing and generating a bibliography with hyperlinks for
-#' documents prepared with RMarkdown or RHTML.
+#' @keywords internal
+"_PACKAGE"
+
 #' @name RefManageR-package
 #' @aliases RefManageR refmanager
-#' @docType package
 #' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
 #' @details
 #' \bold{Importing and Creating References}
@@ -56,7 +44,7 @@
 #' \code{\link{Cite}}.  Its interface is similar to \code{\link{options}}.
 #' @keywords package
 #' @references McLean, M. W. (2014). Straightforward Bibliography Management in R Using the RefManageR Package.
-#' \href{https://arxiv.org/abs/1403.2036}{arXiv: 1403.2036 [cs.DL]}. Submitted.
+#' \href{https://arxiv.org/abs/1403.2036}{arXiv: 1403.2036 [cs.DL]}.
 #' @references Kime, P., M. Wemheuer, and P. Lehman (2022). The biblatex Package.
 #' \url{http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
 #' @references Hornik, K., D. Murdoch, and A. Zeileis (2012).
