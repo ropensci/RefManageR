@@ -8,16 +8,6 @@ bib = BibEntry(bibtype = "article",
                  year = 2011, 
                  publisher = "「宗教と社会」学会")
 
-bib2 = BibEntry(bibtype = "article", 
-               key = "shiotsuki2011kasai", 
-               title = "Hello",
-               author = "Jane Doe", 
-               journal = "no",
-               volume = 17,
-               pages = "67--69",
-               year = 2011, 
-               publisher = "yes")
-
 test_that("toBiblatex doesn't replace CJK character name lists with ???? (#106)",
 {
   out <- toBiblatex(bib)
