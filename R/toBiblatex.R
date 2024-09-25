@@ -91,7 +91,7 @@ EncodedNameListToLaTeX <- function(name.list, encoding = "UTF-8")
 {
   formatted.text <- format_author(name.list)
   out <- encoded_text_to_latex(formatted.text, encoding)
-  if (grepl("^[?]", out))
+  if (grepl("^[{]?[?]", out))
     return(formatted.text)
   return(out)
 }
