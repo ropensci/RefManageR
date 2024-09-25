@@ -21,7 +21,7 @@ toBiblatex(object, encoded.names.to.latex = TRUE, ...)
 
 \item{encoded.names.to.latex}{if \code{TRUE} (the default) then name list fields
 such as \sQuote{author} and \sQuote{editor} will have non-ASCII characters
-translated to LaTeX escape sequences by \code{\link{encoded_text_to_latex}}.}
+translated to LaTeX escape sequences by \code{\link{latexify}}.}
 
 \item{...}{ignored}
 

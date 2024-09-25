@@ -12,7 +12,7 @@
 #' Any fields specified in extra.fields will \emph{not} be dropped if present in an entry.
 #' @param encoded.names.to.latex if \code{TRUE} (the default) then name list fields
 #' such as \sQuote{author} and \sQuote{editor} will have non-ASCII characters
-#' translated to LaTeX escape sequences by \code{\link{encoded_text_to_latex}}.
+#' translated to LaTeX escape sequences by \code{\link{latexify}}.
 #' @param ... ignored
 #' @export
 #' @return an object of class \dQuote{Bibtex} - character vectors where each element holds one line of a BibTeX or BibLaTeX file
@@ -87,15 +87,15 @@ toBiblatex <- function(object, encoded.names.to.latex = TRUE, ...){
     rval
 }
 
-#' Wrapper for tools:: encoded_text_to_latex that returns original
+#' Wrapper for dplr::latexify that returns original
 #' text if translation to LaTeX fails
-#' @importFrom tools encoded_text_to_latex
+#' @importFrom dplR latexify
 #' @noRd
 #' @seealso  \url{https://github.com/ropensci/RefManageR/issues/106}
 EncodedNameListToLaTeX <- function(name.list, encoding = "UTF-8")
 {
   formatted.text <- format_author(name.list)
-  out <- encoded_text_to_latex(formatted.text, encoding)
+  out <- latexify(formatted.text, encoding)
   if (grepl("^[{]?[?]", out))
     return(formatted.text)
   return(out)

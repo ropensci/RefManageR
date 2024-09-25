@@ -30,6 +30,29 @@ test_that("toBibtex doesn't replace CJK character name lists with ???? (#106)",
 })
 
 
+test_that("toBiblatex preserves correct i accent #102", 
+{
+  bib.str <- r"[@Article{Ryan-Hamaker-2021,
+  author = {Ryan Ois{\'i}n and Ellen L. Hamaker},
+  date = {2021-06},
+  journaltitle = {Psychometrika},
+  title = {Time to intervene: A continuous-time approach to network analysis and centrality},
+  doi = {10.1007/s11336-021-09767-0},
+  number = {1},
+  pages = {214--252},
+  volume = {87},
+  publisher = {Springer Science and Business Media {LLC}},
+}]"
+  
+  tfile <- tempfile(fileext = ".bib")
+  writeLines(bib.str, tfile)
+  bib <- ReadBib(tfile)
+  out <- toBiblatex(bib)
+  expect_true(grepl("\\'{\\i}", out[2], fixed = TRUE))
+  out <- toBibtex(bib)
+  expect_true(grepl("\\'{\\i}", out[2], fixed = TRUE))
+})
+
 bib <- BibEntry(bibtype = "Article", key = "smith2014", title = "An Article Title",
                 author = "Smith, Joé", journaltitle = "The Journal Title",
                 date = "2014-02-06", pubstate = "forthcoming")

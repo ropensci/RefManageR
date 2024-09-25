@@ -1,5 +1,5 @@
 Package: RefManageR
-Version: 1.4.2
+Version: 1.4.3
 Title: Straightforward 'BibTeX' and 'BibLaTeX' Bibliography Management
 Authors@R: person(c("Mathew", "W."), "McLean", role = c("aut", "cre"),
     email = "mathew.w.mclean@gmail.com",
@@ -28,7 +28,8 @@ Imports:
     lubridate (>= 1.5.0),
     stringr,
     methods,
-    bibtex (>= 0.4.1)
+    bibtex (>= 0.4.1),
+    dplR
 Suggests:
     knitr,
     markdown,
