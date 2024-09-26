@@ -40,8 +40,8 @@ if (inherits(arxiv2.fail, "try-error"))
 biomet.fail <- !file.copy(system.file("pdf", "biometrikaEx.pdf",
                                      package = "RefManageR"), exe.path)
 if (biomet.fail)
-    biomet.fail <- try(download.file(paste0("https://stat.uconn.edu/wp-content/",
-                                            "uploads/sites/729/2019/10/83-4-715.pdf"),
+    biomet.fail <- try(download.file(paste0("https://raw.githubusercontent.com/ropensci/",
+                                            "RefManageR/master/inst/pdf/biometrikaEx.pdf"),
                                  destfile = file.path(exe.path, "biometrikaEx.pdf"),
                                  mode = "wb"))
 if (inherits(biomet.fail, "try-error"))
