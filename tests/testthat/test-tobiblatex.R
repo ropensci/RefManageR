@@ -60,10 +60,10 @@ test_that("toBiblatex can toggle encoding names to LaTeX (#105)",
 {
   out <- toBiblatex(bib, encoded.names.to.latex = TRUE)
   out.author = out[3]
-  expect_true(grepl("{\\a'e}", out.author, fixed = TRUE))
+  expect_true(grepl("\\'{e}", out.author, fixed = TRUE))
   out <- toBiblatex(bib, encoded.names.to.latex = FALSE)
   out.author = out[3]
-  expect_false(grepl("{\\a'e}", out.author, fixed = TRUE))
+  expect_false(grepl("\\'{e}", out.author, fixed = TRUE))
 })
 
 test_that("toBibtex can toggle encoding names to LaTeX (#105)",
