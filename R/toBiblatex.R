@@ -12,7 +12,7 @@
 #' Any fields specified in extra.fields will \emph{not} be dropped if present in an entry.
 #' @param encoded.names.to.latex if \code{TRUE} (the default) then name list fields
 #' such as \sQuote{author} and \sQuote{editor} will have non-ASCII characters
-#' translated to LaTeX escape sequences by \code{\link{latexify}}.
+#' translated to LaTeX escape sequences by \code{\link[dplR]{latexify}}.
 #' @param ... ignored
 #' @export
 #' @return an object of class \dQuote{Bibtex} - character vectors where each element holds one line of a BibTeX or BibLaTeX file
