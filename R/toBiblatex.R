@@ -100,7 +100,10 @@ EncodedNameListToLaTeX <- function(name.list, encoding = "UTF-8")
   return(out)
 }
 
+#' Modified version of dplR::latexify
 #' @importFrom stringi stri_trans_nfc stri_trans_nfd
+#' @importFrom R.utils captureOutput
+#' @author Andy Bunn
 latexify <- function(x, 
                      doublebackslash = FALSE, 
                      dashdash = TRUE, 

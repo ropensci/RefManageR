@@ -30,6 +30,7 @@ Imports:
     lubridate (>= 1.5.0),
     stringr,
     stringi,
+    R.utils,
     methods,
     bibtex (>= 0.4.1)
 Suggests:
