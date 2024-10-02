@@ -1,9 +1,11 @@
 Package: RefManageR
 Version: 1.4.3
 Title: Straightforward 'BibTeX' and 'BibLaTeX' Bibliography Management
-Authors@R: person(c("Mathew", "W."), "McLean", role = c("aut", "cre"),
+Authors@R: c(person(c("Mathew", "W."), "McLean", role = c("aut", "cre"),
     email = "mathew.w.mclean@gmail.com",
-    comment = c(ORCID = "0000-0002-7891-9645"))
+    comment = c(ORCID = "0000-0002-7891-9645")),
+    person("Andy", "Bunn", role = "ctb",
+    email = "bunna@wwu.edu", comment = "function latexify used by toBiblatex"))
 Maintainer: Mathew W. McLean <mathew.w.mclean@gmail.com>
 Description: Provides tools for importing and working with bibliographic
     references. It greatly enhances the 'bibentry' class by providing a class
@@ -28,8 +30,7 @@ Imports:
     lubridate (>= 1.5.0),
     stringr,
     methods,
-    bibtex (>= 0.4.1),
-    dplR
+    bibtex (>= 0.4.1)
 Suggests:
     knitr,
     markdown,

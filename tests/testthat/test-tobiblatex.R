@@ -75,3 +75,16 @@ test_that("toBibtex can toggle encoding names to LaTeX (#105)",
   out.author = out[3]
   expect_false(grepl("\\'{e}", out.author, fixed = TRUE))
 })
+
+bib <- BibEntry(bibtype = "Article", key = "smith2014", title = "An Article Title",
+                author = "{NVIDIA Corporation}", journaltitle = "The Journal Title",
+                date = "2014-02-06", pubstate = "forthcoming")
+test_that("toBiblatex doesn't escape braces in name fields (#109)",
+{
+  out <- toBiblatex(bib)
+  out.author = out[3]
+  expect_true(grepl("{{N", out.author, fixed = TRUE))
+  out <- toBibtex(bib)
+  out.author = out[3]
+  expect_true(grepl("{{N", out.author, fixed = TRUE))
+})

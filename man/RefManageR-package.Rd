@@ -72,6 +72,11 @@ Useful links:
 \author{
 \strong{Maintainer}: Mathew W. McLean \email{mathew.w.mclean@gmail.com} (\href{https://orcid.org/0000-0002-7891-9645}{ORCID})
 
+Other contributors:
+\itemize{
+  \item Andy Bunn \email{bunna@wwu.edu} (function latexify used by toBiblatex) [contributor]
+}
+
 
 McLean, M. W. \email{mathew.w.mclean@gmail.com}
 }

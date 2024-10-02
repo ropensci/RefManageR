@@ -89,14 +89,160 @@ toBiblatex <- function(object, encoded.names.to.latex = TRUE, ...){
 
 #' Wrapper for dplr::latexify that returns original
 #' text if translation to LaTeX fails
-#' @importFrom dplR latexify
 #' @noRd
 #' @seealso  \url{https://github.com/ropensci/RefManageR/issues/106}
 EncodedNameListToLaTeX <- function(name.list, encoding = "UTF-8")
 {
   formatted.text <- format_author(name.list)
-  out <- latexify(formatted.text, encoding)
+  out <- latexify(formatted.text, encoding, doublebackslash = FALSE)
   if (grepl("^[{]?[?]", out))
     return(formatted.text)
   return(out)
 }
+
+#' @importFrom stringi stri_trans_nfc stri_trans_nfd
+latexify <- function(x, 
+                     doublebackslash = FALSE, 
+                     dashdash = TRUE, 
+                     quotes = c("straight", "curved"), 
+                     packages = c("fontenc", "textcomp")) 
+{
+  y <- as.character(x)
+  encBytes <- Encoding(y) == "bytes"
+  if (any(encBytes)) {
+    y[encBytes] <- captureOutput(cat(y[encBytes], sep = "\n"))
+  }
+  y <- stri_trans_nfd(y)
+  Letters <- paste0(c(LETTERS, letters), collapse = "")
+  fontenc <- "fontenc" %in% packages
+  textcomp <- "textcomp" %in% packages
+  eurosym <- "eurosym" %in% packages
+  straightQuotes <- match.arg(quotes) == "straight"
+  y <- gsub("(?![[:space:]])[[:cntrl:]]", "", y, perl = TRUE)
+  y <- gsub("[[:space:]]+", " ", y)
+  substitutions <- list(c("\\^", "\\\\textasciicircum{}"), 
+                        c("~", "\\\\textasciitilde{}"), c("<", "\\\\textless{}"), 
+                        c(">", "\\\\textgreater{}"), c("\\|", "\\\\textbar{}"), 
+                        c("([#$%&_])", "\\\\\\1"), if (isTRUE(dashdash)) {
+                          c("-", "\\\\mbox{-}")
+                        }, if (textcomp && straightQuotes) {
+                          c("'", "\\\\textquotesingle{}")
+                        }, if (textcomp && straightQuotes) {
+                          c("`", "\\\\textasciigrave{}")
+                        }, c("\"", if (fontenc && straightQuotes) {
+                          "\\\\textquotedbl{}"
+                        } else {
+                          "\\\\textquotedblright{}"
+                        }), c("/", "\\\\slash{}"))
+  substitutions <- substitutions[!vapply(substitutions, is.null, 
+                                         logical(1))]
+  substitutions <- c(substitutions, list(c("Ĳ", "\\\\IJ{}"), 
+                                         c("ĳ", "\\\\ij{}"), c("Ǳ", "DZ"), c("ǲ", "Dz"), c("ǳ", 
+                                                                                           "dz"), c("Ǆ", "DŽ"), c("ǅ", "Dž"), c("ǆ", 
+                                                                                                                                  "dž"), c("Ǉ", "LJ"), c("ǈ", "Lj"), c("ǉ", "lj"), 
+                                         c("Ǌ", "NJ"), c("ǋ", "Nj"), c("ǌ", "nj"), c("ﬀ", 
+                                                                                     "ff"), c("ﬁ", "fi"), c("ﬂ", "fl"), c("ﬃ", "ffi"), 
+                                         c("ﬄ", "ffl"), c("ﬅ", "ſt"), c("ﬆ", "st")))
+  above <- list(diaeresis = c("̈", "\""), acute = c("́", 
+                                                    "'"), dotabove = c("̇", "."), macron = c("̄", "="), 
+                circumflex = c("̂", "^"), grave = c("̀", "`"), tilde = c("̃", 
+                                                                         "~"), doubleacute = c("̋", "H"), ringabove = c("̊", 
+                                                                                                                        "r"), breve = c("̆", "u"), caron = c("̌", "v"), 
+                invbreve = c("̑", "newtie"))
+  below <- list(macronbelow = c("̱", "b"), cedilla = c("̧", 
+                                                       "c"), dotbelow = c("̣", "d"), tie = c("͡", "t"), ogonek = c("̨", 
+                                                                                                                   "k"))
+  accents <- c(above, below)
+  command <- paste0("\\\\[", Letters, "]+|\\\\.")
+  combining <- paste0(vapply(accents, "[", character(1), 1), 
+                      collapse = "")
+  accPre <- paste0("(", command, "|.)({})?(?<![", combining, 
+                   "])")
+  accPost <- paste0("(?![", combining, "])")
+  aboveInCode <- vapply(above, "[", character(1), 1)
+  ijPattern <- paste0("([ij])", aboveInCode, accPost)
+  otherPattern <- paste0(accPre, aboveInCode, accPost)
+  aboveOutCode <- vapply(above, "[", character(1), 2)
+  ijReplacement <- paste0("\\\\", aboveOutCode, "{\\\\\\1}")
+  otherReplacement <- paste0("\\\\", aboveOutCode, "{\\1}")
+  belowInCode <- vapply(below, "[", character(1), 1)
+  belowPattern <- paste0(accPre, belowInCode, accPost)
+  belowOutCode <- vapply(below, "[", character(1), 2)
+  belowReplacement <- paste0("\\\\", belowOutCode, "{\\1}")
+  circPre <- paste0("(", command, "({([^}]|\\\\})+})?|.)({})?")
+  circPattern <- paste0(circPre, "⃝", accPost)
+  circReplacement <- "\\\\textcircled{\\1}"
+  substitutions <- c(substitutions, lapply(lapply(mapply(list, 
+                                                         list(as.name("c")), c(ijPattern, otherPattern, belowPattern, 
+                                                                               circPattern), c(ijReplacement, otherReplacement, 
+                                                                                               belowReplacement, circReplacement), SIMPLIFY = FALSE), 
+                                                  as.call), eval))
+  substitutions <- c(substitutions, list(c("¡", "\\\\textexclamdown{}"), 
+                                         c("£", "\\\\pounds{}"), c("§", "\\\\S{}"), c("©", 
+                                                                                      "\\\\copyright{}"), c("ª", "\\\\textordfeminine{}"), 
+                                         c("®", "\\\\textregistered{}"), c("¶", "\\\\P{}"), 
+                                         c("·", "\\\\textperiodcentered{}"), c("º", "\\\\textordmasculine{}"), 
+                                         c("¿", "\\\\textquestiondown{}"), c("–", "\\\\textendash{}"), 
+                                         c("—", "\\\\textemdash{}"), c("‘", "\\\\textquoteleft{}"), 
+                                         c("’", "\\\\textquoteright{}"), c("“", "\\\\textquotedblleft{}"), 
+                                         c("”", "\\\\textquotedblright{}"), c("†", "\\\\dag{}"), 
+                                         c("‡", "\\\\ddag{}"), c("•", "\\\\textbullet{}"), 
+                                         c("…", "\\\\dots{}"), c("™", "\\\\texttrademark{}"), 
+                                         c("␣", "\\\\textvisiblespace{}"), c("Æ", "\\\\AE{}"), 
+                                         c("æ", "\\\\ae{}"), c("Œ", "\\\\OE{}"), c("œ", "\\\\oe{}"), 
+                                         c("Ø", "\\\\O{}"), c("ø", "\\\\o{}"), c("Ł", "\\\\L{}"), 
+                                         c("ł", "\\\\l{}"), c("ẞ", "\\\\ifdefined\\\\XeTeXrevision\\\\iffontchar\\\\font\"1E9E\\\\symbol{\"1E9E}\\\\else\\\\SS\\\\fi\\\\else\\\\ifdefined\\\\directlua\\\\iffontchar\\\\font\"1E9E\\\\symbol{\"1E9E}\\\\else\\\\SS\\\\fi\\\\else\\\\SS\\\\fi\\\\fi{}"), 
+                                         c("ß", "\\\\ss{}"), c("ſ", "\\\\ifdefined\\\\XeTeXrevision\\\\symbol{\"017F}\\\\else\\\\ifdefined\\\\directlua\\\\symbol{\"017F}\\\\else{\\\\fontencoding{TS1}\\\\selectfont s}\\\\fi\\\\fi{}")))
+  substitutions <- c(substitutions, list(c("Ð", "\\\\DH{}"), 
+                                         c("ð", "\\\\dh{}"), c("Đ", "\\\\DJ{}"), c("đ", "\\\\dj{}"), 
+                                         c("Ŋ", "\\\\NG{}"), c("ŋ", "\\\\ng{}"), c("Þ", "\\\\TH{}"), 
+                                         c("þ", "\\\\th{}"), c("«", "\\\\guillemotleft{}"), 
+                                         c("»", "\\\\guillemotright{}"), c("‚", "\\\\quotesinglbase{}"), 
+                                         c("„", "\\\\quotedblbase{}"), c("‹", "\\\\guilsinglleft{}"), 
+                                         c("›", "\\\\guilsinglright{}")))
+  substitutions <- c(substitutions, list(c("­", "\\\\-"), c("​", "\\\\hspace{0pt}"), c("∗", "\\\\textasteriskcentered{}"), 
+                                         c("‖", "\\\\textbardbl{}"), c("◯", "\\\\textbigcircle{}"), 
+                                         c("␢", "\\\\textblank{}"), c("¦", "\\\\textbrokenbar{}"), 
+                                         c("⁒", "\\\\textdiscount{}"), c("℮", "\\\\textestimated{}"), 
+                                         c("‽", "\\\\textinterrobang{}"), c("⸘", "\\\\textinterrobangdown{}"), 
+                                         c("№", "\\\\textnumero{}"), c("◦", "\\\\textopenbullet{}"), 
+                                         c("‰", "\\\\textperthousand{}"), c("‱", "\\\\textpertenthousand{}"), 
+                                         c("℞", "\\\\textrecipe{}"), c("※", "\\\\textreferencemark{}"), 
+                                         c("˷", "\\\\texttildelow{}"), c("←", "\\\\textleftarrow{}"), 
+                                         c("↑", "\\\\textuparrow{}"), c("→", "\\\\textrightarrow{}"), 
+                                         c("↓", "\\\\textdownarrow{}"), c("〈", "\\\\textlangle{}"), 
+                                         c("〉", "\\\\textrangle{}"), c("〚", "\\\\textlbrackdbl{}"), 
+                                         c("〛", "\\\\textrbrackdbl{}"), c("⁅", "\\\\textlquill{}"), 
+                                         c("⁆", "\\\\textrquill{}"), c("℗", "\\\\textcircledP{}"), 
+                                         c("℠", "\\\\textservicemark{}"), c("℃", "\\\\textcelsius{}"), 
+                                         c("℧", "\\\\textmho{}"), c("µ", "\\\\textmu{}"), c("Ω", 
+                                                                                            "\\\\textohm{}"), c("฿", "\\\\textbaht{}"), c("¢", 
+                                                                                                                                          "\\\\textcent{}"), c("₡", "\\\\textcolonmonetary{}"), 
+                                         c("¤", "\\\\textcurrency{}"), c("₫", "\\\\textdong{}"), 
+                                         c("€", if (eurosym) "\\\\euro{}" else "\\\\texteuro{}"), 
+                                         c("₲", "\\\\textguarani{}"), c("₤", "\\\\textlira{}"), 
+                                         c("₦", "\\\\textnaira{}"), c("₱", "\\\\textpeso{}"), 
+                                         c("₩", "\\\\textwon{}"), c("¥", "\\\\textyen{}"), 
+                                         c("˝", "\\\\textacutedbl{}"), c("´", "\\\\textasciiacute{}"), 
+                                         c("¸", "\\\\c{}"), c("˘", "\\\\textasciibreve{}"), 
+                                         c("ˇ", "\\\\textasciicaron{}"), c("¨", "\\\\textasciidieresis{}"), 
+                                         c("¯", "\\\\textasciimacron{}"), c("°", "\\\\textdegree{}"), 
+                                         c("÷", "\\\\textdiv{}"), c("¼", "\\\\textonequarter{}"), 
+                                         c("½", "\\\\textonehalf{}"), c("¾", "\\\\textthreequarters{}"), 
+                                         c("×", "\\\\texttimes{}"), c("±", "\\\\textpm{}"), 
+                                         c("¹", "\\\\textonesuperior{}"), c("²", "\\\\texttwosuperior{}"), 
+                                         c("³", "\\\\textthreesuperior{}"), c("⁄", "\\\\textfractionsolidus{}"), 
+                                         c("√", "\\\\textsurd{}"), c("¬", "\\\\textlnot{}"), 
+                                         c("−", "\\\\textminus{}")))
+  tmp <- paste0("(\\\\[", Letters, "]+){}")
+  substitutions <- c(substitutions, list(c(paste0(tmp, "(?=$|[[:digit:],.?!;:\\\\}+*/-])"), 
+                                           "\\1"), c(paste0(tmp, "(?! )"), "\\1 ")))
+  for (subst in substitutions) {
+    y <- gsub(subst[1], subst[2], y, perl = TRUE)
+  }
+  if (isTRUE(doublebackslash)) {
+    y <- gsub("\\", "\\\\", y, fixed = TRUE)
+  }
+  stri_trans_nfc(y)
+}
+
