@@ -17,6 +17,13 @@ tmpdir <- tempdir()
 ## curdir <- getwd()
 exe.path <- tmpdir  # file.path(tmpdir, "bin", fsep = "\\")
 ## Sys.setenv(PATH = paste(Sys.getenv("PATH"), exe.path, sep = ":"))
+skip_if_no_poppler <- function(poppler.unavailable = !nzchar(Sys.which("pdfinfo")))
+{
+  if (poppler.unavailable)
+    skip("poppler is not installed. Could not find pdfinfo executable.")
+  else
+    invisible()
+}
 poppler.fail <- !nzchar(Sys.which("pdfinfo"))
 jss.fail <- try(download.file(paste0("https://www.jstatsoft.org/index.php/",
                                      "jss/article/view/v056i11/v56i11.pdf"),
@@ -40,8 +47,8 @@ if (inherits(arxiv2.fail, "try-error"))
 biomet.fail <- !file.copy(system.file("pdf", "biometrikaEx.pdf",
                                      package = "RefManageR"), exe.path)
 if (biomet.fail)
-    biomet.fail <- try(download.file(paste0("https://stat.uconn.edu/wp-content/",
-                                            "uploads/sites/729/2019/10/83-4-715.pdf"),
+    biomet.fail <- try(download.file(paste0("https://raw.githubusercontent.com/ropensci/",
+                                            "RefManageR/master/inst/pdf/biometrikaEx.pdf"),
                                  destfile = file.path(exe.path, "biometrikaEx.pdf"),
                                  mode = "wb"))
 if (inherits(biomet.fail, "try-error"))
@@ -58,7 +65,8 @@ jstor.fail <- !file.copy(system.file("pdf", "jstor.pdf",
 
 test_that("Recognizes DOI", {
     skip_on_cran()
-    if (poppler.fail || arxiv1.fail)
+    skip_if_no_poppler(poppler.fail)
+    if (arxiv1.fail)
         skip("Couldn't download arxiv1")
     expect_message(ReadPDFs(file.path(exe.path, "FIZaop.pdf"),
                             use.metadata = FALSE),
@@ -67,9 +75,10 @@ test_that("Recognizes DOI", {
 
 test_that("Creates a BibEntry object", {
     skip_on_cran()
-    if (poppler.fail || all(jstor.fail, biomet.fail, arxiv1.fail, arxiv2.fail,
+    skip_if_no_poppler(poppler.fail)
+    if (all(jstor.fail, biomet.fail, arxiv1.fail, arxiv2.fail,
                             jss.fail))
-        skip("Couldn't download Poppler or a single PDF")
+        skip("Couldn't download any PDFs")
     msgs <- capture_messages(bib <- ReadPDFs(exe.path, progress = TRUE,
                                      use.crossref = TRUE))
     expect_is(bib, "BibEntry")
@@ -80,16 +89,18 @@ test_that("Creates a BibEntry object", {
 
 test_that("Add file field", {
     skip_on_cran()
+    skip_if_no_poppler(poppler.fail)
     if (poppler.fail || all(jstor.fail, biomet.fail, arxiv1.fail, arxiv2.fail,
                             jss.fail))
-        skip("Couldn't download Poppler or a single PDF")
+        skip("Couldn't download any PDFs")
     bib <- ReadPDFs(exe.path, progress = TRUE, use.crossref = FALSE)
     expect_is(unlist(bib$file), "character")
 })
 
 test_that("Reading one PDF file name", {
     skip_on_cran()
-    if (poppler.fail || jstor.fail)
+    skip_if_no_poppler(poppler.fail)
+    if (jstor.fail)
         skip("Couldn't copy jstor.pdf")
     bib1 <- ReadPDFs(file.path(exe.path, "jstor.pdf"), use.metadata = FALSE)
     expect_is(bib1, "BibEntry")
@@ -98,8 +109,9 @@ test_that("Reading one PDF file name", {
 
 test_that("Recognizes JSTOR", {
     skip_on_cran()
-    if (poppler.fail || jstor.fail)
-        skip("Couldn't download Poppler or JSTOR PDF")
+    skip_if_no_poppler(poppler.fail)
+    if (jstor.fail)
+        skip("Couldn't copy jstor.pdf")
     bib <- ReadPDFs(exe.path, progress = FALSE, use.crossref = FALSE)
     expect_equal(bib[author = "carrol"]$eprinttype, "jstor")
     expect_equal(bib[author = "carrol"]$url,
@@ -108,7 +120,8 @@ test_that("Recognizes JSTOR", {
 
 test_that("Recognizes arxiv", {
     skip_on_cran()
-    if (poppler.fail || arxiv2.fail)
+    skip_if_no_poppler(poppler.fail)
+    if (arxiv2.fail)
         skip("Couldn't download arxiv2 reference")
     bib <- ReadPDFs(exe.path, progress = FALSE, use.crossref = FALSE)
     expect_equal(bib[author = "paul"]$eprinttype, "arxiv")
@@ -118,7 +131,8 @@ test_that("Recognizes arxiv", {
 
 test_that("Can parse arXiv date", {
     skip_on_cran()
-    if (poppler.fail || arxiv2.fail)
+    skip_if_no_poppler(poppler.fail)
+    if (arxiv2.fail)
         skip("Couldn't download arxiv2 reference")
     ## Entry misses year/date if use.metadata is FALSE
     bib <- ReadPDFs(exe.path, progress = FALSE, use.crossref = FALSE)
@@ -128,7 +142,8 @@ test_that("Can parse arXiv date", {
 
 test_that("Reading year and author", {
     skip_on_cran()
-    if (poppler.fail || jss.fail)
+    skip_if_no_poppler(poppler.fail)
+    if (jss.fail)
         skip("Couldn't download JSS reference")
     bib <- ReadPDFs(exe.path, progress = FALSE, use.crossref = FALSE)
     expect_equal(unlist(bib[author = "luo"]$author$family),
@@ -138,7 +153,8 @@ test_that("Reading year and author", {
 
 test_that("Reading journal and title", {
     skip_on_cran()
-    if (poppler.fail || biomet.fail)
+    skip_if_no_poppler(poppler.fail)
+    if (biomet.fail)
         skip("Couldn't download Biometrika reference")
     bib <- ReadPDFs(exe.path, progress = FALSE, use.crossref = FALSE)
     expect_match(bib[year = "1996"]$journal, "Biometrika")
@@ -149,9 +165,10 @@ test_that("Reading journal and title", {
 
 test_that("use.metadata = FALSE", {
     skip_on_cran()
-    if (poppler.fail || all(jstor.fail, biomet.fail, arxiv1.fail,
+    skip_if_no_poppler(poppler.fail)
+    if (all(jstor.fail, biomet.fail, arxiv1.fail,
                             arxiv2.fail, jss.fail))
-        skip("Couldn't download Poppler or a single pdf")
+        skip("Couldn't download any PDFs")
     bib <- ReadPDFs(exe.path, use.metadata = FALSE, use.crossref = FALSE)
     expect_is(bib, "BibEntry")
     bib <- ReadPDFs(exe.path, use.metadata = FALSE, use.crossref = TRUE)
