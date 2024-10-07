@@ -5,20 +5,9 @@
 \alias{RefManageR-package}
 \alias{RefManageR}
 \alias{refmanager}
-\title{Import and Manage BibTeX and BibLaTeX references with RefManageR}
+\title{RefManageR: Straightforward 'BibTeX' and 'BibLaTeX' Bibliography Management}
 \description{
-RefManageR provides tools for importing and working with
-bibliographic references.  It greatly enhances the bibentry class by
-providing a class BibEntry which stores BibTeX and BibLaTeX references,
-supports UTF-8 encoding, and can be easily searched by any field, by date
-ranges, and by various formats for name lists (author by last names,
-translator by full names, etc.). Entries can be updated, combined, sorted, printed
-in a number of styles, and exported. BibTeX and BibLaTeX .bib files can be
-read into R and converted to BibEntry objects.  Interfaces to NCBI's
-Entrez, CrossRef, and Zotero are provided for importing references and
-references can be created from locally stored PDFs using Poppler.  Includes
-functions for citing and generating a bibliography with hyperlinks for
-documents prepared with RMarkdown or RHTML.
+Provides tools for importing and working with bibliographic references. It greatly enhances the 'bibentry' class by providing a class 'BibEntry' which stores 'BibTeX' and 'BibLaTeX' references, supports 'UTF-8' encoding, and can be easily searched by any field, by date ranges, and by various formats for name lists (author by last names, translator by full names, etc.). Entries can be updated, combined, sorted, printed in a number of styles, and exported. 'BibTeX' and 'BibLaTeX' '.bib' files can be read into 'R' and converted to 'BibEntry' objects. Interfaces to 'NCBI Entrez', 'CrossRef', and 'Zotero' are provided for importing references and references can be created from locally stored 'PDF' files using 'Poppler'. Includes functions for citing and generating a bibliography with hyperlinks for documents prepared with 'RMarkdown' or 'RHTML'.
 }
 \details{
 \bold{Importing and Creating References}
@@ -61,7 +50,7 @@ functions such as \code{\link{print.BibEntry}}, \code{\link{[.BibEntry}}, and
 }
 \references{
 McLean, M. W. (2014). Straightforward Bibliography Management in R Using the RefManageR Package.
-\href{https://arxiv.org/abs/1403.2036}{arXiv: 1403.2036 [cs.DL]}. Submitted.
+\href{https://arxiv.org/abs/1403.2036}{arXiv: 1403.2036 [cs.DL]}.
 
 Kime, P., M. Wemheuer, and P. Lehman (2022). The biblatex Package.
 \url{http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/biblatex/doc/biblatex.pdf}.
@@ -72,7 +61,24 @@ Who Did What? The Roles of R Package Authors and How to Refer to Them. The R Jou
 
 Patashnik, O (1988). Bibtexing. \url{https://tug.org/texmf-docs/bibtex/btxdoc.pdf}.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/ropensci/RefManageR/}
+  \item Report bugs at \url{https://github.com/ropensci/RefManageR/issues}
+}
+
+}
 \author{
+\strong{Maintainer}: Mathew W. McLean \email{mathew.w.mclean@gmail.com} (\href{https://orcid.org/0000-0002-7891-9645}{ORCID})
+
+Other contributors:
+\itemize{
+  \item Andy Bunn \email{bunna@wwu.edu} (function latexify used by toBiblatex) [contributor]
+}
+
+
 McLean, M. W. \email{mathew.w.mclean@gmail.com}
 }
+\keyword{internal}
 \keyword{package}
