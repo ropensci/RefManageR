@@ -5,14 +5,17 @@
 toBibtex.BibEntry <- function(object,
                               note.replace.field = c('urldate', "pubsate",
                                                      "addendum"),
-                              extra.fields = NULL, ...){
+                              extra.fields = NULL, 
+                              encoded.names.to.latex = TRUE,
+                              ...){
   
   
   object <- .BibEntry_expand_crossrefs(unclass(object), to.bibtex = TRUE)
   if (length(object)) {
     object$.index <- NULL
     rval <- head(unlist(lapply(object, ConvertToBibtex,
-                               note.replace.field, extra.fields)), 
+                               note.replace.field, extra.fields, 
+                               encoded.names.to.latex)), 
                  -1L)
   }
   else rval <- character()
@@ -21,18 +24,20 @@ toBibtex.BibEntry <- function(object,
 }
 
 #' @noRd
-ConvertToBibtex <- function(object, note.replace.field, extra.fields){
+ConvertToBibtex <- function(object,
+                            note.replace.field,
+                            extra.fields,
+                            encoded.names.to.latex) {
     object <- unclass(object)[[1L]]
     bibtype <- tolower(attr(object, "bibtype"))
     obj.names <- names(object)
-    if ("author" %in% obj.names)
-      object$author <- encoded_text_to_latex(format_author(object$author),
-                                             "UTF-8")
-    if ("editor" %in% obj.names)
-      object$editor <- encoded_text_to_latex(format_author(object$editor),
-                                             "UTF-8")
+    if (encoded.names.to.latex) {
+      if ("author" %in% obj.names)
+        object$author <- EncodedNameListToLaTeX(object$author)
+      if ("editor" %in% obj.names)
+        object$editor <- EncodedNameListToLaTeX(object$editor)
+    }
     # see 2.3 Usage Notes p. 28
-    
     if (bibtype == "article" && 'journaltitle' %in% obj.names  &&
         is.null(object$journal))
       object$journal <- object$journaltitle
