@@ -89,8 +89,28 @@ ReadPDFs <- function (path, .enc = 'UTF-8', recursive = TRUE,
                                out, pages.idx))
   }else
   {
+    .findPages <- function(files)
+    {
+      n.files <- length(files)
+      page.bounding.boxes <- lapply(files, function(x)
+        system2("pdfinfo", paste(shQuote('-enc'),
+                                 shQuote(.enc), shQuote("-box"),
+                                 shQuote(normalizePath(x))),
+                stdout = TRUE, stderr = TRUE))
+      pages.idx <- lapply(page.bounding.boxes, grep, pattern = "^Pages:")
+      pages <- rep(Inf, n.files)
+      for (i in seq_along(pages.idx))
+      {
+        if (length(pages.idx[[i]]))
+          pages[i] <- as.integer(sub("^Pages:\\s+(\\d+)", "\\1",
+                                     page.bounding.boxes[[i]][pages.idx[[i]]],
+                                     perl = TRUE))
+      }
+      return(pages)
+    }
+
     doi.meta.ind <- logical(n.files)
-    pages <- rep(Inf, n.files)
+    pages <- .findPages(files)
   }
 
   ########################################
