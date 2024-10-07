@@ -21,7 +21,7 @@ toBiblatex(object, encoded.names.to.latex = TRUE, ...)
 
 \item{encoded.names.to.latex}{if \code{TRUE} (the default) then name list fields
 such as \sQuote{author} and \sQuote{editor} will have non-ASCII characters
-translated to LaTeX escape sequences by \code{\link[dplR]{latexify}}.}
+translated to LaTeX escape sequences.}
 
 \item{...}{ignored}
 
@@ -90,7 +90,8 @@ if (requireNamespace("bibtex")) {
 \code{\link{toBibtex}}, \code{\link{BibEntry}}, \code{\link{print.BibEntry}}
 }
 \author{
-McLean, M. W. \email{mathew.w.mclean@gmail.com}
+McLean, M. W. \email{mathew.w.mclean@gmail.com}, Andy Bunn for code for
+translating non-ASCII characters to LaTeX.
 }
 \keyword{IO}
 \keyword{database}

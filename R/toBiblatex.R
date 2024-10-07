@@ -12,7 +12,7 @@
 #' Any fields specified in extra.fields will \emph{not} be dropped if present in an entry.
 #' @param encoded.names.to.latex if \code{TRUE} (the default) then name list fields
 #' such as \sQuote{author} and \sQuote{editor} will have non-ASCII characters
-#' translated to LaTeX escape sequences by \code{\link[dplR]{latexify}}.
+#' translated to LaTeX escape sequences.
 #' @param ... ignored
 #' @export
 #' @return an object of class \dQuote{Bibtex} - character vectors where each element holds one line of a BibTeX or BibLaTeX file
@@ -52,7 +52,8 @@
 #' \item \emph{rest} - to Misc
 #' }
 #' @seealso \code{\link{toBibtex}}, \code{\link{BibEntry}}, \code{\link{print.BibEntry}}
-#' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}
+#' @author McLean, M. W. \email{mathew.w.mclean@@gmail.com}, Andy Bunn for code for
+#' translating non-ASCII characters to LaTeX.
 #' @importFrom tools parseLatex deparseLatex latexToUtf8
 #' @keywords database IO utilities
 #' @aliases toBibtex.BibEntry toBibtex
