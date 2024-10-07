@@ -6,17 +6,22 @@
 \alias{toBibtex}
 \title{Convert BibEntry objects to BibTeX or BibLaTeX}
 \usage{
-toBiblatex(object, ...)
+toBiblatex(object, encoded.names.to.latex = TRUE, ...)
 
 \method{toBibtex}{BibEntry}(
   object,
   note.replace.field = c("urldate", "pubsate", "addendum"),
   extra.fields = NULL,
+  encoded.names.to.latex = TRUE,
   ...
 )
 }
 \arguments{
 \item{object}{an object of class BibEntry to be converted}
+
+\item{encoded.names.to.latex}{if \code{TRUE} (the default) then name list fields
+such as \sQuote{author} and \sQuote{editor} will have non-ASCII characters
+translated to LaTeX escape sequences by \code{\link[dplR]{latexify}}.}
 
 \item{...}{ignored}
 
