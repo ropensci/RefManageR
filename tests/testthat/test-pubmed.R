@@ -49,8 +49,7 @@ test_that("LookupPubMedID successfully retrieves and add ID's'", {
 
 test_that("GetPubMedByID reading of years/months (#52)", {
   skip_if_offline("eutils.ncbi.nlm.nih.gov")
-  Sys.sleep(2)
-  try_again(3, bib <- GetPubMedByID("23891459"))
+  try_again(3, {Sys.sleep(2); bib <- GetPubMedByID("23891459")})
   expect_equal(bib$year, "2013")
   expect_equal(bib$month, "07")
 })
@@ -58,9 +57,9 @@ test_that("GetPubMedByID reading of years/months (#52)", {
 test_that("GetPubMedByID: Multiple books parsed correctly #86",
 {
     skip_if_offline("eutils.ncbi.nlm.nih.gov")
-    Sys.sleep(2)
+    
     ids <- c("33780208", "33764725")
     names(ids) <- c("geary2021variation", "brennan2021potential")
-    try_again(5, bib <- GetPubMedByID(ids))
+    try_again(3, {Sys.sleep(2); bib <- GetPubMedByID(ids)})
     expect_equal(unlist(bib$eprint), ids)
 })

@@ -120,6 +120,7 @@ GetPubMedByID <- function(id, db = "pubmed", ...){
   ## temp <- postForm(base.url, .params = parms)
   ## tdoc <- xmlParse(temp)
   temp <- POST(base.url, query = parms)
+  stop_for_status(temp)
   tdoc <- read_xml(temp)
 
   ## Note: directly using xpathApply on tdoc won't work if some results are
