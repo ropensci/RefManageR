@@ -61,6 +61,6 @@ test_that("GetPubMedByID: Multiple books parsed correctly #86",
     Sys.sleep(2)
     ids <- c("33780208", "33764725")
     names(ids) <- c("geary2021variation", "brennan2021potential")
-    try_again(3, bib <- GetPubMedByID(ids))
+    try_again(5, bib <- GetPubMedByID(ids))
     expect_equal(unlist(bib$eprint), ids)
 })
