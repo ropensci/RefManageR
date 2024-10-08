@@ -105,6 +105,7 @@ EncodedNameListToLaTeX <- function(name.list, encoding = "UTF-8")
 #' @importFrom stringi stri_trans_nfc stri_trans_nfd stri_unescape_unicode
 #' @importFrom R.utils captureOutput
 #' @author Andy Bunn
+#' @noRd
 latexify <- function(x, 
                      doublebackslash = FALSE, 
                      dashdash = TRUE, 
