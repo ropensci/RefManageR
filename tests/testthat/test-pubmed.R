@@ -33,6 +33,16 @@ test_that("GetPubMedByID warns if authors missing (#3)", {
   expect_warning(try_again(3, GetPubMedByID("7936917")))
 })
 
+test_that("GetPubMedByID: Multiple books parsed correctly #86",
+{
+  skip_if_offline("eutils.ncbi.nlm.nih.gov")
+  
+  ids <- c("33780208", "33764725")
+  names(ids) <- c("geary2021variation", "brennan2021potential")
+  try_again(5, {Sys.sleep(3); bib <- GetPubMedByID(ids)})
+  expect_equal(unlist(bib$eprint), ids)
+})
+
 test_that("LookupPubMedID successfully retrieves and add ID's'", {
     skip_if_offline("eutils.ncbi.nlm.nih.gov")
     
@@ -54,12 +64,3 @@ test_that("GetPubMedByID reading of years/months (#52)", {
   expect_equal(bib$month, "07")
 })
 
-test_that("GetPubMedByID: Multiple books parsed correctly #86",
-{
-    skip_if_offline("eutils.ncbi.nlm.nih.gov")
-    
-    ids <- c("33780208", "33764725")
-    names(ids) <- c("geary2021variation", "brennan2021potential")
-    try_again(5, {Sys.sleep(3); bib <- GetPubMedByID(ids)})
-    expect_equal(unlist(bib$eprint), ids)
-})
