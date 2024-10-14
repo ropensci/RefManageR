@@ -63,7 +63,7 @@ test_that("GetPubMedByID: Multiple books parsed correctly #86",
     bib <- NULL
     tryCatch(try_again(5, {Sys.sleep(3); bib <<- GetPubMedByID(ids)}),
     error = with_mocked_bindings(POST = function(...) 
-      readRDS("tests/testthat/pubmedid_response.rds"),
+      readRDS("pubmedid_response.rds"),
               bib <<- GetPubMedByID(ids)))
     expect_equal(unlist(bib$eprint), ids)
 })
