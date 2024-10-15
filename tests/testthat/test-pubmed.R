@@ -60,10 +60,8 @@ test_that("GetPubMedByID: Multiple books parsed correctly #86",
 
     ids <- c("33780208", "33764725")
     names(ids) <- c("geary2021variation", "brennan2021potential")
-    bib <- NULL
-    tryCatch(try_again(5, {Sys.sleep(3); bib <<- GetPubMedByID(ids)}),
-    error = with_mocked_bindings(POST = function(...) 
-      readRDS("pubmedid_response.rds"),
-              bib <<- GetPubMedByID(ids)))
+    bib <- with_mocked_bindings(POST = function(...)
+        readRDS("pubmedid_response.rds"),
+                GetPubMedByID(ids))
     expect_equal(unlist(bib$eprint), ids)
 })
