@@ -114,12 +114,10 @@ GetPubMedByID <- function(id, db = "pubmed", ...){
     parms$id <- paste0(id, collapse=",")
 
   parms$retmode <- "xml"
-  parms$rettype <- "medline"
 
   base.url <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?"
-  ## temp <- postForm(base.url, .params = parms)
-  ## tdoc <- xmlParse(temp)
   temp <- POST(base.url, query = parms)
+  stop_for_status(temp)
   tdoc <- read_xml(temp)
 
   ## Note: directly using xpathApply on tdoc won't work if some results are
